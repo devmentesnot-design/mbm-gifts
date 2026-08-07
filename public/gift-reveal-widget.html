@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gift Reveal — Header Animation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Playfair+Display:ital,wght@1,600;1,700&family=Inter:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon-deep:#3a0a0a;
+    --maroon:#5c0f0f;
+    --gold:#f2b84b;
+    --gold-soft:#e8a93a;
+    --gold-dim: rgba(242,184,75,0.35);
+    --cream:#f5ead2;
+  }
+
+  html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    background:transparent;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Auto-scaling viewport wrapper to prevent any clipping */
+  .viewport-scaler {
+    width: 460px;
+    height: 540px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: center center;
+    position: relative;
+  }
+
+  /* ============ SCENE ============ */
+  .gift-scene{
+    position:relative;
+    width:460px;
+    height:540px;
+  }
+
+  /* golden starburst rays */
+  .rays{
+    position:absolute;
+    inset:0;
+    width:460px; height:540px;
+    pointer-events:none;
+    overflow:visible;
+  }
+  .rays line{
+    opacity:0;
+  }
+  .gift-scene.active .rays line{ animation: rayFlare 3s ease-out forwards; }
+  @keyframes rayFlare{
+    0%,16%{ opacity:0; }
+    30%{   stroke-dashoffset:0; opacity:1; }
+    56%{   opacity:.85; }
+    74%,100%{ opacity:0; }
+  }
+
+  /* item label at top */
+  .item-label{
+    position:absolute;
+    left:50%; top:25px;
+    transform:translateX(-50%);
+    color: var(--gold);
+    font-family: 'Playfair Display', 'Alex Brush', serif;
+    font-style: italic;
+    font-size:32px;
+    letter-spacing:1px;
+    font-weight:700;
+    text-shadow: 0 2px 10px rgba(0,0,0,.9), 0 0 20px rgba(242,184,75,.8);
+    opacity:0;
+    white-space:nowrap;
+    z-index: 10;
+    text-align: center;
+  }
+  .gift-scene.active .item-label{ animation: labelFade 3s ease-in-out; }
+  @keyframes labelFade{
+    0%,25%{ opacity:0; transform:translate(-50%, 10px); }
+    38%{ opacity:1; transform:translate(-50%, 0); }
+    70%{ opacity:1; transform:translate(-50%, 0); }
+    82%,100%{ opacity:0; transform:translate(-50%, -8px); }
+  }
+
+  /* rising product icon */
+  .icon-stage{
+    position:absolute;
+    left:50%; bottom:160px;
+    transform: translate(-50%, 24px) scale(.5);
+    opacity:0;
+    width:290px; height:290px;
+    display:flex; align-items:center; justify-content:center;
+    z-index: 5;
+  }
+  .photo-disc{
+    position:relative;
+    width:280px; height:280px;
+    border-radius:50%;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    display:flex; align-items:center; justify-content:center;
+    background: radial-gradient(circle at 35% 30%, #ffffff, #f7ebd4 55%, #e2cd9e 100%);
+    box-shadow: 0 16px 32px rgba(0,0,0,.6), 0 0 0 4px var(--gold-soft), 0 0 24px rgba(242,184,75,.5);
+    overflow: hidden;
+    padding: 32px;
+  }
+  .photo-disc img{
+    width:100%; height:100%;
+    object-fit:contain;
+    aspect-ratio: 1 / 1;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,.3));
+  }
+  .gift-scene.active .icon-stage{ animation: iconRise 3s cubic-bezier(.34,1.4,.4,1); }
+  @keyframes iconRise{
+    0%,26%{ transform:translate(-50%, 40px) scale(.35); opacity:0; }
+    40%{   transform:translate(-50%,-10px) scale(1); opacity:1; }
+    50%{   transform:translate(-50%,-20px) scale(1.04); opacity:1; }
+    60%{   transform:translate(-50%,-10px) scale(1); opacity:1; }
+    74%{   transform:translate(-50%, 20px) scale(.55); opacity:0; }
+    100%{  transform:translate(-50%, 40px) scale(.35); opacity:0; }
+  }
+
+  /* ============ BOX ============ */
+  .box-wrap{
+    position:absolute;
+    left:50%; bottom:40px;
+    transform:translateX(-50%);
+    width:280px; height:180px;
+    z-index: 6;
+  }
+
+  .box-base{
+    position:absolute;
+    bottom:0; left:0; right:0;
+    height:120px;
+    background: linear-gradient(160deg, #7a1a1a, #4a0d0d 70%);
+    border:2px solid var(--gold-soft);
+    border-radius:6px;
+    box-shadow: 0 20px 34px rgba(0,0,0,.55), inset 0 0 22px rgba(0,0,0,.4);
+  }
+
+  .box-lid{
+    position:absolute;
+    top:20px; left:-8px; right:-8px;
+    height:42px;
+    background: linear-gradient(160deg, #8c2020, #5c0f0f 70%);
+    border:2px solid var(--gold-soft);
+    border-radius:6px;
+    box-shadow: 0 8px 14px rgba(0,0,0,.4);
+    transform-origin: 50% 100%;
+    z-index:8;
+  }
+  .gift-scene.active .box-lid{ animation: lidOpen 3s ease-in-out; }
+  @keyframes lidOpen{
+    0%,10%{ transform: rotateX(0) translateY(0); }
+    30%,66%{ transform: rotateX(58deg) translateY(-10px); }
+    88%,100%{ transform: rotateX(0) translateY(0); }
+  }
+
+  .ribbon-v{
+    position:absolute; top:0; bottom:0; left:50%;
+    width:18px; margin-left:-9px;
+    background: linear-gradient(90deg, var(--gold-soft), var(--gold) 50%, var(--gold-soft));
+    z-index:7;
+  }
+  .ribbon-h{
+    position:absolute; left:0; right:0; top:55px;
+    height:18px;
+    background: linear-gradient(180deg, var(--gold-soft), var(--gold) 50%, var(--gold-soft));
+    z-index:7;
+  }
+  .gift-scene.active .ribbon-v,
+  .gift-scene.active .ribbon-h{ animation: ribbonFade 3s ease-in-out; }
+  @keyframes ribbonFade{
+    0%,10%{ opacity:1; }
+    24%,76%{ opacity:0; }
+    92%,100%{ opacity:1; }
+  }
+
+  .bow{
+    position:absolute; left:50%; top:46px;
+    width:0; height:0;
+    z-index:9;
+  }
+  .bow-loop{
+    position:absolute;
+    width:36px; height:24px;
+    background: var(--gold);
+    border:2px solid var(--gold-soft);
+    border-radius: 50% 50% 50% 0;
+    top:-12px;
+  }
+  .bow-loop.left{ left:-38px; transform: rotate(-35deg); }
+  .bow-loop.right{ left:2px; transform: rotate(35deg) scaleX(-1); }
+  .bow-knot{
+    position:absolute;
+    width:16px; height:16px;
+    background: var(--gold);
+    border:2px solid var(--gold-soft);
+    border-radius:4px;
+    left:-8px; top:-8px;
+    transform: rotate(45deg);
+  }
+  .gift-scene.active .bow-loop,
+  .gift-scene.active .bow-knot{ animation: bowUntie 3s ease-in-out; }
+  @keyframes bowUntie{
+    0%,10%{ opacity:1; transform:var(--rest,none); }
+    24%{ opacity:0; }
+    76%{ opacity:0; }
+    92%,100%{ opacity:1; }
+  }
+  .bow-loop.left{ --rest: rotate(-35deg); }
+  .bow-loop.right{ --rest: rotate(35deg) scaleX(-1); }
+  .bow-knot{ --rest: rotate(45deg); }
+</style>
+</head>
+<body>
+
+  <div class="viewport-scaler" id="scaler">
+    <div class="gift-scene active" id="scene">
+
+      <svg class="rays" viewBox="0 0 460 540">
+        <defs>
+        <linearGradient id="rg0" x1="230" y1="340.0" x2="87.3" y2="293.6" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg1" x1="230" y1="340.0" x2="30.8" y2="225.0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg2" x1="230" y1="340.0" x2="139.4" y2="261.3" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg3" x1="230" y1="340.0" x2="63.8" y2="127.2" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg4" x1="230" y1="340.0" x2="164.3" y2="216.4" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg5" x1="230" y1="340.0" x2="155.8" y2="111.7" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg6" x1="230" y1="340.0" x2="212.8" y2="231.4" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg7" x1="230" y1="340.0" x2="230.0" y2="50.0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg8" x1="230" y1="340.0" x2="247.2" y2="231.4" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg9" x1="230" y1="340.0" x2="304.2" y2="111.7" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg10" x1="230" y1="340.0" x2="295.7" y2="216.4" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg11" x1="230" y1="340.0" x2="396.2" y2="127.2" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg12" x1="230" y1="340.0" x2="320.6" y2="261.3" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg13" x1="230" y1="340.0" x2="429.2" y2="225.0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        <linearGradient id="rg14" x1="230" y1="340.0" x2="372.7" y2="293.6" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff6df"/><stop offset="35%" stop-color="#f2b84b"/><stop offset="100%" stop-color="#f2b84b" stop-opacity="0"/></linearGradient>
+        </defs>
+        <line x1="230" y1="340.0" x2="87.3" y2="293.6" stroke="url(#rg0)" stroke-width="1.6" stroke-linecap="round" style="stroke-dasharray:158;stroke-dashoffset:158;animation-delay:0.04s" />
+        <line x1="230" y1="340.0" x2="30.8" y2="225.0" stroke="url(#rg1)" stroke-width="3.2" stroke-linecap="round" style="stroke-dasharray:242;stroke-dashoffset:242;animation-delay:0.02s" />
+        <line x1="230" y1="340.0" x2="139.4" y2="261.3" stroke="url(#rg2)" stroke-width="1.4" stroke-linecap="round" style="stroke-dasharray:126;stroke-dashoffset:126;animation-delay:0.08s" />
+        <line x1="230" y1="340.0" x2="63.8" y2="127.2" stroke="url(#rg3)" stroke-width="4.2" stroke-linecap="round" style="stroke-dasharray:284;stroke-dashoffset:284;animation-delay:0.01s" />
+        <line x1="230" y1="340.0" x2="164.3" y2="216.4" stroke="url(#rg4)" stroke-width="1.5" stroke-linecap="round" style="stroke-dasharray:147;stroke-dashoffset:147;animation-delay:0.06s" />
+        <line x1="230" y1="340.0" x2="155.8" y2="111.7" stroke="url(#rg5)" stroke-width="3.6" stroke-linecap="round" style="stroke-dasharray:252;stroke-dashoffset:252;animation-delay:0.04s" />
+        <line x1="230" y1="340.0" x2="212.8" y2="231.4" stroke="url(#rg6)" stroke-width="1.3" stroke-linecap="round" style="stroke-dasharray:116;stroke-dashoffset:116;animation-delay:0.01s" />
+        <line x1="230" y1="340.0" x2="230.0" y2="50.0" stroke="url(#rg7)" stroke-width="4.6" stroke-linecap="round" style="stroke-dasharray:304;stroke-dashoffset:304;animation-delay:0.06s" />
+        <line x1="230" y1="340.0" x2="247.2" y2="231.4" stroke="url(#rg8)" stroke-width="1.3" stroke-linecap="round" style="stroke-dasharray:116;stroke-dashoffset:116;animation-delay:0.0s" />
+        <line x1="230" y1="340.0" x2="304.2" y2="111.7" stroke="url(#rg9)" stroke-width="3.6" stroke-linecap="round" style="stroke-dasharray:252;stroke-dashoffset:252;animation-delay:0.05s" />
+        <line x1="230" y1="340.0" x2="295.7" y2="216.4" stroke="url(#rg10)" stroke-width="1.5" stroke-linecap="round" style="stroke-dasharray:147;stroke-dashoffset:147;animation-delay:0.01s" />
+        <line x1="230" y1="340.0" x2="396.2" y2="127.2" stroke="url(#rg11)" stroke-width="4.2" stroke-linecap="round" style="stroke-dasharray:284;stroke-dashoffset:284;animation-delay:0.01s" />
+        <line x1="230" y1="340.0" x2="320.6" y2="261.3" stroke="url(#rg12)" stroke-width="1.4" stroke-linecap="round" style="stroke-dasharray:126;stroke-dashoffset:126;animation-delay:0.05s" />
+        <line x1="230" y1="340.0" x2="429.2" y2="225.0" stroke="url(#rg13)" stroke-width="3.2" stroke-linecap="round" style="stroke-dasharray:242;stroke-dashoffset:242;animation-delay:0.1s" />
+        <line x1="230" y1="340.0" x2="372.7" y2="293.6" stroke="url(#rg14)" stroke-width="1.6" stroke-linecap="round" style="stroke-dasharray:158;stroke-dashoffset:158;animation-delay:0.01s" />
+      </svg>
+
+      <div class="item-label" id="itemLabel">Luxury Watches</div>
+      <div class="icon-stage" id="iconStage"></div>
+
+      <div class="box-wrap">
+        <div class="box-base"></div>
+        <div class="box-lid"></div>
+        <div class="ribbon-v"></div>
+        <div class="ribbon-h"></div>
+        <div class="bow">
+          <div class="bow-loop left"></div>
+          <div class="bow-loop right"></div>
+          <div class="bow-knot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const items = [
+    { name: "Luxury Watches", src: "/Watches.png" },
+    { name: "Designer Sunglasses", src: "/Sunglasses.png" },
+    { name: "Leather Wallets", src: "/wallets.png" },
+    { name: "Wireless Earbuds", src: "/Earbuds.png" },
+    { name: "Fine Leather Belts", src: "/Belts.png" },
+    { name: "Scented Candles", src: "/candels.png" },
+    { name: "Gold Jewelry", src: "/jewlery.png" },
+    { name: "Ceramic Mugs", src: "/mugs.png" },
+    { name: "Luxury Notebooks", src: "/notebook.png" },
+    { name: "Fine Perfumes", src: "/prfumes.png" }
+  ];
+
+  const scaler = document.getElementById('scaler');
+  const scene = document.getElementById('scene');
+  const iconStage = document.getElementById('iconStage');
+  const itemLabel = document.getElementById('itemLabel');
+  let index = 0;
+
+  function handleResize() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const scale = Math.min(w / 460, h / 540);
+    scaler.style.transform = `scale(${Math.min(scale, 1)})`;
+  }
+
+  window.addEventListener('resize', handleResize);
+  handleResize();
+
+  function paint(i){
+    const item = items[i];
+    iconStage.innerHTML = `
+      <div class="photo-disc">
+        <img src="${item.src}" alt="${item.name}" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='/logo.png';">
+      </div>
+    `;
+    itemLabel.textContent = item.name;
+  }
+
+  function cycle(){
+    scene.classList.remove('active');
+    void scene.offsetWidth;
+    index = (index + 1) % items.length;
+    paint(index);
+    scene.classList.add('active');
+  }
+
+  paint(index);
+  setInterval(cycle, 3200);
+</script>
+
+</body>
+</html>
+

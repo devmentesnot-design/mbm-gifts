@@ -1,0 +1,396 @@
+// ============================================================================
+// CLEAN DATA FUNCTIONS - NO LOCALSTORAGE
+// Copy these functions to replace the ones in giftsData.ts
+// Starting from line 340 (after CUSTOM_ITEMS array)
+// ============================================================================
+
+// ============================================================================
+// GET FUNCTIONS - Fetch from Supabase ONLY
+// ============================================================================
+
+export const getStoredPackages = async (): Promise<PreparedPackage[]> => {
+  if (!isSupabaseConfigured) {
+    console.warn('⚠️ Supabase not configured');
+    return PREPARED_PACKAGES;
+  }
+
+  try {
+    console.log('📦 Fetching packages from database...');
+    const { data, error } = await supabase.from('prepared_packages').select('*');
+    
+    if (error) throw error;
+    
+    if (!data || data.length === 0) {
+      console.log('📦 No packages found, returning defaults');
+      return PREPARED_PACKAGES;
+    }
+
+    const mapped = data.map(item => ({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      price: item.price,
+      rating: item.rating || 5.0,
+      reviewsCount: item.reviews_count || 100,
+      badge: item.badge || '',
+      shortDesc: item.description || '',
+      image: item.image,
+      itemsIncluded: item.items_included || [],
+      itemsIncludedDetailed: item.items_included_detailed || [],
+      popularFor: item.popular_for || 'Gifting'
+    }));
+    
+    console.log('✅ Loaded', mapped.length, 'packages');
+    return mapped;
+  } catch (err) {
+    console.error('❌ Error loading packages:', err);
+    return PREPARED_PACKAGES;
+  }
+};
+
+export const getStoredCustomItems = async (): Promise<CustomBoxOption[]> => {
+  if (!isSupabaseConfigured) {
+    console.warn('⚠️ Supabase not configured');
+    return CUSTOM_ITEMS;
+  }
+
+  try {
+    console.log('🎁 Fetching custom items from database...');
+    const { data, error } = await supabase.from('custom_box_options').select('*');
+    
+    if (error) throw error;
+    
+    if (!data || data.length === 0) {
+      console.log('🎁 No items found, returning defaults');
+      return CUSTOM_ITEMS;
+    }
+
+    const mapped = data.map(item => ({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      price: item.price,
+      image: item.image,
+      description: item.description || ''
+    }));
+    
+    console.log('✅ Loaded', mapped.length, 'custom items');
+    return mapped;
+  } catch (err) {
+    console.error('❌ Error loading custom items:', err);
+    return CUSTOM_ITEMS;
+  }
+};
+
+export const getStoredOrders = async (): Promise<any[]> => {
+  if (!isSupabaseConfigured) {
+    console.warn('⚠️ Supabase not configured');
+    return [];
+  }
+
+  try {
+    console.log('📋 Fetching orders from database...');
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    
+    if (!data) return [];
+
+    const mapped = data.map(o => ({
+      id: o.id,
+      createdAt: o.created_at ? new Date(o.created_at).toLocaleString() : new Date().toLocaleString(),
+      status: o.status,
+      customer: o.customer_info,
+      items: o.items,
+      subtotal: o.subtotal,
+      shipping: o.shipping,
+      total: o.total,
+      paymentMethod: o.payment_method
+    }));
+    
+    console.log('✅ Loaded', mapped.length, 'orders');
+    return mapped;
+  } catch (err) {
+    console.error('❌ Error loading orders:', err);
+    return [];
+  }
+};
+
+export const getStoredCategories = async (): Promise<GiftCategory[]> => {
+  if (!isSupabaseConfigured) {
+    console.warn('⚠️ Supabase not configured');
+    return DEFAULT_CATEGORIES;
+  }
+
+  try {
+    console.log('📁 Fetching categories from database...');
+    const { data, error } = await supabase.from('categories').select('*');
+    
+    if (error) throw error;
+    
+    if (!data || data.length === 0) {
+      console.log('📁 No categories found, returning defaults');
+      return DEFAULT_CATEGORIES;
+    }
+
+    const mapped = data.map(c => ({
+      id: c.id,
+      name: c.name,
+      slug: c.slug || c.name.toLowerCase().replace(/\s+/g, '-'),
+      description: c.description || '',
+      image: c.image,
+      type: c.type || 'both'
+    }));
+    
+    console.log('✅ Loaded', mapped.length, 'categories');
+    return mapped;
+  } catch (err) {
+    console.error('❌ Error loading categories:', err);
+    return DEFAULT_CATEGORIES;
+  }
+};
+
+export const getStoredGiftBoxes = async (): Promise<GiftBoxStyle[]> => {
+  if (!isSupabaseConfigured) {
+    console.warn('⚠️ Supabase not configured');
+    return DEFAULT_GIFT_BOXES;
+  }
+
+  try {
+    console.log('📦 Fetching gift boxes from database...');
+    const { data, error } = await supabase.from('gift_boxes').select('*');
+    
+    if (error) throw error;
+    
+    if (!data || data.length === 0) {
+      console.log('📦 No gift boxes found, returning defaults');
+      return DEFAULT_GIFT_BOXES;
+    }
+
+    const mapped = data.map(b => ({
+      id: b.id,
+      name: b.name,
+      dimensions: b.dimensions,
+      price: b.price,
+      color: b.color,
+      image: b.image,
+      description: b.description
+    }));
+    
+    console.log('✅ Loaded', mapped.length, 'gift boxes');
+    return mapped;
+  } catch (err) {
+    console.error('❌ Error loading gift boxes:', err);
+    return DEFAULT_GIFT_BOXES;
+  }
+};
+
+// ============================================================================
+// SAVE FUNCTIONS - Save to Supabase ONLY
+// ============================================================================
+
+export const saveStoredPackages = async (packages: PreparedPackage[]) => {
+  if (!isSupabaseConfigured) {
+    console.error('❌ Supabase not configured!');
+    throw new Error('Supabase not configured');
+  }
+
+  console.log('💾 Saving', packages.length, 'packages to database...');
+
+  try {
+    const formatted = packages.map(p => ({
+      id: p.id,
+      name: p.name,
+      category: p.category,
+      price: p.price,
+      rating: p.rating,
+      reviews_count: p.reviewsCount,
+      badge: p.badge || null,
+      description: p.shortDesc,
+      image: p.image,
+      items_included: p.itemsIncluded,
+      items_included_detailed: p.itemsIncludedDetailed,
+      popular_for: p.popularFor
+    }));
+    
+    const { error } = await supabase.from('prepared_packages').upsert(formatted, { onConflict: 'id' });
+    
+    if (error) throw error;
+    
+    console.log('✅ Saved', packages.length, 'packages successfully');
+  } catch (err) {
+    console.error('❌ Error saving packages:', err);
+    throw err;
+  }
+};
+
+export const saveStoredCustomItems = async (items: CustomBoxOption[]) => {
+  if (!isSupabaseConfigured) {
+    console.error('❌ Supabase not configured!');
+    throw new Error('Supabase not configured');
+  }
+
+  console.log('💾 Saving', items.length, 'custom items to database...');
+
+  try {
+    const formatted = items.map(item => ({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      price: item.price,
+      image: item.image,
+      description: item.description
+    }));
+    
+    const { error } = await supabase.from('custom_box_options').upsert(formatted, { onConflict: 'id' });
+    
+    if (error) throw error;
+    
+    console.log('✅ Saved', items.length, 'custom items successfully');
+  } catch (err) {
+    console.error('❌ Error saving custom items:', err);
+    throw err;
+  }
+};
+
+export const saveStoredOrders = async (orders: any[]) => {
+  if (!isSupabaseConfigured || orders.length === 0) {
+    if (orders.length === 0) return;
+    console.error('❌ Supabase not configured!');
+    throw new Error('Supabase not configured');
+  }
+
+  console.log('💾 Saving', orders.length, 'orders to database...');
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    const formattedOrders = orders.map(ord => ({
+      id: ord.id,
+      user_id: session?.user?.id || null,
+      status: ord.status,
+      customer_info: ord.customer,
+      items: ord.items,
+      subtotal: ord.subtotal,
+      shipping: ord.shipping,
+      total: ord.total,
+      payment_method: ord.paymentMethod
+    }));
+    
+    const { error } = await supabase.from('orders').upsert(formattedOrders, { onConflict: 'id' });
+    
+    if (error) throw error;
+    
+    console.log('✅ Saved', orders.length, 'orders successfully');
+  } catch (err) {
+    console.error('❌ Error saving orders:', err);
+    throw err;
+  }
+};
+
+export const saveStoredCategories = async (categories: GiftCategory[]) => {
+  if (!isSupabaseConfigured) {
+    console.error('❌ Supabase not configured!');
+    throw new Error('Supabase not configured');
+  }
+
+  console.log('💾 Saving', categories.length, 'categories to database...');
+
+  try {
+    const { error } = await supabase.from('categories').upsert(categories, { onConflict: 'id' });
+    
+    if (error) throw error;
+    
+    console.log('✅ Saved', categories.length, 'categories successfully');
+  } catch (err) {
+    console.error('❌ Error saving categories:', err);
+    throw err;
+  }
+};
+
+export const saveStoredGiftBoxes = async (boxes: GiftBoxStyle[]) => {
+  if (!isSupabaseConfigured) {
+    console.error('❌ Supabase not configured!');
+    throw new Error('Supabase not configured');
+  }
+
+  console.log('💾 Saving', boxes.length, 'gift boxes to database...');
+
+  try {
+    const { error } = await supabase.from('gift_boxes').upsert(boxes, { onConflict: 'id' });
+    
+    if (error) throw error;
+    
+    console.log('✅ Saved', boxes.length, 'gift boxes successfully');
+  } catch (err) {
+    console.error('❌ Error saving gift boxes:', err);
+    throw err;
+  }
+};
+
+// ============================================================================
+// SEED FUNCTION - Populate initial data
+// ============================================================================
+
+export const seedInitialData = async () => {
+  if (!isSupabaseConfigured) {
+    console.log('⚠️ Supabase not configured, skipping seed');
+    return;
+  }
+
+  try {
+    console.log('🌱 Checking if database needs seeding...');
+
+    // Check what data exists
+    const [packagesResult, itemsResult, categoriesResult, boxesResult] = await Promise.all([
+      supabase.from('prepared_packages').select('id').limit(1),
+      supabase.from('custom_box_options').select('id').limit(1),
+      supabase.from('categories').select('id').limit(1),
+      supabase.from('gift_boxes').select('id').limit(1)
+    ]);
+
+    let seeded = false;
+
+    // Seed packages if empty
+    if (!packagesResult.data || packagesResult.data.length === 0) {
+      console.log('🌱 Seeding packages...');
+      await saveStoredPackages(PREPARED_PACKAGES);
+      console.log('✅ Seeded', PREPARED_PACKAGES.length, 'packages');
+      seeded = true;
+    }
+
+    // Seed custom items if empty
+    if (!itemsResult.data || itemsResult.data.length === 0) {
+      console.log('🌱 Seeding custom items...');
+      await saveStoredCustomItems(CUSTOM_ITEMS);
+      console.log('✅ Seeded', CUSTOM_ITEMS.length, 'custom items');
+      seeded = true;
+    }
+
+    // Seed categories if empty
+    if (!categoriesResult.data || categoriesResult.data.length === 0) {
+      console.log('🌱 Seeding categories...');
+      await saveStoredCategories(DEFAULT_CATEGORIES);
+      console.log('✅ Seeded', DEFAULT_CATEGORIES.length, 'categories');
+      seeded = true;
+    }
+
+    // Seed gift boxes if empty
+    if (!boxesResult.data || boxesResult.data.length === 0) {
+      console.log('🌱 Seeding gift boxes...');
+      await saveStoredGiftBoxes(DEFAULT_GIFT_BOXES);
+      console.log('✅ Seeded', DEFAULT_GIFT_BOXES.length, 'gift boxes');
+      seeded = true;
+    }
+
+    if (seeded) {
+      console.log('🎉 Database seeding complete!');
+    } else {
+      console.log('✅ Database already populated');
+    }
+  } catch (err) {
+    console.error('❌ Error seeding database:', err);
+  }
+};

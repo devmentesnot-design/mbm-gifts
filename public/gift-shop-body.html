@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gift Shop — Body Section</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F3ECE0;
+    --paper: #FBF8F2;
+    --ink: #1F2B24;
+    --pine: #1F4C3F;
+    --pine-dark: #163830;
+    --wine: #8C2F4B;
+    --wine-dark: #6E2039;
+    --gold: #C89B3C;
+    --line: #E1D6C2;
+    --muted: #7A7166;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3,h4{ font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em; }
+
+  .wrap{ max-width: 1180px; margin: 0 auto; padding: 48px 24px 140px; }
+
+  /* ---------- Section intro ---------- */
+  .section-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom: 28px; flex-wrap: wrap; }
+  .eyebrow{ font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--wine); font-weight: 600; margin-bottom: 8px; display:block; }
+  .section-head h2{ font-size: clamp(28px, 4vw, 38px); }
+  .section-sub{ color: var(--muted); font-size: 15px; max-width: 380px; }
+
+  /* ---------- Mode toggle ---------- */
+  .mode-toggle{
+    display:inline-flex; background: var(--paper); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px; gap: 4px; margin-bottom: 22px;
+  }
+  .mode-toggle button{
+    border:none; background:transparent; font-family:'Inter'; font-weight:600; font-size: 14px;
+    padding: 10px 20px; border-radius: 999px; cursor:pointer; color: var(--muted);
+    transition: all .2s ease;
+  }
+  .mode-toggle button.active{ background: var(--pine); color: #fff; }
+
+  /* ---------- Filter bar (compact) ---------- */
+  .filter-bar{
+    display:flex; align-items:center; gap:10px; margin-bottom: 26px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    padding: 12px 0;
+  }
+  .chip-scroll{
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; flex:1;
+    -ms-overflow-style: none;
+  }
+  .chip-scroll::-webkit-scrollbar{ display:none; }
+  .chip{
+    flex:0 0 auto; font-size: 13px; font-weight:600; padding: 8px 16px;
+    border-radius: 999px; border: 1px solid var(--line); background: var(--paper);
+    color: var(--ink); cursor:pointer; white-space:nowrap; transition: all .15s ease;
+  }
+  .chip:hover{ border-color: var(--gold); }
+  .chip.active{ background: var(--wine); border-color: var(--wine); color:#fff; }
+
+  .sort-wrap{ position: relative; flex: 0 0 auto; }
+  .sort-btn{
+    display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600;
+    padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--paper); cursor:pointer; color:var(--ink);
+  }
+  .sort-menu{
+    position:absolute; right:0; top: calc(100% + 8px); background:#fff;
+    border:1px solid var(--line); border-radius:12px; box-shadow: 0 12px 28px rgba(31,43,36,0.12);
+    padding:6px; min-width:170px; display:none; z-index: 20;
+  }
+  .sort-menu.open{ display:block; }
+  .sort-menu button{
+    display:block; width:100%; text-align:left; border:none; background:none;
+    font-size:13px; padding: 9px 10px; border-radius:8px; cursor:pointer; color:var(--ink);
+  }
+  .sort-menu button:hover{ background: var(--bg); }
+
+  /* ---------- Packages grid ---------- */
+  .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+
+  .pkg-card{
+    background: var(--paper); border:1px solid var(--line); border-radius: 18px;
+    overflow:hidden; display:flex; flex-direction:column; transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .pkg-card:hover{ transform: translateY(-3px); box-shadow: 0 14px 30px rgba(31,43,36,0.10); }
+  .pkg-img{
+    height: 150px; background: linear-gradient(135deg, var(--pine), var(--pine-dark));
+    display:flex; align-items:center; justify-content:center; color: rgba(255,255,255,0.85);
+    font-size: 12px; letter-spacing: .08em; text-transform:uppercase; position:relative;
+  }
+  .pkg-badge{
+    position:absolute; top:10px; left:10px; background: var(--gold); color:#241a08;
+    font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px;
+  }
+  .pkg-body{ padding: 16px 18px 18px; display:flex; flex-direction:column; gap:8px; flex:1; }
+  .pkg-body h3{ font-size: 18px; }
+  .pkg-includes{ font-size: 12.5px; color: var(--muted); line-height:1.5; }
+  .pkg-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:10px; }
+  .price{ font-family:'Fraunces', serif; font-weight:600; font-size: 19px; color: var(--pine); }
+  .add-btn{
+    border:none; background: var(--wine); color:#fff; font-weight:600; font-size:13px;
+    padding: 9px 16px; border-radius: 999px; cursor:pointer; transition: background .15s ease;
+  }
+  .add-btn:hover{ background: var(--wine-dark); }
+  .add-btn.added{ background: var(--pine); }
+
+  /* ---------- Build-your-own ---------- */
+  #build-view{ display:none; }
+  .item-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; padding-bottom: 40px; }
+  .item-card{
+    background: var(--paper); border:1px solid var(--line); border-radius: 14px;
+    padding: 14px; display:flex; flex-direction:column; gap:10px;
+  }
+  .item-thumb{
+    height: 90px; border-radius:10px; background: var(--bg); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;
+  }
+  .item-name{ font-size: 14px; font-weight:600; }
+  .item-cat{ font-size: 11px; color: var(--muted); }
+  .item-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:4px; }
+  .item-price{ font-family:'Fraunces', serif; font-weight:600; color: var(--pine); font-size:15px; }
+
+  .stepper{ display:flex; align-items:center; gap:0; border:1px solid var(--line); border-radius:999px; overflow:hidden; }
+  .stepper button{
+    width:26px; height:26px; border:none; background:#fff; cursor:pointer; font-size:15px; color:var(--pine);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .stepper button:hover{ background: var(--bg); }
+  .stepper .qty{ width:22px; text-align:center; font-size:13px; font-weight:600; }
+
+  /* ---------- Floating gift-tag price summary (signature element) ---------- */
+  .tag-summary{
+    position: fixed; right: 24px; bottom: 24px; z-index: 50;
+    background: #EFE3C8;
+    border: 1px solid #D8C58E;
+    border-radius: 10px 10px 10px 26px;
+    box-shadow: 0 16px 34px rgba(31,43,36,0.22);
+    width: 232px;
+    padding: 16px 16px 14px 18px;
+    transform: rotate(-2deg);
+    transition: transform .25s ease;
+    font-family:'Inter';
+    display: none;
+  }
+  .tag-summary.visible{ display:block; }
+  .tag-summary:hover{ transform: rotate(0deg); }
+  .tag-hole{
+    position:absolute; left: 10px; top: 16px; width: 12px; height:12px; border-radius:50%;
+    background: var(--bg); border: 2px solid #B79D5D;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+  }
+  .tag-hole::after{
+    content:''; position:absolute; left:-10px; top:5px; width:18px; height:2px;
+    background: repeating-linear-gradient(90deg, #8C2F4B 0 3px, transparent 3px 6px);
+    transform: rotate(35deg);
+  }
+  .tag-summary .tag-title{
+    font-size: 10.5px; text-transform:uppercase; letter-spacing:.1em; color:#6E5B2B; font-weight:700;
+    margin-bottom: 4px; padding-left: 14px;
+  }
+  .tag-summary .tag-count{ font-size: 12px; color:#5A4C22; padding-left:14px; margin-bottom:6px; }
+  .tag-summary .tag-price{
+    font-family:'Fraunces', serif; font-weight:700; font-size: 26px; color: var(--pine-dark);
+    padding-left: 14px; line-height: 1;
+  }
+  .tag-checkout{
+    display:block; width:100%; margin-top:12px; border:none; background: var(--wine);
+    color:#fff; font-weight:700; font-size:13px; padding:10px; border-radius:8px; cursor:pointer;
+  }
+  .tag-checkout:hover{ background: var(--wine-dark); }
+  .tag-empty-hint{ font-size:11.5px; color:#7A6A38; padding-left:14px; }
+
+  @media (max-width: 620px){
+    .tag-summary{ left: 16px; right:16px; width:auto; bottom:16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Gifting, made simple</span>
+      <h2>Find the right gift</h2>
+      <p class="section-sub">Pick a ready-made package, or build your own box item by item.</p>
+    </div>
+  </div>
+
+  <div class="mode-toggle">
+    <button class="active" id="tab-pkg" onclick="setMode('pkg')">Ready-made packages</button>
+    <button id="tab-build" onclick="setMode('build')">Build your own</button>
+  </div>
+
+  <!-- Compact filter bar: horizontal chips + single sort dropdown, no sidebar -->
+  <div class="filter-bar">
+    <div class="chip-scroll" id="chip-scroll">
+      <button class="chip active" data-cat="all">All</button>
+      <button class="chip" data-cat="sweets">Chocolates &amp; Sweets</button>
+      <button class="chip" data-cat="home">Candles &amp; Home</button>
+      <button class="chip" data-cat="drink">Drinkware</button>
+      <button class="chip" data-cat="stationery">Stationery</button>
+      <button class="chip" data-cat="bath">Bath &amp; Body</button>
+    </div>
+    <div class="sort-wrap">
+      <button class="sort-btn" onclick="toggleSort()">Sort ▾</button>
+      <div class="sort-menu" id="sort-menu">
+        <button onclick="closeSort()">Popular</button>
+        <button onclick="closeSort()">Price: low to high</button>
+        <button onclick="closeSort()">Price: high to low</button>
+        <button onclick="closeSort()">Newest</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PACKAGES VIEW -->
+  <div id="pkg-view" class="grid">
+    <div class="pkg-card" data-cat="sweets">
+      <div class="pkg-img">Package photo<span class="pkg-badge">Best seller</span></div>
+      <div class="pkg-body">
+        <h3>The Sweet Tooth Box</h3>
+        <p class="pkg-includes">Truffle box, salted caramel bar, spiced hot cocoa, mini tote.</p>
+        <div class="pkg-foot">
+          <span class="price">$42</span>
+          <button class="add-btn" onclick="addPkg(this)">Add to cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pkg-card" data-cat="home">
+      <div class="pkg-img">Package photo</div>
+      <div class="pkg-body">
+        <h3>Cozy Evening Set</h3>
+        <p class="pkg-includes">Soy candle, wool throw, herbal tea tin, matches.</p>
+        <div class="pkg-foot">
+          <span class="price">$58</span>
+          <button class="add-btn" onclick="addPkg(this)">Add to cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pkg-card" data-cat="bath">
+      <div class="pkg-img">Package photo<span class="pkg-badge">New</span></div>
+      <div class="pkg-body">
+        <h3>Self-Care Sunday</h3>
+        <p class="pkg-includes">Bath soak, face mask duo, candle, silk scrunchie.</p>
+        <div class="pkg-foot">
+          <span class="price">$49</span>
+          <button class="add-btn" onclick="addPkg(this)">Add to cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pkg-card" data-cat="drink">
+      <div class="pkg-img">Package photo</div>
+      <div class="pkg-body">
+        <h3>Morning Ritual Set</h3>
+        <p class="pkg-includes">Ceramic mug, single-origin beans, honey dipper.</p>
+        <div class="pkg-foot">
+          <span class="price">$36</span>
+          <button class="add-btn" onclick="addPkg(this)">Add to cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pkg-card" data-cat="stationery">
+      <div class="pkg-img">Package photo</div>
+      <div class="pkg-body">
+        <h3>Write it Down Kit</h3>
+        <p class="pkg-includes">Leather journal, fountain pen, wax seal set.</p>
+        <div class="pkg-foot">
+          <span class="price">$54</span>
+          <button class="add-btn" onclick="addPkg(this)">Add to cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pkg-card" data-cat="sweets">
+      <div class="pkg-img">Package photo</div>
+      <div class="pkg-body">
+        <h3>New Home Essentials</h3>
+        <p class="pkg-includes">Candle, cutting board, jam trio, tea towel.</p>
+        <div class="pkg-foot">
+          <span class="price">$64</span>
+          <button class="add-btn" onclick="addPkg(this)">Add to cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUILD YOUR OWN VIEW -->
+  <div id="build-view" class="item-grid"></div>
+
+</div>
+
+<!-- Signature element: floating gift-tag live price summary (build-your-own mode) -->
+<div class="tag-summary" id="tag-summary">
+  <div class="tag-hole"></div>
+  <div class="tag-title">Your gift box</div>
+  <div class="tag-count" id="tag-count">0 items</div>
+  <div class="tag-price" id="tag-price">$0.00</div>
+  <div class="tag-empty-hint" id="tag-hint">Add items to start building</div>
+  <button class="tag-checkout" id="tag-checkout" style="display:none;" onclick="alert('Proceeds to checkout')">Add box to cart</button>
+</div>
+
+<script>
+  const items = [
+    {id:1, name:'Dark chocolate truffles', cat:'sweets', price:14},
+    {id:2, name:'Salted caramel bar', cat:'sweets', price:6},
+    {id:3, name:'Spiced hot cocoa tin', cat:'sweets', price:11},
+    {id:4, name:'Soy wax candle', cat:'home', price:18},
+    {id:5, name:'Linen tea towel', cat:'home', price:9},
+    {id:6, name:'Ceramic mug', cat:'drink', price:16},
+    {id:7, name:'Single-origin coffee bag', cat:'drink', price:13},
+    {id:8, name:'Leather-bound journal', cat:'stationery', price:22},
+    {id:9, name:'Wax seal stamp set', cat:'stationery', price:15},
+    {id:10, name:'Bath soak jar', cat:'bath', price:12},
+    {id:11, name:'Face mask duo', cat:'bath', price:17},
+    {id:12, name:'Silk scrunchie', cat:'bath', price:7},
+  ];
+
+  const cart = {}; // itemId -> qty
+  let activeCat = 'all';
+
+  function renderItems(){
+    const grid = document.getElementById('build-view');
+    grid.innerHTML = '';
+    items
+      .filter(it => activeCat === 'all' || it.cat === activeCat)
+      .forEach(it => {
+        const qty = cart[it.id] || 0;
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+          <div class="item-thumb">Photo</div>
+          <div>
+            <div class="item-name">${it.name}</div>
+            <div class="item-cat">${labelFor(it.cat)}</div>
+          </div>
+          <div class="item-foot">
+            <span class="item-price">$${it.price}</span>
+            <div class="stepper">
+              <button onclick="changeQty(${it.id}, -1)">–</button>
+              <span class="qty" id="qty-${it.id}">${qty}</span>
+              <button onclick="changeQty(${it.id}, 1)">+</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+  }
+
+  function labelFor(cat){
+    return {sweets:'Chocolates & Sweets', home:'Candles & Home', drink:'Drinkware', stationery:'Stationery', bath:'Bath & Body'}[cat] || cat;
+  }
+
+  function changeQty(id, delta){
+    const current = cart[id] || 0;
+    const next = Math.max(0, current + delta);
+    if(next === 0){ delete cart[id]; } else { cart[id] = next; }
+    document.getElementById(`qty-${id}`).textContent = next;
+    updateSummary();
+  }
+
+  function updateSummary(){
+    let count = 0, total = 0;
+    Object.entries(cart).forEach(([id, qty]) => {
+      const item = items.find(i => i.id == id);
+      count += qty;
+      total += qty * item.price;
+    });
+    document.getElementById('tag-count').textContent = `${count} item${count === 1 ? '' : 's'}`;
+    document.getElementById('tag-price').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('tag-hint').style.display = count === 0 ? 'block' : 'none';
+    document.getElementById('tag-checkout').style.display = count === 0 ? 'none' : 'block';
+  }
+
+  function setMode(mode){
+    document.getElementById('pkg-view').style.display = mode === 'pkg' ? 'grid' : 'none';
+    document.getElementById('build-view').style.display = mode === 'build' ? 'grid' : 'none';
+    document.getElementById('tab-pkg').classList.toggle('active', mode === 'pkg');
+    document.getElementById('tab-build').classList.toggle('active', mode === 'build');
+    document.getElementById('tag-summary').classList.toggle('visible', mode === 'build');
+    if(mode === 'build') renderItems();
+  }
+
+  document.getElementById('chip-scroll').addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if(!chip) return;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    activeCat = chip.dataset.cat;
+
+    document.querySelectorAll('.pkg-card').forEach(card => {
+      card.style.display = (activeCat === 'all' || card.dataset.cat === activeCat) ? 'flex' : 'none';
+    });
+    if(document.getElementById('build-view').style.display !== 'none'){
+      renderItems();
+    }
+  });
+
+  function toggleSort(){ document.getElementById('sort-menu').classList.toggle('open'); }
+  function closeSort(){ document.getElementById('sort-menu').classList.remove('open'); }
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.sort-wrap')) closeSort();
+  });
+
+  function addPkg(btn){
+    btn.textContent = 'Added ✓';
+    btn.classList.add('added');
+    setTimeout(() => { btn.textContent = 'Add to cart'; btn.classList.remove('added'); }, 1400);
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "MBM Gifts",
+  "description": "MBM Gifts application imported from GitHub.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

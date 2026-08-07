@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gift Shop — Cart &amp; Order Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3ECE0; --paper:#FBF8F2; --ink:#1F2B24; --pine:#1F4C3F; --pine-dark:#163830;
+    --wine:#8C2F4B; --wine-dark:#6E2039; --gold:#C89B3C; --line:#E1D6C2; --muted:#7A7166;
+    --green-ok:#2E7D5B; --amber:#B8862F; --red:#B23A3A;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ font-family:'Inter', sans-serif; color:var(--ink); background:var(--bg); }
+  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em; }
+  .wrap{ max-width:1080px; margin:0 auto; padding:36px 20px 100px; }
+
+  .page-toggle{ display:inline-flex; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px; gap:4px; margin-bottom:24px; }
+  .page-toggle button{ border:none; background:transparent; font-weight:600; font-size:13px; padding:9px 18px; border-radius:999px; cursor:pointer; color:var(--muted); }
+  .page-toggle button.active{ background:var(--pine); color:#fff; }
+  .page{ display:none; } .page.active{ display:block; }
+
+  /* ================= CART PAGE ================= */
+  .cart-layout{ display:grid; grid-template-columns: 1fr 340px; gap:28px; align-items:start; }
+  .cart-title{ font-size:26px; margin-bottom:18px; }
+
+  .cart-item{ background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:16px; display:flex; gap:14px; margin-bottom:14px; }
+  .cart-thumb{ width:64px; height:64px; border-radius:10px; background:var(--bg); border:1px solid var(--line); flex:0 0 auto; }
+  .cart-item-body{ flex:1; min-width:0; }
+  .cart-item-top{ display:flex; justify-content:space-between; gap:10px; }
+  .cart-item-name{ font-size:15px; font-weight:600; }
+  .cart-item-type{ font-size:11.5px; color:var(--muted); margin-top:2px; }
+  .cart-item-line{ font-family:'Fraunces'; font-weight:600; color:var(--pine); font-size:15px; white-space:nowrap; }
+  .cart-item-sub{ font-size:12px; color:var(--muted); margin-top:6px; }
+  .contents-toggle{ font-size:11.5px; color:var(--wine); font-weight:600; cursor:pointer; margin-top:6px; display:inline-block; }
+  .contents-list{ display:none; font-size:12px; color:var(--muted); margin-top:8px; padding-top:8px; border-top:1px dashed var(--line); line-height:1.7; }
+  .contents-list.open{ display:block; }
+  .cart-item-actions{ display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+  .stepper{ display:flex; align-items:center; border:1px solid var(--line); border-radius:999px; overflow:hidden; }
+  .stepper button{ width:24px; height:24px; border:none; background:#fff; cursor:pointer; color:var(--pine); font-size:14px; }
+  .stepper .qty{ width:20px; text-align:center; font-size:12.5px; font-weight:600; }
+  .remove-link{ font-size:11.5px; color:var(--red); font-weight:600; cursor:pointer; background:none; border:none; }
+
+  .section-block{ background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-top:18px; }
+  .section-block h3{ font-size:14.5px; margin-bottom:4px; }
+  .section-block .hint{ font-size:12px; color:var(--muted); margin-bottom:14px; }
+
+  /* gift wrap tiers */
+  .wrap-tiers{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .wrap-tier{ border:1.5px solid var(--line); border-radius:12px; padding:12px 10px; cursor:pointer; text-align:center; background:#fff; }
+  .wrap-tier.selected{ border-color:var(--wine); background:#FBF0F2; }
+  .wrap-tier .swatch{ width:34px; height:34px; border-radius:8px; margin:0 auto 8px; background:var(--bg); border:1px solid var(--line); }
+  .wrap-tier .t-name{ font-size:12px; font-weight:700; }
+  .wrap-tier .t-price{ font-size:11.5px; color:var(--muted); margin-top:2px; }
+
+  /* letter / gift note */
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+  .field label{ display:block; font-size:11.5px; font-weight:600; color:var(--muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:.04em; }
+  .field input, .field textarea{ width:100%; border:1px solid var(--line); border-radius:8px; padding:9px 11px; font-family:'Inter'; font-size:13px; background:#fff; color:var(--ink); }
+  .field textarea{ resize:vertical; min-height:80px; }
+  .char-count{ font-size:11px; color:var(--muted); text-align:right; margin-top:4px; }
+
+  .delivery-options{ display:flex; gap:10px; }
+  .radio-card{ flex:1; border:1.5px solid var(--line); border-radius:10px; padding:11px 12px; cursor:pointer; font-size:12.5px; display:flex; gap:8px; align-items:flex-start; background:#fff; }
+  .radio-card.selected{ border-color:var(--pine); background:#EEF4F0; }
+  .radio-card .r-title{ font-weight:700; margin-bottom:2px; }
+  .radio-card .r-sub{ color:var(--muted); font-size:11.5px; }
+
+  /* summary */
+  .summary-box{ background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:18px 20px; position:sticky; top:20px; }
+  .summary-box h3{ font-size:15px; margin-bottom:14px; }
+  .summary-row{ display:flex; justify-content:space-between; font-size:13px; padding:7px 0; color:var(--ink); }
+  .summary-row.muted{ color:var(--muted); }
+  .summary-divider{ border-top:1px solid var(--line); margin:8px 0; }
+  .summary-total{ display:flex; justify-content:space-between; font-family:'Fraunces'; font-weight:700; font-size:19px; color:var(--pine); padding-top:6px; }
+  .checkout-btn{ width:100%; margin-top:16px; background:var(--wine); color:#fff; border:none; font-weight:700; font-size:14px; padding:13px; border-radius:10px; cursor:pointer; }
+  .checkout-btn:hover{ background:var(--wine-dark); }
+  .secure-note{ font-size:11px; color:var(--muted); text-align:center; margin-top:10px; }
+
+  /* ================= ORDER STATUS PAGE ================= */
+  .status-layout{ max-width:640px; margin:0 auto; }
+  .status-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .order-id{ font-size:13px; color:var(--muted); }
+  .status-badge{ font-size:12px; font-weight:700; padding:6px 14px; border-radius:999px; }
+  .status-badge.not-paid{ background:#FBE9E9; color:var(--red); }
+  .status-badge.awaiting{ background:#F1EADD; color:var(--amber); }
+  .status-badge.paid{ background:#E4F1EA; color:var(--green-ok); }
+
+  .timeline{ display:flex; margin:26px 0; }
+  .tl-step{ flex:1; text-align:center; position:relative; }
+  .tl-step .dot{ width:26px; height:26px; border-radius:50%; background:#E7DFCE; border:2px solid var(--line); margin:0 auto 8px; display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--muted); position:relative; z-index:2; }
+  .tl-step.done .dot{ background:var(--pine); border-color:var(--pine); color:#fff; }
+  .tl-step.current .dot{ background:var(--gold); border-color:var(--gold); color:#241a08; }
+  .tl-step .tl-label{ font-size:11px; color:var(--muted); font-weight:600; }
+  .tl-step.done .tl-label, .tl-step.current .tl-label{ color:var(--ink); }
+  .tl-line{ position:absolute; top:13px; left:-50%; width:100%; height:2px; background:var(--line); z-index:1; }
+  .tl-step.done .tl-line{ background:var(--pine); }
+  .tl-step:first-child .tl-line{ display:none; }
+
+  .callout{ background:#FBF0F2; border:1px solid #EBC9D2; border-radius:12px; padding:16px 18px; margin-bottom:18px; display:flex; gap:12px; }
+  .callout .icon{ font-size:20px; }
+  .callout h4{ font-size:13.5px; margin-bottom:4px; }
+  .callout p{ font-size:12.5px; color:var(--muted); line-height:1.6; }
+
+  .upload-box{ border:1.5px dashed var(--line); border-radius:12px; padding:22px; text-align:center; background:var(--paper); margin-bottom:18px; }
+  .upload-box .up-icon{ font-size:22px; margin-bottom:8px; }
+  .upload-box p{ font-size:12.5px; color:var(--muted); margin-bottom:10px; }
+  .upload-btn{ background:var(--pine); color:#fff; border:none; font-weight:600; font-size:12.5px; padding:9px 18px; border-radius:8px; cursor:pointer; }
+
+  .order-recap{ background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
+  .order-recap h4{ font-size:13.5px; margin-bottom:12px; }
+  .recap-row{ display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid var(--line); }
+  .recap-row:last-of-type{ border-bottom:none; }
+  .recap-total{ display:flex; justify-content:space-between; font-family:'Fraunces'; font-weight:700; font-size:16px; color:var(--pine); padding-top:10px; }
+
+  .demo-controls{ text-align:center; margin-top:18px; }
+  .demo-controls button{ font-size:12px; border:1px solid var(--line); background:#fff; padding:8px 14px; border-radius:8px; cursor:pointer; margin:0 4px; }
+
+  @media (max-width: 800px){
+    .cart-layout{ grid-template-columns:1fr; }
+    .wrap-tiers{ grid-template-columns:repeat(2,1fr); }
+    .field-row{ grid-template-columns:1fr; }
+    .delivery-options{ flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="page-toggle">
+    <button class="active" onclick="setPage('cart', this)">Cart</button>
+    <button onclick="setPage('status', this)">Order status</button>
+  </div>
+
+  <!-- ================= CART PAGE ================= -->
+  <div class="page active" id="page-cart">
+    <h2 class="cart-title">Your cart</h2>
+
+    <div class="cart-layout">
+      <div>
+        <!-- Item 1: package -->
+        <div class="cart-item">
+          <div class="cart-thumb"></div>
+          <div class="cart-item-body">
+            <div class="cart-item-top">
+              <div>
+                <div class="cart-item-name">Sweet Tooth Box</div>
+                <div class="cart-item-type">Ready-made package</div>
+              </div>
+              <div class="cart-item-line">$42.00</div>
+            </div>
+            <span class="contents-toggle" onclick="toggleContents(this)">What's inside ▾</span>
+            <div class="contents-list">Truffle box · Salted caramel bar · Spiced hot cocoa · Mini tote</div>
+            <div class="cart-item-actions">
+              <div class="stepper"><button>–</button><span class="qty">1</span><button>+</button></div>
+              <button class="remove-link">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2: custom box -->
+        <div class="cart-item">
+          <div class="cart-thumb"></div>
+          <div class="cart-item-body">
+            <div class="cart-item-top">
+              <div>
+                <div class="cart-item-name">Custom gift box</div>
+                <div class="cart-item-type">Build your own — 3 items</div>
+              </div>
+              <div class="cart-item-line">$47.00</div>
+            </div>
+            <span class="contents-toggle" onclick="toggleContents(this)">What's inside ▾</span>
+            <div class="contents-list">Soy wax candle ($18) · Ceramic mug ($16) · Bath soak jar ($12) — ×1 each</div>
+            <div class="cart-item-actions">
+              <div class="stepper"><button>–</button><span class="qty">1</span><button>+</button></div>
+              <button class="remove-link">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gift wrap tiers -->
+        <div class="section-block">
+          <h3>How should we wrap it?</h3>
+          <div class="hint">Applies to this order. Choose a style — price is added to your total.</div>
+          <div class="wrap-tiers">
+            <div class="wrap-tier" onclick="selectTier(this)"><div class="swatch"></div><div class="t-name">No wrap</div><div class="t-price">Free</div></div>
+            <div class="wrap-tier selected" onclick="selectTier(this)"><div class="swatch"></div><div class="t-name">Classic</div><div class="t-price">+$3</div></div>
+            <div class="wrap-tier" onclick="selectTier(this)"><div class="swatch"></div><div class="t-name">Premium box &amp; ribbon</div><div class="t-price">+$7</div></div>
+            <div class="wrap-tier" onclick="selectTier(this)"><div class="swatch"></div><div class="t-name">Luxury hamper</div><div class="t-price">+$12</div></div>
+          </div>
+        </div>
+
+        <!-- Gift note / letter -->
+        <div class="section-block">
+          <h3>Add a gift note</h3>
+          <div class="hint">Optional — we'll print it on a card and include it in the package.</div>
+          <div class="field-row">
+            <div class="field"><label>To</label><input type="text" placeholder="Recipient's name"></div>
+            <div class="field"><label>From</label><input type="text" placeholder="Your name"></div>
+          </div>
+          <div class="field">
+            <label>Message</label>
+            <textarea maxlength="200" placeholder="Write your message…"></textarea>
+            <div class="char-count">0 / 200</div>
+          </div>
+        </div>
+
+        <!-- Delivery -->
+        <div class="section-block">
+          <h3>Delivery</h3>
+          <div class="hint">Who's receiving this?</div>
+          <div class="delivery-options">
+            <div class="radio-card selected" onclick="selectRadio(this)">
+              <div><div class="r-title">Ship to recipient</div><div class="r-sub">Sent directly, prices hidden on the packing slip</div></div>
+            </div>
+            <div class="radio-card" onclick="selectRadio(this)">
+              <div><div class="r-title">Ship to me</div><div class="r-sub">I'll deliver it myself</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="summary-box">
+        <h3>Order summary</h3>
+        <div class="summary-row"><span>Subtotal (2 items)</span><span>$89.00</span></div>
+        <div class="summary-row"><span>Gift wrap — Classic</span><span>$3.00</span></div>
+        <div class="summary-row muted"><span>Delivery</span><span>Calculated at checkout</span></div>
+        <div class="summary-divider"></div>
+        <div class="summary-total"><span>Total</span><span>$92.00</span></div>
+        <button class="checkout-btn" onclick="setPage('status', document.querySelectorAll('.page-toggle button')[1])">Place order</button>
+        <div class="secure-note">We'll confirm your order by phone before it ships.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ORDER STATUS PAGE ================= -->
+  <div class="page" id="page-status">
+    <div class="status-layout">
+      <div class="status-head">
+        <div>
+          <h2 style="font-size:22px;">Order #1042</h2>
+          <div class="order-id">Placed Aug 3, 2026 · Maya Tesfaye</div>
+        </div>
+        <span class="status-badge not-paid" id="status-badge">Not paid</span>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-step done"><div class="tl-line"></div><div class="dot">✓</div><div class="tl-label">Order placed</div></div>
+        <div class="tl-step current" id="tl-2"><div class="tl-line"></div><div class="dot">2</div><div class="tl-label">Confirm &amp; pay</div></div>
+        <div class="tl-step" id="tl-3"><div class="tl-line"></div><div class="dot">3</div><div class="tl-label">Preparing</div></div>
+        <div class="tl-step" id="tl-4"><div class="tl-line"></div><div class="dot">4</div><div class="tl-label">Delivered</div></div>
+      </div>
+
+      <div class="callout">
+        <div class="icon">📞</div>
+        <div>
+          <h4>We'll call you shortly</h4>
+          <p>Our team will call you to confirm the order details and delivery address. Once confirmed, complete payment and upload your payment screenshot below.</p>
+        </div>
+      </div>
+
+      <div class="upload-box">
+        <div class="up-icon">🧾</div>
+        <p>Sent the payment? Upload a screenshot of the transaction so we can confirm it.</p>
+        <button class="upload-btn" onclick="markPaid()">Upload payment screenshot</button>
+      </div>
+
+      <div class="order-recap">
+        <h4>Order details</h4>
+        <div class="recap-row"><span>Sweet Tooth Box × 1</span><span>$42.00</span></div>
+        <div class="recap-row"><span>Custom gift box (3 items) × 1</span><span>$47.00</span></div>
+        <div class="recap-row"><span>Gift wrap — Classic</span><span>$3.00</span></div>
+        <div class="recap-total"><span>Total</span><span>$92.00</span></div>
+      </div>
+
+      <div class="demo-controls">
+        <em style="font-size:11px; color:var(--muted);">(Demo controls — not part of the real UI)</em><br>
+        <button onclick="resetStatus()">Reset to Not paid</button>
+        <button onclick="markPaid()">Simulate: mark Paid</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function setPage(id, el){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.querySelectorAll('.page-toggle button').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function toggleContents(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.textContent = el.nextElementSibling.classList.contains('open') ? "What's inside ▴" : "What's inside ▾";
+  }
+  function selectTier(el){
+    document.querySelectorAll('.wrap-tier').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+  function selectRadio(el){
+    el.parentElement.querySelectorAll('.radio-card').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+  function markPaid(){
+    const badge = document.getElementById('status-badge');
+    badge.textContent = 'Paid';
+    badge.className = 'status-badge paid';
+    document.getElementById('tl-2').classList.remove('current');
+    document.getElementById('tl-2').classList.add('done');
+    document.getElementById('tl-2').querySelector('.dot').textContent = '✓';
+    document.getElementById('tl-3').classList.add('current');
+  }
+  function resetStatus(){
+    const badge = document.getElementById('status-badge');
+    badge.textContent = 'Not paid';
+    badge.className = 'status-badge not-paid';
+    document.getElementById('tl-2').classList.add('current');
+    document.getElementById('tl-2').classList.remove('done');
+    document.getElementById('tl-2').querySelector('.dot').textContent = '2';
+    document.getElementById('tl-3').classList.remove('current');
+  }
+</script>
+</body>
+</html>
