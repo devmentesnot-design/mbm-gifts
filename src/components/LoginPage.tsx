@@ -22,6 +22,31 @@ export const LoginPage: React.FC = () => {
 
   const [role, setRole] = useState<'customer' | 'admin'>('customer');
 
+  React.useEffect(() => {
+    const googleClientId = (import.meta as any).env.VITE_GOOGLE_CLIENT_ID;
+    if (googleClientId && (window as any).google?.accounts?.id) {
+      try {
+        (window as any).google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: handleGoogleCredentialResponse,
+        });
+
+        const btnContainer = document.getElementById('google-official-btn');
+        if (btnContainer) {
+          (window as any).google.accounts.id.renderButton(btnContainer, {
+            theme: 'outline',
+            size: 'large',
+            width: btnContainer.clientWidth || 320,
+            text: 'continue_with',
+            shape: 'rectangular',
+          });
+        }
+      } catch (e) {
+        console.warn('Google Identity Services initialization warning:', e);
+      }
+    }
+  }, []);
+
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -99,20 +124,69 @@ export const LoginPage: React.FC = () => {
     window.location.href = '/admin';
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleCredentialResponse = async (response: any) => {
     setLoadingGoogle(true);
     setError('');
 
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      if (!response?.credential) {
+        throw new Error('No credential received from Google.');
+      }
+
+      // Authenticate with Supabase using the Google ID Token
+      const { data, error: idTokenErr } = await supabase.auth.signInWithIdToken({
         provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}${redirectPath}`,
-        },
+        token: response.credential,
       });
 
-      if (error) {
-        setError(error.message);
+      if (idTokenErr) {
+        setError(idTokenErr.message);
+      } else if (data?.user) {
+        localStorage.setItem(`mbm_user_role_${data.user.id}`, role);
+        localStorage.setItem('mbm_global_role', role);
+        const targetUrl = role === 'admin' ? '/admin' : (redirectPath === '/login' ? '/' : redirectPath);
+        window.location.href = targetUrl;
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Google sign-in failed. Please try again.');
+    } finally {
+      setLoadingGoogle(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoadingGoogle(true);
+    setError('');
+
+    const googleClientId = (import.meta as any).env.VITE_GOOGLE_CLIENT_ID;
+
+    try {
+      if (googleClientId && (window as any).google?.accounts?.id) {
+        // Initialize Google Identity Services with client_id
+        (window as any).google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: handleGoogleCredentialResponse,
+        });
+
+        // Trigger Google One-Tap / Sign-In prompt
+        (window as any).google.accounts.id.prompt((notification: any) => {
+          if (notification.isNotDisplayed()) {
+            // If One-Tap is suppressed by browser policy, fallback to OAuth or show instruction
+            console.log('Google One Tap prompt suppressed:', notification.getNotDisplayedReason());
+          }
+        });
+      } else {
+        // Fallback to standard Supabase OAuth handler
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${window.location.origin}${redirectPath}`,
+          },
+        });
+
+        if (error) {
+          setError(error.message);
+        }
       }
     } catch (err: any) {
       setError(err?.message || 'Google sign-in is currently unavailable. Please sign in with email.');
