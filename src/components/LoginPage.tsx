@@ -141,46 +141,33 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setLoadingGoogle(true);
-    setError('');
-
+  React.useEffect(() => {
     const googleClientId = (import.meta as any).env.VITE_GOOGLE_CLIENT_ID;
+    if (googleClientId && (window as any).google?.accounts?.id) {
+      generateNoncePair().then(({ rawNonce, hashedNonce }) => {
+        try {
+          (window as any).google.accounts.id.initialize({
+            client_id: googleClientId,
+            nonce: hashedNonce,
+            callback: (response: any) => handleGoogleCredentialResponse(response, rawNonce),
+          });
 
-    try {
-      if (googleClientId && (window as any).google?.accounts?.id) {
-        const { rawNonce, hashedNonce } = await generateNoncePair();
-
-        (window as any).google.accounts.id.initialize({
-          client_id: googleClientId,
-          nonce: hashedNonce,
-          callback: (response: any) => handleGoogleCredentialResponse(response, rawNonce),
-          auto_select: false,
-        });
-
-        (window as any).google.accounts.id.prompt((notification: any) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            setLoadingGoogle(false);
+          const btnContainer = document.getElementById('google-official-btn');
+          if (btnContainer) {
+            (window as any).google.accounts.id.renderButton(btnContainer, {
+              theme: 'outline',
+              size: 'large',
+              text: 'continue_with',
+              shape: 'rectangular',
+              width: btnContainer.clientWidth || 384
+            });
           }
-        });
-      } else {
-        // Fallback to standard Supabase OAuth handler
-        const { error: oauthError } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: `${window.location.origin}${redirectPath}`,
-          },
-        });
-
-        if (oauthError) {
-          setError(oauthError.message);
+        } catch (e) {
+          console.warn('Google Identity Services initialization warning:', e);
         }
-      }
-    } catch (err: any) {
-      setError(err?.message || 'Google sign-in is currently unavailable. Please sign in with email.');
-      setLoadingGoogle(false);
+      });
     }
-  };
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#1f0305] flex font-inter text-white">
@@ -274,23 +261,15 @@ export const LoginPage: React.FC = () => {
 
           <div className="space-y-5">
             {/* Google OAuth Button */}
-            <button
-              onClick={handleGoogleLogin}
-              disabled={loadingGoogle || loading}
-              className="w-full bg-white text-gray-900 hover:bg-gray-100 font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-3 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-xs uppercase tracking-wider"
-            >
-              {loadingGoogle ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.66 15.63 16.88 16.79 15.7 17.58V20.34H19.26C21.34 18.42 22.56 15.6 22.56 12.25Z" fill="#4285F4" />
-                  <path d="M12 23C14.97 23 17.46 22.02 19.26 20.34L15.7 17.58C14.73 18.23 13.48 18.63 12 18.63C9.14 18.63 6.71 16.7 5.84 14.1H2.17V16.94C3.98 20.53 7.7 23 12 23Z" fill="#34A853" />
-                  <path d="M5.84 14.1C5.62 13.45 5.49 12.74 5.49 12C5.49 11.26 5.62 10.55 5.84 9.9V7.06H2.17C1.43 8.55 1 10.23 1 12C1 13.77 1.43 15.45 2.17 16.94L5.84 14.1Z" fill="#FBBC05" />
-                  <path d="M12 5.38C13.62 5.38 15.07 5.94 16.22 7.03L19.34 3.91C17.46 2.16 14.97 1 12 1C7.7 1 3.98 3.47 2.17 7.06L5.84 9.9C6.71 7.3 9.14 5.38 12 5.38Z" fill="#EA4335" />
-                </svg>
+            <div className="relative w-full">
+              <div id="google-official-btn" className="w-full flex justify-center bg-white rounded-lg overflow-hidden [&>div]:w-full"></div>
+              {loadingGoogle && (
+                <div className="absolute inset-0 bg-white text-gray-900 font-bold flex items-center justify-center gap-3 rounded-lg z-10 shadow-lg">
+                  <Loader2 className="w-4 h-4 animate-spin text-gray-900" />
+                  <span className="text-xs uppercase tracking-wider">Connecting...</span>
+                </div>
               )}
-              <span>Continue with Google</span>
-            </button>
+            </div>
 
             <div className="relative flex items-center py-1">
               <div className="flex-grow border-t border-white/10"></div>
