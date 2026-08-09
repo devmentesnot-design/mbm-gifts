@@ -145,21 +145,39 @@ export const LoginPage: React.FC = () => {
     setLoadingGoogle(true);
     setError('');
 
-    try {
-      // Full professional page redirect via Supabase OAuth (displays MBM GIFTS logo & name)
-      const { error: oauthError } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}${redirectPath}`,
-        },
-      });
+    const googleClientId = (import.meta as any).env.VITE_GOOGLE_CLIENT_ID;
 
-      if (oauthError) {
-        setError(oauthError.message);
+    try {
+      if (googleClientId && (window as any).google?.accounts?.id) {
+        const { rawNonce, hashedNonce } = await generateNoncePair();
+
+        (window as any).google.accounts.id.initialize({
+          client_id: googleClientId,
+          nonce: hashedNonce,
+          callback: (response: any) => handleGoogleCredentialResponse(response, rawNonce),
+          auto_select: false,
+        });
+
+        (window as any).google.accounts.id.prompt((notification: any) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            setLoadingGoogle(false);
+          }
+        });
+      } else {
+        // Fallback to standard Supabase OAuth handler
+        const { error: oauthError } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${window.location.origin}${redirectPath}`,
+          },
+        });
+
+        if (oauthError) {
+          setError(oauthError.message);
+        }
       }
     } catch (err: any) {
       setError(err?.message || 'Google sign-in is currently unavailable. Please sign in with email.');
-    } finally {
       setLoadingGoogle(false);
     }
   };
