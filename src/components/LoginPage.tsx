@@ -124,7 +124,18 @@ export const LoginPage: React.FC = () => {
     window.location.href = '/admin';
   };
 
-  const handleGoogleCredentialResponse = async (response: any) => {
+  // Helper to generate hashed nonce for Google ID token verification
+  const generateNoncePair = async (): Promise<{ rawNonce: string; hashedNonce: string }> => {
+    const rawNonce = crypto.randomUUID();
+    const encoder = new TextEncoder();
+    const data = encoder.encode(rawNonce);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashedNonce = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    return { rawNonce, hashedNonce };
+  };
+
+  const handleGoogleCredentialResponse = async (response: any, rawNonce?: string) => {
     setLoadingGoogle(true);
     setError('');
 
@@ -133,10 +144,11 @@ export const LoginPage: React.FC = () => {
         throw new Error('No credential received from Google.');
       }
 
-      // Authenticate with Supabase using the Google ID Token
+      // Authenticate with Supabase using the Google ID Token & matching raw nonce
       const { data, error: idTokenErr } = await supabase.auth.signInWithIdToken({
         provider: 'google',
         token: response.credential,
+        nonce: rawNonce,
       });
 
       if (idTokenErr) {
@@ -162,30 +174,27 @@ export const LoginPage: React.FC = () => {
 
     try {
       if (googleClientId && (window as any).google?.accounts?.id) {
-        // Initialize Google Identity Services with client_id
+        const { rawNonce, hashedNonce } = await generateNoncePair();
+
         (window as any).google.accounts.id.initialize({
           client_id: googleClientId,
-          callback: handleGoogleCredentialResponse,
+          nonce: hashedNonce,
+          callback: (response: any) => handleGoogleCredentialResponse(response, rawNonce),
         });
 
-        // Trigger Google One-Tap / Sign-In prompt
-        (window as any).google.accounts.id.prompt((notification: any) => {
-          if (notification.isNotDisplayed()) {
-            // If One-Tap is suppressed by browser policy, fallback to OAuth or show instruction
-            console.log('Google One Tap prompt suppressed:', notification.getNotDisplayedReason());
-          }
-        });
+        // Trigger Google ID prompt programmatically without floating box
+        (window as any).google.accounts.id.prompt();
       } else {
-        // Fallback to standard Supabase OAuth handler
-        const { error } = await supabase.auth.signInWithOAuth({
+        // Full professional page redirect via Supabase OAuth
+        const { error: oauthError } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
             redirectTo: `${window.location.origin}${redirectPath}`,
           },
         });
 
-        if (error) {
-          setError(error.message);
+        if (oauthError) {
+          setError(oauthError.message);
         }
       }
     } catch (err: any) {
