@@ -22,31 +22,6 @@ export const LoginPage: React.FC = () => {
 
   const [role, setRole] = useState<'customer' | 'admin'>('customer');
 
-  React.useEffect(() => {
-    const googleClientId = (import.meta as any).env.VITE_GOOGLE_CLIENT_ID;
-    if (googleClientId && (window as any).google?.accounts?.id) {
-      try {
-        (window as any).google.accounts.id.initialize({
-          client_id: googleClientId,
-          callback: handleGoogleCredentialResponse,
-        });
-
-        const btnContainer = document.getElementById('google-official-btn');
-        if (btnContainer) {
-          (window as any).google.accounts.id.renderButton(btnContainer, {
-            theme: 'outline',
-            size: 'large',
-            width: btnContainer.clientWidth || 320,
-            text: 'continue_with',
-            shape: 'rectangular',
-          });
-        }
-      } catch (e) {
-        console.warn('Google Identity Services initialization warning:', e);
-      }
-    }
-  }, []);
-
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -170,32 +145,17 @@ export const LoginPage: React.FC = () => {
     setLoadingGoogle(true);
     setError('');
 
-    const googleClientId = (import.meta as any).env.VITE_GOOGLE_CLIENT_ID;
-
     try {
-      if (googleClientId && (window as any).google?.accounts?.id) {
-        const { rawNonce, hashedNonce } = await generateNoncePair();
+      // Full professional page redirect via Supabase OAuth (displays MBM GIFTS logo & name)
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}${redirectPath}`,
+        },
+      });
 
-        (window as any).google.accounts.id.initialize({
-          client_id: googleClientId,
-          nonce: hashedNonce,
-          callback: (response: any) => handleGoogleCredentialResponse(response, rawNonce),
-        });
-
-        // Trigger Google ID prompt programmatically without floating box
-        (window as any).google.accounts.id.prompt();
-      } else {
-        // Full professional page redirect via Supabase OAuth
-        const { error: oauthError } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: `${window.location.origin}${redirectPath}`,
-          },
-        });
-
-        if (oauthError) {
-          setError(oauthError.message);
-        }
+      if (oauthError) {
+        setError(oauthError.message);
       }
     } catch (err: any) {
       setError(err?.message || 'Google sign-in is currently unavailable. Please sign in with email.');
