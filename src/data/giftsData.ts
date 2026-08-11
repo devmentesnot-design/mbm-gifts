@@ -419,6 +419,36 @@ export const saveStoredPackages = async (packages: PreparedPackage[]) => {
   }
 };
 
+export const saveSinglePackage = async (p: PreparedPackage) => {
+  console.log('💾 Saving single package to Supabase:', p.id);
+  if (!isSupabaseConfigured) return;
+  try {
+    const formatted = {
+      id: p.id,
+      name: p.name,
+      category: p.category,
+      price: p.price,
+      rating: p.rating,
+      reviews_count: p.reviewsCount,
+      badge: p.badge || null,
+      description: p.shortDesc,
+      image: p.image,
+      items_included: p.itemsIncluded,
+      items_included_detailed: p.itemsIncludedDetailed,
+      popular_for: p.popularFor
+    };
+    const { error } = await supabase.from('prepared_packages').upsert([formatted], { onConflict: 'id' });
+    if (error) {
+      console.error('❌ Error saving single package:', error);
+      throw error;
+    }
+    console.log('✅ Saved single package to Supabase successfully:', p.name);
+  } catch (err) {
+    console.error('❌ Failed to save single package to Supabase:', err);
+    throw err;
+  }
+};
+
 export const getStoredCustomItems = async (): Promise<CustomBoxOption[]> => {
   if (!isSupabaseConfigured) {
     console.warn('⚠️ Supabase not configured, using defaults');
@@ -483,6 +513,30 @@ export const saveStoredCustomItems = async (items: CustomBoxOption[]) => {
     console.log('✅ Saved', items.length, 'custom items to Supabase successfully');
   } catch (err) {
     console.error('❌ Failed to save to Supabase:', err);
+    throw err;
+  }
+};
+
+export const saveSingleCustomItem = async (item: CustomBoxOption) => {
+  console.log('💾 Saving single custom item to Supabase:', item.id);
+  if (!isSupabaseConfigured) return;
+  try {
+    const formatted = {
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      price: item.price,
+      image: item.image,
+      description: item.description
+    };
+    const { error } = await supabase.from('custom_box_options').upsert([formatted], { onConflict: 'id' });
+    if (error) {
+      console.error('❌ Error saving single custom item:', error);
+      throw error;
+    }
+    console.log('✅ Saved single custom item to Supabase successfully:', item.name);
+  } catch (err) {
+    console.error('❌ Failed to save single custom item to Supabase:', err);
     throw err;
   }
 };
