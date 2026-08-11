@@ -478,7 +478,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {
         name: '',
         description: '',
-        image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=400&auto=format&fit=crop',
+        image: '',
       },
     ]);
   };
@@ -1932,7 +1932,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded border border-amber-400/30">
                           Included Item #{index + 1}
                         </span>
-                        {pkgSubItems.length > 1 && (
                           <button
                             type="button"
                             onClick={() => handleRemoveSubItem(index)}
@@ -1941,7 +1940,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <Trash2 className="w-3.5 h-3.5" />
                             <span>Remove</span>
                           </button>
-                        )}
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

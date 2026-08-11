@@ -240,8 +240,14 @@ export default function App() {
 
   // Save & Delete Packages update
   const handleSavePackages = async (updatedPkgs: PreparedPackage[]) => {
+    const prev = [...packages];
     setPackages(updatedPkgs);
-    await saveStoredPackages(updatedPkgs);
+    try {
+      await saveStoredPackages(updatedPkgs);
+    } catch (err: any) {
+      alert('Database Save Failed (Packages): ' + (err.message || 'Please ensure you have Admin permissions in Supabase.'));
+      setPackages(prev);
+    }
   };
 
   const handleDeletePackage = async (id: string) => {
@@ -251,8 +257,14 @@ export default function App() {
 
   // Save & Delete Custom Items update
   const handleSaveCustomItems = async (updatedItems: CustomBoxOption[]) => {
+    const prev = [...customItems];
     setCustomItems(updatedItems);
-    await saveStoredCustomItems(updatedItems);
+    try {
+      await saveStoredCustomItems(updatedItems);
+    } catch (err: any) {
+      alert('Database Save Failed (Single Items): ' + (err.message || 'Please ensure you have Admin permissions in Supabase.'));
+      setCustomItems(prev);
+    }
   };
 
   const handleDeleteCustomItem = async (id: string) => {
@@ -262,8 +274,14 @@ export default function App() {
 
   // Save & Delete Categories update
   const handleSaveCategories = async (updatedCategories: GiftCategory[]) => {
+    const prev = [...categories];
     setCategories(updatedCategories);
-    await saveStoredCategories(updatedCategories);
+    try {
+      await saveStoredCategories(updatedCategories);
+    } catch (err: any) {
+      alert('Database Save Failed (Categories): ' + (err.message || 'Please ensure you have Admin permissions in Supabase.'));
+      setCategories(prev);
+    }
   };
 
   const handleDeleteCategory = async (id: string) => {
@@ -273,8 +291,14 @@ export default function App() {
 
   // Save & Delete Gift Boxes update
   const handleSaveGiftBoxes = async (updatedBoxes: GiftBoxStyle[]) => {
+    const prev = [...giftBoxes];
     setGiftBoxes(updatedBoxes);
-    await saveStoredGiftBoxes(updatedBoxes);
+    try {
+      await saveStoredGiftBoxes(updatedBoxes);
+    } catch (err: any) {
+      alert('Database Save Failed (Gift Boxes): ' + (err.message || 'Please ensure you have Admin permissions in Supabase.'));
+      setGiftBoxes(prev);
+    }
   };
 
   const handleDeleteGiftBox = async (id: string) => {
