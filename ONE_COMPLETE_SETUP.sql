@@ -135,6 +135,13 @@ CREATE POLICY "Users and admins can update orders" ON public.orders
 -- ============================================================================
 -- 3. CREATE/UPDATE PREPARED_PACKAGES TABLE
 -- ============================================================================
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'prepared_packages') THEN
+    ALTER TABLE public.prepared_packages ALTER COLUMN id TYPE TEXT USING id::text;
+  END IF;
+END $$;
+
 CREATE TABLE IF NOT EXISTS public.prepared_packages (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,

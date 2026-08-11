@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        podium: ['"Bebas Neue"', '"Oswald"', 'sans-serif'],
+        podium: ['"Playfair Display"', 'serif'],
         inter: ['Inter', 'sans-serif'],
       },
     },

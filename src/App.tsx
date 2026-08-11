@@ -657,7 +657,7 @@ export default function App() {
       />
 
       {/* Smart Gift Assistant Finder */}
-      <GiftFinder onAddToCart={handleAddToCartPrepared} />
+      <GiftFinder packages={packages} onAddToCart={handleAddToCartPrepared} />
 
       {/* Customer Reviews & Quality Guarantees */}
       <Reviews />

@@ -251,42 +251,44 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   };
 
   const renderPackagesView = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-3.5 md:gap-4">
       {filteredPackages.map((pkg) => (
         <div
           key={pkg.id}
           className="group relative bg-[#4a070c]/90 border border-white/15 rounded-xl overflow-hidden hover:border-amber-400/50 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between shadow-xl max-w-sm mx-auto w-full"
         >
-          {/* Image Area */}
-          <div 
-            className="relative h-44 sm:h-48 w-full overflow-hidden bg-black/40 cursor-pointer"
-            onClick={() => handlePackageClick(pkg)}
-          >
-            <img
-              src={pkg.image}
-              alt={pkg.name}
-              className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-700"
-            />
-            {pkg.badge && (
-              <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold tracking-widest px-2.5 py-1 uppercase rounded-full shadow-md z-10">
-                {pkg.badge}
-              </span>
-            )}
+          {/* Square Image Container with Inner Border */}
+          <div className="p-2.5">
+            <div 
+              className="relative w-full aspect-square rounded-lg overflow-hidden bg-black/50 border border-white/10 cursor-pointer group-hover:border-amber-400/30 transition-all flex items-center justify-center"
+              onClick={() => handlePackageClick(pkg)}
+            >
+              <img
+                src={pkg.image}
+                alt={pkg.name}
+                className="absolute inset-0 w-full h-full object-contain p-2.5 group-hover:scale-105 transition-transform duration-700"
+              />
+              {pkg.badge && (
+                <span className="absolute top-2.5 left-2.5 bg-amber-400 text-[#8c1119] text-[10px] font-bold tracking-widest px-2.5 py-1 uppercase rounded-full shadow-md z-10">
+                  {pkg.badge}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Content Area */}
-          <div className="p-4 sm:p-5 flex-1 flex flex-col">
+          <div className="p-3.5 sm:p-4 pt-0 flex-1 flex flex-col">
             <div className="mb-auto cursor-pointer" onClick={() => handlePackageClick(pkg)}>
               <h3 className="font-podium text-base sm:text-lg uppercase font-bold text-white tracking-wide mb-1.5 group-hover:text-amber-300 transition-colors line-clamp-1">
                 {pkg.name}
               </h3>
-              <p className="text-white/60 text-[11px] sm:text-[12px] font-inter line-clamp-2 leading-relaxed mb-3 sm:mb-4">
+              <p className="text-white/60 text-[11px] sm:text-[12px] font-inter line-clamp-2 leading-relaxed mb-3">
                 {pkg.shortDesc}
               </p>
             </div>
             
-            <div className="pt-3 sm:pt-4 mt-auto border-t border-white/10 z-20">
-              <div className="flex items-center justify-between gap-2 mb-2.5 sm:mb-3">
+            <div className="pt-3 mt-auto border-t border-white/10 z-20">
+              <div className="flex items-center justify-between gap-2 mb-2.5">
                 <span className="text-lg sm:text-xl font-bold font-inter text-amber-300">{formatCurrency(pkg.price)}</span>
               </div>
               <div className="flex items-center gap-2">
@@ -324,17 +326,17 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
   const renderBuildView = () => (
     <div className="pb-32">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-3.5">
         {filteredCustomItems.map(item => {
           const qty = customCart[item.id] || 0;
           return (
-            <div key={item.id} className="group bg-[#4a070c]/80 border border-white/15 rounded-xl p-3.5 flex flex-col justify-between hover:border-amber-400/50 hover:-translate-y-0.5 transition-all duration-200 shadow-lg">
-              {/* Image Container with Hover Quick View */}
+            <div key={item.id} className="group bg-[#4a070c]/80 border border-white/15 rounded-xl p-3 flex flex-col justify-between hover:border-amber-400/50 hover:-translate-y-0.5 transition-all duration-200 shadow-lg">
+              {/* Square Image Container with Inner Border */}
               <div 
                 onClick={() => setSelectedCustomItemModal(item)}
-                className="relative h-44 sm:h-48 rounded-lg overflow-hidden bg-black/50 border border-white/10 cursor-pointer group-hover:border-amber-400/30 transition-all flex items-center justify-center"
+                className="relative w-full aspect-square rounded-lg overflow-hidden bg-black/50 border border-white/10 cursor-pointer group-hover:border-amber-400/30 transition-all flex items-center justify-center"
               >
-                <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-500" />
+                <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-contain p-2.5 group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <span className="bg-black/80 text-amber-300 border border-amber-400/50 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg backdrop-blur-sm">
                     <Eye className="w-3.5 h-3.5 text-amber-300" />
@@ -351,8 +353,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               </div>
               
               {/* Price & Responsive Action Controls */}
-              <div className="mt-4 pt-3 border-t border-white/10">
-                <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="mt-3 pt-3 border-t border-white/10">
+                <div className="flex items-center justify-between gap-2 mb-2.5">
                   <span className="font-inter font-bold text-base sm:text-lg text-amber-300">{formatCurrency(item.price)}</span>
                 </div>
 
@@ -545,11 +547,11 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-8 pb-8 border-b border-white/15">
               {/* Left Column: Image & Stats (5 cols) */}
               <div className="lg:col-span-5 relative">
-                <div className="relative rounded-xl overflow-hidden border border-white/15 bg-black/40 shadow-xl group">
+                <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-white/15 bg-black/40 shadow-xl group">
                   <img
                     src={selectedModalPkg.image}
                     alt={selectedModalPkg.name}
-                    className="w-full h-64 sm:h-80 object-contain p-4"
+                    className="absolute inset-0 w-full h-full object-contain p-4"
                   />
                   {selectedModalPkg.badge && (
                     <span className="absolute top-4 left-4 bg-amber-400 text-[#8c1119] text-xs font-bold tracking-widest px-3 py-1 uppercase rounded-full shadow-lg z-10">

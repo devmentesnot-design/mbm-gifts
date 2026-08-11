@@ -122,11 +122,11 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
               
               {/* Left Column: Full Display Image Showcase (5 cols) */}
               <div className="lg:col-span-5 relative">
-                <div className="relative rounded-2xl overflow-hidden border border-white/20 bg-black/40 shadow-2xl group">
+                <div className="relative w-full aspect-square rounded-2xl overflow-hidden border border-white/20 bg-black/40 shadow-2xl group">
                   <img
                     src={packageData.image}
                     alt={packageData.name}
-                    className="w-full h-80 sm:h-96 lg:h-[480px] object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="absolute inset-0 w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700"
                   />
                   {packageData.badge && (
                     <span className="absolute top-4 left-4 bg-amber-400 text-[#8c1119] text-xs font-extrabold tracking-widest px-3.5 py-1.5 uppercase rounded-full shadow-lg z-10">
@@ -243,12 +243,12 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                   className="bg-black/40 border border-white/15 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-400/50 transition-all duration-300 group shadow-lg"
                 >
                   <div>
-                    {/* Item Image */}
-                    <div className="relative h-48 sm:h-52 rounded-xl overflow-hidden border border-white/15 bg-black/50 mb-4">
+                    {/* Item Image - Square Container */}
+                    <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-white/15 bg-black/50 mb-4">
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="absolute inset-0 w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-500"
                       />
                       <span className="absolute bottom-2 right-2 bg-amber-400 text-[#8c1119] p-1.5 rounded-full shadow-md">
                         <Check className="w-4 h-4 stroke-[3]" />
@@ -298,20 +298,22 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                   onClick={() => onNavigateToPackage(relPkg.id)}
                   className="bg-[#4a070c]/80 border border-white/15 rounded-2xl overflow-hidden hover:border-amber-400/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer group shadow-xl flex flex-col justify-between"
                 >
-                  <div className="relative h-48 overflow-hidden bg-black/40">
-                    <img
-                      src={relPkg.image}
-                      alt={relPkg.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    {relPkg.badge && (
-                      <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-md">
-                        {relPkg.badge}
-                      </span>
-                    )}
+                  <div className="p-3.5">
+                    <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-black/40 border border-white/10">
+                      <img
+                        src={relPkg.image}
+                        alt={relPkg.name}
+                        className="absolute inset-0 w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-500"
+                      />
+                      {relPkg.badge && (
+                        <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-md">
+                          {relPkg.badge}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div className="p-5 pt-0 flex-1 flex flex-col justify-between">
                     <div>
                       <h4 className="font-podium text-lg uppercase font-bold text-white group-hover:text-amber-300 transition-colors mb-1 line-clamp-1">
                         {relPkg.name}
