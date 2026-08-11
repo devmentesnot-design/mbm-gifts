@@ -242,7 +242,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-swiss-truffles',
     name: 'Artisan Swiss Truffles',
-    category: 'chocolate',
+    category: 'Sweets & Chocolates',
     price: 18.00,
     image: '/candels.png',
     description: 'Assorted dark and milk chocolate pralines.'
@@ -250,7 +250,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-caramel-bonbons',
     name: 'Salted Caramel Bonbons',
-    category: 'chocolate',
+    category: 'Sweets & Chocolates',
     price: 14.50,
     image: '/candels.png',
     description: 'Rich gooey caramel wrapped in 70% dark Belgian chocolate.'
@@ -258,7 +258,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-rose-candle',
     name: 'Midnight Rose Soy Candle',
-    category: 'candle',
+    category: 'Candles & Fragrance',
     price: 24.00,
     image: '/candels.png',
     description: 'Hand-poured soy wax with natural rose and amber essential oils.'
@@ -266,7 +266,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-crystal-flute',
     name: 'Stemless Crystal Glassware',
-    category: 'drink',
+    category: 'Fine Drinkware',
     price: 22.00,
     image: '/mugs.png',
     description: 'Hand-blown lead-free crystal flute with subtle gold trim.'
@@ -274,7 +274,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-leather-journal',
     name: 'Gold Foil Leather Journal',
-    category: 'personal',
+    category: 'Leather & Personal',
     price: 28.00,
     image: '/notebook.png',
     description: 'Soft cover notebook with gold gilded edges and ribbon bookmark.'
@@ -282,7 +282,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-lavender-bath-salts',
     name: 'French Lavender Bath Salts',
-    category: 'personal',
+    category: 'Bath & Body',
     price: 16.00,
     image: '/prfumes.png',
     description: 'Soothing Epsom bath salts with natural organic dried lavender.'
@@ -290,7 +290,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-watches',
     name: 'Luxury Watches',
-    category: 'accessory',
+    category: 'Leather & Personal',
     price: 85.00,
     image: '/Watches.png',
     description: 'Elegant timepieces with premium leather straps.'
@@ -298,7 +298,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-wallets',
     name: 'Leather Wallets',
-    category: 'accessory',
+    category: 'Leather & Personal',
     price: 35.00,
     image: '/wallets.png',
     description: 'Genuine leather bifold wallets with RFID protection.'
@@ -306,7 +306,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-sunglasses',
     name: 'Designer Sunglasses',
-    category: 'accessory',
+    category: 'Leather & Personal',
     price: 45.00,
     image: '/Sunglasses.png',
     description: 'UV protection sunglasses with stylish frames.'
@@ -314,7 +314,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-earbuds',
     name: 'Wireless Earbuds',
-    category: 'accessory',
+    category: 'Leather & Personal',
     price: 55.00,
     image: '/Earbuds.png',
     description: 'Premium wireless earbuds with noise cancellation.'
@@ -322,7 +322,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-belts',
     name: 'Leather Belts',
-    category: 'accessory',
+    category: 'Leather & Personal',
     price: 25.00,
     image: '/Belts.png',
     description: 'Classic leather belts with elegant buckles.'
@@ -330,7 +330,7 @@ export const CUSTOM_ITEMS: CustomBoxOption[] = [
   {
     id: 'item-jewelry',
     name: 'Fashion Jewelry',
-    category: 'accessory',
+    category: 'Leather & Personal',
     price: 40.00,
     image: '/jewlery.png',
     description: 'Elegant jewelry sets with premium materials.'
@@ -729,6 +729,70 @@ export const saveStoredGiftBoxes = async (boxes: GiftBoxStyle[]) => {
     console.log('✅ Saved', boxes.length, 'gift boxes to Supabase successfully');
   } catch (err) {
     console.error('❌ Failed to save to Supabase:', err);
+    throw err;
+  }
+};
+
+export const deleteStoredCategory = async (id: string) => {
+  console.log('🗑️ Deleting category from Supabase:', id);
+  if (!isSupabaseConfigured) return;
+  try {
+    const { error } = await supabase.from('categories').delete().eq('id', id);
+    if (error) {
+      console.error('❌ Supabase delete category error:', error);
+      throw error;
+    }
+    console.log('✅ Deleted category', id, 'from Supabase successfully');
+  } catch (err) {
+    console.error('❌ Failed to delete category from Supabase:', err);
+    throw err;
+  }
+};
+
+export const deleteStoredPackage = async (id: string) => {
+  console.log('🗑️ Deleting package from Supabase:', id);
+  if (!isSupabaseConfigured) return;
+  try {
+    const { error } = await supabase.from('prepared_packages').delete().eq('id', id);
+    if (error) {
+      console.error('❌ Supabase delete package error:', error);
+      throw error;
+    }
+    console.log('✅ Deleted package', id, 'from Supabase successfully');
+  } catch (err) {
+    console.error('❌ Failed to delete package from Supabase:', err);
+    throw err;
+  }
+};
+
+export const deleteStoredCustomItem = async (id: string) => {
+  console.log('🗑️ Deleting custom item from Supabase:', id);
+  if (!isSupabaseConfigured) return;
+  try {
+    const { error } = await supabase.from('custom_box_options').delete().eq('id', id);
+    if (error) {
+      console.error('❌ Supabase delete custom item error:', error);
+      throw error;
+    }
+    console.log('✅ Deleted custom item', id, 'from Supabase successfully');
+  } catch (err) {
+    console.error('❌ Failed to delete custom item from Supabase:', err);
+    throw err;
+  }
+};
+
+export const deleteStoredGiftBox = async (id: string) => {
+  console.log('🗑️ Deleting gift box from Supabase:', id);
+  if (!isSupabaseConfigured) return;
+  try {
+    const { error } = await supabase.from('gift_boxes').delete().eq('id', id);
+    if (error) {
+      console.error('❌ Supabase delete gift box error:', error);
+      throw error;
+    }
+    console.log('✅ Deleted gift box', id, 'from Supabase successfully');
+  } catch (err) {
+    console.error('❌ Failed to delete gift box from Supabase:', err);
     throw err;
   }
 };

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { PreparedPackage, CustomBoxOption, CUSTOM_ITEMS, PREPARED_PACKAGES } from '../data/giftsData';
+import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, CUSTOM_ITEMS, PREPARED_PACKAGES } from '../data/giftsData';
 import { ShoppingBag, Star, Eye, X, Check, Search, Filter, Plus, Minus, PackageCheck, Sparkles, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { formatCurrency } from '../utils/currency';
@@ -7,6 +7,8 @@ import { formatCurrency } from '../utils/currency';
 interface GiftShopBodyProps {
   packages?: PreparedPackage[];
   customItems?: CustomBoxOption[];
+  categories?: GiftCategory[];
+  giftBoxes?: GiftBoxStyle[];
   onAddToCartPrepared: (pkg: PreparedPackage, note?: string) => void;
   onAddToCartCustom: (customBox: {
     boxStyle: CustomBoxOption;
@@ -21,6 +23,8 @@ interface GiftShopBodyProps {
 export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   packages = PREPARED_PACKAGES,
   customItems = CUSTOM_ITEMS,
+  categories = [],
+  giftBoxes = [],
   onAddToCartPrepared,
   onAddToCartCustom,
   onViewPackageDetail,
@@ -41,34 +45,59 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   // Custom Build State (Cart)
   const [customCart, setCustomCart] = useState<Record<string, number>>({});
   
-  // Automatic signature gift box (complimentary inclusion)
+  // Automatic signature gift box (complimentary inclusion or configured default)
   const automaticBox: CustomBoxOption = {
-    id: 'box-automatic-signature',
-    name: 'Signature MBM Crimson Velvet Keepsake Box',
+    id: giftBoxes[0]?.id || 'box-automatic-signature',
+    name: giftBoxes[0]?.name || 'Signature MBM Crimson Velvet Keepsake Box',
     category: 'box',
-    price: 0,
-    image: '/header_hero.jpg',
-    description: 'Complimentary signature deep red box lined with plush velvet lining & gold foil embossing.',
+    price: giftBoxes[0]?.price || 0,
+    image: giftBoxes[0]?.image || '/header_hero.jpg',
+    description: giftBoxes[0]?.description || 'Complimentary signature deep red box lined with plush velvet lining & gold foil embossing.',
   };
 
-  // Dynamically compute available categories from actual packages / items
+  // Dynamically compute available categories from master categories AND actual packages / items
   const dynamicCategories = useMemo(() => {
+    const list: string[] = ['All'];
+    const added = new Set<string>(['All']);
+
     if (mode === 'pkg') {
-      const set = new Set<string>();
-      set.add('All');
+      if (categories && categories.length > 0) {
+        categories
+          .filter(c => !c.type || c.type === 'package' || c.type === 'both')
+          .forEach(c => {
+            if (!added.has(c.name)) {
+              added.add(c.name);
+              list.push(c.name);
+            }
+          });
+      }
       packages.forEach(p => {
-        if (p.category) set.add(p.category);
+        if (p.category && !added.has(p.category)) {
+          added.add(p.category);
+          list.push(p.category);
+        }
       });
-      return Array.from(set);
     } else {
-      const set = new Set<string>();
-      set.add('All');
+      if (categories && categories.length > 0) {
+        categories
+          .filter(c => !c.type || c.type === 'custom_item' || c.type === 'both')
+          .forEach(c => {
+            if (!added.has(c.name)) {
+              added.add(c.name);
+              list.push(c.name);
+            }
+          });
+      }
       customItems.forEach(i => {
-        if (i.category) set.add(i.category);
+        if (i.category && !added.has(i.category)) {
+          added.add(i.category);
+          list.push(i.category);
+        }
       });
-      return Array.from(set);
     }
-  }, [mode, packages, customItems]);
+
+    return list;
+  }, [mode, categories, packages, customItems]);
 
   // Handle outside click for sort menu
   const sortMenuRef = useRef<HTMLDivElement>(null);
@@ -82,14 +111,38 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Smart helper to match item categories against category names and slugs
+  const isCategoryMatch = (itemCat: string, activeCat: string) => {
+    if (!activeCat || activeCat === 'All') return true;
+    if (!itemCat) return false;
+    const itemLower = itemCat.toLowerCase().trim();
+    const activeLower = activeCat.toLowerCase().trim();
+
+    if (itemLower === activeLower) return true;
+
+    if (categories && categories.length > 0) {
+      const catObj = categories.find(
+        c => c.name.toLowerCase().trim() === activeLower || c.slug.toLowerCase().trim() === activeLower
+      );
+      if (catObj) {
+        const slugLower = catObj.slug.toLowerCase().trim();
+        const nameLower = catObj.name.toLowerCase().trim();
+        if (itemLower === slugLower || itemLower === nameLower) return true;
+        if (nameLower.includes(itemLower) || itemLower.includes(nameLower)) return true;
+        if (slugLower.includes(itemLower) || itemLower.includes(slugLower)) return true;
+      }
+    }
+
+    if (activeLower.includes(itemLower) || itemLower.includes(activeLower)) return true;
+    return false;
+  };
+
   // Filtered & Sorted Packages
   const filteredPackages = useMemo(() => {
     let result = [...packages];
     
     if (activeCategory !== 'All') {
-      result = result.filter(p => 
-        p.category.toLowerCase().trim() === activeCategory.toLowerCase().trim()
-      );
+      result = result.filter(p => isCategoryMatch(p.category, activeCategory));
     }
 
     if (sortBy === 'price-asc') {
@@ -103,13 +156,13 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     }
 
     return result;
-  }, [packages, activeCategory, sortBy]);
+  }, [packages, activeCategory, sortBy, categories]);
 
   // Filtered & Sorted Custom Items
   const filteredCustomItems = useMemo(() => {
     let result = [...customItems];
     if (activeCategory !== 'All') {
-      result = result.filter(i => i.category.toLowerCase().trim() === activeCategory.toLowerCase().trim());
+      result = result.filter(i => isCategoryMatch(i.category, activeCategory));
     }
     
     if (sortBy === 'price-asc') {
@@ -119,7 +172,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     }
     
     return result;
-  }, [customItems, activeCategory, sortBy]);
+  }, [customItems, activeCategory, sortBy, categories]);
 
   const handleModalAdd = () => {
     if (selectedModalPkg) {
@@ -412,13 +465,13 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
         {/* Mode Toggle */}
         <div className="inline-flex bg-[#4a070c] border border-white/10 rounded-full p-1 gap-1 mb-8 shadow-inner">
           <button 
-            onClick={() => setMode('pkg')}
+            onClick={() => { setMode('pkg'); setActiveCategory('All'); }}
             className={`px-5 py-2.5 rounded-full text-sm font-semibold font-inter transition-all cursor-pointer ${mode === 'pkg' ? 'bg-amber-400 text-[#8c1119] shadow-md' : 'text-white/60 hover:text-white'}`}
           >
             Ready-made packages
           </button>
           <button 
-            onClick={() => setMode('build')}
+            onClick={() => { setMode('build'); setActiveCategory('All'); }}
             className={`px-5 py-2.5 rounded-full text-sm font-semibold font-inter transition-all cursor-pointer ${mode === 'build' ? 'bg-amber-400 text-[#8c1119] shadow-md' : 'text-white/60 hover:text-white'}`}
           >
             Build your own

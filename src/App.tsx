@@ -20,10 +20,20 @@ import { CartItem, CartItemPrepared, CartItemCustom, Order, OrderStatus } from '
 import {
   PreparedPackage,
   CustomBoxOption,
+  GiftCategory,
+  GiftBoxStyle,
   getStoredPackages,
   saveStoredPackages,
+  deleteStoredPackage,
   getStoredCustomItems,
   saveStoredCustomItems,
+  deleteStoredCustomItem,
+  getStoredCategories,
+  saveStoredCategories,
+  deleteStoredCategory,
+  getStoredGiftBoxes,
+  saveStoredGiftBoxes,
+  deleteStoredGiftBox,
   getStoredOrders,
   saveSingleOrder,
   updateOrderStatusInDb,
@@ -50,9 +60,11 @@ export default function App() {
   const [customizerPackage, setCustomizerPackage] = useState<PreparedPackage | null>(null);
   const [pendingOrder, setPendingOrder] = useState<Order | null>(null);
 
-  // Dynamic state loaded from localStorage / initial defaults
+  // Dynamic state loaded from localStorage / Supabase defaults
   const [packages, setPackages] = useState<PreparedPackage[]>([]);
   const [customItems, setCustomItems] = useState<CustomBoxOption[]>([]);
+  const [categories, setCategories] = useState<GiftCategory[]>([]);
+  const [giftBoxes, setGiftBoxes] = useState<GiftBoxStyle[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
 
   // Listen to popstate for SPA routing
@@ -145,14 +157,18 @@ export default function App() {
       await seedInitialData();
       
       // Then load data
-      const [pkgs, items, ords] = await Promise.all([
+      const [pkgs, items, ords, cats, boxes] = await Promise.all([
         getStoredPackages(),
         getStoredCustomItems(),
-        getStoredOrders()
+        getStoredOrders(),
+        getStoredCategories(),
+        getStoredGiftBoxes(),
       ]);
       setPackages(pkgs);
       setCustomItems(items);
       setOrders(ords);
+      setCategories(cats);
+      setGiftBoxes(boxes);
     };
     
     loadData();
@@ -222,16 +238,48 @@ export default function App() {
     }
   }, [session, userRole, isCheckingRole, currentPath]);
 
-  // Save Packages update
-  const handleSavePackages = (updatedPkgs: PreparedPackage[]) => {
+  // Save & Delete Packages update
+  const handleSavePackages = async (updatedPkgs: PreparedPackage[]) => {
     setPackages(updatedPkgs);
-    saveStoredPackages(updatedPkgs);
+    await saveStoredPackages(updatedPkgs);
   };
 
-  // Save Custom Items update
-  const handleSaveCustomItems = (updatedItems: CustomBoxOption[]) => {
+  const handleDeletePackage = async (id: string) => {
+    setPackages((prev) => prev.filter((p) => p.id !== id));
+    await deleteStoredPackage(id);
+  };
+
+  // Save & Delete Custom Items update
+  const handleSaveCustomItems = async (updatedItems: CustomBoxOption[]) => {
     setCustomItems(updatedItems);
-    saveStoredCustomItems(updatedItems);
+    await saveStoredCustomItems(updatedItems);
+  };
+
+  const handleDeleteCustomItem = async (id: string) => {
+    setCustomItems((prev) => prev.filter((i) => i.id !== id));
+    await deleteStoredCustomItem(id);
+  };
+
+  // Save & Delete Categories update
+  const handleSaveCategories = async (updatedCategories: GiftCategory[]) => {
+    setCategories(updatedCategories);
+    await saveStoredCategories(updatedCategories);
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    setCategories((prev) => prev.filter((c) => c.id !== id));
+    await deleteStoredCategory(id);
+  };
+
+  // Save & Delete Gift Boxes update
+  const handleSaveGiftBoxes = async (updatedBoxes: GiftBoxStyle[]) => {
+    setGiftBoxes(updatedBoxes);
+    await saveStoredGiftBoxes(updatedBoxes);
+  };
+
+  const handleDeleteGiftBox = async (id: string) => {
+    setGiftBoxes((prev) => prev.filter((b) => b.id !== id));
+    await deleteStoredGiftBox(id);
   };
 
   // Update Order Status directly in DB
@@ -431,9 +479,17 @@ export default function App() {
           }}
           packages={packages}
           customItems={customItems}
+          categories={categories}
+          giftBoxes={giftBoxes}
           orders={orders}
           onSavePackages={handleSavePackages}
+          onDeletePackage={handleDeletePackage}
           onSaveCustomItems={handleSaveCustomItems}
+          onDeleteCustomItem={handleDeleteCustomItem}
+          onSaveCategories={handleSaveCategories}
+          onDeleteCategory={handleDeleteCategory}
+          onSaveGiftBoxes={handleSaveGiftBoxes}
+          onDeleteGiftBox={handleDeleteGiftBox}
           onUpdateOrderStatus={handleUpdateOrderStatus}
           onCreateOrder={handleNewOrderCreated}
           session={session}
@@ -567,6 +623,8 @@ export default function App() {
 
       {/* Unified Gift Shop Body Section */}
       <GiftShopBody
+        categories={categories}
+        giftBoxes={giftBoxes}
         packages={packages}
         customItems={customItems}
         onAddToCartPrepared={handleAddToCartPrepared}

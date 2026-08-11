@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, DEFAULT_CATEGORIES, DEFAULT_GIFT_BOXES, PackageItemDetail, getStoredCategories, saveStoredCategories, getStoredGiftBoxes, saveStoredGiftBoxes } from '../data/giftsData';
+import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, DEFAULT_CATEGORIES, DEFAULT_GIFT_BOXES, PackageItemDetail, getStoredCategories, saveStoredCategories, deleteStoredCategory, getStoredGiftBoxes, saveStoredGiftBoxes, deleteStoredGiftBox, deleteStoredPackage, deleteStoredCustomItem } from '../data/giftsData';
 import { Order, OrderStatus } from '../types/cart';
 import { uploadToCloudinary } from '../utils/cloudinary';
 import { DatabaseDebug } from './DatabaseDebug';
@@ -42,9 +42,17 @@ interface AdminDashboardProps {
   onClose: () => void;
   packages: PreparedPackage[];
   customItems: CustomBoxOption[];
+  categories?: GiftCategory[];
+  giftBoxes?: GiftBoxStyle[];
   orders: Order[];
   onSavePackages: (pkgs: PreparedPackage[]) => void;
+  onDeletePackage?: (id: string) => void;
   onSaveCustomItems: (items: CustomBoxOption[]) => void;
+  onDeleteCustomItem?: (id: string) => void;
+  onSaveCategories?: (categories: GiftCategory[]) => void;
+  onDeleteCategory?: (id: string) => void;
+  onSaveGiftBoxes?: (boxes: GiftBoxStyle[]) => void;
+  onDeleteGiftBox?: (id: string) => void;
   onUpdateOrderStatus: (orderId: string, newStatus: OrderStatus) => void;
   onCreateOrder?: (order: Order) => void;
   session?: any; // Add session prop for debug component
@@ -55,9 +63,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onClose,
   packages,
   customItems,
+  categories,
+  giftBoxes,
   orders,
   onSavePackages,
+  onDeletePackage,
   onSaveCustomItems,
+  onDeleteCustomItem,
+  onSaveCategories,
+  onDeleteCategory,
+  onSaveGiftBoxes,
+  onDeleteGiftBox,
   onUpdateOrderStatus,
   onCreateOrder,
   session,
@@ -85,26 +101,45 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   // Categories & Gift Boxes State
-  const [categoriesList, setCategoriesList] = useState<GiftCategory[]>(DEFAULT_CATEGORIES);
-  const [giftBoxesList, setGiftBoxesList] = useState<GiftBoxStyle[]>(DEFAULT_GIFT_BOXES);
+  const [categoriesList, setCategoriesList] = useState<GiftCategory[]>(categories || DEFAULT_CATEGORIES);
+  const [giftBoxesList, setGiftBoxesList] = useState<GiftBoxStyle[]>(giftBoxes || DEFAULT_GIFT_BOXES);
 
   useEffect(() => {
-    getStoredCategories().then(cats => {
-      if (cats && cats.length > 0) setCategoriesList(cats);
-    });
-    getStoredGiftBoxes().then(boxes => {
-      if (boxes && boxes.length > 0) setGiftBoxesList(boxes);
-    });
-  }, []);
+    if (categories && categories.length > 0) {
+      setCategoriesList(categories);
+    } else {
+      getStoredCategories().then(cats => {
+        if (cats && cats.length > 0) setCategoriesList(cats);
+      });
+    }
+  }, [categories]);
+
+  useEffect(() => {
+    if (giftBoxes && giftBoxes.length > 0) {
+      setGiftBoxesList(giftBoxes);
+    } else {
+      getStoredGiftBoxes().then(boxes => {
+        if (boxes && boxes.length > 0) setGiftBoxesList(boxes);
+      });
+    }
+  }, [giftBoxes]);
 
   const updateCategoriesList = (newList: GiftCategory[]) => {
     setCategoriesList(newList);
-    saveStoredCategories(newList);
+    if (onSaveCategories) {
+      onSaveCategories(newList);
+    } else {
+      saveStoredCategories(newList);
+    }
   };
 
   const updateGiftBoxesList = (newList: GiftBoxStyle[]) => {
     setGiftBoxesList(newList);
-    saveStoredGiftBoxes(newList);
+    if (onSaveGiftBoxes) {
+      onSaveGiftBoxes(newList);
+    } else {
+      saveStoredGiftBoxes(newList);
+    }
   };
 
   // Order Search & Filter State
@@ -306,7 +341,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const handleDeleteCategory = (id: string) => {
     if (confirm('Are you sure you want to delete this category?')) {
-      updateCategoriesList(categoriesList.filter((c) => c.id !== id));
+      const newList = categoriesList.filter((c) => c.id !== id);
+      setCategoriesList(newList);
+      if (onDeleteCategory) {
+        onDeleteCategory(id);
+      } else {
+        updateCategoriesList(newList);
+        deleteStoredCategory(id);
+      }
     }
   };
 
@@ -373,7 +415,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const handleDeleteBox = (id: string) => {
     if (confirm('Are you sure you want to delete this gift box style?')) {
-      updateGiftBoxesList(giftBoxesList.filter((b) => b.id !== id));
+      const newList = giftBoxesList.filter((b) => b.id !== id);
+      setGiftBoxesList(newList);
+      if (onDeleteGiftBox) {
+        onDeleteGiftBox(id);
+      } else {
+        updateGiftBoxesList(newList);
+        deleteStoredGiftBox(id);
+      }
     }
   };
 
@@ -497,7 +546,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const handleDeletePkg = (id: string) => {
     if (confirm('Delete this prepared gift package?')) {
-      onSavePackages(packages.filter((p) => p.id !== id));
+      if (onDeletePackage) {
+        onDeletePackage(id);
+      } else {
+        onSavePackages(packages.filter((p) => p.id !== id));
+        deleteStoredPackage(id);
+      }
     }
   };
 
@@ -560,7 +614,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const handleDeleteItem = (id: string) => {
     if (confirm('Delete this item option?')) {
-      onSaveCustomItems(customItems.filter((i) => i.id !== id));
+      if (onDeleteCustomItem) {
+        onDeleteCustomItem(id);
+      } else {
+        onSaveCustomItems(customItems.filter((i) => i.id !== id));
+        deleteStoredCustomItem(id);
+      }
     }
   };
 
