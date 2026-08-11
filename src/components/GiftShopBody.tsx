@@ -55,45 +55,39 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     description: giftBoxes[0]?.description || 'Complimentary signature deep red box lined with plush velvet lining & gold foil embossing.',
   };
 
-  // Dynamically compute available categories from master categories AND actual packages / items
+  // Dynamically compute available categories strictly from master DB categories
   const dynamicCategories = useMemo(() => {
     const list: string[] = ['All'];
     const added = new Set<string>(['All']);
 
-    if (mode === 'pkg') {
-      if (categories && categories.length > 0) {
-        categories
-          .filter(c => !c.type || c.type === 'package' || c.type === 'both')
-          .forEach(c => {
-            if (!added.has(c.name)) {
-              added.add(c.name);
-              list.push(c.name);
-            }
-          });
-      }
-      packages.forEach(p => {
-        if (p.category && !added.has(p.category)) {
-          added.add(p.category);
-          list.push(p.category);
+    if (categories && categories.length > 0) {
+      const allowedType = mode === 'pkg' ? ['package', 'both'] : ['custom_item', 'both'];
+      categories.forEach(c => {
+        const catType = c.type || 'both';
+        if (allowedType.includes(catType)) {
+          if (!added.has(c.name)) {
+            added.add(c.name);
+            list.push(c.name);
+          }
         }
       });
     } else {
-      if (categories && categories.length > 0) {
-        categories
-          .filter(c => !c.type || c.type === 'custom_item' || c.type === 'both')
-          .forEach(c => {
-            if (!added.has(c.name)) {
-              added.add(c.name);
-              list.push(c.name);
-            }
-          });
+      // Fallback only if database categories array is empty
+      if (mode === 'pkg') {
+        packages.forEach(p => {
+          if (p.category && !added.has(p.category)) {
+            added.add(p.category);
+            list.push(p.category);
+          }
+        });
+      } else {
+        customItems.forEach(i => {
+          if (i.category && !added.has(i.category)) {
+            added.add(i.category);
+            list.push(i.category);
+          }
+        });
       }
-      customItems.forEach(i => {
-        if (i.category && !added.has(i.category)) {
-          added.add(i.category);
-          list.push(i.category);
-        }
-      });
     }
 
     return list;

@@ -149,6 +149,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Package Search & Detailed Modal State
   const [pkgSearchTerm, setPkgSearchTerm] = useState('');
+  const [pkgCategoryFilter, setPkgCategoryFilter] = useState<string>('all');
   const [pkgModalOpen, setPkgModalOpen] = useState(false);
   const [editingPkg, setEditingPkg] = useState<PreparedPackage | null>(null);
   const [pkgForm, setPkgForm] = useState({
@@ -165,6 +166,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Single Custom Item Search & Modal State
   const [itemSearchTerm, setItemSearchTerm] = useState('');
+  const [itemCategoryFilter, setItemCategoryFilter] = useState<string>('all');
   const [itemModalOpen, setItemModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CustomBoxOption | null>(null);
   const [itemForm, setItemForm] = useState({
@@ -175,7 +177,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     image: '',
   });
 
-  // Category Modal State
+  // Category Modal & Sub-navbar Filter State
+  const [categorySearchTerm, setCategorySearchTerm] = useState('');
+  const [categoryTypeFilter, setCategoryTypeFilter] = useState<string>('all');
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<GiftCategory | null>(null);
   const [categoryForm, setCategoryForm] = useState<{
@@ -463,18 +467,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         image: '',
         badge: 'BEST SELLER',
       });
-      setPkgSubItems([
-        {
-          name: 'Handcrafted Keepsake Box',
-          description: 'High-density velvet gift container with magnetic gold latch.',
-          image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=400&auto=format&fit=crop',
-        },
-        {
-          name: 'Artisan Swiss Chocolates',
-          description: 'Decadent dark cocoa truffles with roasted hazelnuts.',
-          image: 'https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=400&auto=format&fit=crop',
-        },
-      ]);
+      setPkgSubItems([]);
     }
     setPkgModalOpen(true);
   };
@@ -1140,7 +1133,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           )}
 
-          {/* TAB 3: READY-MADE PACKAGES WITH DETAILED SUB-ITEM FORM */}
+          {/* TAB 3: READY-MADE PACKAGES WITH CATEGORY NAV BAR */}
           {activeTab === 'packages' && (
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1161,59 +1154,116 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </button>
               </div>
 
+              {/* Category Sub-Navbar for Packages */}
+              <div className="bg-[#2a0508]/80 border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shadow-xl">
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-thin">
+                  <button
+                    onClick={() => setPkgCategoryFilter('all')}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold font-inter whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+                      pkgCategoryFilter === 'all'
+                        ? 'bg-amber-400 text-[#8c1119] shadow-lg scale-105 font-extrabold'
+                        : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
+                    }`}
+                  >
+                    <span>All Packages</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] ${pkgCategoryFilter === 'all' ? 'bg-[#8c1119] text-amber-300' : 'bg-black/40 text-white/70'}`}>
+                      {packages.length}
+                    </span>
+                  </button>
+
+                  {packageCategories.map((cat) => {
+                    const count = packages.filter((p) => p.category?.toLowerCase() === cat.name.toLowerCase()).length;
+                    const isActive = pkgCategoryFilter.toLowerCase() === cat.name.toLowerCase();
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => setPkgCategoryFilter(cat.name)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold font-inter whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+                          isActive
+                            ? 'bg-amber-400 text-[#8c1119] shadow-lg scale-105 font-extrabold'
+                            : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
+                        }`}
+                      >
+                        <span>{cat.name}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] ${isActive ? 'bg-[#8c1119] text-amber-300' : 'bg-black/40 text-white/70'}`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="relative min-w-[220px]">
+                  <Search className="w-4 h-4 absolute left-3 top-3 text-white/40" />
+                  <input
+                    type="text"
+                    value={pkgSearchTerm}
+                    onChange={(e) => setPkgSearchTerm(e.target.value)}
+                    placeholder="Search packages..."
+                    className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
               {/* Packages Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                {packages.map((pkg) => (
-                  <div
-                    key={pkg.id}
-                    className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
-                  >
-                    <div className="relative h-44 bg-black/40 overflow-hidden">
-                      <img src={pkg.image} alt={pkg.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      {pkg.badge && (
-                        <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full shadow">
-                          {pkg.badge}
+                {packages
+                  .filter((pkg) => {
+                    const matchesCategory = pkgCategoryFilter === 'all' || pkg.category?.toLowerCase() === pkgCategoryFilter.toLowerCase();
+                    const matchesSearch = !pkgSearchTerm || pkg.name.toLowerCase().includes(pkgSearchTerm.toLowerCase()) || pkg.shortDesc?.toLowerCase().includes(pkgSearchTerm.toLowerCase());
+                    return matchesCategory && matchesSearch;
+                  })
+                  .map((pkg) => (
+                    <div
+                      key={pkg.id}
+                      className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
+                    >
+                      <div className="relative h-44 bg-black/40 overflow-hidden">
+                        <img src={pkg.image} alt={pkg.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        {pkg.badge && (
+                          <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full shadow">
+                            {pkg.badge}
+                          </span>
+                        )}
+                        <span className="absolute bottom-3 right-3 bg-black/80 text-amber-300 border border-white/20 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                          {pkg.itemsIncludedDetailed?.length || pkg.itemsIncluded.length} Items Inside
                         </span>
-                      )}
-                      <span className="absolute bottom-3 right-3 bg-black/80 text-amber-300 border border-white/20 text-[10px] font-bold px-2 py-0.5 rounded-md">
-                        {pkg.itemsIncludedDetailed?.length || pkg.itemsIncluded.length} Items Inside
-                      </span>
-                    </div>
-
-                    <div className="p-4 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="text-[10px] text-amber-300 font-bold uppercase">{pkg.category}</div>
-                        <h3 className="font-podium text-lg uppercase font-bold text-white mt-1">{pkg.name}</h3>
-                        <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{pkg.shortDesc}</p>
                       </div>
 
-                      <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
-                        <span className="font-bold text-amber-300 text-lg">${pkg.price.toFixed(2)}</span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleOpenPkgModal(pkg)}
-                            className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors"
-                            title="Edit Package & Internal Items"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeletePkg(pkg.id)}
-                            className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors"
-                            title="Delete Package"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                      <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="text-[10px] text-amber-300 font-bold uppercase">{pkg.category}</div>
+                          <h3 className="font-podium text-lg uppercase font-bold text-white mt-1">{pkg.name}</h3>
+                          <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{pkg.shortDesc}</p>
+                        </div>
+
+                        <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
+                          <span className="font-bold text-amber-300 text-lg">${pkg.price.toFixed(2)}</span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleOpenPkgModal(pkg)}
+                              className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
+                              title="Edit Package & Internal Items"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeletePkg(pkg.id)}
+                              className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
+                              title="Delete Package"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           )}
 
-          {/* TAB 4: SINGLE CUSTOM ITEMS */}
+          {/* TAB 4: SINGLE CUSTOM ITEMS WITH CATEGORY NAV BAR */}
           {activeTab === 'customItems' && (
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1234,51 +1284,108 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </button>
               </div>
 
+              {/* Category Sub-Navbar for Single Items */}
+              <div className="bg-[#2a0508]/80 border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shadow-xl">
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-thin">
+                  <button
+                    onClick={() => setItemCategoryFilter('all')}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold font-inter whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+                      itemCategoryFilter === 'all'
+                        ? 'bg-amber-400 text-[#8c1119] shadow-lg scale-105 font-extrabold'
+                        : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
+                    }`}
+                  >
+                    <span>All Items</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] ${itemCategoryFilter === 'all' ? 'bg-[#8c1119] text-amber-300' : 'bg-black/40 text-white/70'}`}>
+                      {customItems.length}
+                    </span>
+                  </button>
+
+                  {customItemCategories.map((cat) => {
+                    const count = customItems.filter((i) => i.category?.toLowerCase() === cat.name.toLowerCase()).length;
+                    const isActive = itemCategoryFilter.toLowerCase() === cat.name.toLowerCase();
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => setItemCategoryFilter(cat.name)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold font-inter whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+                          isActive
+                            ? 'bg-amber-400 text-[#8c1119] shadow-lg scale-105 font-extrabold'
+                            : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
+                        }`}
+                      >
+                        <span>{cat.name}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] ${isActive ? 'bg-[#8c1119] text-amber-300' : 'bg-black/40 text-white/70'}`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="relative min-w-[220px]">
+                  <Search className="w-4 h-4 absolute left-3 top-3 text-white/40" />
+                  <input
+                    type="text"
+                    value={itemSearchTerm}
+                    onChange={(e) => setItemSearchTerm(e.target.value)}
+                    placeholder="Search custom items..."
+                    className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
               {/* Items Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                {customItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
-                  >
-                    <div className="relative h-40 bg-black/40 overflow-hidden">
-                      <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <span className="absolute top-3 left-3 bg-black/80 border border-white/20 text-amber-300 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full">
-                        {item.category}
-                      </span>
-                    </div>
-
-                    <div className="p-4 flex-1 flex flex-col justify-between">
-                      <div>
-                        <h3 className="font-podium text-base uppercase font-bold text-white">{item.name}</h3>
-                        <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{item.description}</p>
+                {customItems
+                  .filter((item) => {
+                    const matchesCategory = itemCategoryFilter === 'all' || item.category?.toLowerCase() === itemCategoryFilter.toLowerCase();
+                    const matchesSearch = !itemSearchTerm || item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) || item.description?.toLowerCase().includes(itemSearchTerm.toLowerCase());
+                    return matchesCategory && matchesSearch;
+                  })
+                  .map((item) => (
+                    <div
+                      key={item.id}
+                      className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
+                    >
+                      <div className="relative h-40 bg-black/40 overflow-hidden">
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <span className="absolute top-3 left-3 bg-black/80 border border-white/20 text-amber-300 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full">
+                          {item.category}
+                        </span>
                       </div>
 
-                      <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
-                        <span className="font-bold text-amber-300 text-lg">${item.price.toFixed(2)}</span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleOpenItemModal(item)}
-                            className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteItem(item.id)}
-                            className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                      <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                          <h3 className="font-podium text-base uppercase font-bold text-white">{item.name}</h3>
+                          <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{item.description}</p>
+                        </div>
+
+                        <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
+                          <span className="font-bold text-amber-300 text-lg">${item.price.toFixed(2)}</span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleOpenItemModal(item)}
+                              className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteItem(item.id)}
+                              className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           )}
 
-          {/* TAB 5: CATEGORIES MENU */}
+          {/* TAB 5: CATEGORIES MENU WITH TYPE NAV BAR */}
           {activeTab === 'categories' && (
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1299,57 +1406,101 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </button>
               </div>
 
-              {/* Categories Display */}
+              {/* Sub-Navbar for Master Categories */}
+              <div className="bg-[#2a0508]/80 border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shadow-xl">
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-thin">
+                  {[
+                    { id: 'all', label: 'All Categories', count: categoriesList.length },
+                    { id: 'package', label: 'Ready-Made Packages', count: categoriesList.filter((c) => c.type === 'package').length },
+                    { id: 'custom_item', label: 'Single Items', count: categoriesList.filter((c) => c.type === 'custom_item').length },
+                    { id: 'both', label: 'Universal (Both)', count: categoriesList.filter((c) => c.type === 'both' || !c.type).length },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setCategoryTypeFilter(tab.id)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold font-inter whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+                        categoryTypeFilter === tab.id
+                          ? 'bg-amber-400 text-[#8c1119] shadow-lg scale-105 font-extrabold'
+                          : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] ${categoryTypeFilter === tab.id ? 'bg-[#8c1119] text-amber-300' : 'bg-black/40 text-white/70'}`}>
+                        {tab.count}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="relative min-w-[220px]">
+                  <Search className="w-4 h-4 absolute left-3 top-3 text-white/40" />
+                  <input
+                    type="text"
+                    value={categorySearchTerm}
+                    onChange={(e) => setCategorySearchTerm(e.target.value)}
+                    placeholder="Search categories..."
+                    className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              {/* Categories Display Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {categoriesList.map((cat) => (
-                  <div
-                    key={cat.id}
-                    className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden p-5 flex flex-col justify-between shadow-xl"
-                  >
-                    <div>
-                      <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 flex-shrink-0">
-                          <FolderTree className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-podium text-lg uppercase font-bold text-white">{cat.name}</h3>
+                {categoriesList
+                  .filter((cat) => {
+                    const matchesType = categoryTypeFilter === 'all' || cat.type === categoryTypeFilter || (categoryTypeFilter === 'both' && (!cat.type || cat.type === 'both'));
+                    const matchesSearch = !categorySearchTerm || cat.name.toLowerCase().includes(categorySearchTerm.toLowerCase()) || cat.description?.toLowerCase().includes(categorySearchTerm.toLowerCase());
+                    return matchesType && matchesSearch;
+                  })
+                  .map((cat) => (
+                    <div
+                      key={cat.id}
+                      className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden p-5 flex flex-col justify-between shadow-xl"
+                    >
+                      <div>
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 flex-shrink-0">
+                            <FolderTree className="w-6 h-6" />
                           </div>
-                          <span className="text-[10px] text-amber-300/80 font-mono font-bold block mt-0.5">/{cat.slug}</span>
-                          <p className="text-white/60 text-xs font-inter mt-1 leading-snug">{cat.description}</p>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-podium text-lg uppercase font-bold text-white">{cat.name}</h3>
+                            </div>
+                            <span className="text-[10px] text-amber-300/80 font-mono font-bold block mt-0.5">/{cat.slug}</span>
+                            <p className="text-white/60 text-xs font-inter mt-1 leading-snug">{cat.description}</p>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+                          <span className="text-[10px] uppercase font-bold tracking-wider text-white/50">Applies To:</span>
+                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                            cat.type === 'package'
+                              ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+                              : cat.type === 'custom_item'
+                              ? 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+                              : 'bg-amber-400/20 text-amber-300 border-amber-400/30'
+                          }`}>
+                            {cat.type === 'package' ? 'Ready-made Packages' : cat.type === 'custom_item' ? 'Single Custom Items' : 'Universal (Packages & Items)'}
+                          </span>
                         </div>
                       </div>
 
-                      <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
-                        <span className="text-[10px] uppercase font-bold tracking-wider text-white/50">Applies To:</span>
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
-                          cat.type === 'package'
-                            ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
-                            : cat.type === 'custom_item'
-                            ? 'bg-blue-500/20 text-blue-300 border-blue-500/30'
-                            : 'bg-amber-400/20 text-amber-300 border-amber-400/30'
-                        }`}>
-                          {cat.type === 'package' ? 'Ready-made Packages' : cat.type === 'custom_item' ? 'Single Custom Items' : 'Universal (Packages & Items)'}
-                        </span>
+                      <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleOpenCategoryModal(cat)}
+                          className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white text-xs font-bold transition-colors cursor-pointer"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteCategory(cat.id)}
+                          className="px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white text-xs font-bold transition-colors cursor-pointer"
+                        >
+                          Delete
+                        </button>
                       </div>
                     </div>
-
-                    <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => handleOpenCategoryModal(cat)}
-                        className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white text-xs font-bold transition-colors"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteCategory(cat.id)}
-                        className="px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white text-xs font-bold transition-colors"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           )}
