@@ -3,7 +3,7 @@ import { CartItem, Order } from '../types/cart';
 import { Package, Truck, ArrowLeft, Image as ImageIcon, PhoneCall, UploadCloud, Check, Sparkles, Box, Headset, Clock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useMarket } from '../context/MarketContext';
-import { GiftBoxStyle, DEFAULT_GIFT_BOXES, getStoredGiftBoxes } from '../data/giftsData';
+import { GiftBoxStyle, getStoredGiftBoxes } from '../data/giftsData';
 import { formatPrice } from '../utils/currency';
 import { GiftNotePreview } from './GiftNotePreview';
 import { supabase } from '../lib/supabase';
@@ -34,8 +34,8 @@ export const CartPage: React.FC<CartPageProps> = ({
   // Custom Box Detail toggles
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
 
-  // Gift Box Styles State
-  const [giftBoxes, setGiftBoxes] = useState<GiftBoxStyle[]>(DEFAULT_GIFT_BOXES);
+  // Gift Box Styles State — start empty; only populated from DB
+  const [giftBoxes, setGiftBoxes] = useState<GiftBoxStyle[]>([]);
   const [selectedBoxId, setSelectedBoxId] = useState<string>('');
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export const CartPage: React.FC<CartPageProps> = ({
         setGiftBoxes(boxes);
         setSelectedBoxId((prev) => prev || boxes[0].id);
       }
+      // If DB returns nothing → leave giftBoxes empty → section is hidden
     });
   }, []);
 
@@ -60,7 +61,6 @@ export const CartPage: React.FC<CartPageProps> = ({
   const wrapTier = getBoxPrice(selectedBox);
   const [shipMode, setShipMode] = useState<'recipient' | 'me'>('recipient');
 
-  const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
@@ -172,7 +172,7 @@ export const CartPage: React.FC<CartPageProps> = ({
       createdAt: new Date().toISOString().slice(0, 16).replace('T', ' '),
       status: 'Pending',
       customer: {
-        fullName: customerName.trim() || recipientName.trim() || session.user?.email?.split('@')[0] || 'Gift Customer',
+        fullName: senderName.trim() || recipientName.trim() || session.user?.user_metadata?.full_name || session.user?.email?.split('@')[0] || 'Gift Customer',
         email: session.user?.email || 'mbmgifts.orders@gmail.com',
         phone: phone.trim(),
         address: address.trim(),
@@ -194,6 +194,7 @@ export const CartPage: React.FC<CartPageProps> = ({
       currency: serverValidatedCurrency,    // Server-enforced currency
       deliveryFee: 0,
     };
+    // Note: customerName removed — we use session email's display name or recipientName
 
     setIsPlacingOrder(false);
     onOrderCreated(newOrder);
@@ -259,11 +260,25 @@ export const CartPage: React.FC<CartPageProps> = ({
                   {items.map((item) => (
                     <div key={item.id} className="bg-[#2a0407] border border-white/10 rounded-2xl p-4 flex gap-4">
                       <div className="w-20 h-20 bg-black/50 border border-white/10 rounded-xl overflow-hidden flex-shrink-0">
-                        <img
-                          src={item.type === 'package' ? item.package.image : item.boxStyle.image}
-                          alt="Item"
-                          className="w-full h-full object-cover"
-                        />
+                        {item.type === 'package' && item.package.image ? (
+                          <img
+                            src={item.package.image}
+                            alt={item.package.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                          />
+                        ) : item.type === 'custom' && item.selectedItems[0]?.image ? (
+                          <img
+                            src={item.selectedItems[0].image}
+                            alt="Custom box"
+                            className="w-full h-full object-cover"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Box className="w-8 h-8 text-white/20" />
+                          </div>
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-start gap-4">
@@ -326,7 +341,8 @@ export const CartPage: React.FC<CartPageProps> = ({
                   ))}
                 </div>
 
-                {/* Gift Wrap / Box Styles */}
+                {/* Gift Wrap / Box Styles — only render when admin has added boxes in DB */}
+                {giftBoxes.length > 0 && (
                 <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-5 md:p-6 mt-6">
                   <div className="flex items-center justify-between mb-1">
                     <h3 className="font-podium text-xl uppercase tracking-wider text-white">How should we wrap it?</h3>
@@ -358,6 +374,7 @@ export const CartPage: React.FC<CartPageProps> = ({
                               src={box.image}
                               alt={box.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
@@ -401,6 +418,7 @@ export const CartPage: React.FC<CartPageProps> = ({
                     })}
                   </div>
                 </div>
+                )}
 
                 {/* Gift Note with Live Preview */}
                 <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-5 md:p-6 mt-6 space-y-6">
@@ -490,7 +508,7 @@ export const CartPage: React.FC<CartPageProps> = ({
                     </div>
                   </div>
 
-                  {/* Customer Contact & Address Form */}
+                  {/* Contact & Address Form — no Customer Full Name field */}
                   <div className="space-y-4 pt-4 border-t border-white/10">
                     {validationError && (
                       <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-200 text-xs font-semibold flex items-center gap-2">
@@ -498,34 +516,19 @@ export const CartPage: React.FC<CartPageProps> = ({
                       </div>
                     )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5">
-                          Customer Full Name
-                        </label>
-                        <input
-                          type="text"
-                          value={customerName}
-                          onChange={(e) => setCustomerName(e.target.value)}
-                          placeholder="e.g. Eleanor Vance"
-                          className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center justify-between">
-                          <span>Phone Number <span className="text-red-400">*</span></span>
-                          <span className="text-amber-400/80 text-[9px] font-normal">For delivery confirmation</span>
-                        </label>
-                        <input
-                          type="tel"
-                          required
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="e.g. +251 911 234 567"
-                          className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
-                        />
-                      </div>
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center justify-between">
+                        <span>Phone Number <span className="text-red-400">*</span></span>
+                        <span className="text-amber-400/80 text-[9px] font-normal">For delivery confirmation</span>
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="e.g. +251 911 234 567"
+                        className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
+                      />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
