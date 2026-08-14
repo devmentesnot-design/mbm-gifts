@@ -765,11 +765,11 @@ export const getStoredGiftBoxes = async (): Promise<GiftBoxStyle[]> => {
 };
 
 export const saveStoredGiftBoxes = async (boxes: GiftBoxStyle[]) => {
-  console.log('💾 Saving', boxes.length, 'gift boxes to Supabase...');
+  console.log('💾 Saving', boxes.length, 'gift boxes...');
   
   if (!isSupabaseConfigured) {
-    console.error('❌ Supabase not configured!');
-    throw new Error('Supabase not configured - cannot save gift boxes');
+    localStorage.setItem('mbm_stored_gift_boxes_v2', JSON.stringify(boxes));
+    return;
   }
 
   try {
