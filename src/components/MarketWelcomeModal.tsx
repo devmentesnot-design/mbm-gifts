@@ -70,7 +70,7 @@ export const MarketWelcomeModal: React.FC = () => {
                 <img
                   src="/logo.png"
                   alt="MBM Gifts"
-                  className="w-full h-full object-contain drop-shadow-xl"
+                  className="w-full h-full object-contain drop-shadow-xl scale-[1.4]"
                   style={{ filter: 'brightness(1.15) contrast(1.05)' }}
                 />
               </div>
