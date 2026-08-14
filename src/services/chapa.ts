@@ -69,10 +69,10 @@ export interface ChapaVerifyResponse {
 // Helper: Email validation & sanitization
 // ---------------------------------------------------------------------------
 const sanitizeEmail = (email?: string): string => {
-  if (!email) return 'orders@mbmgifts.com';
+  if (!email) return 'mbmgifts.orders@gmail.com';
   const clean = email.trim();
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(clean) ? clean : 'orders@mbmgifts.com';
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(clean) ? clean : 'mbmgifts.orders@gmail.com';
 };
 
 // ---------------------------------------------------------------------------

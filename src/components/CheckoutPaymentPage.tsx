@@ -117,7 +117,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
       const response = await initializeChapaTransaction({
         amount: order.total,
         currency: currency as 'ETB' | 'USD',
-        email: order.customer.email || 'customer@mbmgifts.com',
+        email: order.customer.email || 'mbmgifts.orders@gmail.com',
         firstName: firstName,
         lastName: lastName,
         phone: order.customer.phone || '0911000000',

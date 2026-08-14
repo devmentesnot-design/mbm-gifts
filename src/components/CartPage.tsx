@@ -117,7 +117,7 @@ export const CartPage: React.FC<CartPageProps> = ({
       status: 'Pending',
       customer: {
         fullName: customerName.trim() || recipientName.trim() || session.user?.email?.split('@')[0] || 'Gift Customer',
-        email: session.user?.email || 'customer@mbmgifts.com',
+        email: session.user?.email || 'mbmgifts.orders@gmail.com',
         phone: phone.trim(),
         address: address.trim(),
         city: city.trim() || 'Addis Ababa',

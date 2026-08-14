@@ -71,7 +71,7 @@ Deno.serve(async (req: Request) => {
     // Validate and sanitize email
     let cleanEmail = (typeof email === 'string' ? email.trim() : '');
     if (!isValidEmail(cleanEmail)) {
-      cleanEmail = 'customer@mbmgifts.com';
+      cleanEmail = 'mbmgifts.orders@gmail.com';
     }
 
     // Sanitize names
