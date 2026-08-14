@@ -277,18 +277,9 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                       </div>
 
                       {ord.chapaTxRef && (
-                        <div className="flex items-center gap-2 text-[11px] text-white/60">
-                          <span>Chapa Ref:</span>
-                          <span className="font-mono text-amber-300 font-semibold">{ord.chapaTxRef}</span>
-                          <a
-                            href={`https://checkout.chapa.co/receipt/${ord.chapaTxRef}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-amber-300 hover:text-amber-200 inline-flex items-center gap-0.5 underline font-bold"
-                          >
-                            <span>Receipt</span>
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
+                        <div className="flex items-center gap-1.5 text-[11px] bg-black/40 border border-white/10 px-2.5 py-1 rounded-lg">
+                          <span className="text-white/50">Chapa Ref:</span>
+                          <span className="font-mono text-amber-300 font-bold">{ord.chapaTxRef}</span>
                         </div>
                       )}
                     </div>

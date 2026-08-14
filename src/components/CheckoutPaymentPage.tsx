@@ -300,35 +300,23 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-              <a
-                href={`https://checkout.chapa.co/receipt/${txRef}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-black/40 hover:bg-black/60 border border-white/20 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all"
+            <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => window.print()}
+                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer"
+                title="Print or Save Receipt as PDF"
               >
-                <ExternalLink className="w-4 h-4 text-amber-300" />
-                <span>Open Chapa Official Receipt</span>
-              </a>
+                <Printer className="w-4 h-4 text-amber-300" />
+                <span>Print / Save PDF Receipt</span>
+              </button>
 
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <button
-                  onClick={() => window.print()}
-                  className="px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all"
-                  title="Print receipt"
-                >
-                  <Printer className="w-4 h-4 text-amber-300" />
-                  <span>Print</span>
-                </button>
-
-                <button
-                  onClick={() => onNavigate ? onNavigate('/my-orders') : window.location.href = '/my-orders'}
-                  className="flex-1 sm:flex-initial px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-400/20 cursor-pointer"
-                >
-                  <PackageCheck className="w-4 h-4" />
-                  <span>View in My Orders</span>
-                </button>
-              </div>
+              <button
+                onClick={() => onNavigate ? onNavigate('/my-orders') : window.location.href = '/my-orders'}
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-400/20 cursor-pointer"
+              >
+                <PackageCheck className="w-4 h-4" />
+                <span>Go to My Orders</span>
+              </button>
             </div>
           </div>
         )}
