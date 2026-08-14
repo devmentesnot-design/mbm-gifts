@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Gift, Send, Instagram, Facebook, Twitter } from 'lucide-react';
 import { LegalModal } from './LegalModal';
+import { MarketChangeRequest } from './MarketChangeRequest';
 
 export const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -102,6 +103,10 @@ export const Footer: React.FC = () => {
             <li><a href="#packages" className="hover:text-white transition-colors">Hand-Packed Guarantee</a></li>
             <li><a href="#packages" className="hover:text-white transition-colors">Corporate Bulk Gifting</a></li>
           </ul>
+          {/* Low-profile region change — only for edge cases, not a casual switcher */}
+          <div className="mt-4 pt-4 border-t border-white/10">
+            <MarketChangeRequest />
+          </div>
         </div>
 
         <div>

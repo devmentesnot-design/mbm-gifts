@@ -6,6 +6,7 @@ import { useMarket } from '../context/MarketContext';
 import { GiftBoxStyle, DEFAULT_GIFT_BOXES, getStoredGiftBoxes } from '../data/giftsData';
 import { formatPrice } from '../utils/currency';
 import { GiftNotePreview } from './GiftNotePreview';
+import { supabase } from '../lib/supabase';
 
 interface CartPageProps {
   session: any;
@@ -67,6 +68,7 @@ export const CartPage: React.FC<CartPageProps> = ({
   const [senderName, setSenderName] = useState('');
   const [giftMessage, setGiftMessage] = useState('');
   const [validationError, setValidationError] = useState('');
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   // Cart Calculations
   const calculateItemPrice = (item: CartItem): number => {
@@ -90,7 +92,7 @@ export const CartPage: React.FC<CartPageProps> = ({
   const subtotal = items.reduce((sum, item) => sum + calculateItemPrice(item), 0);
   const total = subtotal + wrapTier;
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     setValidationError('');
     if (items.length === 0) return;
 
@@ -111,6 +113,60 @@ export const CartPage: React.FC<CartPageProps> = ({
       return;
     }
 
+    setIsPlacingOrder(true);
+
+    // ─── Backend market & price validation ──────────────────────────────────
+    // Call the Supabase Edge Function to re-derive market from the user profile
+    // and recompute the total server-side. This prevents frontend manipulation.
+    let serverValidatedTotal = total;
+    let serverValidatedMarket = buyerMarket;
+    let serverValidatedCurrency = currency;
+
+    try {
+      const authSession = session || (await supabase.auth.getSession()).data.session;
+      if (authSession?.access_token) {
+        const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL || '';
+        const cartPayload = {
+          cart_items: items.map(item => ({
+            type: item.type,
+            id: item.type === 'package' ? item.package.id : item.id,
+            quantity: item.quantity,
+          })),
+          box_id: selectedBox?.id || null,
+          claimed_market: buyerMarket,
+        };
+
+        const edgeFnRes = await fetch(
+          `${supabaseUrl}/functions/v1/validate-market-order`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${authSession.access_token}`,
+            },
+            body: JSON.stringify(cartPayload),
+            signal: AbortSignal.timeout(8000),
+          }
+        );
+
+        if (edgeFnRes.ok) {
+          const validated = await edgeFnRes.json();
+          if (validated?.validated_total > 0) {
+            serverValidatedTotal = validated.validated_total;
+            serverValidatedMarket = validated.market || buyerMarket;
+            serverValidatedCurrency = validated.currency || currency;
+          }
+        } else {
+          // Edge Function returned an error — use frontend total as fallback
+          console.warn('⚠️ Market validation Edge Function returned error; using frontend total as fallback.');
+        }
+      }
+    } catch (err) {
+      // Network or timeout — use frontend total as fallback
+      console.warn('⚠️ Market validation Edge Function unreachable; using frontend total as fallback.', err);
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     const newOrder: Order = {
       id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
       createdAt: new Date().toISOString().slice(0, 16).replace('T', ' '),
@@ -129,16 +185,17 @@ export const CartPage: React.FC<CartPageProps> = ({
       items: [...items],
       subtotal: subtotal,
       shipping: 0,
-      total: total,
+      total: serverValidatedTotal,  // Server-validated total
       paymentMethod: 'Chapa Payment Gateway',
       paymentStatus: 'PENDING_PAYMENT',
       giftBoxStyle: selectedBox?.name || 'Standard Box',
       giftBoxPrice: wrapTier,
-      buyerMarket: buyerMarket,
-      currency: currency,
+      buyerMarket: serverValidatedMarket,  // Server-enforced market
+      currency: serverValidatedCurrency,    // Server-enforced currency
       deliveryFee: 0,
     };
 
+    setIsPlacingOrder(false);
     onOrderCreated(newOrder);
     onClearCart();
   };
@@ -535,18 +592,32 @@ export const CartPage: React.FC<CartPageProps> = ({
                   <div>
                     <span className="text-sm uppercase tracking-widest font-bold text-white/70 block">Total</span>
                     <span className="text-[10px] text-amber-300/80 uppercase font-semibold">
-                      {buyerMarket === 'INTERNATIONAL' ? 'USD (Abroad)' : 'ETB (Local)'}
+                      {buyerMarket === 'INTERNATIONAL' ? 'USD (International)' : 'ETB (Ethiopia)'}
                     </span>
                   </div>
                   <span className="font-podium text-3xl text-amber-300">{formatPrice(total, currency)}</span>
                 </div>
 
                 <button
+                  id="cart-place-order-btn"
                   onClick={handlePlaceOrder}
-                  className="w-full bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold py-4 text-sm uppercase tracking-wider rounded-xl transition-all shadow-xl shadow-amber-400/20 cursor-pointer flex items-center justify-center gap-2"
+                  disabled={isPlacingOrder}
+                  className="w-full bg-amber-400 hover:bg-amber-300 disabled:opacity-70 disabled:cursor-not-allowed text-[#8c1119] font-bold py-4 text-sm uppercase tracking-wider rounded-xl transition-all shadow-xl shadow-amber-400/20 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <Sparkles className="w-4 h-4" />
-                  <span>{session ? 'Proceed to Chapa Payment' : 'Sign up to place order'}</span>
+                  {isPlacingOrder ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                      </svg>
+                      <span>Validating order...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>{session ? 'Proceed to Chapa Payment' : 'Sign up to place order'}</span>
+                    </>
+                  )}
                 </button>
                 <p className="text-center text-[10px] text-white/40 mt-4 uppercase tracking-widest">
                   {session ? "Secure Checkout Powered by Chapa" : 'Create an account to complete your purchase'}

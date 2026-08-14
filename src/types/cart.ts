@@ -1,6 +1,8 @@
 import { PreparedPackage, CustomBoxOption } from '../data/giftsData';
 import type { BuyerMarket, MarketCurrency } from '../context/MarketContext';
 
+// BuyerMarket: 'ETHIOPIA' | 'INTERNATIONAL'
+// MarketCurrency: 'ETB' | 'USD'
 export type { BuyerMarket, MarketCurrency };
 
 export interface CartItemPrepared {

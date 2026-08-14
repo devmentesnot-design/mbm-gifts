@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ShoppingBag, Globe, LogIn, LogOut, User, ChevronDown, Package, Shield, Gift, X } from 'lucide-react';
+import { ShoppingBag, Globe, LogIn, LogOut, ChevronDown, Package, X } from 'lucide-react';
 import { CartItem } from '../types/cart';
 import { supabase } from '../lib/supabase';
 import { useLanguage } from '../context/LanguageContext';
-import { MarketSwitcher } from './MarketSwitcher';
+import { useMarket } from '../context/MarketContext';
 
 interface NavbarProps {
   cartItems: CartItem[];
@@ -15,6 +15,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, onNavigateToLogin, onNavigate }) => {
   const { lang, setLang, t } = useLanguage();
+  const { currency } = useMarket();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -117,8 +118,14 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
 
         {/* Right Actions */}
         <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
-          {/* Market Switcher */}
-          <MarketSwitcher cartItems={cartItems} />
+          {/* Read-only currency badge — not a switcher */}
+          <div
+            title={`You are shopping in ${currency}`}
+            className="flex items-center gap-1.5 bg-black/30 border border-white/15 text-white/70 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase select-none"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            {currency}
+          </div>
 
           {/* Language Switcher Button */}
           <button
@@ -218,7 +225,13 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
 
         {/* Mobile Header Controls */}
         <div className="flex md:hidden items-center space-x-1.5">
-          <MarketSwitcher cartItems={cartItems} compact={true} />
+          {/* Read-only currency badge (mobile) */}
+          <div
+            className="flex items-center gap-1 bg-black/30 border border-white/15 text-white/60 px-2 py-1 rounded-full text-[9px] font-bold tracking-widest uppercase select-none"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            {currency}
+          </div>
 
           {/* Language Toggle Mobile */}
           <button

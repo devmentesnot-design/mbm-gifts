@@ -42,8 +42,8 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
   const [txRef, setTxRef] = useState<string>(() => generateTxRef(order.id));
   const [verifiedPaidOrder, setVerifiedPaidOrder] = useState<Order | null>(null);
 
-  const market = order.buyerMarket || 'LOCAL';
-  const currency = order.currency || (market === 'LOCAL' ? 'ETB' : 'USD');
+  const market = order.buyerMarket || 'ETHIOPIA';
+  const currency = order.currency || (market === 'ETHIOPIA' ? 'ETB' : 'USD');
 
   // Check URL parameters if returning from Chapa redirect
   useEffect(() => {
@@ -225,10 +225,10 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
               {/* Market Badge Banner */}
               <div className="bg-black/30 border border-amber-400/20 rounded-2xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl">{market === 'LOCAL' ? '🇪🇹' : '🌍'}</span>
+                  <span className="text-3xl">{market === 'ETHIOPIA' ? '🇪🇹' : '🌍'}</span>
                   <div>
                     <div className="text-xs font-bold text-white uppercase tracking-wider">
-                      {market === 'LOCAL' ? 'Ethiopian Local Buyer' : 'International Diaspora / Abroad Buyer'}
+                      {market === 'ETHIOPIA' ? 'Ethiopian Local Buyer' : 'International Diaspora / Abroad Buyer'}
                     </div>
                     <div className="text-[11px] text-amber-300 font-semibold">
                       Billing in <strong className="underline">{currency}</strong> via Chapa Gateway
@@ -246,12 +246,12 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
               {/* Supported Payment Methods Showcase */}
               <div>
                 <label className="block text-xs uppercase tracking-widest text-amber-300 font-bold mb-2.5">
-                  {market === 'LOCAL'
+                  {market === 'ETHIOPIA'
                     ? 'Supported Local Payment Options (Chapa)'
                     : 'Supported International Payment Options (Chapa)'}
                 </label>
 
-                {market === 'LOCAL' ? (
+                {market === 'ETHIOPIA' ? (
                   <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                     {localPaymentChannels.map((channel, i) => (
                       <div

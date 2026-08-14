@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Globe, ChevronDown, Check, Sparkles, AlertCircle } from 'lucide-react';
+import { ChevronDown, Check, Sparkles, AlertCircle } from 'lucide-react';
 import { useMarket, BuyerMarket } from '../context/MarketContext';
 import { CartItem } from '../types/cart';
 
@@ -9,12 +9,14 @@ interface MarketSwitcherProps {
   compact?: boolean;
 }
 
+/**
+ * @deprecated Legacy MarketSwitcher. Use MarketWelcomeModal and MarketChangeRequest instead.
+ */
 export const MarketSwitcher: React.FC<MarketSwitcherProps> = ({
   cartItems = [],
   onMarketChange,
-  compact = false,
 }) => {
-  const { buyerMarket, currency, setMarket } = useMarket();
+  const { buyerMarket, currency, requestMarketChange } = useMarket();
   const [isOpen, setIsOpen] = useState(false);
   const [pendingMarket, setPendingMarket] = useState<BuyerMarket | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -37,7 +39,6 @@ export const MarketSwitcher: React.FC<MarketSwitcherProps> = ({
       return;
     }
 
-    // If cart has items, warn user before switching
     if (cartItems.length > 0) {
       setPendingMarket(targetMarket);
       setShowConfirmModal(true);
@@ -48,8 +49,8 @@ export const MarketSwitcher: React.FC<MarketSwitcherProps> = ({
     executeMarketSwitch(targetMarket);
   };
 
-  const executeMarketSwitch = (targetMarket: BuyerMarket) => {
-    setMarket(targetMarket);
+  const executeMarketSwitch = async (targetMarket: BuyerMarket) => {
+    await requestMarketChange(targetMarket);
     if (onMarketChange) {
       onMarketChange(targetMarket);
     }
@@ -72,11 +73,11 @@ export const MarketSwitcher: React.FC<MarketSwitcherProps> = ({
           title="Switch Buyer Market & Currency"
         >
           <span className="text-base leading-none">
-            {buyerMarket === 'LOCAL' ? '🇪🇹' : '🌍'}
+            {buyerMarket === 'ETHIOPIA' ? '🇪🇹' : '🌍'}
           </span>
           <div className="flex flex-col text-left">
             <span className="text-[10px] uppercase font-bold tracking-widest leading-none text-white/90">
-              {buyerMarket === 'LOCAL' ? 'Ethiopia' : 'Abroad'}
+              {buyerMarket === 'ETHIOPIA' ? 'Ethiopia' : 'Abroad'}
             </span>
             <span className="text-[9px] text-amber-300 font-semibold tracking-wider leading-none mt-0.5">
               {currency} {buyerMarket === 'INTERNATIONAL' && '• Free Delivery'}
@@ -93,12 +94,12 @@ export const MarketSwitcher: React.FC<MarketSwitcherProps> = ({
             </div>
 
             <div className="p-1.5 space-y-1">
-              {/* LOCAL ETHIOPIA OPTION */}
+              {/* ETHIOPIA OPTION */}
               <button
                 type="button"
-                onClick={() => handleSelectMarket('LOCAL')}
+                onClick={() => handleSelectMarket('ETHIOPIA')}
                 className={`w-full flex items-start gap-3 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
-                  buyerMarket === 'LOCAL'
+                  buyerMarket === 'ETHIOPIA'
                     ? 'bg-amber-400/15 border border-amber-400/50 text-white'
                     : 'hover:bg-white/5 text-white/80'
                 }`}
@@ -107,14 +108,14 @@ export const MarketSwitcher: React.FC<MarketSwitcherProps> = ({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-xs text-white">Buying from Ethiopia</span>
-                    {buyerMarket === 'LOCAL' && <Check className="w-3.5 h-3.5 text-amber-300" />}
+                    {buyerMarket === 'ETHIOPIA' && <Check className="w-3.5 h-3.5 text-amber-300" />}
                   </div>
                   <p className="text-[10px] text-amber-300 font-semibold mt-0.5">Prices in ETB (ብር)</p>
                   <p className="text-[9px] text-white/50 mt-0.5">Local Ethiopian payment methods via Chapa</p>
                 </div>
               </button>
 
-              {/* INTERNATIONAL ABROAD OPTION */}
+              {/* INTERNATIONAL OPTION */}
               <button
                 type="button"
                 onClick={() => handleSelectMarket('INTERNATIONAL')}
@@ -162,7 +163,7 @@ export const MarketSwitcher: React.FC<MarketSwitcherProps> = ({
             <p className="text-xs text-white/80 leading-relaxed mb-5">
               You currently have items in your cart. Switching to{' '}
               <strong className="text-amber-300">
-                {pendingMarket === 'LOCAL' ? 'Ethiopia (ETB)' : 'Abroad (USD)'}
+                {pendingMarket === 'ETHIOPIA' ? 'Ethiopia (ETB)' : 'Abroad (USD)'}
               </strong>{' '}
               will update product pricing and delivery currency to ensure correct billing.
             </p>
@@ -183,7 +184,7 @@ export const MarketSwitcher: React.FC<MarketSwitcherProps> = ({
                 onClick={() => pendingMarket && executeMarketSwitch(pendingMarket)}
                 className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-400 hover:bg-amber-300 text-[#8c1119] transition-all shadow-md shadow-amber-400/20"
               >
-                Switch to {pendingMarket === 'LOCAL' ? 'ETB' : 'USD'}
+                Switch to {pendingMarket === 'ETHIOPIA' ? 'ETB' : 'USD'}
               </button>
             </div>
           </div>
@@ -192,3 +193,4 @@ export const MarketSwitcher: React.FC<MarketSwitcherProps> = ({
     </>
   );
 };
+

@@ -16,8 +16,8 @@ export const OfficialReceiptModal: React.FC<OfficialReceiptModalProps> = ({
   onNavigate,
   isStandalonePage = false,
 }) => {
-  const market = order.buyerMarket || 'LOCAL';
-  const currency = order.currency || (market === 'LOCAL' ? 'ETB' : 'USD');
+  const market = order.buyerMarket || 'ETHIOPIA';
+  const currency = order.currency || (market === 'ETHIOPIA' ? 'ETB' : 'USD');
 
   const handlePrint = () => {
     window.print();

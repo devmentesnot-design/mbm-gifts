@@ -15,6 +15,7 @@ import { AccessDeniedView } from './components/AccessDeniedView';
 import { PackageDetailPage } from './components/PackageDetailPage';
 import { MyOrdersPage } from './components/MyOrdersPage';
 import { ProfilePage } from './components/ProfilePage';
+import { MarketWelcomeModal } from './components/MarketWelcomeModal';
 import { supabase } from './lib/supabase';
 import { CartItem, CartItemPrepared, CartItemCustom, Order, OrderStatus } from './types/cart';
 import {
@@ -667,40 +668,45 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#8c1119] text-white font-inter selection:bg-amber-400 selection:text-[#8c1119]">
-      {/* Top Navbar */}
-      <Navbar
-        session={session}
-        cartItems={cartItems}
-        onOpenCart={handleNavigateToCart}
-        onNavigateToLogin={() => navigateTo('/login')}
-        onNavigate={navigateTo}
-      />
+    <>
+      {/* First-visit market welcome modal — rendered above all pages */}
+      <MarketWelcomeModal />
 
-      {/* Hero Section */}
-      <Hero
-        onExplorePackages={handleExplorePackages}
-      />
+      <div className="min-h-screen w-full bg-[#8c1119] text-white font-inter selection:bg-amber-400 selection:text-[#8c1119]">
+        {/* Top Navbar */}
+        <Navbar
+          session={session}
+          cartItems={cartItems}
+          onOpenCart={handleNavigateToCart}
+          onNavigateToLogin={() => navigateTo('/login')}
+          onNavigate={navigateTo}
+        />
 
-      {/* Unified Gift Shop Body Section */}
-      <GiftShopBody
-        categories={categories}
-        giftBoxes={giftBoxes}
-        packages={packages}
-        customItems={customItems}
-        onAddToCartPrepared={handleAddToCartPrepared}
-        onAddToCartCustom={handleAddToCartCustom}
-        onViewPackageDetail={(id) => navigateTo(`/package/${id}`)}
-      />
+        {/* Hero Section */}
+        <Hero
+          onExplorePackages={handleExplorePackages}
+        />
 
-      {/* Smart Gift Assistant Finder */}
-      <GiftFinder packages={packages} onAddToCart={handleAddToCartPrepared} />
+        {/* Unified Gift Shop Body Section */}
+        <GiftShopBody
+          categories={categories}
+          giftBoxes={giftBoxes}
+          packages={packages}
+          customItems={customItems}
+          onAddToCartPrepared={handleAddToCartPrepared}
+          onAddToCartCustom={handleAddToCartCustom}
+          onViewPackageDetail={(id) => navigateTo(`/package/${id}`)}
+        />
 
-      {/* Customer Reviews & Quality Guarantees */}
-      <Reviews />
+        {/* Smart Gift Assistant Finder */}
+        <GiftFinder packages={packages} onAddToCart={handleAddToCartPrepared} />
 
-      {/* Footer */}
-      <Footer />
-    </div>
+        {/* Customer Reviews & Quality Guarantees */}
+        <Reviews />
+
+        {/* Footer */}
+        <Footer />
+      </div>
+    </>
   );
 }
