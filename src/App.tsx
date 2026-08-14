@@ -364,12 +364,11 @@ export default function App() {
         const freshOrders = await getStoredOrders();
         setOrders(freshOrders);
         
-        // Clear cart & pending order state upon successful DB save
+        // Clear cart state upon successful DB save
         setCartItems([]);
-        setPendingOrder(null);
-        localStorage.removeItem('mbm_pending_order');
         localStorage.removeItem('mbm_gifts_cart');
-        navigateTo('/my-orders');
+        // Keep finalized order in pendingOrder state so the Digital Receipt stays on screen
+        setPendingOrder(finalizedOrder);
       } catch (err: any) {
         console.error('❌ Failed to save order to database:', err);
         alert('Database Order Save Error: ' + (err?.message || 'Could not save order to database. Please check Supabase configuration or try again.'));
@@ -562,6 +561,7 @@ export default function App() {
         order={pendingOrder}
         onPaymentSubmitted={handlePaymentSubmitted}
         onBack={() => navigateTo('/cart')}
+        onNavigate={navigateTo}
       />
     );
   }

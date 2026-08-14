@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Package, Truck, PhoneCall, UploadCloud, Check, Clock, ChevronDown, ChevronUp, Search, Filter, ShoppingBag, Headset } from 'lucide-react';
+import { ArrowLeft, Package, Truck, Check, Clock, ChevronDown, ChevronUp, Search, Filter, ShoppingBag, Headset, ExternalLink, ShieldCheck, CreditCard } from 'lucide-react';
 import { Order, OrderStatus } from '../types/cart';
-import { formatCurrency } from '../utils/currency';
+import { formatPrice } from '../utils/currency';
 
 interface MyOrdersPageProps {
   orders: Order[];
@@ -13,43 +13,15 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [expandedOrders, setExpandedOrders] = useState<Record<string, boolean>>({});
-  const [uploadSuccess, setUploadSuccess] = useState<Record<string, boolean>>({});
-  const [uploadedFiles, setUploadedFiles] = useState<Record<string, File | null>>({});
-  const [bankAccountNo, setBankAccountNo] = useState<Record<string, string>>({});
 
   const toggleExpand = (id: string) => {
     setExpandedOrders(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleFileSelect = (orderId: string, file: File | null) => {
-    setUploadedFiles(prev => ({ ...prev, [orderId]: file }));
-  };
-
-  const handlePaymentSubmit = (orderId: string) => {
-    const file = uploadedFiles[orderId];
-    const accountNo = bankAccountNo[orderId];
-
-    if (!file) {
-      alert('Please upload a payment receipt screenshot');
-      return;
-    }
-    if (!accountNo || accountNo.trim() === '') {
-      alert('Please enter your bank account number');
-      return;
-    }
-
-    // Here you would typically upload to your backend/Supabase
-    console.log('Payment submitted:', { orderId, file, accountNo });
-    
-    setUploadSuccess(prev => ({ ...prev, [orderId]: true }));
-    setTimeout(() => {
-      setUploadSuccess(prev => ({ ...prev, [orderId]: false }));
-    }, 5000);
-  };
-
   const filteredOrders = orders.filter(ord => {
     const matchesSearch = ord.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       ord.customer.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (ord.chapaTxRef && ord.chapaTxRef.toLowerCase().includes(searchTerm.toLowerCase())) ||
       ord.customer.phone.includes(searchTerm);
     const matchesStatus = statusFilter === 'all' || ord.status.toLowerCase() === statusFilter.toLowerCase();
     return matchesSearch && matchesStatus;
@@ -90,6 +62,11 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
     }
   };
 
+  const getOrderCurrency = (ord: Order): 'ETB' | 'USD' => {
+    if (ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL') return 'USD';
+    return 'ETB';
+  };
+
   return (
     <div className="min-h-screen bg-[#1f0305] text-white font-inter selection:bg-amber-400 selection:text-[#8c1119]">
       {/* Top Header Navigation */}
@@ -107,7 +84,6 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
 
           {session && (
             <div className="flex items-center gap-2.5 bg-black/40 border border-amber-400/40 rounded-full pl-1.5 pr-3 py-1">
-              {/* Avatar Image or Initial Fallback */}
               {(() => {
                 const avatarUrl = session.user?.user_metadata?.avatar_url || session.user?.user_metadata?.picture || null;
                 const fullName = session.user?.user_metadata?.full_name || session.user?.user_metadata?.name || '';
@@ -126,7 +102,6 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                   </div>
                 );
               })()}
-              {/* First Name Only */}
               <span className="font-semibold tracking-wide text-amber-200 text-xs max-w-[100px] truncate">
                 {(() => {
                   const fullName = session.user?.user_metadata?.full_name || session.user?.user_metadata?.name || '';
@@ -161,7 +136,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
               My Orders
             </h1>
             <p className="text-white/60 text-xs sm:text-sm mt-1">
-              Track delivery progress, review package items, and confirm payments.
+              Track delivery progress, review package items, and verify Chapa payment receipts.
             </p>
           </div>
 
@@ -181,7 +156,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
               <input
                 type="text"
-                placeholder="Search order ID or name..."
+                placeholder="Search order ID, name, or ref..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full bg-black/40 border border-white/15 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
@@ -241,8 +216,9 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
         ) : (
           <div className="space-y-6">
             {filteredOrders.map((ord) => {
-              const isExpanded = expandedOrders[ord.id] === true; // collapsed by default
-              const isPending = ord.status === 'Pending';
+              const isExpanded = expandedOrders[ord.id] === true;
+              const ordCurr = getOrderCurrency(ord);
+              const isPaid = ord.paymentStatus === 'PAID' || ord.status === 'Processing' || ord.status === 'Delivered';
 
               return (
                 <div 
@@ -252,10 +228,25 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                   {/* Order Top Summary Header */}
                   <div className="p-4 md:p-5 bg-[#350509] border-b border-white/10">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
-                      <div className="flex flex-wrap items-center gap-3">
+                      <div className="flex flex-wrap items-center gap-2.5">
                         <div className="font-podium text-2xl text-white uppercase tracking-wider font-bold">
                           {ord.id}
                         </div>
+
+                        {/* Market Badge */}
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-black/40 border border-white/20 text-white flex items-center gap-1">
+                          <span>{ord.buyerMarket === 'INTERNATIONAL' ? '🌍 Diaspora (USD)' : '🇪🇹 Local (ETB)'}</span>
+                        </span>
+
+                        {/* Payment Status Badge */}
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border flex items-center gap-1 ${
+                          isPaid
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                            : 'bg-amber-400/20 text-amber-300 border-amber-400/40'
+                        }`}>
+                          <ShieldCheck className="w-3 h-3" />
+                          <span>{isPaid ? 'PAID' : 'PENDING PAYMENT'}</span>
+                        </span>
                       </div>
 
                       <div className="flex items-center justify-between md:justify-end gap-4 text-xs text-white/70">
@@ -265,7 +256,9 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                         </div>
                         <div>
                           <span className="text-white/40 uppercase tracking-wider text-[10px] block">Total Amount</span>
-                          <span className="font-podium text-xl text-amber-300 font-bold">{formatCurrency(ord.total)}</span>
+                          <span className="font-podium text-xl text-amber-300 font-bold">
+                            {formatPrice(ord.total, ordCurr)}
+                          </span>
                         </div>
                         <button
                           onClick={() => toggleExpand(ord.id)}
@@ -277,9 +270,27 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                       </div>
                     </div>
 
-                    {/* Single Status Badge Line */}
-                    <div className="inline-flex">
-                      {getStatusBadge(ord.status)}
+                    {/* Status Badge & Chapa Reference */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                      <div className="inline-flex">
+                        {getStatusBadge(ord.status)}
+                      </div>
+
+                      {ord.chapaTxRef && (
+                        <div className="flex items-center gap-2 text-[11px] text-white/60">
+                          <span>Chapa Ref:</span>
+                          <span className="font-mono text-amber-300 font-semibold">{ord.chapaTxRef}</span>
+                          <a
+                            href={`https://checkout.chapa.co/receipt/${ord.chapaTxRef}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-amber-300 hover:text-amber-200 inline-flex items-center gap-0.5 underline font-bold"
+                          >
+                            <span>Receipt</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -293,6 +304,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                           <span className="text-amber-300 uppercase font-bold text-[10px] tracking-wider block mb-1">Customer / Recipient</span>
                           <div className="text-white font-semibold">{ord.customer.fullName}</div>
                           <div className="text-white/60">{ord.customer.phone}</div>
+                          <div className="text-white/40 text-[11px]">{ord.customer.email}</div>
                           {ord.customer.giftRecipientName && (
                             <div className="text-amber-200/80 mt-1 italic">
                               Gift for: {ord.customer.giftRecipientName}
@@ -301,11 +313,11 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                         </div>
 
                         <div>
-                          <span className="text-amber-300 uppercase font-bold text-[10px] tracking-wider block mb-1">Delivery Destination</span>
+                          <span className="text-amber-300 uppercase font-bold text-[10px] tracking-wider block mb-1">Delivery Destination (Ethiopia)</span>
                           <div className="text-white font-semibold">{ord.customer.address}</div>
                           <div className="text-white/60">{ord.customer.city}</div>
                           {ord.customer.giftMessage && (
-                            <div className="text-amber-200/90 mt-1 text-[11px] bg-amber-400/10 border border-amber-400/20 rounded-lg p-2">
+                            <div className="text-amber-200/90 mt-2 text-[11px] bg-amber-400/10 border border-amber-400/20 rounded-lg p-2.5">
                               "{ord.customer.giftMessage}"
                             </div>
                           )}
@@ -320,7 +332,23 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                             const isPkg = item.type === 'package';
                             const title = isPkg ? item.package.name : 'Custom Gift Box';
                             const img = isPkg ? item.package.image : item.boxStyle.image;
-                            const price = isPkg ? item.package.price : item.totalPrice;
+                            
+                            // Determine item unit price in the order's specific currency
+                            let unitPrice = 0;
+                            if (ordCurr === 'USD') {
+                              if (isPkg) {
+                                unitPrice = item.package.price_usd != null && item.package.price_usd > 0
+                                  ? item.package.price_usd
+                                  : Math.round((item.package.price / 120) * 100) / 100;
+                              } else {
+                                unitPrice = item.selectedItems?.reduce((s, si) => {
+                                  const p = si.price_usd != null && si.price_usd > 0 ? si.price_usd : Math.round((si.price / 120) * 100) / 100;
+                                  return s + p;
+                                }, 0) || item.totalPrice;
+                              }
+                            } else {
+                              unitPrice = isPkg ? item.package.price : item.totalPrice;
+                            }
 
                             return (
                               <div key={item.id} className="bg-black/20 border border-white/5 rounded-xl p-3 flex items-center gap-3">
@@ -333,11 +361,29 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                                 </div>
                                 <div className="text-right flex-shrink-0">
                                   <div className="text-xs text-white/50">Qty: {item.quantity}</div>
-                                  <div className="text-xs font-bold text-amber-300">{formatCurrency(price * item.quantity)}</div>
+                                  <div className="text-xs font-bold text-amber-300">
+                                    {formatPrice(unitPrice * item.quantity, ordCurr)}
+                                  </div>
                                 </div>
                               </div>
                             );
                           })}
+                        </div>
+                      </div>
+
+                      {/* Summary Breakdown */}
+                      <div className="bg-black/40 border border-white/10 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                        <div className="flex items-center gap-2">
+                          <CreditCard className="w-4 h-4 text-amber-300" />
+                          <span className="text-white/70">Payment:</span>
+                          <span className="font-semibold text-white">{ord.paymentMethod || 'Chapa Payment'}</span>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <span className="text-white/60">Final Total:</span>
+                          <span className="font-podium text-xl font-bold text-amber-300">
+                            {formatPrice(ord.total, ordCurr)}
+                          </span>
                         </div>
                       </div>
 

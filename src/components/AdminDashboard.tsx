@@ -984,7 +984,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               <span className="truncate">{ord.customer.address}, {ord.customer.city}</span>
                             </div>
                           </td>
-                          <td className="py-3 px-3 font-bold text-white">${ord.total.toFixed(2)}</td>
+                          <td className="py-3 px-3 font-bold text-amber-300">
+                            {ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL'
+                              ? `$${ord.total.toFixed(2)} USD`
+                              : `${ord.total.toLocaleString()} ብር`}
+                          </td>
                           <td className="py-3 px-3">
                             <span
                               className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
@@ -1111,8 +1115,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <td className="py-4 px-3 text-white/80 font-medium">
                           {ord.items.length} item{ord.items.length !== 1 ? 's' : ''}
                         </td>
-                        <td className="py-4 px-3 font-bold text-amber-300 text-sm">
-                          ${ord.total.toFixed(2)}
+                        <td className="py-4 px-3">
+                          <div className="font-bold text-amber-300 text-sm">
+                            {ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL'
+                              ? `$${ord.total.toFixed(2)} USD`
+                              : `${ord.total.toLocaleString()} ብር`}
+                          </div>
+                          <span className="text-[10px] text-white/50 block">
+                            {ord.buyerMarket === 'INTERNATIONAL' ? '🌍 Diaspora' : '🇪🇹 Local'}
+                          </span>
                         </td>
                         <td className="py-4 px-3">
                           <select
@@ -2559,7 +2570,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <div className="flex items-center justify-between">
                     <div className="text-white font-semibold">{selectedOrderDetails.giftBoxStyle}</div>
                     <div className="text-amber-300 font-bold">
-                      {selectedOrderDetails.giftBoxPrice ? `+$${selectedOrderDetails.giftBoxPrice.toFixed(2)}` : 'Free'}
+                      {selectedOrderDetails.giftBoxPrice
+                        ? `+${selectedOrderDetails.currency === 'USD' ? '$' : ''}${selectedOrderDetails.giftBoxPrice.toFixed(2)} ${selectedOrderDetails.currency || 'ETB'}`
+                        : 'Free'}
                     </div>
                   </div>
                 </div>
@@ -2569,19 +2582,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="bg-black/40 border border-white/10 rounded-xl p-4 space-y-3">
                 <div className="text-[10px] text-amber-300 font-bold uppercase tracking-widest">Items Purchased</div>
                 <div className="divide-y divide-white/10">
-                  {selectedOrderDetails.items.map((it: any, idx: number) => (
-                    <div key={idx} className="py-2.5 flex items-center justify-between">
-                      <div>
-                        <div className="font-bold text-white">
-                          {it.package ? it.package.name : `Custom Box (${it.selectedItems?.length || 0} items)`}
+                  {selectedOrderDetails.items.map((it: any, idx: number) => {
+                    const isUsd = selectedOrderDetails.currency === 'USD' || selectedOrderDetails.buyerMarket === 'INTERNATIONAL';
+                    let itemPrice = 0;
+                    if (it.package) {
+                      itemPrice = isUsd && it.package.price_usd != null && it.package.price_usd > 0
+                        ? it.package.price_usd
+                        : (isUsd ? Math.round((it.package.price / 120) * 100) / 100 : it.package.price);
+                    } else {
+                      itemPrice = it.totalPrice || 0;
+                    }
+                    return (
+                      <div key={idx} className="py-2.5 flex items-center justify-between">
+                        <div>
+                          <div className="font-bold text-white">
+                            {it.package ? it.package.name : `Custom Box (${it.selectedItems?.length || 0} items)`}
+                          </div>
+                          <div className="text-[11px] text-white/60">Qty: {it.quantity}</div>
                         </div>
-                        <div className="text-[11px] text-white/60">Qty: {it.quantity}</div>
+                        <div className="font-bold text-amber-300">
+                          {isUsd ? `$${(itemPrice * it.quantity).toFixed(2)} USD` : `${(itemPrice * it.quantity).toLocaleString()} ብር`}
+                        </div>
                       </div>
-                      <div className="font-bold text-amber-300">
-                        ${((it.package ? it.package.price : it.totalPrice || 0) * it.quantity).toFixed(2)}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

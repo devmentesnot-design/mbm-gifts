@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
   CreditCard,
-  Building2,
   ShieldCheck,
-  Sparkles,
   Truck,
   Check,
   AlertCircle,
@@ -12,6 +10,12 @@ import {
   Lock,
   Globe,
   Loader2,
+  Printer,
+  ShoppingBag,
+  PackageCheck,
+  Phone,
+  MapPin,
+  Calendar
 } from 'lucide-react';
 import { Order } from '../types/cart';
 import { formatPrice } from '../utils/currency';
@@ -19,7 +23,6 @@ import {
   initializeChapaTransaction,
   verifyChapaTransaction,
   generateTxRef,
-  getChapaPublicKey,
 } from '../services/chapa';
 
 interface CheckoutPaymentPageProps {
@@ -31,18 +34,21 @@ interface CheckoutPaymentPageProps {
     paymentStatus?: 'PAID' | 'PENDING_PAYMENT'
   ) => void;
   onBack: () => void;
+  onNavigate?: (path: string) => void;
 }
 
 export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
   order,
   onPaymentSubmitted,
   onBack,
+  onNavigate,
 }) => {
   const [isInitializing, setIsInitializing] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [error, setError] = useState<string>('');
   const [txRef, setTxRef] = useState<string>(() => generateTxRef(order.id));
   const [verificationSuccess, setVerificationSuccess] = useState(false);
+  const [verifiedMethod, setVerifiedMethod] = useState<string>('');
 
   const market = order.buyerMarket || 'LOCAL';
   const currency = order.currency || (market === 'LOCAL' ? 'ETB' : 'USD');
@@ -54,6 +60,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
     const returnStatus = urlParams.get('status');
 
     if (returnTxRef && (returnStatus === 'success' || !returnStatus)) {
+      setTxRef(returnTxRef);
       handleVerifyReturn(returnTxRef);
     }
   }, []);
@@ -66,21 +73,23 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
       console.log('🔍 Verifying return transaction from Chapa:', reference);
       const result = await verifyChapaTransaction(reference);
 
+      const method = result.data?.method || (currency === 'USD' ? 'International Card' : 'Local Payment');
+      setVerifiedMethod(method);
+
       if (result.status === 'success' && result.data?.status === 'success') {
         console.log('✅ Chapa verification confirmed:', result.data);
         setVerificationSuccess(true);
         setIsVerifying(false);
 
-        // Notify parent order is paid
+        // Notify parent order is paid to persist in Supabase
         onPaymentSubmitted(
           'https://checkout.chapa.co/receipt/' + reference,
-          `Chapa (${result.data.method || (currency === 'USD' ? 'International Card' : 'Local Payment')})`,
+          `Chapa (${method})`,
           reference,
           'PAID'
         );
       } else {
         console.warn('⚠️ Verification returned non-success:', result);
-        // In test mode, allow completed test transactions
         if (reference.startsWith('MBM-')) {
           setVerificationSuccess(true);
           setIsVerifying(false);
@@ -161,7 +170,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#2a0407] via-[#3d0a0e] to-[#2a0407] text-white font-inter flex items-center justify-center p-4 sm:p-6">
+    <div className="min-h-screen bg-[#1f0305] text-white font-inter flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 selection:bg-amber-400 selection:text-[#8c1119]">
       <div className="w-full max-w-4xl bg-gradient-to-br from-[#4a1015] to-[#3d0a0e] border border-amber-400/30 rounded-3xl shadow-2xl overflow-hidden animate-scale-in">
         
         {/* Verification Loader State */}
@@ -177,21 +186,148 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
           </div>
         )}
 
-        {/* Verification Success State */}
+        {/* ========================================================================= */}
+        {/* VERIFICATION SUCCESS & DIGITAL RECEIPT VIEW */}
+        {/* ========================================================================= */}
         {verificationSuccess && (
-          <div className="p-12 text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
-              <Check className="w-8 h-8 text-emerald-400 stroke-[3]" />
+          <div className="p-6 sm:p-10 space-y-6">
+            {/* Top Success Header */}
+            <div className="text-center space-y-2 pb-6 border-b border-white/10">
+              <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
+                <Check className="w-8 h-8 text-emerald-400 stroke-[3]" />
+              </div>
+              <h2 className="font-podium text-3xl sm:text-4xl uppercase text-amber-300 font-bold tracking-wide">
+                Payment Confirmed & Verified!
+              </h2>
+              <p className="text-xs sm:text-sm text-white/80 max-w-lg mx-auto">
+                Your transaction has been confirmed by Chapa. Your order has been placed into our Ethiopia delivery pipeline.
+              </p>
             </div>
-            <h3 className="font-podium text-3xl uppercase text-amber-300 font-bold tracking-wide">
-              Payment Confirmed!
-            </h3>
-            <p className="text-sm text-white/80 max-w-md mx-auto">
-              Your transaction has been verified by Chapa. Your gift order is now officially placed and our studio team in Ethiopia is preparing your delivery.
-            </p>
-            <div className="pt-4">
-              <div className="inline-block text-xs font-mono bg-black/40 border border-amber-400/30 px-4 py-2 rounded-xl text-amber-300">
-                Chapa Reference: {txRef}
+
+            {/* Official Digital Receipt Card */}
+            <div className="bg-black/50 border border-amber-400/30 rounded-2xl p-6 sm:p-8 space-y-6 shadow-inner">
+              
+              {/* Receipt Top Row */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10 text-xs">
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-amber-300 tracking-wider block">Official Receipt</span>
+                  <div className="font-podium text-2xl text-white font-bold tracking-wide mt-0.5">{order.id}</div>
+                </div>
+                
+                <div className="flex flex-col sm:items-end gap-1">
+                  <div className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-3 py-1 rounded-full font-bold text-[11px] uppercase tracking-wider">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>STATUS: PAID & RECORDED</span>
+                  </div>
+                  <div className="text-[11px] text-white/50 flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-amber-300" />
+                    <span>{new Date().toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Transaction Metadata Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs bg-white/5 rounded-xl p-4 border border-white/10">
+                <div>
+                  <span className="text-white/40 uppercase text-[10px] font-bold block mb-1">Chapa Reference</span>
+                  <span className="font-mono text-amber-300 font-bold break-all">{txRef}</span>
+                </div>
+                <div>
+                  <span className="text-white/40 uppercase text-[10px] font-bold block mb-1">Payment Method</span>
+                  <span className="text-white font-semibold">{verifiedMethod || 'Chapa Payment Gateway'}</span>
+                </div>
+                <div>
+                  <span className="text-white/40 uppercase text-[10px] font-bold block mb-1">Buyer Market</span>
+                  <span className="text-white font-semibold">
+                    {market === 'INTERNATIONAL' ? '🌍 Diaspora (USD)' : '🇪🇹 Local Ethiopian (ETB)'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Delivery Details */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs bg-white/5 rounded-xl p-4 border border-white/10">
+                <div>
+                  <span className="text-amber-300 uppercase text-[10px] font-bold tracking-wider block mb-1">Recipient (Ethiopia)</span>
+                  <div className="text-white font-bold">{order.customer.fullName}</div>
+                  <div className="text-white/70 flex items-center gap-1.5 mt-0.5">
+                    <Phone className="w-3 h-3 text-amber-300" />
+                    <span>{order.customer.phone}</span>
+                  </div>
+                  {order.customer.giftRecipientName && (
+                    <div className="text-amber-200/90 italic mt-1">To: {order.customer.giftRecipientName}</div>
+                  )}
+                </div>
+
+                <div>
+                  <span className="text-amber-300 uppercase text-[10px] font-bold tracking-wider block mb-1">Delivery Destination</span>
+                  <div className="text-white font-semibold flex items-start gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-amber-300 flex-shrink-0 mt-0.5" />
+                    <span>{order.customer.address}, {order.customer.city}</span>
+                  </div>
+                  {order.customer.giftMessage && (
+                    <div className="text-amber-200/90 text-[11px] mt-2 italic bg-amber-400/10 p-2 rounded border border-amber-400/20">
+                      "{order.customer.giftMessage}"
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Itemized Breakdown */}
+              <div>
+                <span className="text-[10px] uppercase font-bold text-white/50 tracking-wider block mb-2">Purchased Items</span>
+                <div className="divide-y divide-white/10 bg-white/5 rounded-xl p-3 border border-white/10">
+                  {order.items.map((it, idx) => (
+                    <div key={idx} className="py-2 flex items-center justify-between text-xs">
+                      <div>
+                        <span className="font-bold text-white uppercase">{it.type === 'package' ? it.package.name : 'Custom Gift Box'}</span>
+                        <span className="text-white/50 ml-2">x{it.quantity}</span>
+                      </div>
+                      <span className="font-bold text-amber-300">
+                        {formatPrice(order.total, currency)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Total Row */}
+              <div className="flex items-center justify-between pt-4 border-t border-white/15">
+                <span className="font-podium text-lg uppercase text-white font-bold">Total Paid</span>
+                <span className="font-podium text-2xl sm:text-3xl text-amber-300 font-bold">
+                  {formatPrice(order.total, currency)}
+                </span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+              <a
+                href={`https://checkout.chapa.co/receipt/${txRef}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-black/40 hover:bg-black/60 border border-white/20 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all"
+              >
+                <ExternalLink className="w-4 h-4 text-amber-300" />
+                <span>Open Chapa Official Receipt</span>
+              </a>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <button
+                  onClick={() => window.print()}
+                  className="px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all"
+                  title="Print receipt"
+                >
+                  <Printer className="w-4 h-4 text-amber-300" />
+                  <span>Print</span>
+                </button>
+
+                <button
+                  onClick={() => onNavigate ? onNavigate('/my-orders') : window.location.href = '/my-orders'}
+                  className="flex-1 sm:flex-initial px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-400/20 cursor-pointer"
+                >
+                  <PackageCheck className="w-4 h-4" />
+                  <span>View in My Orders</span>
+                </button>
               </div>
             </div>
           </div>
@@ -257,163 +393,155 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                     {localPaymentChannels.map((channel, i) => (
                       <div
                         key={i}
-                        className="bg-black/40 border border-white/10 rounded-xl p-2.5 flex flex-col items-center justify-center text-center gap-1.5 hover:border-amber-400/40 transition-colors"
+                        className="bg-black/30 border border-white/10 hover:border-amber-400/50 rounded-xl p-2.5 flex flex-col items-center justify-center gap-1 text-center transition-all"
                       >
-                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-white flex items-center justify-center p-1">
-                          <img src={channel.logo} alt={channel.name} className="w-full h-full object-contain" />
+                        <div className="w-8 h-8 rounded-lg overflow-hidden bg-white flex items-center justify-center p-0.5">
+                          <img
+                            src={channel.logo}
+                            alt={channel.name}
+                            className="w-full h-full object-contain"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                            }}
+                          />
                         </div>
-                        <span className="text-[10px] font-bold text-white leading-tight truncate w-full">
-                          {channel.name}
-                        </span>
+                        <span className="text-[10px] font-bold text-white leading-tight">{channel.name}</span>
                         <span className="text-[8px] text-white/40 uppercase">{channel.type}</span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {internationalPaymentChannels.map((channel, i) => (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    {internationalPaymentChannels.map((card, i) => (
                       <div
                         key={i}
-                        className="bg-black/40 border border-white/10 rounded-xl p-3 flex flex-col items-center justify-center text-center gap-1.5 hover:border-amber-400/40 transition-colors"
+                        className="bg-black/30 border border-white/10 rounded-xl p-3 flex flex-col items-center justify-center gap-1 text-center"
                       >
-                        <div className={`w-full py-1.5 rounded-md bg-gradient-to-r ${channel.color} text-white font-extrabold text-xs shadow-inner`}>
-                          {channel.badge}
+                        <div
+                          className={`bg-gradient-to-r ${card.color} text-white font-extrabold text-[11px] px-3 py-1 rounded shadow`}
+                        >
+                          {card.badge}
                         </div>
-                        <span className="text-[10px] font-bold text-white/90 mt-1">{channel.name}</span>
+                        <span className="text-[10px] font-bold text-white mt-1">{card.name}</span>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* Error Message */}
+              {/* Error Box */}
               {error && (
-                <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-3.5 text-red-200 text-xs font-semibold flex items-center gap-2.5">
-                  <AlertCircle className="w-4 h-4 text-red-300 flex-shrink-0" />
-                  <span>{error}</span>
+                <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 flex items-start gap-3 text-red-200 text-xs animate-shake">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-400" />
+                  <div className="flex-1">{error}</div>
                 </div>
               )}
 
-              {/* Primary Chapa Checkout Action */}
-              <div className="space-y-3 pt-2">
-                <button
-                  onClick={handlePayWithChapa}
-                  disabled={isInitializing}
-                  className={`w-full font-bold py-4 text-sm sm:text-base uppercase tracking-wider rounded-2xl transition-all shadow-2xl flex items-center justify-center gap-2.5 cursor-pointer ${
-                    isInitializing
-                      ? 'bg-amber-400/50 text-[#8c1119]/50 cursor-not-allowed'
-                      : 'bg-amber-400 hover:bg-amber-300 text-[#8c1119] shadow-amber-400/30 transform hover:-translate-y-0.5'
-                  }`}
-                >
-                  {isInitializing ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Connecting to Chapa...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Lock className="w-4 h-4 stroke-[2.5]" />
-                      <span>
-                        Pay {formatPrice(order.total, currency as any)} with Chapa
-                      </span>
-                      <ExternalLink className="w-4 h-4 opacity-80" />
-                    </>
-                  )}
-                </button>
+              {/* Pay with Chapa Button */}
+              <button
+                onClick={handlePayWithChapa}
+                disabled={isInitializing}
+                className="w-full bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-[#8c1119] font-podium font-bold text-lg uppercase tracking-wider py-4 px-6 rounded-2xl transition-all transform hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-amber-400/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 cursor-pointer"
+              >
+                {isInitializing ? (
+                  <>
+                    <Loader2 className="w-6 h-6 animate-spin text-[#8c1119]" />
+                    <span>Connecting to Chapa...</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-5 h-5" />
+                    <span>
+                      Pay {formatPrice(order.total, currency)} with Chapa
+                    </span>
+                    <ExternalLink className="w-4 h-4 opacity-70" />
+                  </>
+                )}
+              </button>
 
-                <div className="flex items-center justify-center gap-2 text-[10px] text-white/50 font-inter">
-                  <Lock className="w-3 h-3 text-emerald-400" />
-                  <span>256-bit SSL Encrypted • Powered by Chapa Financial Technologies</span>
-                </div>
+              <div className="text-center text-[11px] text-white/50 flex items-center justify-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-amber-300/70" />
+                <span>256-bit SSL Encrypted • Powered by Chapa Financial Technologies</span>
               </div>
             </div>
 
-            {/* Right Section: Order Breakdown */}
-            <div className="bg-gradient-to-br from-[#3d0a0e] to-[#2a0407] border-t lg:border-t-0 lg:border-l border-amber-400/20 p-6 sm:p-8 space-y-6 flex flex-col justify-between">
-              <div>
-                <div className="bg-[#8c1119]/30 border border-amber-400/40 rounded-xl px-4 py-3 shadow-md mb-5">
-                  <div className="text-[10px] uppercase tracking-widest text-amber-300/70 font-bold mb-0.5">
+            {/* Right Section: Order Summary */}
+            <div className="bg-black/40 p-6 sm:p-8 border-t lg:border-t-0 lg:border-l border-amber-400/20 flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="bg-black/30 border border-white/10 rounded-xl p-3.5 text-center">
+                  <span className="text-[10px] text-white/50 uppercase tracking-widest font-bold block mb-0.5">
                     Order Reference
-                  </div>
-                  <div className="font-podium text-xl sm:text-2xl text-amber-300 uppercase tracking-wide">
+                  </span>
+                  <span className="font-podium text-2xl text-amber-300 font-bold tracking-wide">
                     {order.id}
-                  </div>
+                  </span>
                 </div>
 
-                {/* Items preview */}
-                <div className="space-y-2 mb-5">
-                  <div className="text-[10px] uppercase tracking-widest text-white/50 font-bold mb-2">
+                <div>
+                  <span className="text-[10px] text-white/50 uppercase tracking-widest font-bold block mb-2">
                     Gift Items ({order.items.length})
-                  </div>
-                  <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                    {order.items.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-center text-xs bg-black/20 p-2 rounded-lg border border-white/5">
-                        <span className="truncate pr-2 text-white/80 font-medium">
-                          {item.quantity}x {item.type === 'package' ? item.package.name : 'Custom Gift Box'}
-                        </span>
-                        <span className="font-bold text-amber-300/90 flex-shrink-0">
-                          {formatPrice(
-                            (item.type === 'package'
-                              ? (currency === 'USD' && item.package.price_usd ? item.package.price_usd : item.package.price)
-                              : item.totalPrice) * item.quantity,
-                            currency as any
-                          )}
+                  </span>
+                  <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    {order.items.map((it, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-black/30 border border-white/5 rounded-lg p-2.5 flex items-center justify-between text-xs"
+                      >
+                        <div className="truncate pr-2">
+                          <div className="font-bold text-white truncate">
+                            {it.quantity}x {it.type === 'package' ? it.package.name : 'Custom Gift Box'}
+                          </div>
+                        </div>
+                        <span className="text-amber-300 font-bold flex-shrink-0">
+                          {formatPrice(order.total, currency)}
                         </span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Recipient Details in Ethiopia */}
-                <div className="bg-black/30 border border-white/10 rounded-xl p-3.5 space-y-1.5 text-xs">
-                  <div className="text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1">
+                <div className="bg-black/30 border border-white/10 rounded-xl p-3 text-xs space-y-1.5">
+                  <div className="text-[10px] text-amber-300 font-bold uppercase tracking-wider mb-1">
                     Delivery Recipient (Ethiopia)
                   </div>
-                  <div className="flex justify-between text-white/70">
-                    <span>Recipient:</span>
-                    <span className="text-white font-semibold">{order.customer.fullName}</span>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">Recipient:</span>
+                    <span className="font-semibold text-white">{order.customer.fullName}</span>
                   </div>
-                  <div className="flex justify-between text-white/70">
-                    <span>Contact:</span>
-                    <span className="text-white font-semibold">{order.customer.phone}</span>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">Contact:</span>
+                    <span className="text-white/90">{order.customer.phone}</span>
                   </div>
-                  <div className="flex justify-between text-white/70">
-                    <span>Destination:</span>
-                    <span className="text-white font-semibold truncate max-w-[160px]">{order.customer.address}, {order.customer.city}</span>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">Destination:</span>
+                    <span className="text-white/90">{order.customer.address}, {order.customer.city}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Price Breakdown Summary */}
-              <div className="pt-4 border-t border-amber-400/20 space-y-2.5 text-xs">
+              <div className="pt-4 border-t border-white/10 space-y-2 text-xs">
                 <div className="flex justify-between text-white/70">
                   <span>Subtotal</span>
-                  <span className="font-bold text-white">{formatPrice(order.subtotal, currency as any)}</span>
+                  <span className="font-bold text-white">{formatPrice(order.total, currency)}</span>
                 </div>
-                {order.giftBoxPrice ? (
-                  <div className="flex justify-between text-white/70">
-                    <span>Packaging ({order.giftBoxStyle})</span>
-                    <span className="font-bold text-white">{formatPrice(order.giftBoxPrice, currency as any)}</span>
-                  </div>
-                ) : null}
                 <div className="flex justify-between text-white/70">
                   <span>Delivery in Ethiopia</span>
-                  <span className="text-emerald-400 font-bold uppercase">FREE</span>
+                  <span className="text-emerald-400 font-bold uppercase">Free</span>
                 </div>
-                
-                <div className="border-t border-white/10 pt-3 flex justify-between items-end">
+                <div className="flex justify-between items-baseline pt-2 border-t border-white/10">
                   <div>
-                    <div className="text-[10px] uppercase tracking-wider text-amber-300/70 font-bold">Total Amount Due</div>
-                    <div className="text-[9px] text-white/40">Includes all taxes & delivery</div>
+                    <div className="font-podium text-sm uppercase text-white font-bold">Total Amount Due</div>
+                    <div className="text-[10px] text-white/40">Includes all taxes & delivery</div>
                   </div>
-                  <div className="font-podium text-3xl text-amber-300 font-bold">
-                    {formatPrice(order.total, currency as any)}
-                  </div>
+                  <span className="font-podium text-2xl text-amber-300 font-bold">
+                    {formatPrice(order.total, currency)}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         )}
+
       </div>
     </div>
   );
