@@ -215,8 +215,8 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
           </div>
         ) : (
           <div className="space-y-6">
-            {filteredOrders.map((ord) => {
-              const isExpanded = expandedOrders[ord.id] === true;
+            {filteredOrders.map((ord, idx) => {
+              const isExpanded = expandedOrders[ord.id] ?? (idx === 0);
               const ordCurr = getOrderCurrency(ord);
               const isPaid = ord.paymentStatus === 'PAID' || ord.status === 'Processing' || ord.status === 'Delivered';
 
@@ -364,10 +364,19 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
 
                       {/* Summary Breakdown */}
                       <div className="bg-black/40 border border-white/10 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                        <div className="flex items-center gap-2">
-                          <CreditCard className="w-4 h-4 text-amber-300" />
-                          <span className="text-white/70">Payment:</span>
-                          <span className="font-semibold text-white">{ord.paymentMethod || 'Chapa Payment'}</span>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <div className="flex items-center gap-2">
+                            <CreditCard className="w-4 h-4 text-amber-300" />
+                            <span className="text-white/70">Payment:</span>
+                            <span className="font-semibold text-white">{ord.paymentMethod || 'Chapa Payment'}</span>
+                          </div>
+                          
+                          <button
+                            onClick={() => window.print()}
+                            className="text-[11px] text-amber-300 hover:text-amber-200 underline font-semibold cursor-pointer"
+                          >
+                            Print Receipt
+                          </button>
                         </div>
 
                         <div className="flex items-center gap-3">

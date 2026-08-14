@@ -175,154 +175,19 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
         
         {/* Verification Loader State */}
         {isVerifying && (
-          <div className="p-12 text-center space-y-4">
-            <Loader2 className="w-12 h-12 text-amber-300 animate-spin mx-auto" />
-            <h3 className="font-podium text-2xl uppercase text-white font-bold tracking-wide">
-              Verifying Payment with Chapa...
+          <div className="p-16 text-center space-y-4">
+            <Loader2 className="w-14 h-14 text-amber-300 animate-spin mx-auto" />
+            <h3 className="font-podium text-3xl uppercase text-white font-bold tracking-wide">
+              Confirming Payment with Chapa...
             </h3>
-            <p className="text-sm text-white/60">
-              Please wait while we confirm your transaction reference with the payment gateway.
+            <p className="text-sm text-white/70">
+              Please wait while we record your order. You will be redirected to your orders page in a moment.
             </p>
           </div>
         )}
 
-        {/* ========================================================================= */}
-        {/* VERIFICATION SUCCESS & DIGITAL RECEIPT VIEW */}
-        {/* ========================================================================= */}
-        {verificationSuccess && (
-          <div className="p-6 sm:p-10 space-y-6">
-            {/* Top Success Header */}
-            <div className="text-center space-y-2 pb-6 border-b border-white/10">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
-                <Check className="w-8 h-8 text-emerald-400 stroke-[3]" />
-              </div>
-              <h2 className="font-podium text-3xl sm:text-4xl uppercase text-amber-300 font-bold tracking-wide">
-                Payment Confirmed & Verified!
-              </h2>
-              <p className="text-xs sm:text-sm text-white/80 max-w-lg mx-auto">
-                Your transaction has been confirmed by Chapa. Your order has been placed into our Ethiopia delivery pipeline.
-              </p>
-            </div>
-
-            {/* Official Digital Receipt Card */}
-            <div className="bg-black/50 border border-amber-400/30 rounded-2xl p-6 sm:p-8 space-y-6 shadow-inner">
-              
-              {/* Receipt Top Row */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10 text-xs">
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-amber-300 tracking-wider block">Official Receipt</span>
-                  <div className="font-podium text-2xl text-white font-bold tracking-wide mt-0.5">{order.id}</div>
-                </div>
-                
-                <div className="flex flex-col sm:items-end gap-1">
-                  <div className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-3 py-1 rounded-full font-bold text-[11px] uppercase tracking-wider">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>STATUS: PAID & RECORDED</span>
-                  </div>
-                  <div className="text-[11px] text-white/50 flex items-center gap-1">
-                    <Calendar className="w-3 h-3 text-amber-300" />
-                    <span>{new Date().toLocaleString()}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Transaction Metadata Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs bg-white/5 rounded-xl p-4 border border-white/10">
-                <div>
-                  <span className="text-white/40 uppercase text-[10px] font-bold block mb-1">Chapa Reference</span>
-                  <span className="font-mono text-amber-300 font-bold break-all">{txRef}</span>
-                </div>
-                <div>
-                  <span className="text-white/40 uppercase text-[10px] font-bold block mb-1">Payment Method</span>
-                  <span className="text-white font-semibold">{verifiedMethod || 'Chapa Payment Gateway'}</span>
-                </div>
-                <div>
-                  <span className="text-white/40 uppercase text-[10px] font-bold block mb-1">Buyer Market</span>
-                  <span className="text-white font-semibold">
-                    {market === 'INTERNATIONAL' ? '🌍 Diaspora (USD)' : '🇪🇹 Local Ethiopian (ETB)'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Delivery Details */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs bg-white/5 rounded-xl p-4 border border-white/10">
-                <div>
-                  <span className="text-amber-300 uppercase text-[10px] font-bold tracking-wider block mb-1">Recipient (Ethiopia)</span>
-                  <div className="text-white font-bold">{order.customer.fullName}</div>
-                  <div className="text-white/70 flex items-center gap-1.5 mt-0.5">
-                    <Phone className="w-3 h-3 text-amber-300" />
-                    <span>{order.customer.phone}</span>
-                  </div>
-                  {order.customer.giftRecipientName && (
-                    <div className="text-amber-200/90 italic mt-1">To: {order.customer.giftRecipientName}</div>
-                  )}
-                </div>
-
-                <div>
-                  <span className="text-amber-300 uppercase text-[10px] font-bold tracking-wider block mb-1">Delivery Destination</span>
-                  <div className="text-white font-semibold flex items-start gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-amber-300 flex-shrink-0 mt-0.5" />
-                    <span>{order.customer.address}, {order.customer.city}</span>
-                  </div>
-                  {order.customer.giftMessage && (
-                    <div className="text-amber-200/90 text-[11px] mt-2 italic bg-amber-400/10 p-2 rounded border border-amber-400/20">
-                      "{order.customer.giftMessage}"
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Itemized Breakdown */}
-              <div>
-                <span className="text-[10px] uppercase font-bold text-white/50 tracking-wider block mb-2">Purchased Items</span>
-                <div className="divide-y divide-white/10 bg-white/5 rounded-xl p-3 border border-white/10">
-                  {order.items.map((it, idx) => (
-                    <div key={idx} className="py-2 flex items-center justify-between text-xs">
-                      <div>
-                        <span className="font-bold text-white uppercase">{it.type === 'package' ? it.package.name : 'Custom Gift Box'}</span>
-                        <span className="text-white/50 ml-2">x{it.quantity}</span>
-                      </div>
-                      <span className="font-bold text-amber-300">
-                        {formatPrice(order.total, currency)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Total Row */}
-              <div className="flex items-center justify-between pt-4 border-t border-white/15">
-                <span className="font-podium text-lg uppercase text-white font-bold">Total Paid</span>
-                <span className="font-podium text-2xl sm:text-3xl text-amber-300 font-bold">
-                  {formatPrice(order.total, currency)}
-                </span>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
-              <button
-                onClick={() => window.print()}
-                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer"
-                title="Print or Save Receipt as PDF"
-              >
-                <Printer className="w-4 h-4 text-amber-300" />
-                <span>Print / Save PDF Receipt</span>
-              </button>
-
-              <button
-                onClick={() => onNavigate ? onNavigate('/my-orders') : window.location.href = '/my-orders'}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-400/20 cursor-pointer"
-              >
-                <PackageCheck className="w-4 h-4" />
-                <span>Go to My Orders</span>
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* Normal Payment View */}
-        {!isVerifying && !verificationSuccess && (
+        {!isVerifying && (
           <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr]">
             {/* Left Section: Chapa Payment Action */}
             <div className="p-6 sm:p-8 lg:p-10 space-y-6">
