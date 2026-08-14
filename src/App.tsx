@@ -310,8 +310,22 @@ export default function App() {
   };
 
   const handleDeleteGiftBox = async (id: string) => {
+    // Optimistic UI removal
     setGiftBoxes((prev) => prev.filter((b) => b.id !== id));
-    await deleteStoredGiftBox(id);
+    try {
+      // Delete from DB first
+      await deleteStoredGiftBox(id);
+      // Re-fetch the authoritative list from DB to prevent stale re-hydration
+      const freshBoxes = await getStoredGiftBoxes();
+      setGiftBoxes(freshBoxes);
+      console.log('✅ Gift box deleted and state refreshed from DB');
+    } catch (err) {
+      console.error('❌ Failed to delete gift box:', err);
+      // On error, restore from DB
+      const freshBoxes = await getStoredGiftBoxes();
+      setGiftBoxes(freshBoxes);
+      alert('Failed to delete gift box: ' + (err as Error).message);
+    }
   };
 
   // Update Order Status directly in DB

@@ -114,13 +114,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
   }, [categories]);
 
+  // Track locally deleted box IDs so the prop sync never restores them
+  const deletedBoxIds = React.useRef<Set<string>>(new Set());
+
   useEffect(() => {
     if (giftBoxes && giftBoxes.length > 0) {
-      setGiftBoxesList(giftBoxes);
-    } else {
-      getStoredGiftBoxes().then(boxes => {
-        if (boxes && boxes.length > 0) setGiftBoxesList(boxes);
-      });
+      // Filter out any IDs that were deleted locally (in case prop updates slightly behind DB)
+      const filtered = giftBoxes.filter((b) => !deletedBoxIds.current.has(b.id));
+      setGiftBoxesList(filtered);
+    } else if (!giftBoxes || giftBoxes.length === 0) {
+      // Only do a DB fetch if we have NO deleted IDs pending — otherwise keep current list
+      if (deletedBoxIds.current.size === 0) {
+        getStoredGiftBoxes().then(boxes => {
+          if (boxes && boxes.length > 0) setGiftBoxesList(boxes);
+        });
+      }
     }
   }, [giftBoxes]);
 
@@ -426,6 +434,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const handleDeleteBox = (id: string) => {
     if (confirm('Are you sure you want to delete this gift box style?')) {
+      // Track this ID so the prop-sync useEffect doesn't restore it
+      deletedBoxIds.current.add(id);
       const newList = giftBoxesList.filter((b) => b.id !== id);
       setGiftBoxesList(newList);
       if (onDeleteGiftBox) {
