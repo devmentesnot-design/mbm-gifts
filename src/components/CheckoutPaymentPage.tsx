@@ -122,8 +122,8 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
         lastName: lastName,
         phone: order.customer.phone || '0911000000',
         txRef: newTxRef,
-        customTitle: 'MBM Gifts — Luxury Gifting',
-        customDescription: `Order ${order.id} (${market === 'INTERNATIONAL' ? 'USD International' : 'ETB Local'})`,
+        customTitle: 'MBM Gifts',
+        customDescription: `Order ${order.id}`,
         returnUrl: `${window.location.origin}/checkout/payment?tx_ref=${newTxRef}&status=success`,
       });
 

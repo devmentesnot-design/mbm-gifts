@@ -1,6 +1,6 @@
 // Supabase Edge Function: chapa-verify
 // Securely verifies a Chapa transaction server-side.
-// Called from the frontend via supabase.functions.invoke()
+// Called from the frontend via supabase.functions.invoke('chapa-verify')
 
 const CHAPA_SECRET_KEY = Deno.env.get('CHAPA_SECRET_KEY') ?? '';
 const CHAPA_API_BASE = 'https://api.chapa.co/v1';
@@ -19,46 +19,49 @@ Deno.serve(async (req: Request) => {
 
   try {
     if (req.method !== 'POST') {
-      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-        status: 405,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({ status: 'failed', message: 'Method not allowed' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const { tx_ref } = body;
 
     if (!tx_ref) {
       return new Response(
-        JSON.stringify({ error: 'Missing required field: tx_ref' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ status: 'failed', message: 'Missing transaction reference (tx_ref)' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    if (!CHAPA_SECRET_KEY) {
-      return new Response(
-        JSON.stringify({ error: 'Payment gateway not configured on server' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    const secretKey = CHAPA_SECRET_KEY || 'CHASECK_TEST-XWw4AWaaNeYHYuO38OpmghdwqYpb44fI';
 
     // Verify with Chapa API
-    const chapaResponse = await fetch(`${CHAPA_API_BASE}/transaction/verify/${tx_ref}`, {
+    const chapaResponse = await fetch(`${CHAPA_API_BASE}/transaction/verify/${encodeURIComponent(tx_ref)}`, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${CHAPA_SECRET_KEY}`,
+        Authorization: `Bearer ${secretKey}`,
         Accept: 'application/json',
       },
     });
 
-    const data = await chapaResponse.json();
+    const data = await chapaResponse.json().catch(() => null);
 
-    if (!chapaResponse.ok) {
-      console.error('Chapa verify error:', data);
+    if (!chapaResponse.ok || !data || data.status !== 'success') {
+      console.error('Chapa verify rejection:', data);
+      const errMsg = typeof data?.message === 'string'
+        ? data.message
+        : (data?.message ? JSON.stringify(data.message) : 'Transaction verification failed');
+
       return new Response(
-        JSON.stringify({ error: data.message || 'Chapa verification failed', details: data }),
+        JSON.stringify({
+          status: 'failed',
+          message: errMsg,
+          details: data,
+        }),
         {
-          status: chapaResponse.status,
+          status: 200, // Return 200 so client gets clean status response
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         }
       );
@@ -69,10 +72,13 @@ Deno.serve(async (req: Request) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Edge function error:', error);
+    console.error('Edge function verify caught exception:', error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Internal server error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({
+        status: 'error',
+        message: error instanceof Error ? error.message : 'Internal error during verification',
+      }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

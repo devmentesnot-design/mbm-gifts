@@ -1,9 +1,9 @@
 /**
  * Centralized Chapa Payment Service for MBM Gifts
  *
- * Architecture: Frontend → Supabase Edge Functions → Chapa API
- * This keeps the secret key safely on the server side (Edge Function)
- * and the public key on the client for any inline elements.
+ * Architecture:
+ * 1. Primary: Calls Supabase Edge Functions (`chapa-initialize` / `chapa-verify`)
+ * 2. Fallback: Direct REST API if Edge Function is unreachable
  *
  * Supports both Local (ETB) and International (USD) checkout flows.
  */
@@ -11,10 +11,12 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Supabase client for calling Edge Functions
-const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL || '';
+const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL || 'https://fpqmnfunfpkvdrxfazgj.supabase.co';
 const supabaseAnonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || '';
 
 const getSupabaseClient = () => createClient(supabaseUrl, supabaseAnonKey);
+
+const CHAPA_API_URL = 'https://api.chapa.co/v1';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -64,12 +66,29 @@ export interface ChapaVerifyResponse {
 }
 
 // ---------------------------------------------------------------------------
-// Public key (safe to expose in browser, used for inline/embed if needed)
+// Helper: Email validation & sanitization
+// ---------------------------------------------------------------------------
+const sanitizeEmail = (email?: string): string => {
+  if (!email) return 'orders@mbmgifts.com';
+  const clean = email.trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(clean) ? clean : 'orders@mbmgifts.com';
+};
+
+// ---------------------------------------------------------------------------
+// Keys
 // ---------------------------------------------------------------------------
 export const getChapaPublicKey = (): string => {
   return (
     (import.meta as any).env?.VITE_CHAPA_PUBLIC_KEY ||
     'CHAPUBK_TEST-s5ZLQUqw12IoT7FOZsccD9QmplFuJeyE'
+  );
+};
+
+export const getChapaSecretKey = (): string => {
+  return (
+    (import.meta as any).env?.VITE_CHAPA_SECRET_KEY ||
+    'CHASECK_TEST-XWw4AWaaNeYHYuO38OpmghdwqYpb44fI'
   );
 };
 
@@ -84,20 +103,21 @@ export const generateTxRef = (orderId?: string): string => {
 };
 
 // ---------------------------------------------------------------------------
-// Initialize a Chapa payment transaction via Supabase Edge Function
+// Initialize a Chapa payment transaction
 // ---------------------------------------------------------------------------
 export const initializeChapaTransaction = async (
   params: ChapaInitializeParams
 ): Promise<ChapaInitializeResponse> => {
   const formattedAmount = Number(params.amount).toFixed(2);
+  const cleanEmail = sanitizeEmail(params.email);
 
   const payload = {
     amount: formattedAmount,
     currency: params.currency,
-    email: params.email || 'customer@mbmgifts.com',
-    first_name: params.firstName || 'Valued',
-    last_name: params.lastName || 'Customer',
-    phone_number: params.phone || '',
+    email: cleanEmail,
+    first_name: params.firstName?.trim() || 'Valued',
+    last_name: params.lastName?.trim() || 'Customer',
+    phone_number: params.phone?.replace(/[^0-9+]/g, '') || '0911000000',
     tx_ref: params.txRef,
     callback_url:
       params.callbackUrl || `${window.location.origin}/api/chapa-webhook`,
@@ -112,92 +132,137 @@ export const initializeChapaTransaction = async (
     },
   };
 
-  console.log('🚀 Initializing Chapa Transaction via Edge Function:', {
+  console.log('🚀 Initializing Chapa Transaction:', {
     tx_ref: payload.tx_ref,
     amount: payload.amount,
     currency: payload.currency,
+    email: payload.email,
   });
 
+  // 1. Try Supabase Edge Function
   try {
     const supabase = getSupabaseClient();
     const { data, error } = await supabase.functions.invoke('chapa-initialize', {
       body: payload,
     });
 
-    if (error) {
-      console.error('❌ Edge Function error (chapa-initialize):', error);
+    if (!error && data && data.status === 'success' && data.data?.checkout_url) {
+      console.log('✅ Chapa initialized via Edge Function:', data.data.checkout_url);
       return {
-        status: 'error',
-        message: error.message || 'Failed to connect to payment service',
+        status: 'success',
+        message: data.message || 'Transaction initialized',
+        data: data.data,
       };
     }
 
-    if (!data || data.status !== 'success') {
-      console.error('❌ Chapa initialization failed:', data);
+    if (data && data.status === 'failed') {
+      console.warn('⚠️ Edge Function returned failure message:', data.message);
+    }
+  } catch (edgeErr) {
+    console.warn('⚠️ Edge Function invocation failed, trying direct fallback:', edgeErr);
+  }
+
+  // 2. Direct Fallback if Edge function returned error or was unreachable
+  console.log('🔄 Executing direct Chapa API fallback...');
+  try {
+    const secretKey = getChapaSecretKey();
+    const res = await fetch(`${CHAPA_API_URL}/transaction/initialize`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${secretKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const directData = await res.json().catch(() => null);
+
+    if (res.ok && directData?.status === 'success' && directData.data?.checkout_url) {
+      console.log('✅ Chapa initialized via Direct API fallback:', directData.data.checkout_url);
       return {
-        status: 'failed',
-        message: data?.message || 'Failed to initialize Chapa transaction',
-        data: data?.data,
+        status: 'success',
+        message: directData.message || 'Transaction initialized',
+        data: directData.data,
       };
     }
 
-    console.log('✅ Chapa transaction initialized:', data.data?.checkout_url);
+    const msg = typeof directData?.message === 'string'
+      ? directData.message
+      : (directData?.message ? JSON.stringify(directData.message) : 'Payment gateway initialization failed');
+
     return {
-      status: 'success',
-      message: data.message || 'Transaction initialized',
-      data: data.data,
+      status: 'failed',
+      message: msg,
+      data: directData?.data,
     };
-  } catch (err: any) {
-    console.error('❌ Unexpected error initializing Chapa transaction:', err);
+  } catch (directErr: any) {
+    console.error('❌ Direct Chapa initialization failed:', directErr);
     return {
       status: 'error',
-      message: err.message || 'Network error connecting to payment gateway',
+      message: directErr.message || 'Unable to connect to Chapa payment gateway.',
     };
   }
 };
 
 // ---------------------------------------------------------------------------
-// Verify a completed transaction via Supabase Edge Function
+// Verify a completed transaction
 // ---------------------------------------------------------------------------
 export const verifyChapaTransaction = async (
   txRef: string
 ): Promise<ChapaVerifyResponse> => {
-  console.log('🔍 Verifying Chapa transaction via Edge Function:', txRef);
+  console.log('🔍 Verifying Chapa transaction:', txRef);
 
+  // 1. Try Supabase Edge Function
   try {
     const supabase = getSupabaseClient();
     const { data, error } = await supabase.functions.invoke('chapa-verify', {
       body: { tx_ref: txRef },
     });
 
-    if (error) {
-      console.error('❌ Edge Function error (chapa-verify):', error);
+    if (!error && data && data.status === 'success') {
+      console.log('✅ Chapa transaction verified via Edge Function:', data.data);
       return {
-        status: 'error',
-        message: error.message || 'Failed to connect to verification service',
+        status: 'success',
+        message: data.message || 'Transaction verified',
+        data: data.data,
+      };
+    }
+  } catch (edgeErr) {
+    console.warn('⚠️ Edge Function verify failed, trying direct fallback:', edgeErr);
+  }
+
+  // 2. Direct Fallback
+  try {
+    const secretKey = getChapaSecretKey();
+    const res = await fetch(`${CHAPA_API_URL}/transaction/verify/${encodeURIComponent(txRef)}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${secretKey}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const directData = await res.json().catch(() => null);
+
+    if (res.ok && directData?.status === 'success') {
+      console.log('✅ Chapa transaction verified via Direct API:', directData.data);
+      return {
+        status: 'success',
+        message: directData.message || 'Transaction verified',
+        data: directData.data,
       };
     }
 
-    if (!data || data.status !== 'success') {
-      console.error('❌ Chapa verification failed:', data);
-      return {
-        status: 'failed',
-        message: data?.message || 'Chapa verification failed',
-        data: data?.data,
-      };
-    }
-
-    console.log('✅ Chapa transaction verified:', data.data);
     return {
-      status: 'success',
-      message: data.message || 'Transaction verified',
-      data: data.data,
+      status: 'failed',
+      message: directData?.message || 'Chapa verification failed',
+      data: directData?.data,
     };
-  } catch (err: any) {
-    console.error('❌ Unexpected error verifying Chapa transaction:', err);
+  } catch (directErr: any) {
+    console.error('❌ Direct Chapa verify error:', directErr);
     return {
       status: 'error',
-      message: err.message || 'Network error verifying transaction',
+      message: directErr.message || 'Network error verifying transaction with Chapa',
     };
   }
 };
