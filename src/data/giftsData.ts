@@ -350,12 +350,12 @@ export const getStoredPackages = async (): Promise<PreparedPackage[]> => {
     
     if (error) {
       console.error('❌ Error fetching packages:', error);
-      return PREPARED_PACKAGES;
+      return [];
     }
     
     if (!data || data.length === 0) {
-      console.log('📦 No packages in database, returning defaults');
-      return PREPARED_PACKAGES;
+      console.log('📦 No packages in database');
+      return [];
     }
 
     const mapped = data.map(item => ({
@@ -460,12 +460,12 @@ export const getStoredCustomItems = async (): Promise<CustomBoxOption[]> => {
     
     if (error) {
       console.error('❌ Error fetching custom items:', error);
-      return CUSTOM_ITEMS;
+      return [];
     }
     
     if (!data || data.length === 0) {
-      console.log('📦 No custom items in database, returning defaults');
-      return CUSTOM_ITEMS;
+      console.log('📦 No custom items in database');
+      return [];
     }
 
     const mapped = data.map(item => ({
@@ -679,12 +679,12 @@ export const getStoredCategories = async (): Promise<GiftCategory[]> => {
     
     if (error) {
       console.error('❌ Error fetching categories:', error);
-      return DEFAULT_CATEGORIES;
+      return [];
     }
     
     if (!data || data.length === 0) {
-      console.log('📦 No categories in database, returning defaults');
-      return DEFAULT_CATEGORIES;
+      console.log('📦 No categories in database');
+      return [];
     }
 
     const mapped = data.map(c => ({
@@ -738,12 +738,12 @@ export const getStoredGiftBoxes = async (): Promise<GiftBoxStyle[]> => {
     
     if (error) {
       console.error('❌ Error fetching gift boxes:', error);
-      return DEFAULT_GIFT_BOXES;
+      return [];
     }
     
     if (!data || data.length === 0) {
-      console.log('📦 No gift boxes in database, returning defaults');
-      return DEFAULT_GIFT_BOXES;
+      console.log('📦 No gift boxes in database');
+      return [];
     }
 
     const mapped = data.map(b => ({
@@ -872,32 +872,36 @@ export const seedInitialData = async () => {
     console.log('🌱 Seeding initial data into database...');
 
     // Seed packages
-    if (!existingPackages || existingPackages.length === 0) {
-      await saveStoredPackages(PREPARED_PACKAGES);
-      console.log('✅ Seeded', PREPARED_PACKAGES.length, 'packages');
-      seeded = true;
-    }
+    // Removed to prevent auto-seeding if user intentionally deletes all packages
+    // if (!existingPackages || existingPackages.length === 0) {
+    //   await saveStoredPackages(PREPARED_PACKAGES);
+    //   console.log('✅ Seeded', PREPARED_PACKAGES.length, 'packages');
+    //   seeded = true;
+    // }
 
     // Seed custom items
-    if (!existingItems || existingItems.length === 0) {
-      await saveStoredCustomItems(CUSTOM_ITEMS);
-      console.log('✅ Seeded', CUSTOM_ITEMS.length, 'custom items');
-      seeded = true;
-    }
+    // Removed to prevent auto-seeding if user intentionally deletes all custom items
+    // if (!existingItems || existingItems.length === 0) {
+    //   await saveStoredCustomItems(CUSTOM_ITEMS);
+    //   console.log('✅ Seeded', CUSTOM_ITEMS.length, 'custom items');
+    //   seeded = true;
+    // }
 
     // Seed categories
-    if (!existingCategories || existingCategories.length === 0) {
-      await saveStoredCategories(DEFAULT_CATEGORIES);
-      console.log('✅ Seeded', DEFAULT_CATEGORIES.length, 'categories');
-      seeded = true;
-    }
+    // Removed to prevent auto-seeding if user intentionally deletes all categories
+    // if (!existingCategories || existingCategories.length === 0) {
+    //   await saveStoredCategories(DEFAULT_CATEGORIES);
+    //   console.log('✅ Seeded', DEFAULT_CATEGORIES.length, 'categories');
+    //   seeded = true;
+    // }
 
     // Seed gift boxes
-    if (!existingBoxes || existingBoxes.length === 0) {
-      await saveStoredGiftBoxes(DEFAULT_GIFT_BOXES);
-      console.log('✅ Seeded', DEFAULT_GIFT_BOXES.length, 'gift box styles');
-      seeded = true;
-    }
+    // Removed to prevent auto-seeding if user intentionally deletes all gift boxes
+    // if (!existingBoxes || existingBoxes.length === 0) {
+    //   await saveStoredGiftBoxes(DEFAULT_GIFT_BOXES);
+    //   console.log('✅ Seeded', DEFAULT_GIFT_BOXES.length, 'gift box styles');
+    //   seeded = true;
+    // }
 
     if (seeded) {
       console.log('🎉 Database seeding complete!');
