@@ -19,6 +19,26 @@ interface CartPageProps {
   onNavigate?: (path: string) => void;
 }
 
+interface CartFormDraft {
+  phone?: string;
+  address?: string;
+  city?: string;
+  recipientName?: string;
+  senderName?: string;
+  giftMessage?: string;
+  selectedBoxId?: string;
+  shipMode?: 'recipient' | 'me';
+}
+
+const getSavedDraft = (): CartFormDraft => {
+  try {
+    const raw = localStorage.getItem('mbm_cart_form_draft');
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+};
+
 export const CartPage: React.FC<CartPageProps> = ({
   session,
   items,
@@ -31,12 +51,15 @@ export const CartPage: React.FC<CartPageProps> = ({
   const { t } = useLanguage();
   const { buyerMarket, currency } = useMarket();
 
+  // Load saved draft so customer never loses filled details upon login/signup
+  const draft = getSavedDraft();
+
   // Custom Box Detail toggles
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
 
   // Gift Box Styles State — start empty; only populated from DB
   const [giftBoxes, setGiftBoxes] = useState<GiftBoxStyle[]>([]);
-  const [selectedBoxId, setSelectedBoxId] = useState<string>('');
+  const [selectedBoxId, setSelectedBoxId] = useState<string>(draft.selectedBoxId || '');
 
   useEffect(() => {
     getStoredGiftBoxes().then((boxes) => {
@@ -60,16 +83,35 @@ export const CartPage: React.FC<CartPageProps> = ({
   const hasCustomItems = items.some((item) => item.type === 'custom');
   const selectedBox = hasCustomItems ? (giftBoxes.find((b) => b.id === selectedBoxId) || giftBoxes[0]) : undefined;
   const wrapTier = hasCustomItems && selectedBox ? getBoxPrice(selectedBox) : 0;
-  const [shipMode, setShipMode] = useState<'recipient' | 'me'>('recipient');
+  const [shipMode, setShipMode] = useState<'recipient' | 'me'>(draft.shipMode || 'recipient');
 
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [recipientName, setRecipientName] = useState('');
-  const [senderName, setSenderName] = useState('');
-  const [giftMessage, setGiftMessage] = useState('');
+  const [phone, setPhone] = useState(draft.phone || '');
+  const [address, setAddress] = useState(draft.address || '');
+  const [city, setCity] = useState(draft.city || '');
+  const [recipientName, setRecipientName] = useState(draft.recipientName || '');
+  const [senderName, setSenderName] = useState(draft.senderName || '');
+  const [giftMessage, setGiftMessage] = useState(draft.giftMessage || '');
   const [validationError, setValidationError] = useState('');
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
+  // Auto-save form draft so details survive page reload, auth redirects, or back navigation
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        'mbm_cart_form_draft',
+        JSON.stringify({
+          phone,
+          address,
+          city,
+          recipientName,
+          senderName,
+          giftMessage,
+          selectedBoxId,
+          shipMode,
+        })
+      );
+    } catch {}
+  }, [phone, address, city, recipientName, senderName, giftMessage, selectedBoxId, shipMode]);
 
   // Cart Calculations
   const calculateItemPrice = (item: CartItem): number => {
@@ -97,9 +139,13 @@ export const CartPage: React.FC<CartPageProps> = ({
     setValidationError('');
     if (items.length === 0) return;
 
-    // Force signup/login before placing order
+    // Force signup/login before placing order — form data is already stored in draft
     if (!session) {
-      window.location.href = '/login?redirect=/cart';
+      if (onNavigate) {
+        onNavigate('/login?redirect=/cart');
+      } else {
+        window.location.href = '/login?redirect=/cart';
+      }
       return;
     }
 
@@ -199,7 +245,8 @@ export const CartPage: React.FC<CartPageProps> = ({
 
     setIsPlacingOrder(false);
     onOrderCreated(newOrder);
-    onClearCart();
+    // Note: Do NOT call onClearCart() here! The cart must remain intact if the user
+    // navigates back from checkout. It will only be cleared upon verified payment in App.tsx.
   };
 
   const toggleContents = (id: string) => {
@@ -234,15 +281,29 @@ export const CartPage: React.FC<CartPageProps> = ({
           </div>
 
           {!session && items.length > 0 && (
-            <div className="bg-amber-400/10 border border-amber-400/30 rounded-xl p-4 mb-6 flex items-center gap-3">
-              <div className="bg-amber-400/20 rounded-full p-2 flex-shrink-0">
-                <Package className="w-5 h-5 text-amber-300" />
+            <a
+              href="/login?redirect=/cart"
+              onClick={(e) => {
+                if (onNavigate) {
+                  e.preventDefault();
+                  onNavigate('/login?redirect=/cart');
+                }
+              }}
+              className="bg-amber-400/10 hover:bg-amber-400/15 transition-all border border-amber-400/30 rounded-xl p-4 mb-6 flex items-center justify-between gap-3 group cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="bg-amber-400/20 group-hover:bg-amber-400/30 transition-colors rounded-full p-2 flex-shrink-0">
+                  <Package className="w-5 h-5 text-amber-300" />
+                </div>
+                <div className="flex-1 min-w-0 text-left">
+                  <p className="text-amber-300 text-sm font-bold">Sign up required to complete your order</p>
+                  <p className="text-amber-300/70 text-xs">Click here to sign in or create an account — your filled details are saved</p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-amber-300 text-sm font-bold">Sign up required to complete your order</p>
-                <p className="text-amber-300/70 text-xs">Create an account when you place your order</p>
-              </div>
-            </div>
+              <span className="text-xs uppercase font-bold text-[#8c1119] bg-amber-400 hover:bg-amber-300 px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-colors">
+                Sign In / Up →
+              </span>
+            </a>
           )}
 
           {items.length === 0 ? (

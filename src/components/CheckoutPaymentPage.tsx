@@ -188,10 +188,10 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
           <div className="p-16 text-center space-y-4">
             <Loader2 className="w-14 h-14 text-amber-300 animate-spin mx-auto" />
             <h3 className="font-podium text-3xl uppercase text-white font-bold tracking-wide">
-              Verifying Payment with Chapa...
+              Verifying Your Payment...
             </h3>
             <p className="text-sm text-white/70">
-              Please wait while we confirm your transaction reference with the gateway.
+              Please wait a moment while we confirm your payment status with Chapa.
             </p>
           </div>
         )}
@@ -207,15 +207,15 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                 <div>
                   <div className="inline-flex items-center gap-1.5 text-amber-300 text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full mb-1">
                     <ShieldCheck className="w-3 h-3 text-amber-300" />
-                    <span>Chapa Secure Payment Gateway</span>
+                    <span>100% Secure Payment</span>
                   </div>
                   <h2 className="font-podium text-2xl sm:text-3xl uppercase tracking-wide text-white">
-                    {market === 'INTERNATIONAL' ? 'International Checkout' : 'Local Ethiopian Checkout'}
+                    {market === 'INTERNATIONAL' ? 'International Checkout' : 'Ethiopian Checkout'}
                   </h2>
                 </div>
                 <button
                   onClick={onBack}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white cursor-pointer"
                   title="Go back to cart"
                 >
                   <ArrowLeft className="w-5 h-5" />
@@ -228,10 +228,10 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                   <span className="text-3xl">{market === 'ETHIOPIA' ? '🇪🇹' : '🌍'}</span>
                   <div>
                     <div className="text-xs font-bold text-white uppercase tracking-wider">
-                      {market === 'ETHIOPIA' ? 'Ethiopian Local Buyer' : 'International Diaspora / Abroad Buyer'}
+                      {market === 'ETHIOPIA' ? 'Ethiopian Market' : 'International Market'}
                     </div>
                     <div className="text-[11px] text-amber-300 font-semibold">
-                      Billing in <strong className="underline">{currency}</strong> via Chapa Gateway
+                      Payment in <strong className="underline">{currency === 'ETB' ? 'Ethiopian Birr (ETB)' : 'US Dollars (USD)'}</strong> via Chapa
                     </div>
                   </div>
                 </div>
@@ -243,53 +243,21 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                 </div>
               </div>
 
-              {/* Supported Payment Methods Showcase */}
-              <div>
-                <label className="block text-xs uppercase tracking-widest text-amber-300 font-bold mb-2.5">
+              {/* Payment Methods Info Box */}
+              <div className="bg-black/30 border border-amber-400/20 rounded-2xl p-5 space-y-3">
+                <div className="flex items-center gap-2 text-amber-300 font-bold text-xs uppercase tracking-wider">
+                  <CreditCard className="w-4 h-4 text-amber-300" />
+                  <span>Choose Your Preferred Payment Method</span>
+                </div>
+                <p className="text-xs text-white/75 leading-relaxed">
                   {market === 'ETHIOPIA'
-                    ? 'Supported Local Payment Options (Chapa)'
-                    : 'Supported International Payment Options (Chapa)'}
-                </label>
-
-                {market === 'ETHIOPIA' ? (
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                    {localPaymentChannels.map((channel, i) => (
-                      <div
-                        key={i}
-                        className="bg-black/30 border border-white/10 hover:border-amber-400/50 rounded-xl p-2.5 flex flex-col items-center justify-center gap-1 text-center transition-all"
-                      >
-                        <div className="w-8 h-8 rounded-lg overflow-hidden bg-white flex items-center justify-center p-0.5">
-                          <img
-                            src={channel.logo}
-                            alt={channel.name}
-                            className="w-full h-full object-contain"
-                            onError={(e) => {
-                              (e.target as HTMLElement).style.display = 'none';
-                            }}
-                          />
-                        </div>
-                        <span className="text-[10px] font-bold text-white leading-tight">{channel.name}</span>
-                        <span className="text-[8px] text-white/40 uppercase">{channel.type}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                    {internationalPaymentChannels.map((card, i) => (
-                      <div
-                        key={i}
-                        className="bg-black/30 border border-white/10 rounded-xl p-3 flex flex-col items-center justify-center gap-1 text-center"
-                      >
-                        <div
-                          className={`bg-gradient-to-r ${card.color} text-white font-extrabold text-[11px] px-3 py-1 rounded shadow`}
-                        >
-                          {card.badge}
-                        </div>
-                        <span className="text-[10px] font-bold text-white mt-1">{card.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                    ? 'You can pay using Telebirr, CBE Birr, Commercial Bank of Ethiopia, Bank of Abyssinia, Awash, Dashen, or any supported Ethiopian bank and card directly on the official Chapa payment page.'
+                    : 'You can pay securely with Visa, MasterCard, American Express, UnionPay, and international debit/credit cards directly on the official Chapa payment page.'}
+                </p>
+                <div className="flex items-center gap-2 text-[11px] text-amber-300/80 pt-2 border-t border-white/10">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                  <span>Select your payment method on the next screen</span>
+                </div>
               </div>
 
               {/* Error Box */}
@@ -324,7 +292,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
 
               <div className="text-center text-[11px] text-white/50 flex items-center justify-center gap-1.5">
                 <Lock className="w-3.5 h-3.5 text-amber-300/70" />
-                <span>256-bit SSL Encrypted • Powered by Chapa Financial Technologies</span>
+                <span>256-bit SSL Encrypted • Verified by Chapa</span>
               </div>
             </div>
 
@@ -345,21 +313,26 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                     Gift Items ({order.items.length})
                   </span>
                   <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                    {order.items.map((it, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-black/30 border border-white/5 rounded-lg p-2.5 flex items-center justify-between text-xs"
-                      >
-                        <div className="truncate pr-2">
-                          <div className="font-bold text-white truncate">
-                            {it.quantity}x {it.type === 'package' ? it.package.name : 'Custom Gift Box'}
+                    {order.items.map((it, idx) => {
+                      const itemTotal = it.type === 'package'
+                        ? (currency === 'USD' ? (it.package?.price_usd || Math.round((it.package?.price / 120) * 100) / 100) : it.package?.price) * it.quantity
+                        : (it.totalPrice || 0) * it.quantity;
+                      return (
+                        <div
+                          key={idx}
+                          className="bg-black/30 border border-white/5 rounded-lg p-2.5 flex items-center justify-between text-xs"
+                        >
+                          <div className="truncate pr-2">
+                            <div className="font-bold text-white truncate">
+                              {it.quantity}x {it.type === 'package' ? it.package?.name : 'Custom Gift Box'}
+                            </div>
                           </div>
+                          <span className="text-amber-300 font-bold flex-shrink-0">
+                            {formatPrice(itemTotal > 0 ? itemTotal : order.total, currency)}
+                          </span>
                         </div>
-                        <span className="text-amber-300 font-bold flex-shrink-0">
-                          {formatPrice(order.total, currency)}
-                        </span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -369,7 +342,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/60">Recipient:</span>
-                    <span className="font-semibold text-white">{order.customer.fullName}</span>
+                    <span className="font-semibold text-white">{order.customer.giftRecipientName || order.customer.fullName}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/60">Contact:</span>
@@ -377,7 +350,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/60">Destination:</span>
-                    <span className="text-white/90">{order.customer.address}, {order.customer.city}</span>
+                    <span className="text-white/90">{order.customer.address}{order.customer.city ? `, ${order.customer.city}` : ''}</span>
                   </div>
                 </div>
               </div>
@@ -385,8 +358,14 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
               <div className="pt-4 border-t border-white/10 space-y-2 text-xs">
                 <div className="flex justify-between text-white/70">
                   <span>Subtotal</span>
-                  <span className="font-bold text-white">{formatPrice(order.total, currency)}</span>
+                  <span className="font-bold text-white">{formatPrice(order.subtotal || order.total, currency)}</span>
                 </div>
+                {order.giftBoxPrice != null && order.giftBoxPrice > 0 && (
+                  <div className="flex justify-between text-white/70">
+                    <span>Packaging ({order.giftBoxStyle})</span>
+                    <span className="font-bold text-white">{formatPrice(order.giftBoxPrice, currency)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-white/70">
                   <span>Delivery in Ethiopia</span>
                   <span className="text-emerald-400 font-bold uppercase">Free</span>
