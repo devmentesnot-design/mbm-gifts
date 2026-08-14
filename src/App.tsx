@@ -58,7 +58,14 @@ export default function App() {
   });
 
   const [customizerPackage, setCustomizerPackage] = useState<PreparedPackage | null>(null);
-  const [pendingOrder, setPendingOrder] = useState<Order | null>(null);
+  const [pendingOrder, setPendingOrder] = useState<Order | null>(() => {
+    try {
+      const saved = localStorage.getItem('mbm_pending_order');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
 
   // Dynamic state loaded from localStorage / Supabase defaults
   const [packages, setPackages] = useState<PreparedPackage[]>([]);
@@ -323,24 +330,35 @@ export default function App() {
   // Create new order on Checkout completion (goes to payment first)
   const handleNewOrderCreated = (newOrder: Order) => {
     setPendingOrder(newOrder);
+    try {
+      localStorage.setItem('mbm_pending_order', JSON.stringify(newOrder));
+    } catch {}
     navigateTo('/checkout/payment');
   };
 
   // Finalize order after payment directly to DB
-  const handlePaymentSubmitted = async (receiptUrl: string, paymentMethod: string) => {
+  const handlePaymentSubmitted = async (
+    receiptUrl: string,
+    paymentMethod: string,
+    chapaTxRef?: string,
+    paymentStatus?: 'PAID' | 'PENDING_PAYMENT'
+  ) => {
     if (pendingOrder) {
-      console.log('💾 Saving new order to database:', pendingOrder.id);
+      console.log('💾 Saving finalized order to database:', pendingOrder.id);
       
-      // Update order with payment receipt and method
-      const finalizedOrder = {
+      // Update order with payment receipt, method, and transaction reference
+      const finalizedOrder: Order = {
         ...pendingOrder,
         paymentReceiptUrl: receiptUrl,
         paymentMethod: paymentMethod,
+        chapaTxRef: chapaTxRef || pendingOrder.chapaTxRef,
+        paymentStatus: paymentStatus || 'PAID',
+        status: paymentStatus === 'PAID' ? 'Processing' : 'Pending',
       };
       
       try {
         await saveSingleOrder(finalizedOrder);
-        console.log('✅ Order saved to database successfully with receipt:', pendingOrder.id);
+        console.log('✅ Order saved to database successfully with Chapa reference:', finalizedOrder.id);
         
         // Fetch fresh orders directly from DB
         const freshOrders = await getStoredOrders();
@@ -349,6 +367,8 @@ export default function App() {
         // Clear cart & pending order state upon successful DB save
         setCartItems([]);
         setPendingOrder(null);
+        localStorage.removeItem('mbm_pending_order');
+        localStorage.removeItem('mbm_gifts_cart');
         navigateTo('/my-orders');
       } catch (err: any) {
         console.error('❌ Failed to save order to database:', err);

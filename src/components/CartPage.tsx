@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { CartItem, Order } from '../types/cart';
 import { Package, Truck, ArrowLeft, Image as ImageIcon, PhoneCall, UploadCloud, Check, Sparkles, Box, Headset, Clock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useMarket } from '../context/MarketContext';
 import { GiftBoxStyle, DEFAULT_GIFT_BOXES, getStoredGiftBoxes } from '../data/giftsData';
-import { formatCurrency } from '../utils/currency';
+import { formatPrice } from '../utils/currency';
 import { GiftNotePreview } from './GiftNotePreview';
 
 interface CartPageProps {
@@ -27,6 +28,7 @@ export const CartPage: React.FC<CartPageProps> = ({
   onNavigate,
 }) => {
   const { t } = useLanguage();
+  const { buyerMarket, currency } = useMarket();
 
   // Custom Box Detail toggles
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
@@ -44,8 +46,17 @@ export const CartPage: React.FC<CartPageProps> = ({
     });
   }, []);
 
+  const getBoxPrice = (box?: GiftBoxStyle): number => {
+    if (!box) return 0;
+    if (buyerMarket === 'INTERNATIONAL') {
+      if (box.price_usd != null && box.price_usd > 0) return box.price_usd;
+      return Math.round((box.price / 120) * 100) / 100;
+    }
+    return box.price;
+  };
+
   const selectedBox = giftBoxes.find((b) => b.id === selectedBoxId) || giftBoxes[0];
-  const wrapTier = selectedBox ? selectedBox.price : 0;
+  const wrapTier = getBoxPrice(selectedBox);
   const [shipMode, setShipMode] = useState<'recipient' | 'me'>('recipient');
 
   const [customerName, setCustomerName] = useState('');
@@ -60,8 +71,18 @@ export const CartPage: React.FC<CartPageProps> = ({
   // Cart Calculations
   const calculateItemPrice = (item: CartItem): number => {
     if (item.type === 'package') {
-      return item.package.price * item.quantity;
+      const price = buyerMarket === 'INTERNATIONAL'
+        ? (item.package.price_usd != null && item.package.price_usd > 0 ? item.package.price_usd : Math.round((item.package.price / 120) * 100) / 100)
+        : item.package.price;
+      return price * item.quantity;
     } else {
+      if (buyerMarket === 'INTERNATIONAL') {
+        const subItemsTotal = item.selectedItems.reduce((sum, si) => {
+          const p = si.price_usd != null && si.price_usd > 0 ? si.price_usd : Math.round((si.price / 120) * 100) / 100;
+          return sum + p;
+        }, 0);
+        return subItemsTotal * item.quantity;
+      }
       return item.totalPrice * item.quantity;
     }
   };
@@ -109,9 +130,13 @@ export const CartPage: React.FC<CartPageProps> = ({
       subtotal: subtotal,
       shipping: 0,
       total: total,
-      paymentMethod: 'Pending Admin Phone Confirmation',
+      paymentMethod: 'Chapa Payment Gateway',
+      paymentStatus: 'PENDING_PAYMENT',
       giftBoxStyle: selectedBox?.name || 'Standard Box',
-      giftBoxPrice: selectedBox?.price || 0,
+      giftBoxPrice: wrapTier,
+      buyerMarket: buyerMarket,
+      currency: currency,
+      deliveryFee: 0,
     };
 
     onOrderCreated(newOrder);
@@ -194,7 +219,7 @@ export const CartPage: React.FC<CartPageProps> = ({
                             </div>
                           </div>
                           <div className="font-bold text-amber-300">
-                            {formatCurrency(calculateItemPrice(item))}
+                            {formatPrice(calculateItemPrice(item), currency)}
                           </div>
                         </div>
 
@@ -209,12 +234,17 @@ export const CartPage: React.FC<CartPageProps> = ({
                             </button>
                             {expandedItems[item.id] && (
                               <div className="mt-3 pt-3 border-t border-white/10 text-xs text-white/70 space-y-1">
-                                {item.selectedItems.map((si, idx) => (
-                                  <div key={idx} className="flex justify-between">
-                                    <span className="truncate pr-4">{si.name}</span>
-                                    <span className="text-white/40">{formatCurrency(si.price)}</span>
-                                  </div>
-                                ))}
+                                {item.selectedItems.map((si, idx) => {
+                                  const singlePrice = buyerMarket === 'INTERNATIONAL'
+                                    ? (si.price_usd != null && si.price_usd > 0 ? si.price_usd : Math.round((si.price / 120) * 100) / 100)
+                                    : si.price;
+                                  return (
+                                    <div key={idx} className="flex justify-between">
+                                      <span className="truncate pr-4">{si.name}</span>
+                                      <span className="text-white/40">{formatPrice(singlePrice, currency)}</span>
+                                    </div>
+                                  );
+                                })}
                                 <div className="text-amber-300/70 pt-1 italic">{item.boxStyle.name}</div>
                               </div>
                             )}
@@ -276,7 +306,7 @@ export const CartPage: React.FC<CartPageProps> = ({
 
                             {/* Price tag */}
                             <div className="absolute top-2.5 right-2.5 bg-black/80 backdrop-blur-md border border-amber-400/40 text-amber-300 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">
-                              {box.price === 0 ? 'Complimentary' : `+${formatCurrency(box.price)}`}
+                              {getBoxPrice(box) === 0 ? 'Complimentary' : `+${formatPrice(getBoxPrice(box), currency)}`}
                             </div>
 
                             {/* Selection Radio / Badge */}
@@ -305,7 +335,7 @@ export const CartPage: React.FC<CartPageProps> = ({
                                 {isSelected ? '✓ Selected Style' : 'Click to Select'}
                               </span>
                               <span className="text-white/80 font-bold">
-                                {box.price === 0 ? 'Included Free' : `+${formatCurrency(box.price)}`}
+                                {getBoxPrice(box) === 0 ? 'Included Free' : `+${formatPrice(getBoxPrice(box), currency)}`}
                               </span>
                             </div>
                           </div>
@@ -481,18 +511,18 @@ export const CartPage: React.FC<CartPageProps> = ({
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between text-white/80">
                     <span>Subtotal ({items.length} item{items.length !== 1 ? 's' : ''})</span>
-                    <span className="font-bold">{formatCurrency(subtotal)}</span>
+                    <span className="font-bold">{formatPrice(subtotal, currency)}</span>
                   </div>
                   {selectedBox && (
                     <div className="flex justify-between text-white/80">
                       <span className="truncate pr-2">Packaging: {selectedBox.name}</span>
                       <span className="font-bold flex-shrink-0">
-                        {selectedBox.price === 0 ? 'Free' : formatCurrency(selectedBox.price)}
+                        {wrapTier === 0 ? 'Free' : formatPrice(wrapTier, currency)}
                       </span>
                     </div>
                   )}
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-white/80">Delivery</span>
+                    <span className="text-white/80">Delivery in Ethiopia</span>
                     <span className="text-emerald-400 font-extrabold uppercase tracking-wider bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/40">
                       FREE
                     </span>
@@ -502,18 +532,24 @@ export const CartPage: React.FC<CartPageProps> = ({
                 <div className="border-t border-white/10 my-4"></div>
 
                 <div className="flex justify-between items-end mb-6">
-                  <span className="text-sm uppercase tracking-widest font-bold text-white/70">Total</span>
-                  <span className="font-podium text-3xl text-amber-300">{formatCurrency(total)}</span>
+                  <div>
+                    <span className="text-sm uppercase tracking-widest font-bold text-white/70 block">Total</span>
+                    <span className="text-[10px] text-amber-300/80 uppercase font-semibold">
+                      {buyerMarket === 'INTERNATIONAL' ? 'USD (Abroad)' : 'ETB (Local)'}
+                    </span>
+                  </div>
+                  <span className="font-podium text-3xl text-amber-300">{formatPrice(total, currency)}</span>
                 </div>
 
                 <button
                   onClick={handlePlaceOrder}
-                  className="w-full bg-[#8c1119] hover:bg-[#6e0d13] text-white font-bold py-4 text-sm uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-black/50 cursor-pointer"
+                  className="w-full bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold py-4 text-sm uppercase tracking-wider rounded-xl transition-all shadow-xl shadow-amber-400/20 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  {session ? 'Place order' : 'Sign up to place order'}
+                  <Sparkles className="w-4 h-4" />
+                  <span>{session ? 'Proceed to Chapa Payment' : 'Sign up to place order'}</span>
                 </button>
                 <p className="text-center text-[10px] text-white/40 mt-4 uppercase tracking-widest">
-                  {session ? "We'll confirm your order by phone before it ships." : 'Create an account to complete your purchase'}
+                  {session ? "Secure Checkout Powered by Chapa" : 'Create an account to complete your purchase'}
                 </p>
               </div>
             </div>

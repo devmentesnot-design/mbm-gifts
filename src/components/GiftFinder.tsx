@@ -2,7 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { PreparedPackage } from '../data/giftsData';
 import { Sparkles, ShoppingBag } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { formatCurrency } from '../utils/currency';
+import { useMarket } from '../context/MarketContext';
+import { formatPrice } from '../utils/currency';
 
 interface GiftFinderProps {
   packages: PreparedPackage[];
@@ -11,9 +12,18 @@ interface GiftFinderProps {
 
 export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart }) => {
   const { t } = useLanguage();
+  const { buyerMarket, currency } = useMarket();
   const [recipient, setRecipient] = useState<string>('');
   const [occasion, setOccasion] = useState<string>('');
   const [budget, setBudget] = useState<string>('');
+
+  const getPkgPrice = (pkg: PreparedPackage): number => {
+    if (buyerMarket === 'INTERNATIONAL') {
+      if (pkg.price_usd != null && pkg.price_usd > 0) return pkg.price_usd;
+      return Math.round((pkg.price / 120) * 100) / 100;
+    }
+    return pkg.price;
+  };
 
   // Extract unique occasions from real packages
   const occasions = useMemo(() => {
@@ -33,12 +43,15 @@ export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart })
     // Filter by budget
     if (budget) {
       const [min, max] = budget.split('-').map(v => v === '+' ? Infinity : parseFloat(v));
-      filtered = filtered.filter(p => p.price >= min && (max === Infinity || p.price <= max));
+      filtered = filtered.filter(p => {
+        const price = getPkgPrice(p);
+        return price >= min && (max === Infinity || price <= max);
+      });
     }
 
     // Return first match or first package
     return filtered.length > 0 ? filtered[0] : packages[0];
-  }, [packages, occasion, budget]);
+  }, [packages, occasion, budget, buyerMarket]);
 
   return (
     <section id="finder" className="w-full px-4 sm:px-8 lg:px-12 py-12 sm:py-16 bg-gradient-to-r from-[#6e0d13] via-[#8c1119] to-[#6e0d13] text-white">
@@ -93,10 +106,21 @@ export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart })
               className="w-full bg-black/40 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-amber-400 cursor-pointer"
             >
               <option value="">Any Budget</option>
-              <option value="0-75">Under $75</option>
-              <option value="75-125">$75 - $125</option>
-              <option value="125-175">$125 - $175</option>
-              <option value="175-+">$175+</option>
+              {buyerMarket === 'INTERNATIONAL' ? (
+                <>
+                  <option value="0-30">Under $30</option>
+                  <option value="30-60">$30 - $60</option>
+                  <option value="60-100">$60 - $100</option>
+                  <option value="100-+">$100+</option>
+                </>
+              ) : (
+                <>
+                  <option value="0-2000">Under 2,000 ብር</option>
+                  <option value="2000-5000">2,000 - 5,000 ብር</option>
+                  <option value="5000-10000">5,000 - 10,000 ብር</option>
+                  <option value="10000-+">10,000+ ብር</option>
+                </>
+              )}
             </select>
           </div>
         </div>
@@ -122,7 +146,7 @@ export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart })
                 {matchedPackage.shortDesc}
               </p>
               <div className="text-lg font-bold font-inter text-amber-300">
-                {formatCurrency(matchedPackage.price)}
+                {formatPrice(getPkgPrice(matchedPackage), currency)}
               </div>
             </div>
 

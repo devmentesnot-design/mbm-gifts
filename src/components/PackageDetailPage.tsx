@@ -3,7 +3,8 @@ import { PreparedPackage, CustomBoxOption, CUSTOM_ITEMS } from '../data/giftsDat
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { CartItem } from '../types/cart';
-import { formatCurrency } from '../utils/currency';
+import { useMarket } from '../context/MarketContext';
+import { formatPrice } from '../utils/currency';
 import {
   ArrowLeft,
   ShoppingBag,
@@ -44,7 +45,16 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   onAddToCartPrepared,
 }) => {
   const { t } = useLanguage();
+  const { buyerMarket, currency } = useMarket();
   const [addedToast, setAddedToast] = useState(false);
+
+  const getPkgPrice = (pkg: PreparedPackage): number => {
+    if (buyerMarket === 'INTERNATIONAL') {
+      if (pkg.price_usd != null && pkg.price_usd > 0) return pkg.price_usd;
+      return Math.round((pkg.price / 120) * 100) / 100;
+    }
+    return pkg.price;
+  };
 
   const getItemDetails = (pkg: PreparedPackage) => {
     if (pkg.itemsIncludedDetailed && pkg.itemsIncludedDetailed.length > 0) {
@@ -163,10 +173,12 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                   </h1>
 
                   <div className="flex flex-wrap items-baseline gap-3 mb-6 pb-6 border-b border-white/15">
-                    <span className="text-3xl sm:text-4xl font-extrabold font-inter text-amber-300">{formatCurrency(packageData.price)}</span>
+                    <span className="text-3xl sm:text-4xl font-extrabold font-inter text-amber-300">
+                      {formatPrice(getPkgPrice(packageData), currency)}
+                    </span>
                     <span className="text-xs text-emerald-300 uppercase tracking-wider font-semibold bg-emerald-500/20 border border-emerald-500/40 px-3 py-1 rounded-full flex items-center gap-1.5">
                       <Truck className="w-3.5 h-3.5 text-emerald-400" />
-                      Free Express Delivery Included
+                      {buyerMarket === 'INTERNATIONAL' ? 'Free Delivery in Ethiopia' : 'Free Express Delivery Included'}
                     </span>
                   </div>
 
@@ -209,7 +221,7 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                     className="w-full sm:flex-1 bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-extrabold py-4 px-8 text-sm sm:text-base tracking-widest uppercase rounded-2xl flex items-center justify-center gap-3 transition-all font-inter shadow-2xl shadow-amber-400/20 cursor-pointer transform hover:-translate-y-0.5"
                   >
                     <ShoppingBag className="w-5 h-5 stroke-[2.5]" />
-                    <span>ADD PACKAGE TO CART — {formatCurrency(packageData.price)}</span>
+                    <span>ADD PACKAGE TO CART — {formatPrice(getPkgPrice(packageData), currency)}</span>
                   </button>
                 </div>
               </div>
@@ -324,7 +336,7 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                     </div>
 
                     <div className="pt-3 border-t border-white/10 flex items-center justify-between">
-                      <span className="font-bold font-inter text-amber-300 text-lg">{formatCurrency(relPkg.price)}</span>
+                      <span className="font-bold font-inter text-amber-300 text-lg">{formatPrice(getPkgPrice(relPkg), currency)}</span>
                       <span className="bg-amber-400 text-[#8c1119] font-bold px-3 py-1.5 text-[11px] uppercase tracking-wider rounded-full flex items-center gap-1">
                         <span>View Details</span>
                       </span>

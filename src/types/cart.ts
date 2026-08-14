@@ -1,4 +1,7 @@
 import { PreparedPackage, CustomBoxOption } from '../data/giftsData';
+import type { BuyerMarket, MarketCurrency } from '../context/MarketContext';
+
+export type { BuyerMarket, MarketCurrency };
 
 export interface CartItemPrepared {
   id: string;
@@ -48,4 +51,10 @@ export interface Order {
   paymentReceiptUrl?: string; // Cloudinary URL for payment receipt
   giftBoxStyle?: string; // Name of selected gift box
   giftBoxPrice?: number; // Price of selected gift box
+  // Market fields — permanently recorded at time of order
+  buyerMarket?: BuyerMarket;  // 'LOCAL' | 'INTERNATIONAL'
+  currency?: MarketCurrency;  // 'ETB' | 'USD'
+  deliveryFee?: number;       // 0 for both markets currently
+  chapaTxRef?: string;        // Chapa transaction reference ID
+  paymentStatus?: 'PENDING_PAYMENT' | 'PAID' | 'PAYMENT_FAILED';
 }

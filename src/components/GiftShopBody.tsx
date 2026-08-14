@@ -2,7 +2,8 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, CUSTOM_ITEMS, PREPARED_PACKAGES } from '../data/giftsData';
 import { ShoppingBag, Star, Eye, X, Check, Search, Filter, Plus, Minus, PackageCheck, Sparkles, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { formatCurrency } from '../utils/currency';
+import { useMarket } from '../context/MarketContext';
+import { formatPrice } from '../utils/currency';
 
 interface GiftShopBodyProps {
   packages?: PreparedPackage[];
@@ -30,7 +31,25 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   onViewPackageDetail,
 }) => {
   const { t } = useLanguage();
+  const { buyerMarket, currency } = useMarket();
   const [mode, setMode] = useState<'pkg' | 'build'>('pkg');
+
+  // Market Price Helpers
+  const getPkgPrice = (pkg: PreparedPackage): number => {
+    if (buyerMarket === 'INTERNATIONAL') {
+      if (pkg.price_usd != null && pkg.price_usd > 0) return pkg.price_usd;
+      return Math.round((pkg.price / 120) * 100) / 100;
+    }
+    return pkg.price;
+  };
+
+  const getItemPrice = (item: CustomBoxOption): number => {
+    if (buyerMarket === 'INTERNATIONAL') {
+      if (item.price_usd != null && item.price_usd > 0) return item.price_usd;
+      return Math.round((item.price / 120) * 100) / 100;
+    }
+    return item.price;
+  };
   
   // Shared Filter State
   const [activeCategory, setActiveCategory] = useState<string>('All');
@@ -140,17 +159,13 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     }
 
     if (sortBy === 'price-asc') {
-      result.sort((a, b) => a.price - b.price);
+      result.sort((a, b) => getPkgPrice(a) - getPkgPrice(b));
     } else if (sortBy === 'price-desc') {
-      result.sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'newest') {
-      result.sort((a, b) => b.rating - a.rating);
-    } else if (sortBy === 'popular') {
-      result.sort((a, b) => b.reviewsCount - a.reviewsCount);
+      result.sort((a, b) => getPkgPrice(b) - getPkgPrice(a));
     }
 
     return result;
-  }, [packages, activeCategory, sortBy, categories]);
+  }, [packages, activeCategory, sortBy, categories, buyerMarket]);
 
   // Filtered & Sorted Custom Items
   const filteredCustomItems = useMemo(() => {
@@ -160,13 +175,13 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     }
     
     if (sortBy === 'price-asc') {
-      result.sort((a, b) => a.price - b.price);
+      result.sort((a, b) => getItemPrice(a) - getItemPrice(b));
     } else if (sortBy === 'price-desc') {
-      result.sort((a, b) => b.price - a.price);
+      result.sort((a, b) => getItemPrice(b) - getItemPrice(a));
     }
     
     return result;
-  }, [customItems, activeCategory, sortBy, categories]);
+  }, [customItems, activeCategory, sortBy, categories, buyerMarket]);
 
   const handleModalAdd = () => {
     if (selectedModalPkg) {
@@ -197,15 +212,16 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     Object.entries(customCart).forEach(([id, qty]) => {
       const item = customItems.find(i => i.id === id);
       if (item) {
+        const itemPrice = getItemPrice(item);
         count += qty;
-        total += item.price * qty;
+        total += itemPrice * qty;
         for (let i=0; i<qty; i++) {
           selectedItemsList.push(item);
         }
       }
     });
     return { count, total, selectedItemsList };
-  }, [customCart, customItems]);
+  }, [customCart, customItems, buyerMarket]);
 
   const handleAddCustomBoxToCart = () => {
     if (customCartSummary.count === 0) return;
@@ -289,7 +305,9 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             
             <div className="pt-3 mt-auto border-t border-white/10 z-20">
               <div className="flex items-center justify-between gap-2 mb-2.5">
-                <span className="text-lg sm:text-xl font-bold font-inter text-amber-300">{formatCurrency(pkg.price)}</span>
+                <span className="text-lg sm:text-xl font-bold font-inter text-amber-300">
+                  {formatPrice(getPkgPrice(pkg), currency)}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 {/* Details Button First */}
@@ -355,7 +373,9 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               {/* Price & Responsive Action Controls */}
               <div className="mt-3 pt-3 border-t border-white/10">
                 <div className="flex items-center justify-between gap-2 mb-2.5">
-                  <span className="font-inter font-bold text-base sm:text-lg text-amber-300">{formatCurrency(item.price)}</span>
+                  <span className="font-inter font-bold text-base sm:text-lg text-amber-300">
+                    {formatPrice(getItemPrice(item), currency)}
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -408,8 +428,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
         <div className="sm:pl-6 relative z-10 flex flex-col max-h-[60vh]">
           <div className="text-[10px] uppercase tracking-widest text-[#6E5B2B] font-bold mb-1">Your gift box</div>
           <div className="text-xs text-[#5A4C22] mb-1.5 font-medium">{customCartSummary.count} item{customCartSummary.count !== 1 ? 's' : ''}</div>
-          <div className="font-podium font-bold text-3xl text-[#163830] leading-none mb-3 border-b border-[#D8C58E] pb-3">
-            ${customCartSummary.total.toFixed(2)}
+          <div className="font-podium font-bold text-2xl text-[#163830] leading-none mb-3 border-b border-[#D8C58E] pb-3">
+            {formatPrice(customCartSummary.total, currency)}
           </div>
           
           <div className="overflow-y-auto pr-1 mb-3 space-y-1 scrollbar-hide text-[11px] text-[#5A4C22] font-medium leading-tight">
@@ -586,8 +606,12 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   </h2>
 
                   <div className="flex items-baseline gap-3 mb-4">
-                    <span className="text-3xl font-bold font-inter text-amber-300">{formatCurrency(selectedModalPkg.price)}</span>
-                    <span className="text-xs text-white/60 font-inter uppercase tracking-wider">Premium Gift Packaging Included</span>
+                    <span className="text-3xl font-bold font-inter text-amber-300">
+                      {formatPrice(getPkgPrice(selectedModalPkg), currency)}
+                    </span>
+                    <span className="text-xs text-white/60 font-inter uppercase tracking-wider">
+                      {buyerMarket === 'INTERNATIONAL' ? '✨ Free Delivery in Ethiopia' : 'Premium Packaging Included'}
+                    </span>
                   </div>
 
                   <p className="text-white/85 text-xs sm:text-sm font-inter leading-relaxed mb-6">
@@ -614,7 +638,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   className="w-full bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold py-4 text-xs sm:text-sm tracking-widest uppercase rounded-xl flex items-center justify-center gap-2.5 transition-all font-inter shadow-xl shadow-amber-400/20 cursor-pointer"
                 >
                   <ShoppingBag className="w-5 h-5" />
-                  <span>ADD PACKAGE TO CART — {formatCurrency(selectedModalPkg.price)}</span>
+                  <span>ADD PACKAGE TO CART — {formatPrice(getPkgPrice(selectedModalPkg), currency)}</span>
                 </button>
               </div>
             </div>
@@ -707,7 +731,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     {selectedCustomItemModal.name}
                   </h3>
                   <div className="text-2xl font-bold font-inter text-amber-300 mb-3">
-                    {formatCurrency(selectedCustomItemModal.price)}
+                    {formatPrice(getItemPrice(selectedCustomItemModal), currency)}
                   </div>
 
                   <p className="text-white/85 text-xs sm:text-sm font-inter leading-relaxed mb-5">

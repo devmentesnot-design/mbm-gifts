@@ -3,6 +3,7 @@ import { ShoppingBag, Globe, LogIn, LogOut, User, ChevronDown, Package, Shield, 
 import { CartItem } from '../types/cart';
 import { supabase } from '../lib/supabase';
 import { useLanguage } from '../context/LanguageContext';
+import { MarketSwitcher } from './MarketSwitcher';
 
 interface NavbarProps {
   cartItems: CartItem[];
@@ -115,7 +116,10 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
         </nav>
 
         {/* Right Actions */}
-        <div className="hidden md:flex items-center space-x-3 lg:space-x-5">
+        <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
+          {/* Market Switcher */}
+          <MarketSwitcher cartItems={cartItems} />
+
           {/* Language Switcher Button */}
           <button
             onClick={() => setLang(lang === 'en' ? 'am' : 'en')}
@@ -212,26 +216,29 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
           )}
         </div>
 
-        {/* Mobile Controls */}
-        <div className="md:hidden flex items-center space-x-2">
+        {/* Mobile Header Controls */}
+        <div className="flex md:hidden items-center space-x-1.5">
+          <MarketSwitcher cartItems={cartItems} compact={true} />
+
           {/* Language Toggle Mobile */}
           <button
             onClick={() => setLang(lang === 'en' ? 'am' : 'en')}
-            className="flex items-center gap-1 bg-black/30 text-amber-300 border border-amber-400/30 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider"
+            className="flex items-center gap-1 bg-black/30 text-amber-300 border border-amber-400/30 px-2 py-1 rounded-full text-[10px] font-bold tracking-wider"
+            title="Switch Language"
           >
             <Globe className="w-3 h-3 text-amber-300" />
             <span>{lang === 'en' ? 'EN' : 'አማ'}</span>
           </button>
 
-          {/* Cart Icon Mobile */}
+          {/* Mobile Cart Icon */}
           <button
             onClick={onOpenCart}
-            className="relative p-2 text-white hover:text-amber-300 focus:outline-none"
+            className="relative p-1.5 text-white hover:text-amber-300 transition-colors focus:outline-none"
             aria-label="View Shopping Cart"
           >
             <ShoppingBag className="w-5 h-5 text-amber-300" />
             {totalCartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-amber-400 text-[#8c1119] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-amber-400 text-[#8c1119] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-scale-in">
                 {totalCartCount}
               </span>
             )}

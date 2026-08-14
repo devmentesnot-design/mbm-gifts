@@ -13,7 +13,8 @@ export interface GiftBoxStyle {
   id: string;
   name: string;
   dimensions: string;
-  price: number;
+  price: number;      // ETB price (for LOCAL buyers)
+  price_usd?: number; // USD price (for INTERNATIONAL buyers)
   color: string;
   image: string;
   description: string;
@@ -48,7 +49,8 @@ export interface PreparedPackage {
   id: string;
   name: string;
   category: 'Birthday' | 'Luxury' | 'Romance' | 'Corporate' | 'Anniversary' | string;
-  price: number;
+  price: number;      // ETB price (for LOCAL buyers)
+  price_usd?: number; // USD price (for INTERNATIONAL buyers) — set independently by admin
   rating: number;
   reviewsCount: number;
   badge?: string;
@@ -63,7 +65,8 @@ export interface CustomBoxOption {
   id: string;
   name: string;
   category: 'box' | 'chocolate' | 'candle' | 'drink' | 'accessory' | 'personal' | string;
-  price: number;
+  price: number;      // ETB price (for LOCAL buyers)
+  price_usd?: number; // USD price (for INTERNATIONAL buyers) — set independently by admin
   image: string;
   description: string;
 }
@@ -363,6 +366,7 @@ export const getStoredPackages = async (): Promise<PreparedPackage[]> => {
       name: item.name,
       category: item.category,
       price: item.price,
+      price_usd: item.price_usd ?? (item.price ? Math.round((item.price / 120) * 100) / 100 : undefined),
       rating: item.rating || 5.0,
       reviewsCount: item.reviews_count || 100,
       badge: item.badge,
@@ -395,6 +399,7 @@ export const saveStoredPackages = async (packages: PreparedPackage[]) => {
       name: p.name,
       category: p.category,
       price: p.price,
+      price_usd: p.price_usd ?? null,
       rating: p.rating,
       reviews_count: p.reviewsCount,
       badge: p.badge || null,
@@ -428,6 +433,7 @@ export const saveSinglePackage = async (p: PreparedPackage) => {
       name: p.name,
       category: p.category,
       price: p.price,
+      price_usd: p.price_usd ?? null,
       rating: p.rating,
       reviews_count: p.reviewsCount,
       badge: p.badge || null,
@@ -473,6 +479,7 @@ export const getStoredCustomItems = async (): Promise<CustomBoxOption[]> => {
       name: item.name,
       category: item.category,
       price: item.price,
+      price_usd: item.price_usd ?? (item.price ? Math.round((item.price / 120) * 100) / 100 : undefined),
       image: item.image,
       description: item.description || item.name
     }));
@@ -499,6 +506,7 @@ export const saveStoredCustomItems = async (items: CustomBoxOption[]) => {
       name: item.name,
       category: item.category,
       price: item.price,
+      price_usd: item.price_usd ?? null,
       image: item.image,
       description: item.description
     }));
@@ -526,6 +534,7 @@ export const saveSingleCustomItem = async (item: CustomBoxOption) => {
       name: item.name,
       category: item.category,
       price: item.price,
+      price_usd: item.price_usd ?? null,
       image: item.image,
       description: item.description
     };
@@ -575,7 +584,12 @@ export const getStoredOrders = async (): Promise<any[]> => {
       paymentMethod: o.payment_method,
       paymentReceiptUrl: o.payment_receipt_url,
       giftBoxStyle: o.gift_box_style,
-      giftBoxPrice: o.gift_box_price
+      giftBoxPrice: o.gift_box_price,
+      buyerMarket: o.buyer_market || 'LOCAL',
+      currency: o.currency || 'ETB',
+      deliveryFee: o.delivery_fee || 0,
+      chapaTxRef: o.chapa_tx_ref || null,
+      paymentStatus: o.payment_status || (o.payment_receipt_url ? 'PAID' : 'PENDING_PAYMENT')
     }));
     
     console.log('✅ Loaded', mapped.length, 'orders from Supabase');
@@ -605,12 +619,17 @@ export const saveSingleOrder = async (order: any) => {
       customer_info: order.customer,
       items: order.items,
       subtotal: order.subtotal,
-      shipping: order.shipping,
+      shipping: order.shipping || 0,
       total: order.total,
       payment_method: order.paymentMethod,
       payment_receipt_url: order.paymentReceiptUrl || null,
       gift_box_style: order.giftBoxStyle || null,
-      gift_box_price: order.giftBoxPrice || 0
+      gift_box_price: order.giftBoxPrice || 0,
+      buyer_market: order.buyerMarket || 'LOCAL',
+      currency: order.currency || 'ETB',
+      delivery_fee: order.deliveryFee || 0,
+      chapa_tx_ref: order.chapaTxRef || null,
+      payment_status: order.paymentStatus || 'PENDING_PAYMENT'
     };
     
     console.log('📝 Formatted order payload for DB:', formattedOrder);
@@ -751,6 +770,7 @@ export const getStoredGiftBoxes = async (): Promise<GiftBoxStyle[]> => {
       name: b.name,
       dimensions: b.dimensions,
       price: b.price,
+      price_usd: b.price_usd ?? (b.price ? Math.round((b.price / 120) * 100) / 100 : undefined),
       color: b.color,
       image: b.image,
       description: b.description

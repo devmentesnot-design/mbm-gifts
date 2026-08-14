@@ -1,5 +1,18 @@
+import type { MarketCurrency } from '../context/MarketContext';
+
 /**
- * Utility for formatting currency in Ethiopian Birr (ብር / ETB)
+ * Centralized price formatter — supports ETB (local) and USD (international).
+ */
+export function formatPrice(amount: number, currency: MarketCurrency): string {
+  const safe = isNaN(amount) ? 0 : amount;
+  if (currency === 'USD') {
+    return `$${safe.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
+  }
+  return `${safe.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ብር`;
+}
+
+/**
+ * Legacy helper — always formats in ETB. Use formatPrice() for market-aware formatting.
  */
 export function formatCurrency(amount: number): string {
   const safeAmount = isNaN(amount) ? 0 : amount;

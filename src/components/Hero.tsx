@@ -1,6 +1,7 @@
 import React from 'react';
-import { ArrowUpRight, Award, Crown, Sparkles, PackageCheck } from 'lucide-react';
+import { ArrowUpRight, Award, Crown, Sparkles, PackageCheck, Globe, Truck } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useMarket } from '../context/MarketContext';
 
 interface HeroProps {
   onExplorePackages: () => void;
@@ -9,6 +10,7 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onExplorePackages }) => {
   const { t } = useLanguage();
+  const { buyerMarket } = useMarket();
 
   return (
     <section className="relative min-h-[calc(100vh-76px)] w-full overflow-hidden flex flex-col justify-between select-none">
@@ -48,10 +50,19 @@ export const Hero: React.FC<HeroProps> = ({ onExplorePackages }) => {
       {/* Main Hero Body */}
       <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16 flex-1 flex flex-col justify-center z-10 py-8 sm:py-10 lg:py-12">
         <div className="max-w-full lg:max-w-2xl xl:max-w-3xl">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-amber-400/15 border border-amber-400/40 text-amber-300 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest px-2.5 sm:px-3 py-1 rounded-full mb-3 sm:mb-4">
-            <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-amber-300" />
-            <span>{t('hero.badge')}</span>
+          {/* Market-aware Badges */}
+          <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
+            <div className="inline-flex items-center gap-2 bg-amber-400/15 border border-amber-400/40 text-amber-300 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest px-2.5 sm:px-3 py-1 rounded-full">
+              <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-amber-300" />
+              <span>{t('hero.badge')}</span>
+            </div>
+
+            {buyerMarket === 'INTERNATIONAL' && (
+              <div className="inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-400/50 text-emerald-300 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full animate-fade-in">
+                <Truck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Pay USD • Free Delivery in Ethiopia</span>
+              </div>
+            )}
           </div>
 
           {/* Main Heading */}
@@ -63,7 +74,9 @@ export const Hero: React.FC<HeroProps> = ({ onExplorePackages }) => {
 
           {/* Subtext */}
           <p className="animate-fade-up-delay-2 mt-4 sm:mt-6 lg:mt-8 text-white/80 text-xs sm:text-sm md:text-base font-inter leading-relaxed max-w-full sm:max-w-md">
-            {t('hero.subtitle')}
+            {buyerMarket === 'INTERNATIONAL'
+              ? 'Ordering from abroad? Send luxury gift packages directly to loved ones, partners, and family in Ethiopia with complimentary hand-delivery.'
+              : t('hero.subtitle')}
           </p>
 
           {/* CTA Row */}

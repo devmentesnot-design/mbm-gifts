@@ -156,6 +156,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     name: '',
     category: 'Luxury',
     price: '',
+    price_usd: '',
     shortDesc: '',
     popularFor: 'Anniversaries & Special Celebrations',
     image: '',
@@ -173,6 +174,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     name: '',
     category: 'Sweets & Chocolates',
     price: '',
+    price_usd: '',
     description: '',
     image: '',
   });
@@ -201,6 +203,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     name: '',
     dimensions: '',
     price: '',
+    price_usd: '',
     color: '',
     image: '',
     description: '',
@@ -364,6 +367,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         name: box.name,
         dimensions: box.dimensions,
         price: box.price.toString(),
+        price_usd: box.price_usd != null ? box.price_usd.toString() : '',
         color: box.color,
         image: box.image,
         description: box.description,
@@ -374,6 +378,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         name: '',
         dimensions: '12" x 10" x 5"',
         price: '0',
+        price_usd: '0',
         color: 'Red Velvet',
         image: '',
         description: '',
@@ -395,6 +400,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 name: boxForm.name,
                 dimensions: boxForm.dimensions,
                 price: parseFloat(boxForm.price) || 0,
+                price_usd: boxForm.price_usd ? parseFloat(boxForm.price_usd) : undefined,
                 color: boxForm.color,
                 image: boxForm.image,
                 description: boxForm.description,
@@ -408,6 +414,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         name: boxForm.name,
         dimensions: boxForm.dimensions || '12" x 10" x 5"',
         price: parseFloat(boxForm.price) || 0,
+        price_usd: boxForm.price_usd ? parseFloat(boxForm.price_usd) : undefined,
         color: boxForm.color || 'Custom',
         image: boxForm.image || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=400&auto=format&fit=crop',
         description: boxForm.description,
@@ -438,6 +445,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         name: pkg.name,
         category: pkg.category,
         price: pkg.price.toString(),
+        price_usd: pkg.price_usd != null ? pkg.price_usd.toString() : '',
         shortDesc: pkg.shortDesc,
         popularFor: pkg.popularFor || 'Anniversaries & Special Celebrations',
         image: pkg.image,
@@ -462,6 +470,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         name: '',
         category: defaultCategory,
         price: '',
+        price_usd: '',
         shortDesc: '',
         popularFor: 'Anniversaries & Special Celebrations',
         image: '',
@@ -507,6 +516,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               name: pkgForm.name,
               category: pkgForm.category,
               price: parseFloat(pkgForm.price),
+              price_usd: pkgForm.price_usd ? parseFloat(pkgForm.price_usd) : undefined,
               shortDesc: pkgForm.shortDesc,
               popularFor: pkgForm.popularFor,
               image: pkgForm.image || p.image,
@@ -523,6 +533,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         name: pkgForm.name,
         category: pkgForm.category,
         price: parseFloat(pkgForm.price),
+        price_usd: pkgForm.price_usd ? parseFloat(pkgForm.price_usd) : undefined,
         rating: 5.0,
         reviewsCount: 1,
         shortDesc: pkgForm.shortDesc,
@@ -556,6 +567,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         name: item.name,
         category: item.category,
         price: item.price.toString(),
+        price_usd: item.price_usd != null ? item.price_usd.toString() : '',
         description: item.description,
         image: item.image,
       });
@@ -566,6 +578,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         name: '',
         category: defaultCategory,
         price: '',
+        price_usd: '',
         description: '',
         image: '',
       });
@@ -585,6 +598,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               name: itemForm.name,
               category: itemForm.category,
               price: parseFloat(itemForm.price),
+              price_usd: itemForm.price_usd ? parseFloat(itemForm.price_usd) : undefined,
               description: itemForm.description,
               image: itemForm.image || i.image,
             }
@@ -597,8 +611,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         name: itemForm.name,
         category: itemForm.category,
         price: parseFloat(itemForm.price),
+        price_usd: itemForm.price_usd ? parseFloat(itemForm.price_usd) : undefined,
         description: itemForm.description,
-        image: itemForm.image || 'https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=400&auto=format&fit=crop',
+        image: itemForm.image || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=400&auto=format&fit=crop',
       };
       onSaveCustomItems([...customItems, newItem]);
     }
@@ -1823,10 +1838,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                      Price ($ USD) <span className="text-red-400">*</span>
+                      Local Price (ETB / ብር) <span className="text-red-400">*</span>
                     </label>
                     <input
                       type="number"
@@ -1834,7 +1849,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       required
                       value={pkgForm.price}
                       onChange={(e) => setPkgForm({ ...pkgForm, price: e.target.value })}
-                      placeholder="e.g. 149.99"
+                      placeholder="e.g. 2500"
+                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
+                      International Price ($ USD)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={pkgForm.price_usd}
+                      onChange={(e) => setPkgForm({ ...pkgForm, price_usd: e.target.value })}
+                      placeholder="e.g. 45.00"
                       className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
                     />
                   </div>
@@ -2064,7 +2093,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
                     Category (From Category Menu) <span className="text-red-400">*</span>
@@ -2089,7 +2118,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <div>
                   <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                    Price ($ USD) <span className="text-red-400">*</span>
+                    Local Price (ETB / ብር) <span className="text-red-400">*</span>
                   </label>
                   <input
                     type="number"
@@ -2097,7 +2126,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     required
                     value={itemForm.price}
                     onChange={(e) => setItemForm({ ...itemForm, price: e.target.value })}
-                    placeholder="e.g. 18.00"
+                    placeholder="e.g. 850"
+                    className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
+                    International Price ($ USD)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={itemForm.price_usd}
+                    onChange={(e) => setItemForm({ ...itemForm, price_usd: e.target.value })}
+                    placeholder="e.g. 15.00"
                     className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
                   />
                 </div>
@@ -2194,7 +2237,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Dimensions</label>
                   <input
@@ -2215,13 +2258,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Price Add-on ($)</label>
+                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Local Price (ETB)</label>
                   <input
                     type="number"
                     step="0.01"
                     value={boxForm.price}
                     onChange={(e) => setBoxForm({ ...boxForm, price: e.target.value })}
+                    placeholder="0 for free"
+                    className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">International ($ USD)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={boxForm.price_usd}
+                    onChange={(e) => setBoxForm({ ...boxForm, price_usd: e.target.value })}
                     placeholder="0 for free"
                     className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
                   />
@@ -2528,14 +2585,43 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              {/* Payment Details */}
+              {/* Payment & Market Details */}
               <div className="bg-black/40 border border-white/10 rounded-xl p-4 space-y-3">
-                <div className="text-[10px] text-amber-300 font-bold uppercase tracking-widest">Payment Information</div>
+                <div className="text-[10px] text-amber-300 font-bold uppercase tracking-widest">Payment & Market Information</div>
+                
                 <div className="flex items-center justify-between">
-                  <span className="text-white/70">Payment Method:</span>
-                  <span className="text-white font-semibold">{selectedOrderDetails.paymentMethod || 'Not specified'}</span>
+                  <span className="text-white/70">Buyer Market:</span>
+                  <span className="text-amber-300 font-bold">
+                    {selectedOrderDetails.buyerMarket === 'INTERNATIONAL' ? '🌍 International (Abroad / USD)' : '🇪🇹 Local (Ethiopia / ETB)'}
+                  </span>
                 </div>
-                {selectedOrderDetails.paymentReceiptUrl && (
+
+                <div className="flex items-center justify-between">
+                  <span className="text-white/70">Payment Gateway / Method:</span>
+                  <span className="text-white font-semibold">{selectedOrderDetails.paymentMethod || 'Chapa Gateway'}</span>
+                </div>
+
+                {selectedOrderDetails.paymentStatus && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-white/70">Payment Status:</span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                      selectedOrderDetails.paymentStatus === 'PAID'
+                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                        : 'bg-amber-400/20 text-amber-300 border border-amber-400/40'
+                    }`}>
+                      {selectedOrderDetails.paymentStatus}
+                    </span>
+                  </div>
+                )}
+
+                {selectedOrderDetails.chapaTxRef && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-white/70">Chapa Reference:</span>
+                    <span className="text-amber-300 font-mono text-[11px] font-bold">{selectedOrderDetails.chapaTxRef}</span>
+                  </div>
+                )}
+
+                {selectedOrderDetails.paymentReceiptUrl && !selectedOrderDetails.paymentReceiptUrl.includes('placeholder') && (
                   <div className="mt-3 pt-3 border-t border-white/10">
                     <div className="text-white/70 text-[10px] mb-2">Payment Receipt:</div>
                     <a 
@@ -2567,7 +2653,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {/* Summary */}
               <div className="flex items-center justify-between bg-black/60 rounded-xl p-4 border border-white/10 text-sm font-bold">
                 <span>Total Amount:</span>
-                <span className="text-amber-300 text-lg">${selectedOrderDetails.total.toFixed(2)}</span>
+                <span className="text-amber-300 text-lg">
+                  {selectedOrderDetails.currency === 'USD' ? '$' : ''}{selectedOrderDetails.total.toFixed(2)} {selectedOrderDetails.currency || (selectedOrderDetails.buyerMarket === 'INTERNATIONAL' ? 'USD' : 'ETB')}
+                </span>
               </div>
             </div>
           </div>
