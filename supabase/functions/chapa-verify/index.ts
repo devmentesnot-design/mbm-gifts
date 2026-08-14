@@ -1,8 +1,6 @@
 // Supabase Edge Function: chapa-verify
-// Securely verifies a Chapa transaction using the server-side secret key.
-// Called from the frontend after returning from Chapa's checkout page.
-
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+// Securely verifies a Chapa transaction server-side.
+// Called from the frontend via supabase.functions.invoke()
 
 const CHAPA_SECRET_KEY = Deno.env.get('CHAPA_SECRET_KEY') ?? '';
 const CHAPA_API_BASE = 'https://api.chapa.co/v1';
@@ -13,7 +11,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-serve(async (req: Request) => {
+Deno.serve(async (req: Request) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -37,6 +35,13 @@ serve(async (req: Request) => {
       );
     }
 
+    if (!CHAPA_SECRET_KEY) {
+      return new Response(
+        JSON.stringify({ error: 'Payment gateway not configured on server' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Verify with Chapa API
     const chapaResponse = await fetch(`${CHAPA_API_BASE}/transaction/verify/${tx_ref}`, {
       method: 'GET',
@@ -49,18 +54,22 @@ serve(async (req: Request) => {
     const data = await chapaResponse.json();
 
     if (!chapaResponse.ok) {
+      console.error('Chapa verify error:', data);
       return new Response(
-        JSON.stringify({ error: data.message || 'Chapa verification failed' }),
-        { status: chapaResponse.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: data.message || 'Chapa verification failed', details: data }),
+        {
+          status: chapaResponse.status,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
       );
     }
 
-    // Return verification result
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
+    console.error('Edge function error:', error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
