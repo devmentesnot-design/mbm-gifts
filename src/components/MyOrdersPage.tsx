@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Package, Truck, Check, Clock, ChevronDown, ChevronUp, Search, Filter, ShoppingBag, Headset, ExternalLink, ShieldCheck, CreditCard } from 'lucide-react';
+import { ArrowLeft, Package, Truck, Check, Clock, ChevronDown, ChevronUp, Search, Filter, ShoppingBag, Headset, ShieldCheck, CreditCard, FileText } from 'lucide-react';
 import { Order, OrderStatus } from '../types/cart';
 import { formatPrice } from '../utils/currency';
+import { OfficialReceiptModal } from './OfficialReceiptModal';
 
 interface MyOrdersPageProps {
   orders: Order[];
@@ -13,6 +14,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [expandedOrders, setExpandedOrders] = useState<Record<string, boolean>>({});
+  const [selectedReceiptOrder, setSelectedReceiptOrder] = useState<Order | null>(null);
 
   const toggleExpand = (id: string) => {
     setExpandedOrders(prev => ({ ...prev, [id]: !prev[id] }));
@@ -372,10 +374,11 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                           </div>
                           
                           <button
-                            onClick={() => window.print()}
-                            className="text-[11px] text-amber-300 hover:text-amber-200 underline font-semibold cursor-pointer"
+                            onClick={() => setSelectedReceiptOrder(ord)}
+                            className="bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/40 text-amber-300 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
                           >
-                            Print Receipt
+                            <FileText className="w-3.5 h-3.5" />
+                            <span>View / Print Official Receipt</span>
                           </button>
                         </div>
 
@@ -397,6 +400,15 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
         )}
 
       </div>
+
+      {/* Official Receipt Modal View */}
+      {selectedReceiptOrder && (
+        <OfficialReceiptModal
+          order={selectedReceiptOrder}
+          onClose={() => setSelectedReceiptOrder(null)}
+        />
+      )}
+
     </div>
   );
 };

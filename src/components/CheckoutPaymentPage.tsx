@@ -4,18 +4,10 @@ import {
   CreditCard,
   ShieldCheck,
   Truck,
-  Check,
   AlertCircle,
   ExternalLink,
   Lock,
-  Globe,
   Loader2,
-  Printer,
-  ShoppingBag,
-  PackageCheck,
-  Phone,
-  MapPin,
-  Calendar
 } from 'lucide-react';
 import { Order } from '../types/cart';
 import { formatPrice } from '../utils/currency';
@@ -24,6 +16,7 @@ import {
   verifyChapaTransaction,
   generateTxRef,
 } from '../services/chapa';
+import { OfficialReceiptModal } from './OfficialReceiptModal';
 
 interface CheckoutPaymentPageProps {
   order: Order;
@@ -47,8 +40,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
   const [isVerifying, setIsVerifying] = useState(false);
   const [error, setError] = useState<string>('');
   const [txRef, setTxRef] = useState<string>(() => generateTxRef(order.id));
-  const [verificationSuccess, setVerificationSuccess] = useState(false);
-  const [verifiedMethod, setVerifiedMethod] = useState<string>('');
+  const [verifiedPaidOrder, setVerifiedPaidOrder] = useState<Order | null>(null);
 
   const market = order.buyerMarket || 'LOCAL';
   const currency = order.currency || (market === 'LOCAL' ? 'ETB' : 'USD');
@@ -74,11 +66,18 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
       const result = await verifyChapaTransaction(reference);
 
       const method = result.data?.method || (currency === 'USD' ? 'International Card' : 'Local Payment');
-      setVerifiedMethod(method);
+      
+      const updatedOrder: Order = {
+        ...order,
+        chapaTxRef: reference,
+        paymentMethod: `Chapa (${method})`,
+        paymentStatus: 'PAID',
+        status: 'Processing',
+      };
 
       if (result.status === 'success' && result.data?.status === 'success') {
         console.log('✅ Chapa verification confirmed:', result.data);
-        setVerificationSuccess(true);
+        setVerifiedPaidOrder(updatedOrder);
         setIsVerifying(false);
 
         // Notify parent order is paid to persist in Supabase
@@ -89,9 +88,9 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
           'PAID'
         );
       } else {
-        console.warn('⚠️ Verification returned non-success:', result);
+        console.warn('⚠️ Verification returned non-success (allowing test mode fallback):', result);
         if (reference.startsWith('MBM-')) {
-          setVerificationSuccess(true);
+          setVerifiedPaidOrder(updatedOrder);
           setIsVerifying(false);
           onPaymentSubmitted(
             'https://checkout.chapa.co/receipt/' + reference,
@@ -153,6 +152,17 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
     }
   };
 
+  // If order is paid and verified, display the permanent Official Invoice/Receipt!
+  if (verifiedPaidOrder) {
+    return (
+      <OfficialReceiptModal
+        order={verifiedPaidOrder}
+        onNavigate={onNavigate}
+        isStandalonePage={true}
+      />
+    );
+  }
+
   // Supported payment badges for display
   const localPaymentChannels = [
     { name: 'Telebirr', logo: '/telebirr-logo.jpg', type: 'Mobile' },
@@ -178,10 +188,10 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
           <div className="p-16 text-center space-y-4">
             <Loader2 className="w-14 h-14 text-amber-300 animate-spin mx-auto" />
             <h3 className="font-podium text-3xl uppercase text-white font-bold tracking-wide">
-              Confirming Payment with Chapa...
+              Verifying Payment with Chapa...
             </h3>
             <p className="text-sm text-white/70">
-              Please wait while we record your order. You will be redirected to your orders page in a moment.
+              Please wait while we confirm your transaction reference with the gateway.
             </p>
           </div>
         )}

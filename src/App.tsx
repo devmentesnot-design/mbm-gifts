@@ -364,14 +364,12 @@ export default function App() {
         const freshOrders = await getStoredOrders();
         setOrders(freshOrders);
         
-        // Clear cart & pending order state upon successful DB save
+        // Clear active cart items upon successful DB save
         setCartItems([]);
-        setPendingOrder(null);
-        localStorage.removeItem('mbm_pending_order');
         localStorage.removeItem('mbm_gifts_cart');
         
-        // Navigate directly to My Orders page where the full order detail is saved
-        navigateTo('/my-orders');
+        // Keep finalized order in pendingOrder state so the Official Receipt stays permanently on screen
+        setPendingOrder(finalizedOrder);
       } catch (err: any) {
         console.error('❌ Failed to save order to database:', err);
         alert('Database Order Save Error: ' + (err?.message || 'Could not save order to database. Please check Supabase configuration or try again.'));
@@ -555,13 +553,29 @@ export default function App() {
   }
 
   if (currentPath === '/checkout/payment') {
-    if (!pendingOrder) {
+    const searchParams = new URLSearchParams(window.location.search);
+    const returnTxRef = searchParams.get('tx_ref') || searchParams.get('trx_ref');
+    
+    let activeOrder: Order | null = pendingOrder;
+    if (!activeOrder && returnTxRef) {
+      activeOrder = orders.find(o => o.chapaTxRef === returnTxRef || returnTxRef.includes(o.id)) || null;
+      if (!activeOrder) {
+        const savedPending = localStorage.getItem('mbm_pending_order');
+        if (savedPending) {
+          try { 
+            activeOrder = JSON.parse(savedPending) as Order; 
+          } catch(e) {}
+        }
+      }
+    }
+
+    if (!activeOrder) {
       navigateTo('/cart');
       return null;
     }
     return (
       <CheckoutPaymentPage
-        order={pendingOrder}
+        order={activeOrder}
         onPaymentSubmitted={handlePaymentSubmitted}
         onBack={() => navigateTo('/cart')}
         onNavigate={navigateTo}
