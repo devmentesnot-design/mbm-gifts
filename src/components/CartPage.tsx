@@ -57,8 +57,9 @@ export const CartPage: React.FC<CartPageProps> = ({
     return box.price;
   };
 
-  const selectedBox = giftBoxes.find((b) => b.id === selectedBoxId) || giftBoxes[0];
-  const wrapTier = getBoxPrice(selectedBox);
+  const hasCustomItems = items.some((item) => item.type === 'custom');
+  const selectedBox = hasCustomItems ? (giftBoxes.find((b) => b.id === selectedBoxId) || giftBoxes[0]) : undefined;
+  const wrapTier = hasCustomItems && selectedBox ? getBoxPrice(selectedBox) : 0;
   const [shipMode, setShipMode] = useState<'recipient' | 'me'>('recipient');
 
   const [phone, setPhone] = useState('');
@@ -341,8 +342,8 @@ export const CartPage: React.FC<CartPageProps> = ({
                   ))}
                 </div>
 
-                {/* Gift Wrap / Box Styles — only render when admin has added boxes in DB */}
-                {giftBoxes.length > 0 && (
+                {/* Gift Wrap / Box Styles — only shown for custom boxes when admin has added boxes in DB */}
+                {hasCustomItems && giftBoxes.length > 0 && (
                 <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-5 md:p-6 mt-6">
                   <div className="flex items-center justify-between mb-1">
                     <h3 className="font-podium text-xl uppercase tracking-wider text-white">How should we wrap it?</h3>
@@ -573,7 +574,7 @@ export const CartPage: React.FC<CartPageProps> = ({
                     <span>Subtotal ({items.length} item{items.length !== 1 ? 's' : ''})</span>
                     <span className="font-bold">{formatPrice(subtotal, currency)}</span>
                   </div>
-                  {selectedBox && (
+                  {hasCustomItems && selectedBox && (
                     <div className="flex justify-between text-white/80">
                       <span className="truncate pr-2">Packaging: {selectedBox.name}</span>
                       <span className="font-bold flex-shrink-0">

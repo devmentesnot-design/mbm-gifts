@@ -247,10 +247,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
   };
 
-  // Helper Analytics
-  const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+  // Helper Analytics — ETB (Birr) & USD (Dollar) calculated separately
+  const etbOrders = orders.filter((o) => o.currency !== 'USD' && o.buyerMarket !== 'INTERNATIONAL');
+  const usdOrders = orders.filter((o) => o.currency === 'USD' || o.buyerMarket === 'INTERNATIONAL');
+
+  const totalRevenueETB = etbOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+  const totalRevenueUSD = usdOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+
   const totalOrdersCount = orders.length;
-  const avgOrderValue = totalOrdersCount > 0 ? totalRevenue / totalOrdersCount : 0;
+  const avgOrderValueETB = etbOrders.length > 0 ? totalRevenueETB / etbOrders.length : 0;
+  const avgOrderValueUSD = usdOrders.length > 0 ? totalRevenueUSD / usdOrders.length : 0;
   const pendingOrdersCount = orders.filter((o) => o.status === 'Pending').length;
 
   // Filtered Categories by Usage
@@ -269,23 +275,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     return matchesSearch && matchesStatus;
   });
 
-  // Customer List (Derived from Orders)
+  // Customer List (Derived from Orders) — with separate ETB and USD tracking
   const customersMap = new Map<string, {
     fullName: string;
     email: string;
     phone: string;
     address: string;
     totalOrders: number;
-    totalSpent: number;
+    totalSpentETB: number;
+    totalSpentUSD: number;
     latestOrderDate: string;
   }>();
 
   orders.forEach((o) => {
     const key = o.customer.email || o.customer.phone || o.customer.fullName;
+    const isUSD = o.currency === 'USD' || o.buyerMarket === 'INTERNATIONAL';
     const existing = customersMap.get(key);
     if (existing) {
       existing.totalOrders += 1;
-      existing.totalSpent += o.total;
+      if (isUSD) {
+        existing.totalSpentUSD += (o.total || 0);
+      } else {
+        existing.totalSpentETB += (o.total || 0);
+      }
     } else {
       customersMap.set(key, {
         fullName: o.customer.fullName,
@@ -293,7 +305,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         phone: o.customer.phone || 'N/A',
         address: o.customer.address || 'N/A',
         totalOrders: 1,
-        totalSpent: o.total,
+        totalSpentETB: isUSD ? 0 : (o.total || 0),
+        totalSpentUSD: isUSD ? (o.total || 0) : 0,
         latestOrderDate: o.createdAt,
       });
     }
@@ -893,47 +906,70 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </button>
               </div>
 
-              {/* Stats Cards */}
+              {/* Stats Cards — Dollar and Birr calculated separately */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-5 flex items-center justify-between shadow-lg">
+                <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-5 flex items-start justify-between shadow-lg">
                   <div>
                     <span className="text-[10px] text-white/50 uppercase font-bold tracking-widest">Total Revenue</span>
-                    <div className="font-podium text-2xl sm:text-3xl text-amber-300 font-bold mt-1">
-                      ${totalRevenue.toFixed(2)}
+                    <div className="mt-1.5 space-y-1">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="font-podium text-xl sm:text-2xl text-amber-300 font-bold">
+                          {totalRevenueETB.toLocaleString()}
+                        </span>
+                        <span className="text-xs text-amber-300/80 font-bold">ETB (ብር)</span>
+                      </div>
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="font-podium text-base sm:text-lg text-emerald-400 font-bold">
+                          ${totalRevenueUSD.toFixed(2)}
+                        </span>
+                        <span className="text-[11px] text-emerald-400/80 font-bold">USD ($)</span>
+                      </div>
                     </div>
-                    <span className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1 mt-1">
-                      <TrendingUp className="w-3 h-3" /> +18.4% this month
-                    </span>
                   </div>
-                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 flex-shrink-0">
                     <DollarSign className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-5 flex items-center justify-between shadow-lg">
+                <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-5 flex items-start justify-between shadow-lg">
                   <div>
                     <span className="text-[10px] text-white/50 uppercase font-bold tracking-widest">Total Orders</span>
                     <div className="font-podium text-2xl sm:text-3xl text-white font-bold mt-1">
                       {totalOrdersCount}
                     </div>
-                    <span className="text-[10px] text-amber-300 font-semibold mt-1 block">
+                    <div className="text-[10px] text-white/60 font-semibold mt-1 flex items-center gap-1.5">
+                      <span className="text-amber-300">{etbOrders.length} ETB</span>
+                      <span>•</span>
+                      <span className="text-emerald-400">{usdOrders.length} USD</span>
+                    </div>
+                    <span className="text-[10px] text-amber-300/90 font-medium block mt-0.5">
                       {pendingOrdersCount} Pending Confirmation
                     </span>
                   </div>
-                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 flex-shrink-0">
                     <ShoppingBag className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-5 flex items-center justify-between shadow-lg">
+                <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-5 flex items-start justify-between shadow-lg">
                   <div>
                     <span className="text-[10px] text-white/50 uppercase font-bold tracking-widest">Average Order Value</span>
-                    <div className="font-podium text-2xl sm:text-3xl text-amber-300 font-bold mt-1">
-                      ${avgOrderValue.toFixed(2)}
+                    <div className="mt-1.5 space-y-1">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="font-podium text-lg sm:text-xl text-amber-300 font-bold">
+                          {avgOrderValueETB.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                        </span>
+                        <span className="text-xs text-amber-300/80 font-bold">ETB</span>
+                      </div>
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="font-podium text-sm sm:text-base text-emerald-400 font-bold">
+                          ${avgOrderValueUSD.toFixed(2)}
+                        </span>
+                        <span className="text-[11px] text-emerald-400/80 font-bold">USD</span>
+                      </div>
                     </div>
-                    <span className="text-[10px] text-white/60 font-medium mt-1 block">Per completed transaction</span>
                   </div>
-                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 flex-shrink-0">
                     <TrendingUp className="w-6 h-6" />
                   </div>
                 </div>
@@ -1646,8 +1682,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </div>
                         </td>
                         <td className="py-4 px-3 font-bold text-white">{c.totalOrders} order{c.totalOrders !== 1 ? 's' : ''}</td>
-                        <td className="py-4 px-3 text-right font-bold text-amber-300 text-sm">
-                          ${c.totalSpent.toFixed(2)}
+                        <td className="py-4 px-3 text-right font-bold text-xs space-y-0.5">
+                          {c.totalSpentETB > 0 && (
+                            <div className="text-amber-300 font-bold text-sm">
+                              {c.totalSpentETB.toLocaleString()} <span className="text-[10px] text-amber-300/80 font-normal">ብር</span>
+                            </div>
+                          )}
+                          {c.totalSpentUSD > 0 && (
+                            <div className="text-emerald-400 font-bold text-sm">
+                              ${c.totalSpentUSD.toFixed(2)} <span className="text-[10px] text-emerald-400/80 font-normal">USD</span>
+                            </div>
+                          )}
+                          {c.totalSpentETB === 0 && c.totalSpentUSD === 0 && (
+                            <div className="text-white/40">0 ብር</div>
+                          )}
                         </td>
                       </tr>
                     ))}

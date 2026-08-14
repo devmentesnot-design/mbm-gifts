@@ -55,32 +55,27 @@ export const MarketWelcomeModal: React.FC = () => {
 
           {/* Content */}
           <div className="px-7 pt-8 pb-8 flex flex-col items-center text-center gap-5">
-            {/* Brand Logo */}
-            <div className="flex items-center justify-center mb-1">
-              <img
-                src="/logo.png"
-                alt="MBM Gifts"
-                className="h-12 w-auto object-contain drop-shadow-lg"
-                style={{ filter: 'brightness(1.1)' }}
-              />
-            </div>
-
-            {/* Flag + Country */}
+            {/* Circular Logo Badge */}
             <div className="flex flex-col items-center gap-3">
               <div
                 className={`
-                  flex items-center justify-center w-20 h-20 rounded-full text-5xl
-                  shadow-[0_0_30px_rgba(245,180,0,0.15)]
+                  flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 rounded-full p-4
+                  shadow-[0_0_35px_rgba(245,180,0,0.2)] transition-all duration-300
                   ${isEthiopia
-                    ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/10 border-2 border-amber-400/40'
-                    : 'bg-gradient-to-br from-blue-400/20 to-indigo-600/10 border-2 border-blue-400/40'
+                    ? 'bg-gradient-to-br from-[#4a0d12] to-[#250407] border-2 border-amber-400/60 ring-4 ring-amber-400/10'
+                    : 'bg-gradient-to-br from-[#1a1f38] to-[#0f1325] border-2 border-blue-400/60 ring-4 ring-blue-400/10'
                   }
                 `}
               >
-                {flag}
+                <img
+                  src="/logo.png"
+                  alt="MBM Gifts"
+                  className="w-full h-full object-contain drop-shadow-xl"
+                  style={{ filter: 'brightness(1.15) contrast(1.05)' }}
+                />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1 mt-1">
                 <h2 className="font-podium text-2xl sm:text-3xl uppercase tracking-wider text-white font-bold">
                   Welcome to MBM Gifts
                 </h2>
