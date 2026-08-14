@@ -12,15 +12,36 @@ const corsHeaders = {
 };
 
 // Chapa allows only letters, numbers, hyphens, underscores, spaces, and dots in description/title
-const sanitizeChapaText = (text: string, fallback: string): string => {
-  if (!text) return fallback;
+const sanitizeChapaText = (text: any, fallback: string): string => {
+  if (!text || typeof text !== 'string') return fallback;
   const cleaned = text.replace(/[^a-zA-Z0-9 ._-]/g, ' ').replace(/\s+/g, ' ').trim();
-  return cleaned.length > 0 ? cleaned.slice(0, 100) : fallback;
+  return cleaned.length > 0 ? cleaned.slice(0, 16) : fallback;
 };
 
-// Strict email validator
-const isValidEmail = (email: string): boolean => {
-  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+// Strict email validator with MX-ready fallback
+const sanitizeEmail = (email: any): string => {
+  if (!email || typeof email !== 'string') return 'mbmgifts.orders@gmail.com';
+  const clean = email.trim();
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(clean) && !clean.includes('example.com') ? clean : 'mbmgifts.orders@gmail.com';
+};
+
+// Strict phone sanitizer for Chapa Ethiopian & International gateways
+const sanitizePhone = (phone: any, currency: string): string => {
+  if (!phone || typeof phone !== 'string') return '0911000000';
+  let cleaned = phone.replace(/[^0-9]/g, '');
+  
+  if (currency === 'ETB') {
+    if (cleaned.startsWith('251')) cleaned = '0' + cleaned.slice(3);
+    if (cleaned.length === 9 && (cleaned.startsWith('9') || cleaned.startsWith('7'))) cleaned = '0' + cleaned;
+    if ((cleaned.startsWith('09') || cleaned.startsWith('07')) && cleaned.length === 10) {
+      return cleaned;
+    }
+    return '0911000000';
+  }
+
+  // USD / International flow
+  return cleaned.length >= 7 ? cleaned : '0911000000';
 };
 
 Deno.serve(async (req: Request) => {
@@ -64,29 +85,17 @@ Deno.serve(async (req: Request) => {
     }
     const formattedAmount = parsedAmount.toFixed(2);
 
-    // Validate tx_ref (only alphanumeric and hyphens)
+    // Validate tx_ref (only alphanumeric, hyphens, underscores)
     const rawTx = typeof tx_ref === 'string' ? tx_ref.trim() : '';
     const finalTxRef = rawTx ? rawTx.replace(/[^a-zA-Z0-9_-]/g, '') : `MBM-TX-${Date.now()}`;
 
-    // Validate and sanitize email
-    let cleanEmail = (typeof email === 'string' ? email.trim() : '');
-    if (!isValidEmail(cleanEmail)) {
-      cleanEmail = 'mbmgifts.orders@gmail.com';
-    }
-
-    // Sanitize names
+    // Sanitize inputs
+    const cleanEmail = sanitizeEmail(email);
+    const cleanPhone = sanitizePhone(phone_number, validCurrency);
     const cleanFirstName = sanitizeChapaText(first_name, 'Customer');
     const cleanLastName = sanitizeChapaText(last_name, 'User');
-
-    // Sanitize phone
-    let cleanPhone = (typeof phone_number === 'string' ? phone_number.replace(/[^0-9+]/g, '') : '');
-    if (!cleanPhone || cleanPhone.length < 9) {
-      cleanPhone = '0911000000';
-    }
-
-    // Sanitize customization title and description according to Chapa's strict regex
     const customTitle = sanitizeChapaText(customization?.title, 'MBM Gifts');
-    const customDesc = sanitizeChapaText(customization?.description, 'Gift Delivery Ethiopia');
+    const customDesc = sanitizeChapaText(customization?.description, 'Gift Delivery');
 
     const secretKey = CHAPA_SECRET_KEY || 'CHASECK_TEST-XWw4AWaaNeYHYuO38OpmghdwqYpb44fI';
 
@@ -128,9 +137,14 @@ Deno.serve(async (req: Request) => {
 
     if (!chapaResponse.ok || !data || data.status !== 'success') {
       console.error('Chapa API rejected transaction:', data);
-      const errMsg = typeof data?.message === 'string'
-        ? data.message
-        : (data?.message ? JSON.stringify(data.message) : 'Chapa payment gateway rejected the request');
+      let errMsg = 'Payment gateway error';
+      if (typeof data?.message === 'string') {
+        errMsg = data.message;
+      } else if (data?.message && typeof data.message === 'object') {
+        const firstKey = Object.keys(data.message)[0];
+        const val = data.message[firstKey];
+        errMsg = Array.isArray(val) ? `${firstKey}: ${val[0]}` : JSON.stringify(data.message);
+      }
 
       return new Response(
         JSON.stringify({

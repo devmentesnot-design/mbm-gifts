@@ -2,21 +2,12 @@
  * Centralized Chapa Payment Service for MBM Gifts
  *
  * Architecture:
- * 1. Primary: Calls Supabase Edge Functions (`chapa-initialize` / `chapa-verify`)
- * 2. Fallback: Direct REST API if Edge Function is unreachable
+ * Frontend → Supabase Edge Functions (`chapa-initialize` / `chapa-verify`) → Chapa API
  *
  * Supports both Local (ETB) and International (USD) checkout flows.
  */
 
-import { createClient } from '@supabase/supabase-js';
-
-// Supabase client for calling Edge Functions
-const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL || 'https://fpqmnfunfpkvdrxfazgj.supabase.co';
-const supabaseAnonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || '';
-
-const getSupabaseClient = () => createClient(supabaseUrl, supabaseAnonKey);
-
-const CHAPA_API_URL = 'https://api.chapa.co/v1';
+import { supabase } from '../lib/supabase';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -72,7 +63,7 @@ const sanitizeEmail = (email?: string): string => {
   if (!email) return 'mbmgifts.orders@gmail.com';
   const clean = email.trim();
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailRegex.test(clean) ? clean : 'mbmgifts.orders@gmail.com';
+  return emailRegex.test(clean) && !clean.includes('example.com') ? clean : 'mbmgifts.orders@gmail.com';
 };
 
 // ---------------------------------------------------------------------------
@@ -82,13 +73,6 @@ export const getChapaPublicKey = (): string => {
   return (
     (import.meta as any).env?.VITE_CHAPA_PUBLIC_KEY ||
     'CHAPUBK_TEST-s5ZLQUqw12IoT7FOZsccD9QmplFuJeyE'
-  );
-};
-
-export const getChapaSecretKey = (): string => {
-  return (
-    (import.meta as any).env?.VITE_CHAPA_SECRET_KEY ||
-    'CHASECK_TEST-XWw4AWaaNeYHYuO38OpmghdwqYpb44fI'
   );
 };
 
@@ -117,7 +101,7 @@ export const initializeChapaTransaction = async (
     email: cleanEmail,
     first_name: params.firstName?.trim() || 'Valued',
     last_name: params.lastName?.trim() || 'Customer',
-    phone_number: params.phone?.replace(/[^0-9+]/g, '') || '0911000000',
+    phone_number: params.phone?.trim() || '0911000000',
     tx_ref: params.txRef,
     callback_url:
       params.callbackUrl || `${window.location.origin}/api/chapa-webhook`,
@@ -125,10 +109,8 @@ export const initializeChapaTransaction = async (
       params.returnUrl ||
       `${window.location.origin}/checkout/payment?tx_ref=${params.txRef}&status=success`,
     customization: {
-      title: params.customTitle || 'MBM Gifts — Luxury Gift Experience',
-      description:
-        params.customDescription ||
-        `Payment for ${params.currency === 'USD' ? 'International' : 'Local'} Gift Order (${params.txRef})`,
+      title: 'MBM Gifts',
+      description: `Order ${params.txRef}`,
     },
   };
 
@@ -139,15 +121,21 @@ export const initializeChapaTransaction = async (
     email: payload.email,
   });
 
-  // 1. Try Supabase Edge Function
   try {
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase.functions.invoke('chapa-initialize', {
       body: payload,
     });
 
-    if (!error && data && data.status === 'success' && data.data?.checkout_url) {
-      console.log('✅ Chapa initialized via Edge Function:', data.data.checkout_url);
+    if (error) {
+      console.error('❌ Supabase function error:', error);
+      return {
+        status: 'error',
+        message: error.message || 'Error connecting to payment gateway',
+      };
+    }
+
+    if (data?.status === 'success' && data.data?.checkout_url) {
+      console.log('✅ Chapa initialized successfully:', data.data.checkout_url);
       return {
         status: 'success',
         message: data.message || 'Transaction initialized',
@@ -155,51 +143,16 @@ export const initializeChapaTransaction = async (
       };
     }
 
-    if (data && data.status === 'failed') {
-      console.warn('⚠️ Edge Function returned failure message:', data.message);
-    }
-  } catch (edgeErr) {
-    console.warn('⚠️ Edge Function invocation failed, trying direct fallback:', edgeErr);
-  }
-
-  // 2. Direct Fallback if Edge function returned error or was unreachable
-  console.log('🔄 Executing direct Chapa API fallback...');
-  try {
-    const secretKey = getChapaSecretKey();
-    const res = await fetch(`${CHAPA_API_URL}/transaction/initialize`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${secretKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const directData = await res.json().catch(() => null);
-
-    if (res.ok && directData?.status === 'success' && directData.data?.checkout_url) {
-      console.log('✅ Chapa initialized via Direct API fallback:', directData.data.checkout_url);
-      return {
-        status: 'success',
-        message: directData.message || 'Transaction initialized',
-        data: directData.data,
-      };
-    }
-
-    const msg = typeof directData?.message === 'string'
-      ? directData.message
-      : (directData?.message ? JSON.stringify(directData.message) : 'Payment gateway initialization failed');
-
     return {
       status: 'failed',
-      message: msg,
-      data: directData?.data,
+      message: data?.message || 'Payment initialization was not approved by gateway',
+      data: data?.data,
     };
-  } catch (directErr: any) {
-    console.error('❌ Direct Chapa initialization failed:', directErr);
+  } catch (err: any) {
+    console.error('❌ Unexpected payment initialization error:', err);
     return {
       status: 'error',
-      message: directErr.message || 'Unable to connect to Chapa payment gateway.',
+      message: err.message || 'Network error connecting to payment gateway',
     };
   }
 };
@@ -212,57 +165,38 @@ export const verifyChapaTransaction = async (
 ): Promise<ChapaVerifyResponse> => {
   console.log('🔍 Verifying Chapa transaction:', txRef);
 
-  // 1. Try Supabase Edge Function
   try {
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase.functions.invoke('chapa-verify', {
       body: { tx_ref: txRef },
     });
 
-    if (!error && data && data.status === 'success') {
-      console.log('✅ Chapa transaction verified via Edge Function:', data.data);
+    if (error) {
+      console.error('❌ Supabase verify function error:', error);
+      return {
+        status: 'error',
+        message: error.message || 'Error verifying transaction',
+      };
+    }
+
+    if (data?.status === 'success') {
+      console.log('✅ Chapa transaction verified:', data.data);
       return {
         status: 'success',
         message: data.message || 'Transaction verified',
         data: data.data,
       };
     }
-  } catch (edgeErr) {
-    console.warn('⚠️ Edge Function verify failed, trying direct fallback:', edgeErr);
-  }
-
-  // 2. Direct Fallback
-  try {
-    const secretKey = getChapaSecretKey();
-    const res = await fetch(`${CHAPA_API_URL}/transaction/verify/${encodeURIComponent(txRef)}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${secretKey}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const directData = await res.json().catch(() => null);
-
-    if (res.ok && directData?.status === 'success') {
-      console.log('✅ Chapa transaction verified via Direct API:', directData.data);
-      return {
-        status: 'success',
-        message: directData.message || 'Transaction verified',
-        data: directData.data,
-      };
-    }
 
     return {
       status: 'failed',
-      message: directData?.message || 'Chapa verification failed',
-      data: directData?.data,
+      message: data?.message || 'Transaction could not be verified with Chapa',
+      data: data?.data,
     };
-  } catch (directErr: any) {
-    console.error('❌ Direct Chapa verify error:', directErr);
+  } catch (err: any) {
+    console.error('❌ Unexpected error verifying transaction:', err);
     return {
       status: 'error',
-      message: directErr.message || 'Network error verifying transaction with Chapa',
+      message: err.message || 'Network error verifying transaction',
     };
   }
 };
