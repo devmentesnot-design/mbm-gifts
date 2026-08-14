@@ -26,22 +26,17 @@ const sanitizeEmail = (email: any): string => {
   return emailRegex.test(clean) && !clean.includes('example.com') ? clean : 'mbmgifts.orders@gmail.com';
 };
 
-// Strict phone sanitizer for Chapa Ethiopian & International gateways
-const sanitizePhone = (phone: any, currency: string): string => {
-  if (!phone || typeof phone !== 'string') return '0911000000';
+// Extract valid Ethiopian phone number for Chapa, or return null to omit
+const getValidChapaPhone = (phone: any): string | null => {
+  if (!phone || typeof phone !== 'string') return null;
   let cleaned = phone.replace(/[^0-9]/g, '');
-  
-  if (currency === 'ETB') {
-    if (cleaned.startsWith('251')) cleaned = '0' + cleaned.slice(3);
-    if (cleaned.length === 9 && (cleaned.startsWith('9') || cleaned.startsWith('7'))) cleaned = '0' + cleaned;
-    if ((cleaned.startsWith('09') || cleaned.startsWith('07')) && cleaned.length === 10) {
-      return cleaned;
-    }
-    return '0911000000';
+  if (cleaned.startsWith('251')) cleaned = '0' + cleaned.slice(3);
+  if (cleaned.length === 9 && (cleaned.startsWith('9') || cleaned.startsWith('7'))) cleaned = '0' + cleaned;
+  if ((cleaned.startsWith('09') || cleaned.startsWith('07')) && cleaned.length === 10) {
+    return cleaned;
   }
-
-  // USD / International flow
-  return cleaned.length >= 7 ? cleaned : '0911000000';
+  // If international or non-Ethiopian, omit phone from Chapa payload to prevent Chapa validation rejection
+  return null;
 };
 
 Deno.serve(async (req: Request) => {
@@ -91,7 +86,7 @@ Deno.serve(async (req: Request) => {
 
     // Sanitize inputs
     const cleanEmail = sanitizeEmail(email);
-    const cleanPhone = sanitizePhone(phone_number, validCurrency);
+    const validPhone = getValidChapaPhone(phone_number);
     const cleanFirstName = sanitizeChapaText(first_name, 'Customer');
     const cleanLastName = sanitizeChapaText(last_name, 'User');
     const customTitle = sanitizeChapaText(customization?.title, 'MBM Gifts');
@@ -103,7 +98,6 @@ Deno.serve(async (req: Request) => {
       first_name: cleanFirstName,
       last_name: cleanLastName,
       email: cleanEmail,
-      phone_number: cleanPhone,
       currency: validCurrency,
       amount: formattedAmount,
       tx_ref: finalTxRef,
@@ -112,6 +106,11 @@ Deno.serve(async (req: Request) => {
         description: customDesc,
       },
     };
+
+    // Only include phone_number if it's a valid format for Chapa
+    if (validPhone) {
+      chapaPayload.phone_number = validPhone;
+    }
 
     if (return_url && typeof return_url === 'string' && return_url.startsWith('http')) {
       chapaPayload.return_url = return_url;
