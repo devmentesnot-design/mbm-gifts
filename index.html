@@ -40,9 +40,10 @@
     <meta property="twitter:image" content="https://www.mbmgifts.app/logo-social.png" />
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/logo-social.png" />
-    <link rel="shortcut icon" href="/logo-social.png" />
-    <link rel="apple-touch-icon" href="/logo-social.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/fav.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/fav.png" />
+    <link rel="shortcut icon" href="/fav.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/fav.png" />
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,7 +58,7 @@
       "name": "MBM Luxury Gifts",
       "description": "Premium gift boxes, custom gift hampers, and luxury gift packages in Ethiopia. Specializing in birthday gifts, anniversary gifts, corporate gifts, and personalized gift boxes.",
       "url": "https://www.mbmgifts.app",
-      "logo": "https://www.mbmgifts.app/logo-social.png",
+      "logo": "https://www.mbmgifts.app/fav.png",
       "image": "https://www.mbmgifts.app/logo-social.png",
       "telephone": "+251-XXX-XXX-XXX",
       "email": "info@mbmgifts.app",
@@ -112,6 +113,27 @@
             }
           }
         ]
+      },
+      "sameAs": [
+        "https://www.facebook.com/mbmgifts",
+        "https://www.instagram.com/mbm.giftbasket",
+        "https://twitter.com/mbmgifts"
+      ]
+    }
+    </script>
+
+    <!-- Organization Schema — tells Google the official brand logo -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MBM Gifts",
+      "url": "https://www.mbmgifts.app/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.mbmgifts.app/fav.png",
+        "width": 512,
+        "height": 512
       },
       "sameAs": [
         "https://www.facebook.com/mbmgifts",
