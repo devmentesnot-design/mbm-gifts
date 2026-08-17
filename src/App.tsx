@@ -686,7 +686,15 @@ export default function App() {
       {/* First-visit market welcome modal — rendered above all pages */}
       <MarketWelcomeModal />
 
-      <div className="min-h-screen w-full bg-[#8c1119] text-white font-inter selection:bg-amber-400 selection:text-[#8c1119]">
+      {/* Global Fixed Satin Background Layer */}
+      <div 
+        className="fixed inset-0 pointer-events-none -z-50 bg-cover bg-center bg-no-repeat bg-fixed"
+        style={{
+          backgroundImage: `linear-gradient(rgba(35, 0, 5, 0.35), rgba(35, 0, 5, 0.35)), url('/images/mbm-red-satin.webp')`,
+        }}
+      />
+
+      <div className="min-h-screen w-full text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005] bg-transparent relative flex flex-col justify-between">
         {/* Top Navbar */}
         <Navbar
           session={session}
@@ -701,7 +709,7 @@ export default function App() {
           onExplorePackages={handleExplorePackages}
         />
 
-        {/* Unified Gift Shop Body Section */}
+        {/* Unified Gift Shop Body Section (Packages & Custom Builder) */}
         <GiftShopBody
           categories={categories}
           giftBoxes={giftBoxes}

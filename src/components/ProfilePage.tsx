@@ -76,9 +76,9 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ session, onNavigate })
   const email = session?.user?.email;
 
   return (
-    <div className="min-h-screen bg-[#1f0305] text-white font-inter">
+    <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005]">
       {/* Header */}
-      <div className="border-b border-white/10 bg-[#380509] sticky top-0 z-30">
+      <div className="border-b border-[#D9A514]/20 bg-[#2B0005]/80 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <button
             onClick={() => onNavigate('/')}
@@ -88,7 +88,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ session, onNavigate })
             <span>Back</span>
           </button>
 
-          <h1 className="font-podium text-xl uppercase tracking-wider">My Profile</h1>
+          <h1 className="font-podium text-xl uppercase tracking-wider text-[#FFF8ED]">My Profile</h1>
           <div className="w-20"></div> {/* Spacer for centering */}
         </div>
       </div>
@@ -102,7 +102,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ session, onNavigate })
         ) : (
           <div className="space-y-6">
             {/* Profile Card */}
-            <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-8">
+            <div className="luxury-satin-card border border-[#D9A514]/30 rounded-3xl p-8 backdrop-blur-xl shadow-2xl">
               <div className="flex items-center gap-6 mb-8">
                 {avatar ? (
                   <img

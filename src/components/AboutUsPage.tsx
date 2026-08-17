@@ -36,7 +36,7 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen w-full bg-[#3a060a] text-white font-inter selection:bg-amber-400 selection:text-[#8c1119] flex flex-col justify-between">
+    <div className="min-h-screen w-full bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005] flex flex-col justify-between">
       {/* Navbar */}
       <Navbar
         session={session}
@@ -48,9 +48,9 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
 
       <main className="flex-1">
         {/* Page Hero Header */}
-        <section className="relative pt-12 pb-20 px-4 sm:px-8 lg:px-12 bg-gradient-to-b from-[#8c1119] via-[#5c0910] to-[#3a060a] overflow-hidden">
+        <section className="relative pt-12 pb-20 px-4 sm:px-8 lg:px-12 bg-[#2B0005]/40 backdrop-blur-[2px] border-b border-[#D9A514]/15 overflow-hidden">
           {/* Decorative background glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#D9A514]/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="max-w-6xl mx-auto text-center relative z-10">
             <div className="inline-flex items-center gap-2 bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4 shadow-lg">
@@ -93,8 +93,8 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
               <div className="lg:col-span-6 relative">
                 <div className="relative rounded-3xl overflow-hidden border border-white/20 shadow-2xl group bg-black/40">
                   <img
-                    src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=1000&auto=format&fit=crop"
-                    alt="Artisanal gift box packing"
+                    src="/about us page.jpg"
+                    alt="MBM Gifts luxury gift box packing"
                     className="w-full h-80 sm:h-[450px] object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />

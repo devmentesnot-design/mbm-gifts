@@ -89,7 +89,7 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#3a060a] text-white font-inter selection:bg-amber-400 selection:text-[#8c1119] flex flex-col justify-between">
+    <div className="min-h-screen w-full bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005] flex flex-col justify-between">
       {/* Top Navbar */}
       <Navbar
         session={session}

@@ -180,8 +180,8 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-[#1f0305] text-white font-inter flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 selection:bg-amber-400 selection:text-[#8c1119]">
-      <div className="w-full max-w-4xl bg-gradient-to-br from-[#4a1015] to-[#3d0a0e] border border-amber-400/30 rounded-3xl shadow-2xl overflow-hidden animate-scale-in">
+    <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 selection:bg-[#D9A514] selection:text-[#2B0005]">
+      <div className="w-full max-w-4xl luxury-satin-card border border-[#D9A514]/40 rounded-3xl shadow-2xl overflow-hidden animate-scale-in backdrop-blur-xl">
         
         {/* Verification Loader State */}
         {isVerifying && (

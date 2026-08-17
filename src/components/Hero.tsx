@@ -14,25 +14,11 @@ export const Hero: React.FC<HeroProps> = ({ onExplorePackages }) => {
 
   return (
     <section className="relative min-h-[calc(100vh-76px)] w-full overflow-hidden flex flex-col justify-between select-none">
-      {/* Dark Red Base Background */}
-      <div className="absolute inset-0 bg-[#8c1119] -z-30" />
+      {/* Subtle Vignette for dramatic depth */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_35%,_rgba(43,0,5,0.75)_100%)] -z-25 pointer-events-none" />
 
-      {/* Hero Header Image Overlay */}
-      <div className="absolute inset-0 -z-28 opacity-25 mix-blend-luminosity overflow-hidden">
-        <img
-          src="/header_hero.jpg"
-          alt="Luxury Gift Collection Header"
-          referrerPolicy="no-referrer"
-          className="w-full h-full object-cover object-center filter contrast-125 scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#8c1119] via-[#8c1119]/80 to-[#380509]/90" />
-      </div>
-
-      {/* Darkened Corners / Vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_30%,_#380509_100%)] -z-25 pointer-events-none" />
-
-      {/* White Light Spotlight */}
-      <div className="animate-fade-in-delay absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,_rgba(255,255,255,0.45)_0%,_rgba(255,255,255,0.2)_30%,_rgba(255,255,255,0.05)_55%,_transparent_75%)] -z-20 pointer-events-none" />
+      {/* Soft spotlight highlight over satin fabric */}
+      <div className="animate-fade-in-delay absolute inset-0 bg-[radial-gradient(circle_at_70%_45%,_rgba(245,197,66,0.12)_0%,_rgba(255,255,255,0.08)_25%,_transparent_65%)] -z-20 pointer-events-none" />
 
       {/* Right side Gift Reveal Animation - Hidden on small screens, visible on larger */}
       <div className="hidden lg:flex absolute right-16 xl:right-40 top-[50%] -translate-y-1/2 z-10 flex-col items-end pointer-events-none w-[400px] xl:w-[460px] opacity-100">
@@ -52,13 +38,13 @@ export const Hero: React.FC<HeroProps> = ({ onExplorePackages }) => {
         <div className="max-w-full lg:max-w-2xl xl:max-w-3xl">
           {/* Market-aware Badges */}
           <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
-            <div className="inline-flex items-center gap-2 bg-amber-400/15 border border-amber-400/40 text-amber-300 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest px-2.5 sm:px-3 py-1 rounded-full">
-              <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-amber-300" />
+            <div className="inline-flex items-center gap-2 bg-[#D9A514]/15 border border-[#D9A514]/40 text-[#F5C542] text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest px-2.5 sm:px-3 py-1 rounded-full shadow-md">
+              <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#F5C542]" />
               <span>{t('hero.badge')}</span>
             </div>
 
             {buyerMarket === 'INTERNATIONAL' && (
-              <div className="inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-400/50 text-emerald-300 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full animate-fade-in">
+              <div className="inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-400/50 text-emerald-300 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full animate-fade-in shadow-md">
                 <Truck className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Pay USD • Free Delivery in Ethiopia</span>
               </div>
@@ -66,14 +52,14 @@ export const Hero: React.FC<HeroProps> = ({ onExplorePackages }) => {
           </div>
 
           {/* Main Heading */}
-          <h1 className="animate-fade-up-delay-1 font-inter font-black text-white uppercase tracking-tight text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem] xl:text-[4rem] leading-[1.05] drop-shadow-lg mt-2">
-            <span className="block text-amber-300">BESPOKE GIFTS</span>
-            <span className="block text-white mt-1">FOR EVERY</span>
-            <span className="block text-white">MILESTONE</span>
+          <h1 className="animate-fade-up-delay-1 font-podium font-black text-[#FFF8ED] uppercase tracking-tight text-[2.2rem] sm:text-[2.8rem] md:text-[3.2rem] lg:text-[3.8rem] xl:text-[4.2rem] leading-[1.08] drop-shadow-xl mt-2">
+            <span className="block text-[#F5C542] font-black">BESPOKE GIFTS</span>
+            <span className="block text-[#FFF8ED] mt-1">FOR EVERY</span>
+            <span className="block text-[#FFF8ED]">MILESTONE</span>
           </h1>
 
           {/* Subtext */}
-          <p className="animate-fade-up-delay-2 mt-4 sm:mt-6 lg:mt-8 text-white/80 text-xs sm:text-sm md:text-base font-inter leading-relaxed max-w-full sm:max-w-md">
+          <p className="animate-fade-up-delay-2 mt-4 sm:mt-6 lg:mt-8 text-[#FFF8ED]/85 text-xs sm:text-sm md:text-base font-inter leading-relaxed max-w-full sm:max-w-md">
             {buyerMarket === 'INTERNATIONAL'
               ? 'Ordering from abroad? Send luxury gift packages directly to loved ones, partners, and family in Ethiopia with complimentary hand-delivery.'
               : t('hero.subtitle')}
@@ -83,15 +69,15 @@ export const Hero: React.FC<HeroProps> = ({ onExplorePackages }) => {
           <div className="animate-fade-up-delay-3 mt-6 sm:mt-8 lg:mt-10 flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6">
             <button
               onClick={onExplorePackages}
-              className="group bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-5 sm:px-6 md:px-8 py-3 sm:py-3.5 md:py-4 text-[10px] sm:text-[11px] md:text-xs tracking-widest uppercase flex items-center gap-2 font-inter font-bold transition-all duration-300 cursor-pointer rounded-full shadow-lg shadow-amber-400/20"
+              className="group bg-gradient-to-r from-[#F5C542] to-[#D9A514] hover:from-[#F5C542] hover:to-[#e6b015] text-[#2B0005] px-6 sm:px-8 py-3.5 sm:py-4 text-[10px] sm:text-[11px] md:text-xs tracking-widest uppercase flex items-center gap-2 font-inter font-extrabold transition-all duration-300 cursor-pointer rounded-full shadow-xl shadow-[#D9A514]/25 hover:shadow-[#D9A514]/40 transform hover:-translate-y-0.5"
             >
               <span>{t('hero.exploreBtn')}</span>
               <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </button>
 
             <div className="hidden md:flex items-center gap-3 border-l border-white/15 pl-4 sm:pl-6">
-              <Award className="w-7 sm:w-8 h-7 sm:h-8 text-amber-300 flex-shrink-0" />
-              <div className="text-white/70 text-[10px] sm:text-xs tracking-wider uppercase font-inter leading-tight">
+              <Award className="w-7 sm:w-8 h-7 sm:h-8 text-[#F5C542] flex-shrink-0" />
+              <div className="text-[#FFF8ED]/80 text-[10px] sm:text-xs tracking-wider uppercase font-inter leading-tight">
                 <div>Top-Rated</div>
                 <div>Gift Studio</div>
               </div>

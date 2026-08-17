@@ -257,15 +257,15 @@ export const CartPage: React.FC<CartPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#1f0305] text-white font-inter">
+    <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005]">
       {/* Header Bar */}
-      <div className="border-b border-white/10 bg-[#380509]">
+      <div className="border-b border-[#D9A514]/20 bg-[#2B0005]/80 backdrop-blur-md">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors cursor-pointer text-sm uppercase tracking-wider font-bold">
             <ArrowLeft className="w-4 h-4" />
             Back to Shop
           </a>
-          <img src="/logo.png" alt="MBM Gifts" referrerPolicy="no-referrer" className="h-10 sm:h-12 w-auto object-contain drop-shadow-md" />
+          <img src="/logo.png" alt="MBM Gifts" referrerPolicy="no-referrer" className="h-10 sm:h-12 w-auto object-contain drop-shadow-md scale-[2]" />
         </div>
       </div>
 

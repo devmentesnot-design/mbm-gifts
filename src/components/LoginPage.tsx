@@ -170,20 +170,27 @@ export const LoginPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#1f0305] flex font-inter text-white">
-      {/* Left Side: Brand Imagery */}
-      <div className="hidden lg:flex w-1/2 relative bg-[#0a0102] overflow-hidden">
+    <div className="min-h-screen bg-transparent flex font-inter text-[#FFF8ED] selection:bg-[#D9A514] selection:text-[#2B0005]">
+      {/* Left Side: Brand Imagery with Smooth Center Fade */}
+      <div 
+        className="hidden lg:flex w-1/2 relative overflow-hidden bg-transparent"
+        style={{
+          maskImage: 'linear-gradient(to right, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%)',
+        }}
+      >
         <img
           src="/login img.png"
           alt="MBM Gifts Luxury Collection"
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0102] via-[#0a0102]/20 to-[#0a0102]/40"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#1f0305]/80"></div>
+        {/* Soft atmospheric gradient overlays blending with satin */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2B0005]/90 via-transparent to-[#2B0005]/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#2B0005]" />
 
         <div className="relative z-10 p-12 flex flex-col justify-between h-full">
-          <a href="/" className="inline-flex items-center gap-2 text-white/90 hover:text-white bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 transition-all cursor-pointer text-xs uppercase tracking-wider font-bold w-fit shadow-lg hover:border-amber-400/50">
-            <ArrowLeft className="w-4 h-4 text-amber-300" />
+          <a href="/" className="inline-flex items-center gap-2 text-[#FFF8ED] hover:text-white bg-[#230005]/80 backdrop-blur-md px-4 py-2 rounded-full border border-[#D9A514]/30 transition-all cursor-pointer text-xs uppercase tracking-wider font-bold w-fit shadow-lg hover:border-[#F5C542]">
+            <ArrowLeft className="w-4 h-4 text-[#F5C542]" />
             Back to Shop
           </a>
 
@@ -191,7 +198,7 @@ export const LoginPage: React.FC = () => {
             <div className="mb-4">
               <img src="/logo.png" alt="MBM Gifts" referrerPolicy="no-referrer" className="h-14 sm:h-16 w-auto object-contain drop-shadow-xl scale-[3.4] origin-left" />
             </div>
-            <p className="text-lg text-white/90 max-w-md font-light leading-relaxed bg-black/40 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-lg">
+            <p className="text-sm text-[#FFF8ED]/90 max-w-md font-light leading-relaxed luxury-satin-card p-4 rounded-2xl border border-[#D9A514]/25 shadow-xl">
               Curating unforgettable moments. Sign in or create an account to access your bespoke gifts and track your orders.
             </p>
           </div>
@@ -206,7 +213,7 @@ export const LoginPage: React.FC = () => {
           Back
         </a>
 
-        <div className="max-w-md w-full mt-8 lg:mt-0">
+        <div className="max-w-md w-full mt-8 lg:mt-0 luxury-satin-card border border-[#D9A514]/30 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl">
           <div className="lg:hidden flex justify-center mb-8">
             <img src="/logo.png" alt="MBM Gifts" referrerPolicy="no-referrer" className="h-12 sm:h-14 w-auto object-contain drop-shadow-md scale-[1.3] origin-left" />
           </div>

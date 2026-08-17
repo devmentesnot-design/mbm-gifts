@@ -64,7 +64,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
   ];
 
   return (
-    <div className="min-h-screen w-full bg-[#3a060a] text-white font-inter selection:bg-amber-400 selection:text-[#8c1119] flex flex-col justify-between">
+    <div className="min-h-screen w-full bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005] flex flex-col justify-between">
       {/* Top Navbar */}
       <Navbar
         session={session}
@@ -76,10 +76,10 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
 
       <main className="flex-1">
         {/* Page Hero Header */}
-        <section className="relative pt-12 pb-20 px-4 sm:px-8 lg:px-12 bg-gradient-to-b from-[#8c1119] via-[#5c0910] to-[#3a060a] overflow-hidden">
+        <section className="relative pt-12 pb-20 px-4 sm:px-8 lg:px-12 bg-[#2B0005]/40 backdrop-blur-[2px] border-b border-[#D9A514]/15 overflow-hidden">
           <div className="max-w-6xl mx-auto text-center relative z-10">
-            <div className="inline-flex items-center gap-2 bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4 shadow-lg">
-              <CheckCircle2 className="w-4 h-4 text-amber-300" />
+            <div className="inline-flex items-center gap-2 bg-[#D9A514]/15 border border-[#D9A514]/30 text-[#F5C542] text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4 shadow-lg">
+              <CheckCircle2 className="w-4 h-4 text-[#F5C542]" />
               <span>Simple & Seamless Gifting</span>
             </div>
 
@@ -134,7 +134,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
             {/* Step Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Step 1 */}
-              <div className="bg-[#4a070c]/80 border border-white/15 rounded-3xl p-8 relative flex flex-col justify-between hover:border-amber-400/50 transition-all shadow-xl group">
+              <div className="luxury-satin-card luxury-satin-card-hover rounded-3xl p-8 relative flex flex-col justify-between shadow-xl group">
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <div className="w-14 h-14 rounded-2xl bg-amber-400/15 border border-amber-400/30 text-amber-300 flex items-center justify-center">
@@ -163,7 +163,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
               </div>
 
               {/* Step 2 */}
-              <div className="bg-[#4a070c]/80 border border-white/15 rounded-3xl p-8 relative flex flex-col justify-between hover:border-amber-400/50 transition-all shadow-xl group">
+              <div className="luxury-satin-card luxury-satin-card-hover rounded-3xl p-8 relative flex flex-col justify-between shadow-xl group">
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <div className="w-14 h-14 rounded-2xl bg-amber-400/15 border border-amber-400/30 text-amber-300 flex items-center justify-center">
@@ -190,7 +190,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
               </div>
 
               {/* Step 3 */}
-              <div className="bg-[#4a070c]/80 border border-white/15 rounded-3xl p-8 relative flex flex-col justify-between hover:border-amber-400/50 transition-all shadow-xl group">
+              <div className="luxury-satin-card luxury-satin-card-hover rounded-3xl p-8 relative flex flex-col justify-between shadow-xl group">
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <div className="w-14 h-14 rounded-2xl bg-amber-400/15 border border-amber-400/30 text-amber-300 flex items-center justify-center">

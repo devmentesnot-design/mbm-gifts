@@ -17,9 +17,9 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="w-full bg-[#380509] border-t border-white/10 text-white font-inter">
+    <footer className="w-full bg-[#1d0004]/85 backdrop-blur-md border-t border-[#D9A514]/20 text-[#FFF8ED] font-inter">
       {/* Newsletter Bar */}
-      <div className="px-6 sm:px-10 lg:px-16 py-12 border-b border-white/10 bg-[#4a070c]/50">
+      <div className="px-6 sm:px-10 lg:px-16 py-12 border-b border-[#D9A514]/15 bg-[#230005]/70">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="font-podium text-2xl uppercase font-bold text-white mb-1">
@@ -43,11 +43,11 @@ export const Footer: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email address..."
-                  className="bg-black/40 border border-white/20 rounded px-4 py-3 text-xs text-white placeholder-white/40 focus:outline-none focus:border-amber-400 w-full md:w-72"
+                  className="bg-black/50 border border-[#D9A514]/30 rounded-xl px-4 py-3 text-xs text-[#FFF8ED] placeholder-[#FFF8ED]/40 focus:outline-none focus:border-[#F5C542] w-full md:w-72"
                 />
                 <button
                   type="submit"
-                  className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-5 py-3 text-xs tracking-widest uppercase rounded flex items-center gap-1.5 transition-colors flex-shrink-0"
+                  className="bg-gradient-to-r from-[#F5C542] to-[#D9A514] hover:from-[#F5C542] hover:to-[#e6b015] text-[#2B0005] font-extrabold px-6 py-3 text-xs tracking-widest uppercase rounded-xl flex items-center gap-1.5 transition-all flex-shrink-0 cursor-pointer shadow-md"
                 >
                   <span>JOIN</span>
                   <Send className="w-3.5 h-3.5" />

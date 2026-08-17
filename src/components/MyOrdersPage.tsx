@@ -70,9 +70,9 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
   };
 
   return (
-    <div className="min-h-screen bg-[#1f0305] text-white font-inter selection:bg-amber-400 selection:text-[#8c1119]">
+    <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005]">
       {/* Top Header Navigation */}
-      <div className="border-b border-white/10 bg-[#380509] sticky top-0 z-30 backdrop-blur-md">
+      <div className="border-b border-[#D9A514]/20 bg-[#2B0005]/80 sticky top-0 z-30 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <button 
             onClick={() => onNavigate('/')}

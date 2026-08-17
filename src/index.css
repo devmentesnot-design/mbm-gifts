@@ -1,12 +1,67 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=DM+Serif+Display:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Cinzel+Decorative:wght@700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-deep-burgundy: #2B0005;
+  --color-dark-wine: #450006;
+  --color-rich-red: #8F0712;
+  --color-gold: #D9A514;
+  --color-bright-gold: #F5C542;
+  --color-warm-white: #FFF8ED;
+}
+
+body {
+  background-color: #2B0005;
+  background-image: 
+    linear-gradient(
+      rgba(35, 0, 5, 0.35),
+      rgba(35, 0, 5, 0.35)
+    ),
+    url("/images/mbm-red-satin.webp");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #FFF8ED;
+  min-height: 100vh;
+}
+
+/* Global Classy Bold Serif Typography for Headings Only */
+h1, h2, h3, h4, h5, h6, .font-podium, .font-serif, .font-classy, .font-oswald {
+  font-family: 'DM Serif Display', 'Abril Fatface', 'Playfair Display', Georgia, serif !important;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+@layer components {
+  /* Global Luxury Satin Card Style */
+  .luxury-satin-card {
+    background: rgba(35, 0, 5, 0.72);
+    border: 1px solid rgba(217, 165, 20, 0.22);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+
+  .luxury-satin-card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .luxury-satin-card-hover:hover {
+    border-color: rgba(245, 197, 66, 0.55);
+    background: rgba(45, 0, 8, 0.82);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.6), 0 0 20px rgba(217, 165, 20, 0.15);
+  }
+}
+
 @layer utilities {
   .font-podium {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Playfair Display', 'DM Serif Display', 'Fraunces', 'Cinzel Decorative', Georgia, serif;
+  }
+  .font-classy {
+    font-family: 'Playfair Display', 'DM Serif Display', 'Fraunces', 'Cinzel Decorative', Georgia, serif;
   }
 
   @keyframes fade-up {

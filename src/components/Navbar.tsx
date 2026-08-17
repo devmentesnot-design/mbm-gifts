@@ -22,6 +22,25 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
 
   const handleNavLinkClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
+    
+    // Special handling for packages link - scroll to packages section
+    if (path === '/#packages') {
+      if (onNavigate) {
+        onNavigate('/');
+      } else {
+        window.history.pushState({}, '', '/');
+        window.dispatchEvent(new Event('popstate'));
+      }
+      // Wait for navigation, then scroll to packages section
+      setTimeout(() => {
+        const packagesSection = document.getElementById('packages');
+        if (packagesSection) {
+          packagesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+      return;
+    }
+    
     if (onNavigate) {
       onNavigate(path);
     } else {
@@ -82,12 +101,12 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
   const navLinks = [
     { label: t('nav.about'), path: '/about' },
     { label: t('nav.howToOrder'), path: '/how-to-order' },
-    { label: t('nav.packages'), path: '/' },
+    { label: t('nav.packages'), path: '/#packages' },
   ];
 
   return (
     <>
-      <header className="sticky top-0 w-full px-4 sm:px-8 lg:px-12 py-2 h-16 sm:h-20 flex items-center justify-between z-30 bg-[#8c1119]/90 backdrop-blur-md border-b border-white/10 transition-all duration-300">
+      <header className="sticky top-0 w-full px-4 sm:px-8 lg:px-12 py-2 h-16 sm:h-20 flex items-center justify-between z-30 bg-[#2B0005]/80 backdrop-blur-md border-b border-[#D9A514]/20 transition-all duration-300">
         {/* Brand Logo */}
         <a
           href="/"
@@ -181,7 +200,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
 
               {/* Profile Dropdown Menu */}
               {profileDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-[#2a0407] border border-amber-400/40 rounded-xl shadow-2xl p-2 z-50 animate-scale-in">
+                <div className="absolute right-0 mt-2 w-56 bg-[#230005]/95 border border-[#D9A514]/40 rounded-xl shadow-2xl p-2 z-50 animate-scale-in backdrop-blur-md">
                   <div className="px-3 py-2 border-b border-white/10 mb-1">
                     <p className="text-xs text-amber-300 font-bold truncate">{firstName}</p>
                     <p className="text-[11px] text-white/50 truncate">{session.user?.email}</p>
