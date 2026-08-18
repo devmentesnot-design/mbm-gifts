@@ -25,9 +25,17 @@ export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart })
     return pkg.price;
   };
 
-  // Extract unique occasions from real packages
+  // Extract unique occasions from real packages (supporting multiple comma-separated categories)
   const occasions = useMemo(() => {
-    const unique = new Set(packages.map(p => p.category));
+    const unique = new Set<string>();
+    packages.forEach((p) => {
+      if (p.category) {
+        p.category.split(',').forEach((c) => {
+          const trimmed = c.trim();
+          if (trimmed) unique.add(trimmed);
+        });
+      }
+    });
     return Array.from(unique).sort();
   }, [packages]);
 
@@ -37,7 +45,11 @@ export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart })
 
     // Filter by occasion
     if (occasion) {
-      filtered = filtered.filter(p => p.category === occasion);
+      filtered = filtered.filter((p) => {
+        if (!p.category) return false;
+        const cats = p.category.split(',').map((c) => c.trim().toLowerCase());
+        return cats.includes(occasion.toLowerCase());
+      });
     }
 
     // Filter by budget

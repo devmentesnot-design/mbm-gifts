@@ -94,16 +94,26 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
       // Fallback only if database categories array is empty
       if (mode === 'pkg') {
         packages.forEach(p => {
-          if (p.category && !added.has(p.category)) {
-            added.add(p.category);
-            list.push(p.category);
+          if (p.category) {
+            p.category.split(',').forEach(c => {
+              const trimmed = c.trim();
+              if (trimmed && !added.has(trimmed)) {
+                added.add(trimmed);
+                list.push(trimmed);
+              }
+            });
           }
         });
       } else {
         customItems.forEach(i => {
-          if (i.category && !added.has(i.category)) {
-            added.add(i.category);
-            list.push(i.category);
+          if (i.category) {
+            i.category.split(',').forEach(c => {
+              const trimmed = c.trim();
+              if (trimmed && !added.has(trimmed)) {
+                added.add(trimmed);
+                list.push(trimmed);
+              }
+            });
           }
         });
       }
@@ -124,29 +134,34 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Smart helper to match item categories against category names and slugs
+  // Smart helper to match item categories (including multiple comma-separated categories) against category names and slugs
   const isCategoryMatch = (itemCat: string, activeCat: string) => {
     if (!activeCat || activeCat === 'All') return true;
     if (!itemCat) return false;
-    const itemLower = itemCat.toLowerCase().trim();
     const activeLower = activeCat.toLowerCase().trim();
 
-    if (itemLower === activeLower) return true;
+    // Support comma-separated multiple categories on a single item or ready-made package
+    const itemCategories = itemCat.split(',').map(c => c.toLowerCase().trim()).filter(Boolean);
 
-    if (categories && categories.length > 0) {
-      const catObj = categories.find(
-        c => c.name.toLowerCase().trim() === activeLower || c.slug.toLowerCase().trim() === activeLower
-      );
-      if (catObj) {
-        const slugLower = catObj.slug.toLowerCase().trim();
-        const nameLower = catObj.name.toLowerCase().trim();
-        if (itemLower === slugLower || itemLower === nameLower) return true;
-        if (nameLower.includes(itemLower) || itemLower.includes(nameLower)) return true;
-        if (slugLower.includes(itemLower) || itemLower.includes(slugLower)) return true;
+    for (const singleItemCat of itemCategories) {
+      if (singleItemCat === activeLower) return true;
+
+      if (categories && categories.length > 0) {
+        const catObj = categories.find(
+          c => c.name.toLowerCase().trim() === activeLower || c.slug.toLowerCase().trim() === activeLower
+        );
+        if (catObj) {
+          const slugLower = catObj.slug.toLowerCase().trim();
+          const nameLower = catObj.name.toLowerCase().trim();
+          if (singleItemCat === slugLower || singleItemCat === nameLower) return true;
+          if (nameLower.includes(singleItemCat) || singleItemCat.includes(nameLower)) return true;
+          if (slugLower.includes(singleItemCat) || singleItemCat.includes(slugLower)) return true;
+        }
       }
+
+      if (activeLower.includes(singleItemCat) || singleItemCat.includes(activeLower)) return true;
     }
 
-    if (activeLower.includes(itemLower) || itemLower.includes(activeLower)) return true;
     return false;
   };
 
@@ -365,7 +380,9 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
               {/* Title & Category Info */}
               <div className="mt-3 cursor-pointer" onClick={() => setSelectedCustomItemModal(item)}>
-                <div className="text-[10px] text-amber-300/90 uppercase tracking-widest font-bold mb-0.5">{item.category}</div>
+                <div className="text-[10px] text-amber-300/90 uppercase tracking-widest font-bold mb-0.5">
+                  {item.category?.includes(',') ? item.category.split(',').map(c => c.trim()).join(' • ') : item.category}
+                </div>
                 <div className="font-podium font-bold text-base text-white uppercase line-clamp-1 group-hover:text-amber-300 transition-colors">{item.name}</div>
                 <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1 leading-snug">{item.description}</p>
               </div>
@@ -598,7 +615,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 <div>
                   <div className="inline-flex items-center gap-1.5 bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3">
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>{selectedModalPkg.category} Collection</span>
+                    <span>{selectedModalPkg.category?.includes(',') ? selectedModalPkg.category.split(',').map(c => c.trim()).join(' • ') : `${selectedModalPkg.category} Collection`}</span>
                   </div>
 
                   <h2 className="font-podium text-2xl sm:text-4xl uppercase text-white font-bold tracking-tight mb-2">
@@ -716,7 +733,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     className="w-full h-56 sm:h-64 object-contain p-4"
                   />
                   <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-md">
-                    {selectedCustomItemModal.category}
+                    {selectedCustomItemModal.category?.includes(',') ? selectedCustomItemModal.category.split(',').map(c => c.trim()).join(' • ') : selectedCustomItemModal.category}
                   </span>
                 </div>
               </div>

@@ -165,7 +165,7 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                 <div>
                   <div className="inline-flex items-center gap-2 bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest px-3.5 py-1 rounded-full mb-3">
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>{packageData.category} Collection</span>
+                    <span>{packageData.category?.includes(',') ? packageData.category.split(',').map(c => c.trim()).join(' • ') : `${packageData.category} Collection`}</span>
                   </div>
 
                   <h1 className="font-podium text-3xl sm:text-5xl uppercase text-white font-extrabold tracking-tight mb-3 leading-none">

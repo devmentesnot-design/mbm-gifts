@@ -1244,7 +1244,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </button>
 
                   {packageCategories.map((cat) => {
-                    const count = packages.filter((p) => p.category?.toLowerCase() === cat.name.toLowerCase()).length;
+                    const count = packages.filter((p) =>
+                      p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
+                    ).length;
                     const isActive = pkgCategoryFilter.toLowerCase() === cat.name.toLowerCase();
                     return (
                       <button
@@ -1281,8 +1283,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {packages
                   .filter((pkg) => {
-                    const matchesCategory = pkgCategoryFilter === 'all' || pkg.category?.toLowerCase() === pkgCategoryFilter.toLowerCase();
-                    const matchesSearch = !pkgSearchTerm || pkg.name.toLowerCase().includes(pkgSearchTerm.toLowerCase()) || pkg.shortDesc?.toLowerCase().includes(pkgSearchTerm.toLowerCase());
+                    const matchesCategory =
+                      pkgCategoryFilter === 'all' ||
+                      pkg.category?.split(',').map((c) => c.trim().toLowerCase()).includes(pkgCategoryFilter.toLowerCase());
+                    const matchesSearch =
+                      !pkgSearchTerm ||
+                      pkg.name.toLowerCase().includes(pkgSearchTerm.toLowerCase()) ||
+                      pkg.shortDesc?.toLowerCase().includes(pkgSearchTerm.toLowerCase());
                     return matchesCategory && matchesSearch;
                   })
                   .map((pkg) => (
@@ -1304,7 +1311,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                       <div className="p-4 flex-1 flex flex-col justify-between">
                         <div>
-                          <div className="text-[10px] text-amber-300 font-bold uppercase">{pkg.category}</div>
+                          <div className="flex flex-wrap gap-1 mb-1">
+                            {pkg.category?.split(',').map((cat, idx) => (
+                              <span key={idx} className="text-[10px] text-amber-300 font-bold uppercase bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded">
+                                {cat.trim()}
+                              </span>
+                            ))}
+                          </div>
                           <h3 className="font-podium text-lg uppercase font-bold text-white mt-1">{pkg.name}</h3>
                           <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{pkg.shortDesc}</p>
                         </div>
@@ -1374,7 +1387,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </button>
 
                   {customItemCategories.map((cat) => {
-                    const count = customItems.filter((i) => i.category?.toLowerCase() === cat.name.toLowerCase()).length;
+                    const count = customItems.filter((i) =>
+                      i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
+                    ).length;
                     const isActive = itemCategoryFilter.toLowerCase() === cat.name.toLowerCase();
                     return (
                       <button
@@ -1411,8 +1426,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {customItems
                   .filter((item) => {
-                    const matchesCategory = itemCategoryFilter === 'all' || item.category?.toLowerCase() === itemCategoryFilter.toLowerCase();
-                    const matchesSearch = !itemSearchTerm || item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) || item.description?.toLowerCase().includes(itemSearchTerm.toLowerCase());
+                    const matchesCategory =
+                      itemCategoryFilter === 'all' ||
+                      item.category?.split(',').map((c) => c.trim().toLowerCase()).includes(itemCategoryFilter.toLowerCase());
+                    const matchesSearch =
+                      !itemSearchTerm ||
+                      item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
+                      item.description?.toLowerCase().includes(itemSearchTerm.toLowerCase());
                     return matchesCategory && matchesSearch;
                   })
                   .map((item) => (
@@ -1422,9 +1442,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     >
                       <div className="relative h-40 bg-black/40 overflow-hidden">
                         <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                        <span className="absolute top-3 left-3 bg-black/80 border border-white/20 text-amber-300 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full">
-                          {item.category}
-                        </span>
+                        <div className="absolute top-3 left-3 flex flex-wrap gap-1 max-w-[85%]">
+                          {item.category?.split(',').map((cat, idx) => (
+                            <span key={idx} className="bg-black/80 border border-white/20 text-amber-300 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">
+                              {cat.trim()}
+                            </span>
+                          ))}
+                        </div>
                       </div>
 
                       <div className="p-4 flex-1 flex flex-col justify-between">
@@ -1885,25 +1909,50 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                   <div>
                     <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                      Category (From Category Menu) <span className="text-red-400">*</span>
+                      Categories (Select One or More) <span className="text-red-400">*</span>
                     </label>
-                    <select
-                      value={pkgForm.category}
-                      onChange={(e) => setPkgForm({ ...pkgForm, category: e.target.value })}
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-amber-300 font-bold focus:border-amber-400 focus:outline-none"
-                    >
-                      {packageCategories.map((c) => (
-                        <option key={c.id} value={c.name} className="bg-[#2c0407] text-white">
-                          {c.name}
-                        </option>
-                      ))}
-                      {/* Fallback option if custom text */}
-                      {!packageCategories.some((c) => c.name === pkgForm.category) && (
-                        <option value={pkgForm.category} className="bg-[#2c0407] text-white">
-                          {pkgForm.category}
-                        </option>
-                      )}
-                    </select>
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap gap-1.5 p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px] items-center">
+                        {packageCategories.map((c) => {
+                          const selectedList = pkgForm.category.split(',').map((s) => s.trim()).filter(Boolean);
+                          const isSelected = selectedList.some((s) => s.toLowerCase() === c.name.toLowerCase());
+                          return (
+                            <button
+                              type="button"
+                              key={c.id}
+                              onClick={() => {
+                                let newList: string[];
+                                if (isSelected) {
+                                  newList = selectedList.filter((s) => s.toLowerCase() !== c.name.toLowerCase());
+                                } else {
+                                  newList = [...selectedList, c.name];
+                                }
+                                setPkgForm({ ...pkgForm, category: newList.join(', ') });
+                              }}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                                isSelected
+                                  ? 'bg-amber-400 text-[#8c1119] border border-amber-400 shadow-sm scale-105'
+                                  : 'bg-black/60 text-white/70 border border-white/15 hover:border-amber-400/50 hover:text-white'
+                              }`}
+                            >
+                              {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-white/40" />}
+                              <span>{c.name}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <input
+                        type="text"
+                        required
+                        value={pkgForm.category}
+                        onChange={(e) => setPkgForm({ ...pkgForm, category: e.target.value })}
+                        placeholder="e.g. Birthday, Luxury, Anniversary (comma separated)"
+                        className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-amber-300 font-bold focus:border-amber-400 focus:outline-none"
+                      />
+                      <p className="text-[10px] text-white/50">
+                        💡 Click badges above to toggle multiple categories, or type custom comma-separated category names.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
@@ -2186,26 +2235,52 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div>
+                <div className="md:col-span-3">
                   <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                    Category (From Category Menu) <span className="text-red-400">*</span>
+                    Categories (Select One or More) <span className="text-red-400">*</span>
                   </label>
-                  <select
-                    value={itemForm.category}
-                    onChange={(e) => setItemForm({ ...itemForm, category: e.target.value })}
-                    className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-xs text-amber-300 font-bold focus:border-amber-400 focus:outline-none"
-                  >
-                    {customItemCategories.map((c) => (
-                      <option key={c.id} value={c.name} className="bg-[#2c0407] text-white">
-                        {c.name}
-                      </option>
-                    ))}
-                    {!customItemCategories.some((c) => c.name === itemForm.category) && (
-                      <option value={itemForm.category} className="bg-[#2c0407] text-white">
-                        {itemForm.category}
-                      </option>
-                    )}
-                  </select>
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-1.5 p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px] items-center">
+                      {customItemCategories.map((c) => {
+                        const selectedList = itemForm.category.split(',').map((s) => s.trim()).filter(Boolean);
+                        const isSelected = selectedList.some((s) => s.toLowerCase() === c.name.toLowerCase());
+                        return (
+                          <button
+                            type="button"
+                            key={c.id}
+                            onClick={() => {
+                              let newList: string[];
+                              if (isSelected) {
+                                newList = selectedList.filter((s) => s.toLowerCase() !== c.name.toLowerCase());
+                              } else {
+                                newList = [...selectedList, c.name];
+                              }
+                              setItemForm({ ...itemForm, category: newList.join(', ') });
+                            }}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                              isSelected
+                                ? 'bg-amber-400 text-[#8c1119] border border-amber-400 shadow-sm scale-105'
+                                : 'bg-black/60 text-white/70 border border-white/15 hover:border-amber-400/50 hover:text-white'
+                            }`}
+                          >
+                            {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-white/40" />}
+                            <span>{c.name}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <input
+                      type="text"
+                      required
+                      value={itemForm.category}
+                      onChange={(e) => setItemForm({ ...itemForm, category: e.target.value })}
+                      placeholder="e.g. Sweets & Chocolates, Romantic Add-ons (comma separated)"
+                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-amber-300 font-bold focus:border-amber-400 focus:outline-none"
+                    />
+                    <p className="text-[10px] text-white/50">
+                      💡 Click badges above to toggle multiple categories, or type custom comma-separated category names.
+                    </p>
+                  </div>
                 </div>
 
                 <div>
