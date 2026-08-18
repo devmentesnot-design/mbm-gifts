@@ -35,6 +35,7 @@ export interface OrderCustomerInfo {
   address: string;
   city: string;
   zipCode: string;
+  deliveryDate?: string;
   giftRecipientName?: string;
   giftSenderName?: string;
   giftMessage?: string;

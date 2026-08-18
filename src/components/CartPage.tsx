@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CartItem, Order } from '../types/cart';
-import { Package, Truck, ArrowLeft, Image as ImageIcon, PhoneCall, UploadCloud, Check, Sparkles, Box, Headset, Clock } from 'lucide-react';
+import { Package, Truck, ArrowLeft, Image as ImageIcon, PhoneCall, UploadCloud, Check, Sparkles, Box, Headset, Clock, Calendar } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useMarket } from '../context/MarketContext';
 import { GiftBoxStyle, getStoredGiftBoxes } from '../data/giftsData';
@@ -23,6 +23,7 @@ interface CartFormDraft {
   phone?: string;
   address?: string;
   city?: string;
+  deliveryDate?: string;
   recipientName?: string;
   senderName?: string;
   giftMessage?: string;
@@ -88,6 +89,7 @@ export const CartPage: React.FC<CartPageProps> = ({
   const [phone, setPhone] = useState(draft.phone || '');
   const [address, setAddress] = useState(draft.address || '');
   const [city, setCity] = useState(draft.city || '');
+  const [deliveryDate, setDeliveryDate] = useState(draft.deliveryDate || '');
   const [recipientName, setRecipientName] = useState(draft.recipientName || '');
   const [senderName, setSenderName] = useState(draft.senderName || '');
   const [giftMessage, setGiftMessage] = useState(draft.giftMessage || '');
@@ -103,6 +105,7 @@ export const CartPage: React.FC<CartPageProps> = ({
           phone,
           address,
           city,
+          deliveryDate,
           recipientName,
           senderName,
           giftMessage,
@@ -111,7 +114,7 @@ export const CartPage: React.FC<CartPageProps> = ({
         })
       );
     } catch {}
-  }, [phone, address, city, recipientName, senderName, giftMessage, selectedBoxId, shipMode]);
+  }, [phone, address, city, deliveryDate, recipientName, senderName, giftMessage, selectedBoxId, shipMode]);
 
   // Cart Calculations
   const calculateItemPrice = (item: CartItem): number => {
@@ -225,6 +228,7 @@ export const CartPage: React.FC<CartPageProps> = ({
         address: address.trim(),
         city: city.trim() || 'Addis Ababa',
         zipCode: '1000',
+        deliveryDate: deliveryDate || undefined,
         giftRecipientName: recipientName.trim(),
         giftSenderName: senderName.trim(),
         giftMessage: giftMessage.trim(),
@@ -621,6 +625,27 @@ export const CartPage: React.FC<CartPageProps> = ({
                           className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
                         />
                       </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center gap-2">
+                        <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Preferred Delivery Date</span>
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="date"
+                          value={deliveryDate}
+                          onChange={(e) => setDeliveryDate(e.target.value)}
+                          min={new Date().toISOString().split('T')[0]}
+                          className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400 cursor-pointer"
+                          style={{
+                            colorScheme: 'dark',
+                          }}
+                        />
+                        <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-300/50 pointer-events-none" />
+                      </div>
+                      <p className="text-[10px] text-white/50 mt-1.5">Leave blank for earliest available delivery</p>
                     </div>
                   </div>
                 </div>

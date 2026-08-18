@@ -2045,14 +2045,37 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <label className="block text-[10px] uppercase text-white/70 font-bold mb-1">
                             Item Name <span className="text-red-400">*</span>
                           </label>
-                          <input
-                            type="text"
+                          <select
                             required
                             value={subItem.name}
-                            onChange={(e) => handleUpdateSubItem(index, 'name', e.target.value)}
-                            placeholder="e.g. Midnight Rose Soy Candle"
-                            className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
-                          />
+                            onChange={(e) => {
+                              const selectedItem = customItems.find(item => item.name === e.target.value);
+                              if (selectedItem) {
+                                handleUpdateSubItem(index, 'name', selectedItem.name);
+                                handleUpdateSubItem(index, 'image', selectedItem.image);
+                                handleUpdateSubItem(index, 'description', selectedItem.description);
+                              } else {
+                                handleUpdateSubItem(index, 'name', e.target.value);
+                              }
+                            }}
+                            className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none cursor-pointer"
+                          >
+                            <option value="">-- Select from Single Items --</option>
+                            {customItems.map((item) => (
+                              <option key={item.id} value={item.name}>
+                                {item.name}
+                              </option>
+                            ))}
+                            <option value="__custom__">+ Enter Custom Item Name</option>
+                          </select>
+                          {subItem.name === '__custom__' && (
+                            <input
+                              type="text"
+                              placeholder="Enter custom item name..."
+                              className="w-full bg-black/60 border border-amber-400/40 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none mt-2"
+                              onChange={(e) => handleUpdateSubItem(index, 'name', e.target.value)}
+                            />
+                          )}
                         </div>
 
                         <div>
