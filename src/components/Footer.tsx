@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Gift, Send, Instagram, Facebook, Twitter } from 'lucide-react';
+import { Gift, Send, Instagram, Facebook } from 'lucide-react';
 import { LegalModal } from './LegalModal';
 import { MarketChangeRequest } from './MarketChangeRequest';
 
@@ -72,10 +72,47 @@ export const Footer: React.FC = () => {
           <p className="text-white/60 leading-relaxed mb-4">
             Curated luxury gift packages and bespoke custom box creations. Handcrafted with passion and wax-sealed for life's most cherished moments.
           </p>
-          <div className="flex items-center space-x-4 text-white/70">
-            <a href="#" className="hover:text-amber-400 transition-colors"><Instagram className="w-5 h-5" /></a>
-            <a href="#" className="hover:text-amber-400 transition-colors"><Facebook className="w-5 h-5" /></a>
-            <a href="#" className="hover:text-amber-400 transition-colors"><Twitter className="w-5 h-5" /></a>
+          <div className="flex items-center space-x-3 text-white/80">
+            <a
+              href="https://www.instagram.com/mbmgifts"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow MBM Gifts on Instagram"
+              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:border-transparent hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg shadow-black/40"
+            >
+              <Instagram className="w-4 h-4" />
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=61593057843519&mibextid=ZbWKwL"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow MBM Gifts on Facebook"
+              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#1877F2] hover:border-transparent hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg shadow-black/40"
+            >
+              <Facebook className="w-4 h-4" />
+            </a>
+            <a
+              href="https://www.tiktok.com/@mbmgifts.official?_r=1&_t=ZS-98kF663UmiW"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow MBM Gifts on TikTok"
+              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-black hover:border-white/30 hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg shadow-black/40 group"
+            >
+              <svg className="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.48 6.34 6.34 0 0 0 1.97-4.48V8.75a8.28 8.28 0 0 0 4.8 1.51V6.8a4.85 4.85 0 0 1-1-.11z"/>
+              </svg>
+            </a>
+            <a
+              href="https://t.me/+J7buYU7m8vQ5NmY0"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow MBM Gifts on Telegram"
+              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#229ED9] hover:border-transparent hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg shadow-black/40 group"
+            >
+              <svg className="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.12-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.15 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06-.01.24-.03.38z"/>
+              </svg>
+            </a>
           </div>
         </div>
 
