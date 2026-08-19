@@ -1311,19 +1311,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                       <div className="p-4 flex-1 flex flex-col justify-between">
                         <div>
-                          <div className="flex flex-wrap gap-1 mb-1">
-                            {pkg.category?.split(',').map((cat, idx) => (
-                              <span key={idx} className="text-[10px] text-amber-300 font-bold uppercase bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded">
-                                {cat.trim()}
-                              </span>
-                            ))}
-                          </div>
                           <h3 className="font-podium text-lg uppercase font-bold text-white mt-1">{pkg.name}</h3>
                           <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{pkg.shortDesc}</p>
                         </div>
 
                         <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
-                          <span className="font-bold text-amber-300 text-lg">${pkg.price.toFixed(2)}</span>
+                          <div className="flex flex-col gap-0.5">
+                            <span className="font-bold text-amber-300 text-lg">ETB {pkg.price.toFixed(2)}</span>
+                            {pkg.price_usd && pkg.price_usd > 0 && (
+                              <span className="text-white/50 text-xs">USD ${pkg.price_usd.toFixed(2)}</span>
+                            )}
+                          </div>
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleOpenPkgModal(pkg)}
@@ -1442,13 +1440,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     >
                       <div className="relative h-40 bg-black/40 overflow-hidden">
                         <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                        <div className="absolute top-3 left-3 flex flex-wrap gap-1 max-w-[85%]">
-                          {item.category?.split(',').map((cat, idx) => (
-                            <span key={idx} className="bg-black/80 border border-white/20 text-amber-300 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">
-                              {cat.trim()}
-                            </span>
-                          ))}
-                        </div>
                       </div>
 
                       <div className="p-4 flex-1 flex flex-col justify-between">
@@ -1458,7 +1449,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </div>
 
                         <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
-                          <span className="font-bold text-amber-300 text-lg">${item.price.toFixed(2)}</span>
+                          <div className="flex flex-col gap-0.5">
+                            <span className="font-bold text-amber-300 text-lg">ETB {item.price.toFixed(2)}</span>
+                            {item.price_usd && item.price_usd > 0 && (
+                              <span className="text-white/50 text-xs">USD ${item.price_usd.toFixed(2)}</span>
+                            )}
+                          </div>
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleOpenItemModal(item)}

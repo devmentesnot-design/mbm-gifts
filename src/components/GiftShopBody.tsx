@@ -380,9 +380,6 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
               {/* Title & Category Info */}
               <div className="mt-3 cursor-pointer" onClick={() => setSelectedCustomItemModal(item)}>
-                <div className="text-[10px] text-amber-300/90 uppercase tracking-widest font-bold mb-0.5">
-                  {item.category?.includes(',') ? item.category.split(',').map(c => c.trim()).join(' • ') : item.category}
-                </div>
                 <div className="font-podium font-bold text-base text-white uppercase line-clamp-1 group-hover:text-amber-300 transition-colors">{item.name}</div>
                 <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1 leading-snug">{item.description}</p>
               </div>
@@ -613,11 +610,6 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               {/* Right Column: Title, Price & Order Action (7 cols) */}
               <div className="lg:col-span-7 flex flex-col justify-between h-full">
                 <div>
-                  <div className="inline-flex items-center gap-1.5 bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>{selectedModalPkg.category?.includes(',') ? selectedModalPkg.category.split(',').map(c => c.trim()).join(' • ') : `${selectedModalPkg.category} Collection`}</span>
-                  </div>
-
                   <h2 className="font-podium text-2xl sm:text-4xl uppercase text-white font-bold tracking-tight mb-2">
                     {selectedModalPkg.name}
                   </h2>
@@ -732,9 +724,6 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     alt={selectedCustomItemModal.name}
                     className="w-full h-56 sm:h-64 object-contain p-4"
                   />
-                  <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-md">
-                    {selectedCustomItemModal.category?.includes(',') ? selectedCustomItemModal.category.split(',').map(c => c.trim()).join(' • ') : selectedCustomItemModal.category}
-                  </span>
                 </div>
               </div>
 
