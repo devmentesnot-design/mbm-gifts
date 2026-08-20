@@ -53,6 +53,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   
   // Shared Filter State
   const [activeCategory, setActiveCategory] = useState<string>('All');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('default');
   const [isSortOpen, setIsSortOpen] = useState(false);
 
@@ -165,12 +166,31 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     return false;
   };
 
-  // Filtered & Sorted Packages
+  // Filtered & Sorted Packages with Smart Keyword / Multi-Word Matching
   const filteredPackages = useMemo(() => {
     let result = [...packages];
     
+    // Category filter
     if (activeCategory !== 'All') {
       result = result.filter(p => isCategoryMatch(p.category, activeCategory));
+    }
+
+    // Smart Multi-Word / Keyword Search
+    const searchWords = searchTerm.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    if (searchWords.length > 0) {
+      result = result.filter(p => {
+        const searchableText = [
+          p.name,
+          p.category,
+          p.badge || '',
+          p.shortDesc || '',
+          p.popularFor || '',
+          ...(p.itemsIncluded || []),
+          ...(p.itemsIncludedDetailed?.map(d => `${d.name} ${d.description}`) || []),
+        ].join(' ').toLowerCase();
+        
+        return searchWords.every(word => searchableText.includes(word));
+      });
     }
 
     if (sortBy === 'price-asc') {
@@ -180,15 +200,29 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     }
 
     return result;
-  }, [packages, activeCategory, sortBy, categories, buyerMarket]);
+  }, [packages, activeCategory, searchTerm, sortBy, categories, buyerMarket]);
 
-  // Filtered & Sorted Custom Items
+  // Filtered & Sorted Custom Items with Smart Keyword Matching
   const filteredCustomItems = useMemo(() => {
     let result = [...customItems];
     if (activeCategory !== 'All') {
       result = result.filter(i => isCategoryMatch(i.category, activeCategory));
     }
     
+    // Smart Multi-Word / Keyword Search
+    const searchWords = searchTerm.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    if (searchWords.length > 0) {
+      result = result.filter(item => {
+        const searchableText = [
+          item.name,
+          item.category,
+          item.description || '',
+        ].join(' ').toLowerCase();
+        
+        return searchWords.every(word => searchableText.includes(word));
+      });
+    }
+
     if (sortBy === 'price-asc') {
       result.sort((a, b) => getItemPrice(a) - getItemPrice(b));
     } else if (sortBy === 'price-desc') {
@@ -196,7 +230,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     }
     
     return result;
-  }, [customItems, activeCategory, sortBy, categories, buyerMarket]);
+  }, [customItems, activeCategory, searchTerm, sortBy, categories, buyerMarket]);
 
   const handleModalAdd = () => {
     if (selectedModalPkg) {
@@ -282,25 +316,25 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   };
 
   const renderPackagesView = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-3.5 md:gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3.5 md:gap-4">
       {filteredPackages.map((pkg) => (
         <div
           key={pkg.id}
-          className="group relative luxury-satin-card luxury-satin-card-hover rounded-2xl overflow-hidden flex flex-col justify-between max-w-sm mx-auto w-full"
+          className="group relative luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl overflow-hidden flex flex-col justify-between w-full shadow-lg"
         >
           {/* Square Image Container with Inner Border */}
-          <div className="p-2.5">
+          <div className="p-1.5 sm:p-2.5">
             <div 
-              className="relative w-full aspect-square rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
+              className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
               onClick={() => handlePackageClick(pkg)}
             >
               <img
                 src={pkg.image}
                 alt={pkg.name}
-                className="absolute inset-0 w-full h-full object-contain p-2.5 group-hover:scale-105 transition-transform duration-700"
+                className="absolute inset-0 w-full h-full object-contain p-1.5 sm:p-2.5 group-hover:scale-105 transition-transform duration-700"
               />
               {pkg.badge && (
-                <span className="absolute top-2.5 left-2.5 bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] text-[10px] font-black tracking-widest px-2.5 py-1 uppercase rounded-full shadow-md z-10">
+                <span className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] text-[8px] sm:text-[10px] font-black tracking-wider sm:tracking-widest px-1.5 sm:px-2.5 py-0.5 sm:py-1 uppercase rounded-full shadow-md z-10">
                   {pkg.badge}
                 </span>
               )}
@@ -308,40 +342,43 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           </div>
 
           {/* Content Area */}
-          <div className="p-3.5 sm:p-4 pt-0 flex-1 flex flex-col">
-            <div className="mb-auto cursor-pointer" onClick={() => handlePackageClick(pkg)}>
-              <h3 className="font-podium text-base sm:text-lg uppercase font-bold text-white tracking-wide mb-1.5 group-hover:text-amber-300 transition-colors line-clamp-1">
+          <div className="p-2 sm:p-4 pt-0 flex-1 flex flex-col justify-between">
+            <div className="cursor-pointer" onClick={() => handlePackageClick(pkg)}>
+              <div className="text-[9px] sm:text-[10px] text-amber-300/90 font-bold uppercase tracking-wider truncate mb-0.5">
+                {pkg.category?.includes(',') ? pkg.category.split(',')[0].trim() : pkg.category}
+              </div>
+              <h3 className="font-podium text-xs sm:text-lg uppercase font-bold text-white tracking-wide mb-1 group-hover:text-amber-300 transition-colors line-clamp-1">
                 {pkg.name}
               </h3>
-              <p className="text-white/60 text-[11px] sm:text-[12px] font-inter line-clamp-2 leading-relaxed mb-3">
+              <p className="text-white/60 text-[10px] sm:text-[12px] font-inter line-clamp-2 leading-tight sm:leading-relaxed mb-2 sm:mb-3">
                 {pkg.shortDesc}
               </p>
             </div>
             
-            <div className="pt-3 mt-auto border-t border-white/10 z-20">
-              <div className="flex items-center justify-between gap-2 mb-2.5">
-                <span className="text-lg sm:text-xl font-bold font-inter text-amber-300">
+            <div className="pt-2 sm:pt-3 mt-auto border-t border-white/10 z-20">
+              <div className="flex items-center justify-between gap-1 mb-1.5 sm:mb-2.5">
+                <span className="text-xs sm:text-xl font-bold font-inter text-amber-300">
                   {formatPrice(getPkgPrice(pkg), currency)}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                {/* Details Button First */}
+              <div className="flex flex-col sm:flex-row items-stretch gap-1 sm:gap-2">
+                {/* Details Button */}
                 <button
                   onClick={(e) => { e.stopPropagation(); handlePackageClick(pkg); }}
-                  className="flex-1 bg-black/50 hover:bg-black/80 text-amber-300 border border-amber-400/40 hover:border-amber-400 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm whitespace-nowrap"
+                  className="flex-1 bg-black/50 hover:bg-black/80 text-amber-300 border border-amber-400/40 hover:border-amber-400 px-1.5 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer shadow-sm"
                   title="View Package Details"
                 >
-                  <Eye className="w-3.5 sm:w-4 h-3.5 sm:h-4 flex-shrink-0" />
+                  <Eye className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
                   <span>Details</span>
                 </button>
 
-                {/* Add to Cart Button Second */}
+                {/* Add to Cart Button */}
                 <button
                   onClick={(e) => { e.stopPropagation(); onAddToCartPrepared(pkg); }}
-                  className="flex-1 bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-2.5 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs font-inter uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-amber-400/20 whitespace-nowrap"
+                  className="flex-1 bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-1.5 sm:px-3 py-1 sm:py-2 text-[9px] sm:text-xs font-inter uppercase tracking-wider rounded-md sm:rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer shadow-md shadow-amber-400/20"
                   title="Add to Cart"
                 >
-                  <ShoppingBag className="w-3.5 sm:w-4 h-3.5 sm:h-4 flex-shrink-0" />
+                  <ShoppingBag className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
                   <span>Add</span>
                 </button>
               </div>
@@ -350,8 +387,16 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
         </div>
       ))}
       {filteredPackages.length === 0 && (
-        <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-xl">
-          No packages found for this category.
+        <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
+          <p className="text-sm font-medium mb-2">No gift packages matched your search criteria.</p>
+          {searchTerm && (
+            <button
+              onClick={() => { setSearchTerm(''); setActiveCategory('All'); }}
+              className="text-xs text-amber-300 hover:text-amber-200 underline font-bold uppercase tracking-wider cursor-pointer"
+            >
+              Clear filters and search
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -359,66 +404,69 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
   const renderBuildView = () => (
     <div className="pb-32">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-3.5">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3.5">
         {filteredCustomItems.map(item => {
           const qty = customCart[item.id] || 0;
           return (
-            <div key={item.id} className="group luxury-satin-card luxury-satin-card-hover rounded-2xl p-3.5 flex flex-col justify-between">
+            <div key={item.id} className="group luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl p-2 sm:p-3.5 flex flex-col justify-between w-full shadow-lg">
               {/* Square Image Container with Inner Border */}
               <div 
                 onClick={() => setSelectedCustomItemModal(item)}
-                className="relative w-full aspect-square rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
+                className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
               >
-                <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-contain p-2.5 group-hover:scale-105 transition-transform duration-500" />
+                <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-contain p-1.5 sm:p-2.5 group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="bg-[#230005]/90 text-[#F5C542] border border-[#D9A514]/50 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg backdrop-blur-sm">
-                    <Eye className="w-3.5 h-3.5 text-[#F5C542]" />
-                    <span>View Details</span>
+                  <span className="bg-[#230005]/90 text-[#F5C542] border border-[#D9A514]/50 text-[9px] sm:text-[11px] font-bold uppercase tracking-wider px-2 sm:px-3 py-1 sm:py-1.5 rounded-full flex items-center gap-1 shadow-lg backdrop-blur-sm">
+                    <Eye className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#F5C542]" />
+                    <span className="hidden sm:inline">View Details</span>
                   </span>
                 </div>
               </div>
 
               {/* Title & Category Info */}
-              <div className="mt-3 cursor-pointer" onClick={() => setSelectedCustomItemModal(item)}>
-                <div className="font-podium font-bold text-base text-white uppercase line-clamp-1 group-hover:text-amber-300 transition-colors">{item.name}</div>
-                <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1 leading-snug">{item.description}</p>
+              <div className="mt-2 sm:mt-3 cursor-pointer flex-1 flex flex-col" onClick={() => setSelectedCustomItemModal(item)}>
+                <div className="text-[9px] sm:text-[10px] text-amber-300/90 font-bold uppercase tracking-wider truncate mb-0.5">
+                  {item.category?.includes(',') ? item.category.split(',')[0].trim() : item.category}
+                </div>
+                <div className="font-podium font-bold text-xs sm:text-base text-white uppercase line-clamp-1 group-hover:text-amber-300 transition-colors">{item.name}</div>
+                <p className="text-white/60 text-[10px] sm:text-xs font-inter line-clamp-2 mt-0.5 sm:mt-1 leading-tight sm:leading-snug">{item.description}</p>
               </div>
               
               {/* Price & Responsive Action Controls */}
-              <div className="mt-3 pt-3 border-t border-white/10">
-                <div className="flex items-center justify-between gap-2 mb-2.5">
-                  <span className="font-inter font-bold text-base sm:text-lg text-amber-300">
+              <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-white/10">
+                <div className="flex items-center justify-between gap-1 mb-1.5 sm:mb-2.5">
+                  <span className="font-inter font-bold text-xs sm:text-lg text-amber-300">
                     {formatPrice(getItemPrice(item), currency)}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   {/* View Details Button */}
                   <button
                     onClick={() => setSelectedCustomItemModal(item)}
-                    className="flex-1 bg-black/40 hover:bg-black/70 text-amber-300 border border-amber-400/30 hover:border-amber-400 px-3 py-2 rounded-lg text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap shadow-sm"
+                    className="flex-1 bg-black/40 hover:bg-black/70 text-amber-300 border border-amber-400/30 hover:border-amber-400 px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap shadow-sm"
                     title="View Item Details"
                   >
-                    <Eye className="w-4 h-4 text-amber-300" />
-                    <span className="inline">Details</span>
+                    <Eye className="w-3 sm:w-4 h-3 sm:h-4 text-amber-300" />
+                    <span className="hidden sm:inline">Details</span>
                   </button>
 
                   {/* Quantity Counter */}
-                  <div className="flex items-center border border-white/20 rounded-lg overflow-hidden bg-black/40">
+                  <div className="flex items-center border border-white/20 rounded-md sm:rounded-lg overflow-hidden bg-black/40">
                     <button 
                       onClick={() => handleCustomQtyChange(item.id, -1)} 
-                      className="w-9 h-9 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
+                      className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
                       title="Decrease quantity"
                     >
-                      <Minus className="w-4 h-4" />
+                      <Minus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                     </button>
-                    <span className="w-8 text-center text-sm font-bold text-white font-inter">{qty}</span>
+                    <span className="w-5 sm:w-7 text-center text-xs sm:text-sm font-bold text-white font-inter">{qty}</span>
                     <button 
                       onClick={() => handleCustomQtyChange(item.id, 1)} 
-                      className="w-9 h-9 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
+                      className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
                       title="Increase quantity"
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -427,8 +475,16 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           );
         })}
         {filteredCustomItems.length === 0 && (
-          <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-xl">
-            No items found for this category.
+          <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
+            <p className="text-sm font-medium mb-2">No custom items matched your search criteria.</p>
+            {searchTerm && (
+              <button
+                onClick={() => { setSearchTerm(''); setActiveCategory('All'); }}
+                className="text-xs text-amber-300 hover:text-amber-200 underline font-bold uppercase tracking-wider cursor-pointer"
+              >
+                Clear filters and search
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -474,52 +530,76 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   );
 
   return (
-    <section id="packages" className="w-full px-3 sm:px-6 md:px-10 lg:px-16 py-12 sm:py-16 lg:py-24 bg-[#2B0005]/40 backdrop-blur-[2px] border-t border-b border-[#D9A514]/15 relative">
+    <section id="packages" className="w-full px-2 sm:px-6 md:px-10 lg:px-16 py-10 sm:py-16 lg:py-24 bg-[#2B0005]/40 backdrop-blur-[2px] border-t border-b border-[#D9A514]/15 relative">
       <div className="max-w-[1400px] mx-auto">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div>
             <span className="text-[#F5C542] text-xs font-inter tracking-[0.25em] uppercase font-bold mb-2 block">
               Gifting, made simple
             </span>
-            <h2 className="font-podium text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-[#FFF8ED]">
+            <h2 className="font-podium text-2xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-[#FFF8ED]">
               Find the right gift
             </h2>
-            <p className="text-[#FFF8ED]/75 text-sm max-w-md mt-3 font-inter">
+            <p className="text-[#FFF8ED]/75 text-xs sm:text-sm max-w-md mt-2 sm:mt-3 font-inter">
               Pick a ready-made package, or build your own box item by item.
             </p>
           </div>
         </div>
 
-        {/* Mode Toggle */}
-        <div className="inline-flex bg-[#230005]/80 border border-[#D9A514]/25 rounded-full p-1 gap-1 mb-8 shadow-inner backdrop-blur-sm">
-          <button 
-            onClick={() => { setMode('pkg'); setActiveCategory('All'); }}
-            className={`px-6 py-2.5 rounded-full text-xs font-extrabold font-inter uppercase tracking-wider transition-all cursor-pointer ${mode === 'pkg' ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] shadow-lg' : 'text-[#FFF8ED]/70 hover:text-[#FFF8ED]'}`}
-          >
-            Ready-made packages
-          </button>
-          <button 
-            onClick={() => { setMode('build'); setActiveCategory('All'); }}
-            className={`px-6 py-2.5 rounded-full text-xs font-extrabold font-inter uppercase tracking-wider transition-all cursor-pointer ${mode === 'build' ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] shadow-lg' : 'text-[#FFF8ED]/70 hover:text-[#FFF8ED]'}`}
-          >
-            Build your own
-          </button>
+        {/* Mode Toggle & Search Toolbar */}
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
+          {/* Mode Toggle */}
+          <div className="inline-flex bg-[#230005]/80 border border-[#D9A514]/25 rounded-full p-1 gap-1 shadow-inner backdrop-blur-sm w-fit self-start">
+            <button 
+              onClick={() => { setMode('pkg'); setActiveCategory('All'); }}
+              className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-extrabold font-inter uppercase tracking-wider transition-all cursor-pointer ${mode === 'pkg' ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] shadow-lg' : 'text-[#FFF8ED]/70 hover:text-[#FFF8ED]'}`}
+            >
+              Ready-made packages
+            </button>
+            <button 
+              onClick={() => { setMode('build'); setActiveCategory('All'); }}
+              className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-extrabold font-inter uppercase tracking-wider transition-all cursor-pointer ${mode === 'build' ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] shadow-lg' : 'text-[#FFF8ED]/70 hover:text-[#FFF8ED]'}`}
+            >
+              Build your own
+            </button>
+          </div>
+
+          {/* Search Input */}
+          <div className="relative w-full lg:max-w-md">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#F5C542]/70" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder={`Search ${mode === 'pkg' ? 'packages, occasions, items...' : 'items, chocolates, accessories...'}`}
+              className="w-full bg-[#1e0004]/90 border border-[#D9A514]/30 rounded-full pl-9 pr-9 py-2.5 text-xs text-[#FFF8ED] placeholder:text-white/40 focus:outline-none focus:border-[#F5C542] focus:ring-1 focus:ring-[#F5C542]/40 transition-all shadow-inner font-inter"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-0.5 rounded-full"
+                title="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Compact Filter Bar */}
-        <div className="flex items-center gap-4 border-y border-white/10 py-3 mb-10 overflow-visible">
+        {/* Sleek Horizontal Categories Bar & Sort Dropdown */}
+        <div className="flex items-center gap-2 sm:gap-4 border-y border-white/10 py-2.5 sm:py-3 mb-6 sm:mb-10 overflow-visible">
           
           {/* Scrollable category chips */}
-          <div className="flex-1 flex gap-2 overflow-x-auto scrollbar-hide [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-1">
+          <div className="flex-1 flex gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none py-1 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {dynamicCategories.map(cat => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`flex-shrink-0 px-4 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-full border transition-all cursor-pointer ${
+                className={`flex-shrink-0 px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-[11px] font-bold font-inter uppercase tracking-wider rounded-full border transition-all cursor-pointer whitespace-nowrap ${
                   activeCategory === cat 
-                  ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md' 
+                  ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md scale-[1.02]' 
                   : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
                 }`}
               >
@@ -529,10 +609,10 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           </div>
 
           {/* Sort Dropdown */}
-          <div className="relative shrink-0 z-50" ref={sortMenuRef}>
+          <div className="relative shrink-0 z-30" ref={sortMenuRef}>
             <button 
               onClick={() => setIsSortOpen(!isSortOpen)}
-              className="flex items-center gap-2 bg-[#230005]/70 border border-[#D9A514]/25 hover:border-[#F5C542]/60 text-[#FFF8ED] px-4 py-2 rounded-full text-[11px] font-bold font-inter uppercase tracking-wider transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 sm:gap-2 bg-[#230005]/70 border border-[#D9A514]/25 hover:border-[#F5C542]/60 text-[#FFF8ED] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-[11px] font-bold font-inter uppercase tracking-wider transition-colors cursor-pointer"
             >
               <span>Sort</span>
               <ChevronDown className={`w-3.5 h-3.5 text-[#F5C542] transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />

@@ -785,7 +785,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       <div className="flex-1 flex overflow-hidden relative">
         {/* Sidebar Navigation */}
         <aside
-          className={`fixed lg:static inset-y-0 left-0 z-30 w-72 bg-[#200306] border-r border-white/10 flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 ${
+          className={`fixed lg:static top-16 bottom-0 lg:top-0 left-0 z-50 w-72 bg-[#200306] border-r border-white/10 flex flex-col justify-between transition-transform duration-300 shadow-2xl lg:translate-x-0 ${
             isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
@@ -834,7 +834,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {isMobileSidebarOpen && (
           <div
             onClick={() => setIsMobileSidebarOpen(false)}
-            className="fixed inset-0 bg-black/60 z-20 lg:hidden"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
           />
         )}
 
@@ -1739,11 +1739,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* MODAL 1: CATEGORY CREATION / EDIT MODAL */}
       {/* ========================================================================= */}
       {categoryModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl animate-scale-in">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-inter">
+          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setCategoryModalOpen(false)}
-              className="absolute top-4 right-4 text-white/60 hover:text-white p-2 rounded-full bg-black/40 hover:bg-white/10"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
@@ -1865,13 +1866,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* MODAL 2: READY-MADE GIFT PACKAGE DETAILED FORM & SUB-ITEM IMAGE BUILDER */}
       {/* ========================================================================= */}
       {pkgModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-4xl w-full p-6 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[92vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto font-inter">
+          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-4xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[95vh] sm:max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => setPkgModalOpen(false)}
-              className="absolute top-4 right-4 text-white/60 hover:text-white p-2 rounded-full bg-black/40 hover:bg-white/10 z-10"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              title="Close modal"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 sm:w-6 h-5 sm:h-6" />
             </button>
 
             <h3 className="font-podium text-2xl uppercase font-bold text-white mb-1">
@@ -2199,11 +2201,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* MODAL 3: SINGLE CUSTOM ITEM CREATION / EDIT MODAL */}
       {/* ========================================================================= */}
       {itemModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl animate-scale-in">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-inter">
+          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setItemModalOpen(false)}
-              className="absolute top-4 right-4 text-white/60 hover:text-white p-2 rounded-full bg-black/40 hover:bg-white/10"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
@@ -2371,11 +2374,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* MODAL 4: GIFT BOX STYLE CREATION / EDIT MODAL */}
       {/* ========================================================================= */}
       {boxModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl animate-scale-in">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-inter">
+          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setBoxModalOpen(false)}
-              className="absolute top-4 right-4 text-white/60 hover:text-white p-2 rounded-full bg-black/40 hover:bg-white/10"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
@@ -2510,13 +2514,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* MODAL 5: MANUAL ORDER CREATION FORM */}
       {/* ========================================================================= */}
       {createOrderModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-3xl w-full p-6 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[92vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto font-inter">
+          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-3xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[95vh] sm:max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => setCreateOrderModalOpen(false)}
-              className="absolute top-4 right-4 text-white/60 hover:text-white p-2 rounded-full bg-black/40 hover:bg-white/10 z-10"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              title="Close modal"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 sm:w-6 h-5 sm:h-6" />
             </button>
 
             <h3 className="font-podium text-2xl uppercase font-bold text-white mb-1">
@@ -2652,11 +2657,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* MODAL 6: ORDER FULL DETAILS INSPECTION MODAL */}
       {/* ========================================================================= */}
       {selectedOrderDetails && (
-        <div className="fixed inset-0 z-[60] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-[60] bg-black/85 backdrop-blur-md flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto font-inter">
+          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-2xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedOrderDetails(null)}
-              className="absolute top-4 right-4 text-white/60 hover:text-white p-2 rounded-full bg-black/40 hover:bg-white/10"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>

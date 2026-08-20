@@ -151,8 +151,8 @@ export const Footer: React.FC = () => {
             Concierge Support
           </div>
           <div className="text-white/70 space-y-2">
-            <div>Email: <span className="text-white">support@mbmgifts.com</span></div>
-            <div>Phone: <span className="text-white">+251 911 00 00 00 / +251 922 00 00 00</span></div>
+            <div>Email: <a href="mailto:hello.mbmgifts@gmail.com" className="text-white hover:text-amber-300 transition-colors font-medium">hello.mbmgifts@gmail.com</a></div>
+            <div>Phone: <a href="tel:+251919580425" className="text-white hover:text-amber-300 transition-colors font-medium">091 958 0425</a> / <a href="tel:+251935538009" className="text-white hover:text-amber-300 transition-colors font-medium">093 553 8009</a></div>
             <div>Headquarters: <span className="text-white">Bole Luxury District, Addis Ababa, Ethiopia</span></div>
             <div className="text-amber-300 font-bold mt-2 flex items-center gap-1.5 bg-amber-400/10 border border-amber-400/20 px-2.5 py-1 rounded-lg w-fit">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
