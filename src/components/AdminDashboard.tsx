@@ -1487,22 +1487,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 {/* Subcategories */}
                 {hasSubs && isExpanded && (
                   <div className="ml-3 mt-1 flex flex-col gap-1 border-l border-[#F5C542]/20 pl-2">
-                    {cat.subcategories!.map((sub) => {
+                  {cat.subcategories!.map((sub) => {
+                      const subKey = `${cat.name} > ${sub}`;
                       const subCount = packages.filter((p) =>
-                        p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(sub.toLowerCase())
+                        p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(subKey.toLowerCase())
                       ).length;
-                      const isSubActive = pkgCategoryFilter.toLowerCase() === sub.toLowerCase();
+                      const isSubActive = pkgCategoryFilter.toLowerCase() === subKey.toLowerCase();
                       return (
                         <button
                           key={sub}
-                          onClick={() => setPkgCategoryFilter(sub)}
+                          onClick={() => setPkgCategoryFilter(subKey)}
                           className={`w-full text-left px-2.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                             isSubActive
                               ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
                               : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
                           }`}
                         >
-                          <span className="truncate">{sub}</span>
+                          <span className="truncate">↳ {sub}</span>
                           <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/60'}`}>
                             {subCount}
                           </span>
@@ -1790,21 +1791,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           {hasSubs && isExpanded && (
                             <div className="ml-3 mt-1 flex flex-col gap-1 border-l border-[#F5C542]/20 pl-2">
                               {cat.subcategories!.map((sub) => {
+                                const subKey = `${cat.name} > ${sub}`;
                                 const subCount = customItems.filter((i) =>
-                                  i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(sub.toLowerCase())
+                                  i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(subKey.toLowerCase())
                                 ).length;
-                                const isSubActive = itemCategoryFilter.toLowerCase() === sub.toLowerCase();
+                                const isSubActive = itemCategoryFilter.toLowerCase() === subKey.toLowerCase();
                                 return (
                                   <button
                                     key={sub}
-                                    onClick={() => setItemCategoryFilter(sub)}
+                                    onClick={() => setItemCategoryFilter(subKey)}
                                     className={`w-full text-left px-2.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                                       isSubActive
                                         ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
                                         : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
                                     }`}
                                   >
-                                    <span className="truncate">{sub}</span>
+                                    <span className="truncate">↳ {sub}</span>
                                     <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/60'}`}>
                                       {subCount}
                                     </span>
@@ -2327,32 +2329,66 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       Categories (Select One or More) <span className="text-red-400">*</span>
                     </label>
                     <div className="space-y-2">
-                      <div className="flex flex-wrap gap-1.5 p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px] items-center">
+                      <div className="p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px] space-y-2">
                         {packageCategories.map((c) => {
                           const selectedList = pkgForm.category.split(',').map((s) => s.trim()).filter(Boolean);
                           const isSelected = selectedList.some((s) => s.toLowerCase() === c.name.toLowerCase());
                           return (
-                            <button
-                              type="button"
-                              key={c.id}
-                              onClick={() => {
-                                let newList: string[];
-                                if (isSelected) {
-                                  newList = selectedList.filter((s) => s.toLowerCase() !== c.name.toLowerCase());
-                                } else {
-                                  newList = [...selectedList, c.name];
-                                }
-                                setPkgForm({ ...pkgForm, category: newList.join(', ') });
-                              }}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                                isSelected
-                                  ? 'bg-amber-400 text-[#8c1119] border border-amber-400 shadow-sm scale-105'
-                                  : 'bg-black/60 text-white/70 border border-white/15 hover:border-amber-400/50 hover:text-white'
-                              }`}
-                            >
-                              {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-white/40" />}
-                              <span>{c.name}</span>
-                            </button>
+                            <div key={c.id}>
+                              {/* Parent category pill */}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  let newList: string[];
+                                  if (isSelected) {
+                                    newList = selectedList.filter((s) => s.toLowerCase() !== c.name.toLowerCase());
+                                  } else {
+                                    newList = [...selectedList, c.name];
+                                  }
+                                  setPkgForm({ ...pkgForm, category: newList.join(', ') });
+                                }}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                                  isSelected
+                                    ? 'bg-amber-400 text-[#8c1119] border border-amber-400 shadow-sm scale-105'
+                                    : 'bg-black/60 text-white/70 border border-white/15 hover:border-amber-400/50 hover:text-white'
+                                }`}
+                              >
+                                {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-white/40" />}
+                                <span>{c.name}</span>
+                              </button>
+                              {/* Subcategory pills indented under parent */}
+                              {c.subcategories && c.subcategories.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-1 ml-4 pl-2 border-l border-amber-400/20">
+                                  {c.subcategories.map((sub) => {
+                                    const subKey = `${c.name} > ${sub}`;
+                                    const isSubSelected = selectedList.some((s) => s.toLowerCase() === subKey.toLowerCase());
+                                    return (
+                                      <button
+                                        type="button"
+                                        key={sub}
+                                        onClick={() => {
+                                          let newList: string[];
+                                          if (isSubSelected) {
+                                            newList = selectedList.filter((s) => s.toLowerCase() !== subKey.toLowerCase());
+                                          } else {
+                                            newList = [...selectedList, subKey];
+                                          }
+                                          setPkgForm({ ...pkgForm, category: newList.join(', ') });
+                                        }}
+                                        className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 cursor-pointer ${
+                                          isSubSelected
+                                            ? 'bg-amber-300 text-[#8c1119] border border-amber-300 shadow-sm'
+                                            : 'bg-black/40 text-white/60 border border-white/10 hover:border-amber-300/40 hover:text-white'
+                                        }`}
+                                      >
+                                        {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-white/30">↳</span>}
+                                        <span>{sub}</span>
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
                           );
                         })}
                       </div>
@@ -2729,32 +2765,66 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     Categories (Select One or More) <span className="text-red-400">*</span>
                   </label>
                   <div className="space-y-2">
-                    <div className="flex flex-wrap gap-1.5 p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px] items-center">
+                    <div className="p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px] space-y-2">
                       {customItemCategories.map((c) => {
                         const selectedList = itemForm.category.split(',').map((s) => s.trim()).filter(Boolean);
                         const isSelected = selectedList.some((s) => s.toLowerCase() === c.name.toLowerCase());
                         return (
-                          <button
-                            type="button"
-                            key={c.id}
-                            onClick={() => {
-                              let newList: string[];
-                              if (isSelected) {
-                                newList = selectedList.filter((s) => s.toLowerCase() !== c.name.toLowerCase());
-                              } else {
-                                newList = [...selectedList, c.name];
-                              }
-                              setItemForm({ ...itemForm, category: newList.join(', ') });
-                            }}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                              isSelected
-                                ? 'bg-amber-400 text-[#8c1119] border border-amber-400 shadow-sm scale-105'
-                                : 'bg-black/60 text-white/70 border border-white/15 hover:border-amber-400/50 hover:text-white'
-                            }`}
-                          >
-                            {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-white/40" />}
-                            <span>{c.name}</span>
-                          </button>
+                          <div key={c.id}>
+                            {/* Parent category pill */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                let newList: string[];
+                                if (isSelected) {
+                                  newList = selectedList.filter((s) => s.toLowerCase() !== c.name.toLowerCase());
+                                } else {
+                                  newList = [...selectedList, c.name];
+                                }
+                                setItemForm({ ...itemForm, category: newList.join(', ') });
+                              }}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                                isSelected
+                                  ? 'bg-amber-400 text-[#8c1119] border border-amber-400 shadow-sm scale-105'
+                                  : 'bg-black/60 text-white/70 border border-white/15 hover:border-amber-400/50 hover:text-white'
+                              }`}
+                            >
+                              {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-white/40" />}
+                              <span>{c.name}</span>
+                            </button>
+                            {/* Subcategory pills indented under parent */}
+                            {c.subcategories && c.subcategories.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-1 ml-4 pl-2 border-l border-amber-400/20">
+                                {c.subcategories.map((sub) => {
+                                  const subKey = `${c.name} > ${sub}`;
+                                  const isSubSelected = selectedList.some((s) => s.toLowerCase() === subKey.toLowerCase());
+                                  return (
+                                    <button
+                                      type="button"
+                                      key={sub}
+                                      onClick={() => {
+                                        let newList: string[];
+                                        if (isSubSelected) {
+                                          newList = selectedList.filter((s) => s.toLowerCase() !== subKey.toLowerCase());
+                                        } else {
+                                          newList = [...selectedList, subKey];
+                                        }
+                                        setItemForm({ ...itemForm, category: newList.join(', ') });
+                                      }}
+                                      className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 cursor-pointer ${
+                                        isSubSelected
+                                          ? 'bg-amber-300 text-[#8c1119] border border-amber-300 shadow-sm'
+                                          : 'bg-black/40 text-white/60 border border-white/10 hover:border-amber-300/40 hover:text-white'
+                                      }`}
+                                    >
+                                      {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-white/30">↳</span>}
+                                      <span>{sub}</span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
                         );
                       })}
                     </div>
