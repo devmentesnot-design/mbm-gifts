@@ -45,6 +45,10 @@ export interface PreparedPackage {
   itemsIncluded: string[];
   itemsIncludedDetailed?: PackageItemDetail[];
   popularFor: string;
+  // Customer input requirement fields
+  requiresCustomInput?: boolean;            // If true, customer must provide input when ordering
+  customInputType?: 'text' | 'image' | 'both'; // What kind of input is needed
+  customInputLabel?: string;                // Prompt shown to customer (e.g. "Enter name to print")
 }
 
 export interface CustomBoxOption {
@@ -55,6 +59,10 @@ export interface CustomBoxOption {
   price_usd?: number; // USD price (for INTERNATIONAL buyers) — set independently by admin
   image: string;
   description: string;
+  // Customer input requirement fields
+  requiresCustomInput?: boolean;
+  customInputType?: 'text' | 'image' | 'both';
+  customInputLabel?: string;
 }
 
 // Fallback initial data in case DB is empty or fails
@@ -96,7 +104,10 @@ export const getStoredPackages = async (): Promise<PreparedPackage[]> => {
       image: item.image,
       itemsIncluded: item.items_included || [],
       itemsIncludedDetailed: item.items_included_detailed || [],
-      popularFor: item.popular_for || 'Gifting'
+      popularFor: item.popular_for || 'Gifting',
+      requiresCustomInput: item.requires_custom_input || false,
+      customInputType: item.custom_input_type || 'text',
+      customInputLabel: item.custom_input_label || ''
     }));
     
     console.log('✅ Loaded', mapped.length, 'packages from Supabase');
@@ -163,7 +174,10 @@ export const saveSinglePackage = async (p: PreparedPackage) => {
       image: p.image,
       items_included: p.itemsIncluded,
       items_included_detailed: p.itemsIncludedDetailed,
-      popular_for: p.popularFor
+      popular_for: p.popularFor,
+      requires_custom_input: p.requiresCustomInput || false,
+      custom_input_type: p.customInputType || 'text',
+      custom_input_label: p.customInputLabel || ''
     };
     const { error } = await supabase.from('prepared_packages').upsert([formatted], { onConflict: 'id' });
     if (error) {
@@ -203,7 +217,10 @@ export const getStoredCustomItems = async (): Promise<CustomBoxOption[]> => {
       price: item.price,
       price_usd: item.price_usd ?? (item.price ? Math.round((item.price / 120) * 100) / 100 : undefined),
       image: item.image,
-      description: item.description || item.name
+      description: item.description || item.name,
+      requiresCustomInput: item.requires_custom_input || false,
+      customInputType: item.custom_input_type || 'text',
+      customInputLabel: item.custom_input_label || ''
     }));
     
     console.log('✅ Loaded', mapped.length, 'custom items from Supabase');
@@ -230,7 +247,10 @@ export const saveStoredCustomItems = async (items: CustomBoxOption[]) => {
       price: item.price,
       price_usd: item.price_usd ?? null,
       image: item.image,
-      description: item.description
+      description: item.description,
+      requires_custom_input: item.requiresCustomInput || false,
+      custom_input_type: item.customInputType || 'text',
+      custom_input_label: item.customInputLabel || ''
     }));
     
     const { error } = await supabase.from('custom_box_options').upsert(formatted, { onConflict: 'id' });
@@ -258,7 +278,10 @@ export const saveSingleCustomItem = async (item: CustomBoxOption) => {
       price: item.price,
       price_usd: item.price_usd ?? null,
       image: item.image,
-      description: item.description
+      description: item.description,
+      requires_custom_input: item.requiresCustomInput || false,
+      custom_input_type: item.customInputType || 'text',
+      custom_input_label: item.customInputLabel || ''
     };
     const { error } = await supabase.from('custom_box_options').upsert([formatted], { onConflict: 'id' });
     if (error) {

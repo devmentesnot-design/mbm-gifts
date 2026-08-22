@@ -389,6 +389,34 @@ export const CartPage: React.FC<CartPageProps> = ({
                           </div>
                         )}
 
+                        {/* Customer-provided Customization (Photo / Custom Text) */}
+                        {(item.customerInputText || item.customerInputImageUrl) && (
+                          <div className="mt-2.5 bg-black/40 border border-purple-400/30 rounded-xl p-2.5 space-y-1.5">
+                            <div className="text-[10px] text-purple-300 font-bold uppercase tracking-wider flex items-center gap-1">
+                              <Sparkles className="w-3 h-3 text-purple-400" />
+                              <span>Your Customization</span>
+                            </div>
+                            {item.customerInputText && (
+                              <div className="text-xs text-white/90">
+                                <span className="text-white/50">Custom Text: </span>
+                                <span className="font-mono text-amber-300 font-medium">"{item.customerInputText}"</span>
+                              </div>
+                            )}
+                            {item.customerInputImageUrl && (
+                              <div className="flex items-center gap-2 pt-0.5">
+                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-purple-400/40 bg-black/60 flex-shrink-0">
+                                  <img
+                                    src={item.customerInputImageUrl}
+                                    alt="Custom Photo"
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <span className="text-[11px] text-white/70">Custom Photo Attached</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
                         <div className="flex items-center justify-between mt-4">
                           <div className="flex items-center border border-white/20 rounded-full bg-black/30">
                             <button onClick={() => onUpdateQuantity(item.id, -1)} className="w-8 h-7 flex items-center justify-center text-white/60 hover:text-amber-300 cursor-pointer">–</button>

@@ -11,6 +11,8 @@ export interface CartItemPrepared {
   package: PreparedPackage;
   quantity: number;
   customNote?: string;
+  customerInputText?: string;     // Customer-provided text (e.g. name to print)
+  customerInputImageUrl?: string; // Cloudinary URL of customer-uploaded image
 }
 
 export interface CartItemCustom {
@@ -22,6 +24,8 @@ export interface CartItemCustom {
   ribbonColor: string;
   quantity: number;
   totalPrice: number;
+  customerInputText?: string;     // Customer-provided text per item
+  customerInputImageUrl?: string; // Cloudinary URL of customer-uploaded image
 }
 
 export type CartItem = CartItemPrepared | CartItemCustom;

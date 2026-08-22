@@ -393,9 +393,19 @@ export default function App() {
   };
 
   // Add prepared package to cart
-  const handleAddToCartPrepared = (pkg: PreparedPackage, customNote?: string) => {
+  const handleAddToCartPrepared = (
+    pkg: PreparedPackage,
+    customNote?: string,
+    customerInputText?: string,
+    customerInputImageUrl?: string
+  ) => {
     const existingIndex = cartItems.findIndex(
-      (item) => item.type === 'package' && item.package.id === pkg.id && item.customNote === customNote
+      (item) =>
+        item.type === 'package' &&
+        item.package.id === pkg.id &&
+        item.customNote === customNote &&
+        item.customerInputText === customerInputText &&
+        item.customerInputImageUrl === customerInputImageUrl
     );
 
     if (existingIndex > -1) {
@@ -409,6 +419,8 @@ export default function App() {
         package: pkg,
         quantity: 1,
         customNote,
+        customerInputText,
+        customerInputImageUrl,
       };
       setCartItems([...cartItems, newItem]);
     }
@@ -425,6 +437,8 @@ export default function App() {
     cardMessage: string;
     ribbonColor: string;
     totalPrice: number;
+    customerInputText?: string;
+    customerInputImageUrl?: string;
   }) => {
     const newItem: CartItemCustom = {
       id: `cart-custom-${Date.now()}-${Math.random()}`,
@@ -435,6 +449,8 @@ export default function App() {
       ribbonColor: customBox.ribbonColor,
       quantity: 1,
       totalPrice: customBox.totalPrice,
+      customerInputText: customBox.customerInputText,
+      customerInputImageUrl: customBox.customerInputImageUrl,
     };
     setCartItems([...cartItems, newItem]);
     

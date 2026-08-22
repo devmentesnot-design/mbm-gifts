@@ -1,22 +1,50 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, CUSTOM_ITEMS, PREPARED_PACKAGES } from '../data/giftsData';
-import { ShoppingBag, Star, Eye, X, Check, Search, Filter, Plus, Minus, PackageCheck, Sparkles, ChevronDown, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import {
+  ShoppingBag,
+  Star,
+  Eye,
+  X,
+  Check,
+  Search,
+  Filter,
+  Plus,
+  Minus,
+  PackageCheck,
+  Sparkles,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  Camera,
+  FileText,
+  Upload,
+  Loader2
+} from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useMarket } from '../context/MarketContext';
 import { formatPrice } from '../utils/currency';
+import { uploadToCloudinary } from '../utils/cloudinary';
 
 interface GiftShopBodyProps {
   packages?: PreparedPackage[];
   customItems?: CustomBoxOption[];
   categories?: GiftCategory[];
   giftBoxes?: GiftBoxStyle[];
-  onAddToCartPrepared: (pkg: PreparedPackage, note?: string) => void;
+  onAddToCartPrepared: (
+    pkg: PreparedPackage,
+    note?: string,
+    customerInputText?: string,
+    customerInputImageUrl?: string
+  ) => void;
   onAddToCartCustom: (customBox: {
     boxStyle: CustomBoxOption;
     selectedItems: CustomBoxOption[];
     cardMessage: string;
     ribbonColor: string;
     totalPrice: number;
+    customerInputText?: string;
+    customerInputImageUrl?: string;
   }) => void;
   onViewPackageDetail?: (pkgId: string) => void;
 }
@@ -63,6 +91,15 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   const [selectedModalPkg, setSelectedModalPkg] = useState<PreparedPackage | null>(null);
   const [selectedCustomItemModal, setSelectedCustomItemModal] = useState<CustomBoxOption | null>(null);
   const [giftNote, setGiftNote] = useState<string>('');
+
+  // Customer Customization State (for modals & direct add prompts)
+  const [clientCustomText, setClientCustomText] = useState<string>('');
+  const [clientCustomImageUrl, setClientCustomImageUrl] = useState<string>('');
+  const [isUploadingClientPhoto, setIsUploadingClientPhoto] = useState<boolean>(false);
+  const [customPromptTarget, setCustomPromptTarget] = useState<{
+    pkg?: PreparedPackage;
+    item?: CustomBoxOption;
+  } | null>(null);
 
   // Custom Build State (Cart)
   const [customCart, setCustomCart] = useState<Record<string, number>>({});
@@ -279,11 +316,43 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     return result;
   }, [dynamicCategories, customItems, categories]);
 
+  const handleClientPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingClientPhoto(true);
+    try {
+      const url = await uploadToCloudinary(file);
+      setClientCustomImageUrl(url);
+    } catch (err: any) {
+      alert('Photo Upload Failed: ' + (err?.message || 'Please try again'));
+    } finally {
+      setIsUploadingClientPhoto(false);
+    }
+  };
+
   const handleModalAdd = () => {
     if (selectedModalPkg) {
-      onAddToCartPrepared(selectedModalPkg, giftNote);
+      if (selectedModalPkg.requiresCustomInput) {
+        if (
+          (selectedModalPkg.customInputType === 'text' || selectedModalPkg.customInputType === 'both') &&
+          !clientCustomText.trim()
+        ) {
+          alert(`Please fill in required custom text: ${selectedModalPkg.customInputLabel || 'Custom text'}`);
+          return;
+        }
+        if (
+          (selectedModalPkg.customInputType === 'image' || selectedModalPkg.customInputType === 'both') &&
+          !clientCustomImageUrl
+        ) {
+          alert('Please upload your custom photo before adding to cart.');
+          return;
+        }
+      }
+      onAddToCartPrepared(selectedModalPkg, giftNote, clientCustomText, clientCustomImageUrl);
       setSelectedModalPkg(null);
       setGiftNote('');
+      setClientCustomText('');
+      setClientCustomImageUrl('');
     }
   };
 
@@ -387,6 +456,12 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 {pkg.badge}
               </span>
             )}
+            {pkg.requiresCustomInput && (
+              <span className={`absolute ${pkg.badge ? 'top-6 sm:top-8.5' : 'top-1.5 sm:top-2.5'} left-1.5 sm:left-2.5 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[7px] sm:text-[9px] font-bold uppercase px-1.5 sm:px-2 py-0.5 rounded-full shadow backdrop-blur-sm z-10 flex items-center gap-1`}>
+                {pkg.customInputType === 'image' ? <Camera className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" /> : pkg.customInputType === 'both' ? <Sparkles className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" /> : <FileText className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" />}
+                <span>Customized</span>
+              </span>
+            )}
           </div>
         </div>
         <div className="p-2 sm:p-4 pt-0 flex-1 flex flex-col justify-between">
@@ -417,7 +492,16 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 <span>Details</span>
               </button>
               <button
-                onClick={(e) => { e.stopPropagation(); onAddToCartPrepared(pkg); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (pkg.requiresCustomInput) {
+                    setClientCustomText('');
+                    setClientCustomImageUrl('');
+                    setCustomPromptTarget({ pkg });
+                  } else {
+                    onAddToCartPrepared(pkg);
+                  }
+                }}
                 className="flex-1 bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-1.5 sm:px-3 py-1 sm:py-2 text-[9px] sm:text-xs font-inter uppercase tracking-wider rounded-md sm:rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer shadow-md shadow-amber-400/20"
                 title="Add to Cart"
               >
@@ -480,6 +564,12 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
         >
           <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-contain p-1.5 sm:p-2.5 group-hover:scale-105 transition-transform duration-500" />
+          {item.requiresCustomInput && (
+            <span className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[7px] sm:text-[9px] font-bold uppercase px-1.5 sm:px-2 py-0.5 rounded-full shadow backdrop-blur-sm z-10 flex items-center gap-1">
+              {item.customInputType === 'image' ? <Camera className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" /> : item.customInputType === 'both' ? <Sparkles className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" /> : <FileText className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" />}
+              <span>Customized</span>
+            </span>
+          )}
           <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <span className="bg-[#230005]/90 text-[#F5C542] border border-[#D9A514]/50 text-[9px] sm:text-[11px] font-bold uppercase tracking-wider px-2 sm:px-3 py-1 sm:py-1.5 rounded-full flex items-center gap-1 shadow-lg backdrop-blur-sm">
               <Eye className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#F5C542]" />
@@ -514,7 +604,19 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 <Minus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
               </button>
               <span className="w-5 sm:w-7 text-center text-xs sm:text-sm font-bold text-white font-inter">{qty}</span>
-              <button onClick={() => handleCustomQtyChange(item.id, 1)} className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer" title="Increase quantity">
+              <button
+                onClick={() => {
+                  if (item.requiresCustomInput && (!customCart[item.id] || customCart[item.id] === 0)) {
+                    setClientCustomText('');
+                    setClientCustomImageUrl('');
+                    setCustomPromptTarget({ item });
+                  } else {
+                    handleCustomQtyChange(item.id, 1);
+                  }
+                }}
+                className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
+                title="Increase quantity"
+              >
                 <Plus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
               </button>
             </div>
@@ -917,6 +1019,86 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     {selectedModalPkg.shortDesc}
                   </p>
 
+                  {/* Client Customization Requirement Section */}
+                  {selectedModalPkg.requiresCustomInput && (
+                    <div className="mb-6 bg-[#3a060b]/70 border border-amber-400/30 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
+                      <div className="flex items-center gap-2 text-amber-300 font-bold uppercase text-xs tracking-wider border-b border-white/10 pb-2">
+                        <Sparkles className="w-4 h-4 text-amber-400" />
+                        <span>{selectedModalPkg.customInputLabel || 'Required Customization Details'}</span>
+                      </div>
+
+                      {/* Photo Upload */}
+                      {(selectedModalPkg.customInputType === 'image' || selectedModalPkg.customInputType === 'both') && (
+                        <div>
+                          <label className="block text-xs uppercase tracking-wider text-amber-200 font-bold mb-2 flex items-center justify-between">
+                            <span className="flex items-center gap-1.5">
+                              <Camera className="w-3.5 h-3.5 text-amber-300" />
+                              <span>Upload Your Custom Photo <span className="text-red-400">*</span></span>
+                            </span>
+                            <span className="text-[10px] text-white/50 font-normal">PNG, JPG up to 10MB</span>
+                          </label>
+
+                          {clientCustomImageUrl ? (
+                            <div className="flex items-center gap-3 bg-black/40 border border-emerald-500/40 rounded-xl p-3">
+                              <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-black/60 flex-shrink-0">
+                                <img src={clientCustomImageUrl} alt="Uploaded preview" className="w-full h-full object-cover" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <span className="text-emerald-300 text-xs font-bold flex items-center gap-1">
+                                  <Check className="w-3.5 h-3.5" /> Photo Attached
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => setClientCustomImageUrl('')}
+                                  className="text-red-400 hover:text-red-300 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
+                                >
+                                  <X className="w-3 h-3" /> Remove & Change
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-amber-400/40 hover:border-amber-400 rounded-xl p-3.5 cursor-pointer bg-black/30 hover:bg-black/50 transition-all text-center">
+                              {isUploadingClientPhoto ? (
+                                <div className="flex items-center gap-2 text-amber-300 text-xs font-bold py-1.5">
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  <span>Uploading photo...</span>
+                                </div>
+                              ) : (
+                                <>
+                                  <Upload className="w-5 h-5 text-amber-300 mb-1" />
+                                  <span className="text-xs font-bold text-white">Click to Upload Photo</span>
+                                </>
+                              )}
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                disabled={isUploadingClientPhoto}
+                                onChange={handleClientPhotoUpload}
+                              />
+                            </label>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Custom Text */}
+                      {(selectedModalPkg.customInputType === 'text' || selectedModalPkg.customInputType === 'both') && (
+                        <div>
+                          <label className="block text-xs uppercase tracking-wider text-amber-200 font-bold mb-1.5 flex items-center gap-1.5">
+                            <FileText className="w-3.5 h-3.5 text-amber-300" />
+                            <span>Custom Text / Message <span className="text-red-400">*</span></span>
+                          </label>
+                          <textarea
+                            value={clientCustomText}
+                            onChange={(e) => setClientCustomText(e.target.value)}
+                            placeholder="Enter the custom name, date, or message to print/engrave..."
+                            className="w-full bg-black/50 border border-white/20 rounded-xl p-2.5 text-xs text-white placeholder-white/40 focus:outline-none focus:border-amber-400 h-16 resize-none font-inter"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Gift Note Input */}
                   <div className="mb-6 bg-black/30 border border-white/15 rounded-xl p-4">
                     <label className="block text-xs uppercase tracking-wider text-amber-300 font-inter mb-2 font-bold flex items-center justify-between">
@@ -1083,6 +1265,181 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODAL: CLIENT CUSTOMIZATION PROMPT MODAL (for quick-add on cards) */}
+      {/* ========================================================================= */}
+      {customPromptTarget && (
+        <div className="fixed inset-0 z-[70] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-inter">
+          <div className="bg-[#230005]/95 border border-[#D9A514]/40 rounded-3xl max-w-lg w-full p-5 sm:p-7 relative shadow-2xl backdrop-blur-xl animate-scale-in my-auto max-h-[92vh] overflow-y-auto">
+            {/* Close button */}
+            <button
+              onClick={() => {
+                setCustomPromptTarget(null);
+                setClientCustomText('');
+                setClientCustomImageUrl('');
+              }}
+              className="absolute top-4 right-4 text-white/60 hover:text-white p-2 rounded-full bg-black/40 hover:bg-white/10 transition-all cursor-pointer z-20"
+              title="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Target Header */}
+            <div className="flex items-center gap-3.5 mb-5 pb-4 border-b border-white/10">
+              <div className="w-14 h-14 rounded-xl overflow-hidden bg-black/50 border border-white/15 flex-shrink-0">
+                <img
+                  src={customPromptTarget.pkg?.image || customPromptTarget.item?.image}
+                  alt={customPromptTarget.pkg?.name || customPromptTarget.item?.name}
+                  className="w-full h-full object-contain p-1.5"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[10px] text-amber-300 font-bold uppercase tracking-wider flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-amber-400" />
+                  <span>Customization Required</span>
+                </div>
+                <h3 className="font-podium text-lg sm:text-xl uppercase text-white font-bold truncate mt-0.5">
+                  {customPromptTarget.pkg?.name || customPromptTarget.item?.name}
+                </h3>
+                <span className="text-xs font-bold text-amber-300 font-inter">
+                  {customPromptTarget.pkg
+                    ? formatPrice(getPkgPrice(customPromptTarget.pkg), currency)
+                    : formatPrice(getItemPrice(customPromptTarget.item!), currency)}
+                </span>
+              </div>
+            </div>
+
+            {/* Prompt Instruction Label */}
+            <div className="bg-[#3a060b]/80 border border-amber-400/30 rounded-2xl p-4 sm:p-5 space-y-4 mb-5 shadow-inner">
+              <p className="text-amber-200 text-xs font-semibold leading-relaxed">
+                {customPromptTarget.pkg?.customInputLabel ||
+                  customPromptTarget.item?.customInputLabel ||
+                  'Please provide your custom photo or text to customize this gift.'}
+              </p>
+
+              {/* Photo Upload */}
+              {((customPromptTarget.pkg?.customInputType === 'image' || customPromptTarget.pkg?.customInputType === 'both') ||
+                (customPromptTarget.item?.customInputType === 'image' || customPromptTarget.item?.customInputType === 'both')) && (
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-amber-300 font-bold mb-2 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>Upload Your Photo <span className="text-red-400">*</span></span>
+                    </span>
+                    <span className="text-[10px] text-white/50 font-normal">PNG, JPG up to 10MB</span>
+                  </label>
+
+                  {clientCustomImageUrl ? (
+                    <div className="flex items-center gap-3 bg-black/50 border border-emerald-500/40 rounded-xl p-3">
+                      <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-black/60 flex-shrink-0">
+                        <img src={clientCustomImageUrl} alt="Uploaded preview" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-emerald-300 text-xs font-bold flex items-center gap-1">
+                          <Check className="w-3.5 h-3.5" /> Photo Uploaded
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setClientCustomImageUrl('')}
+                          className="text-red-400 hover:text-red-300 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
+                        >
+                          <X className="w-3 h-3" /> Remove & Re-upload
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <label className="flex flex-col items-center justify-center border-2 border-dashed border-amber-400/40 hover:border-amber-400 rounded-xl p-4 cursor-pointer bg-black/40 hover:bg-black/60 transition-all text-center">
+                      {isUploadingClientPhoto ? (
+                        <div className="flex items-center gap-2 text-amber-300 text-xs font-bold py-1.5">
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span>Uploading your photo...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-6 h-6 text-amber-300 mb-1" />
+                          <span className="text-xs font-bold text-white">Click to Choose Photo</span>
+                          <span className="text-[10px] text-white/50 mt-0.5">High quality recommended</span>
+                        </>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={isUploadingClientPhoto}
+                        onChange={handleClientPhotoUpload}
+                      />
+                    </label>
+                  )}
+                </div>
+              )}
+
+              {/* Custom Text */}
+              {((customPromptTarget.pkg?.customInputType === 'text' || customPromptTarget.pkg?.customInputType === 'both') ||
+                (customPromptTarget.item?.customInputType === 'text' || customPromptTarget.item?.customInputType === 'both')) && (
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-amber-300 font-bold mb-1.5 flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Custom Text / Message <span className="text-red-400">*</span></span>
+                  </label>
+                  <textarea
+                    value={clientCustomText}
+                    onChange={(e) => setClientCustomText(e.target.value)}
+                    placeholder="Type the exact name, date, or inscription..."
+                    className="w-full bg-black/50 border border-white/20 rounded-xl p-3 text-xs text-white placeholder-white/40 focus:outline-none focus:border-amber-400 h-20 resize-none font-inter"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setCustomPromptTarget(null);
+                  setClientCustomText('');
+                  setClientCustomImageUrl('');
+                }}
+                className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const targetObj = customPromptTarget.pkg || customPromptTarget.item;
+                  if (!targetObj) return;
+
+                  const inputType = targetObj.customInputType || 'text';
+                  if ((inputType === 'text' || inputType === 'both') && !clientCustomText.trim()) {
+                    alert(`Please provide the required custom text: ${targetObj.customInputLabel || 'Custom text'}`);
+                    return;
+                  }
+                  if ((inputType === 'image' || inputType === 'both') && !clientCustomImageUrl) {
+                    alert('Please upload your photo.');
+                    return;
+                  }
+
+                  if (customPromptTarget.pkg) {
+                    onAddToCartPrepared(customPromptTarget.pkg, '', clientCustomText, clientCustomImageUrl);
+                  } else if (customPromptTarget.item) {
+                    handleCustomQtyChange(customPromptTarget.item.id, 1);
+                  }
+
+                  setCustomPromptTarget(null);
+                  setClientCustomText('');
+                  setClientCustomImageUrl('');
+                }}
+                className="flex-[2] py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-amber-400/20 transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Check className="w-4 h-4 stroke-[3]" />
+                <span>Confirm & Add To Box</span>
+              </button>
             </div>
           </div>
         </div>

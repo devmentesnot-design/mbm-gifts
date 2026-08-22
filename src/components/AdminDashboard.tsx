@@ -36,7 +36,9 @@ import {
   Loader2,
   AlertCircle,
   LogOut,
-  ArrowRight
+  ArrowRight,
+  Camera,
+  FileText
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -172,6 +174,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     popularFor: 'Anniversaries & Special Celebrations',
     image: '',
     badge: 'BEST SELLER',
+    requiresCustomInput: false,
+    customInputType: 'text' as 'text' | 'image' | 'both',
+    customInputLabel: '',
   });
   // Sub-items inside the package detailed form
   const [pkgSubItems, setPkgSubItems] = useState<PackageItemDetail[]>([]);
@@ -189,6 +194,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     price_usd: '',
     description: '',
     image: '',
+    requiresCustomInput: false,
+    customInputType: 'text' as 'text' | 'image' | 'both',
+    customInputLabel: '',
   });
 
   // Category Modal & Sub-navbar Filter State
@@ -488,6 +496,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         popularFor: pkg.popularFor || 'Anniversaries & Special Celebrations',
         image: pkg.image,
         badge: pkg.badge || '',
+        requiresCustomInput: pkg.requiresCustomInput || false,
+        customInputType: (pkg.customInputType as 'text' | 'image' | 'both') || 'text',
+        customInputLabel: pkg.customInputLabel || '',
       });
 
       // Load existing detailed items if available, or convert string array
@@ -513,6 +524,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         popularFor: 'Anniversaries & Special Celebrations',
         image: '',
         badge: 'BEST SELLER',
+        requiresCustomInput: false,
+        customInputType: 'text',
+        customInputLabel: '',
       });
       setPkgSubItems([]);
     }
@@ -561,6 +575,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               badge: pkgForm.badge || undefined,
               itemsIncluded: itemsNamesArray,
               itemsIncludedDetailed: pkgSubItems,
+              requiresCustomInput: pkgForm.requiresCustomInput,
+              customInputType: pkgForm.customInputType,
+              customInputLabel: pkgForm.customInputLabel,
             }
           : p
       );
@@ -580,6 +597,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         itemsIncluded: itemsNamesArray,
         itemsIncludedDetailed: pkgSubItems,
         popularFor: pkgForm.popularFor,
+        requiresCustomInput: pkgForm.requiresCustomInput,
+        customInputType: pkgForm.customInputType,
+        customInputLabel: pkgForm.customInputLabel,
       };
       onSavePackages([newPkg, ...packages]);
     }
@@ -608,6 +628,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         price_usd: item.price_usd != null ? item.price_usd.toString() : '',
         description: item.description,
         image: item.image,
+        requiresCustomInput: item.requiresCustomInput || false,
+        customInputType: (item.customInputType as 'text' | 'image' | 'both') || 'text',
+        customInputLabel: item.customInputLabel || '',
       });
     } else {
       setEditingItem(null);
@@ -619,6 +642,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         price_usd: '',
         description: '',
         image: '',
+        requiresCustomInput: false,
+        customInputType: 'text',
+        customInputLabel: '',
       });
     }
     setItemModalOpen(true);
@@ -639,6 +665,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               price_usd: itemForm.price_usd ? parseFloat(itemForm.price_usd) : undefined,
               description: itemForm.description,
               image: itemForm.image || i.image,
+              requiresCustomInput: itemForm.requiresCustomInput,
+              customInputType: itemForm.customInputType,
+              customInputLabel: itemForm.customInputLabel,
             }
           : i
       );
@@ -652,6 +681,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         price_usd: itemForm.price_usd ? parseFloat(itemForm.price_usd) : undefined,
         description: itemForm.description,
         image: itemForm.image || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=400&auto=format&fit=crop',
+        requiresCustomInput: itemForm.requiresCustomInput,
+        customInputType: itemForm.customInputType,
+        customInputLabel: itemForm.customInputLabel,
       };
       onSaveCustomItems([...customItems, newItem]);
     }
@@ -1304,6 +1336,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       {pkg.badge}
                     </span>
                   )}
+                  {pkg.requiresCustomInput && (
+                    <span className={`absolute ${pkg.badge ? 'top-8.5' : 'top-3'} left-3 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full shadow backdrop-blur-sm flex items-center gap-1`}>
+                      {pkg.customInputType === 'image' ? <Camera className="w-2.5 h-2.5 text-purple-300" /> : pkg.customInputType === 'both' ? <Sparkles className="w-2.5 h-2.5 text-purple-300" /> : <FileText className="w-2.5 h-2.5 text-purple-300" />}
+                      <span>{pkg.customInputType === 'image' ? 'Photo Required' : pkg.customInputType === 'both' ? 'Photo & Text' : 'Text Required'}</span>
+                    </span>
+                  )}
                   <span className="absolute bottom-3 right-3 bg-black/80 text-amber-300 border border-white/20 text-[10px] font-bold px-2 py-0.5 rounded-md">
                     {pkg.itemsIncludedDetailed?.length || pkg.itemsIncluded.length} Items Inside
                   </span>
@@ -1605,6 +1643,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         >
                           <div className="relative h-40 bg-black/40 overflow-hidden">
                             <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            {item.requiresCustomInput && (
+                              <span className="absolute top-3 left-3 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full shadow backdrop-blur-sm flex items-center gap-1">
+                                {item.customInputType === 'image' ? <Camera className="w-2.5 h-2.5 text-purple-300" /> : item.customInputType === 'both' ? <Sparkles className="w-2.5 h-2.5 text-purple-300" /> : <FileText className="w-2.5 h-2.5 text-purple-300" />}
+                                <span>{item.customInputType === 'image' ? 'Photo Required' : item.customInputType === 'both' ? 'Photo & Text' : 'Text Required'}</span>
+                              </span>
+                            )}
                           </div>
 
                           <div className="p-4 flex-1 flex flex-col justify-between">
@@ -2417,6 +2461,79 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
                   )}
                 </div>
+
+                {/* Customer Input Requirement Controls */}
+                <div className="mt-4 pt-4 border-t border-white/10 bg-[#3a060b]/60 rounded-xl p-4 border border-amber-400/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="flex items-center gap-2.5 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={pkgForm.requiresCustomInput}
+                          onChange={(e) => setPkgForm({ ...pkgForm, requiresCustomInput: e.target.checked })}
+                          className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-black/40 cursor-pointer"
+                        />
+                        <span className="font-bold text-xs uppercase tracking-wider text-amber-300">
+                          Requires Client Customization (Photo / Custom Text)
+                        </span>
+                      </label>
+                      <p className="text-[11px] text-white/60 ml-6.5 mt-0.5">
+                        Enable if the buyer must upload a photo or write custom text when adding this package to their cart.
+                      </p>
+                    </div>
+                  </div>
+
+                  {pkgForm.requiresCustomInput && (
+                    <div className="mt-4 pt-3 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-4 pl-6.5">
+                      <div>
+                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1.5">
+                          What does the client need to provide?
+                        </label>
+                        <div className="grid grid-cols-3 gap-2">
+                          {[
+                            { id: 'text', label: 'Text Only', icon: FileText },
+                            { id: 'image', label: 'Photo Upload', icon: Camera },
+                            { id: 'both', label: 'Photo & Text', icon: Sparkles },
+                          ].map((t) => {
+                            const Icon = t.icon;
+                            const isSelected = pkgForm.customInputType === t.id;
+                            return (
+                              <button
+                                key={t.id}
+                                type="button"
+                                onClick={() => setPkgForm({ ...pkgForm, customInputType: t.id as any })}
+                                className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                                  isSelected
+                                    ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-md font-extrabold'
+                                    : 'bg-black/30 border-white/15 text-white/70 hover:text-white hover:border-white/30'
+                                }`}
+                              >
+                                <Icon className="w-3.5 h-3.5" />
+                                <span className="text-[10px] whitespace-nowrap">{t.label}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1.5">
+                          Prompt / Instruction Label for Client
+                        </label>
+                        <input
+                          type="text"
+                          value={pkgForm.customInputLabel}
+                          onChange={(e) => setPkgForm({ ...pkgForm, customInputLabel: e.target.value })}
+                          placeholder="e.g. Upload couple photo & enter anniversary date"
+                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        />
+                        <span className="text-[10px] text-white/40 block mt-1">
+                          This label is shown directly to the buyer when adding to cart.
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* SECTION 2: Detailed Sub-Items Manager (Individual Images & Descriptions) */}
@@ -2719,6 +2836,77 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 {itemForm.image && (
                   <div className="mt-2 h-20 rounded-lg overflow-hidden border border-white/20 bg-black/40">
                     <img src={itemForm.image} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
+              </div>
+
+              {/* Customer Customization Requirement Controls */}
+              <div className="pt-3 border-t border-white/10 bg-[#3a060b]/60 rounded-xl p-3.5 border border-amber-400/20 space-y-3">
+                <div>
+                  <label className="flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={itemForm.requiresCustomInput}
+                      onChange={(e) => setItemForm({ ...itemForm, requiresCustomInput: e.target.checked })}
+                      className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-black/40 cursor-pointer"
+                    />
+                    <span className="font-bold text-xs uppercase tracking-wider text-amber-300">
+                      Requires Client Customization (Photo / Custom Text)
+                    </span>
+                  </label>
+                  <p className="text-[11px] text-white/60 ml-6.5 mt-0.5">
+                    Enable for items like printed mugs, custom jewelry, photo frames, or custom engraved accessories.
+                  </p>
+                </div>
+
+                {itemForm.requiresCustomInput && (
+                  <div className="space-y-3 pt-2 border-t border-white/10 pl-6.5">
+                    <div>
+                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1.5">
+                        What does the client need to provide?
+                      </label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { id: 'text', label: 'Text Only', icon: FileText },
+                          { id: 'image', label: 'Photo Upload', icon: Camera },
+                          { id: 'both', label: 'Photo & Text', icon: Sparkles },
+                        ].map((t) => {
+                          const Icon = t.icon;
+                          const isSelected = itemForm.customInputType === t.id;
+                          return (
+                            <button
+                              key={t.id}
+                              type="button"
+                              onClick={() => setItemForm({ ...itemForm, customInputType: t.id as any })}
+                              className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                                isSelected
+                                  ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-md font-extrabold'
+                                  : 'bg-black/30 border-white/15 text-white/70 hover:text-white hover:border-white/30'
+                              }`}
+                            >
+                              <Icon className="w-3.5 h-3.5" />
+                              <span className="text-[10px] whitespace-nowrap">{t.label}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1.5">
+                        Prompt / Instruction Label for Client
+                      </label>
+                      <input
+                        type="text"
+                        value={itemForm.customInputLabel}
+                        onChange={(e) => setItemForm({ ...itemForm, customInputLabel: e.target.value })}
+                        placeholder="e.g. Enter name or message to print on mug"
+                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                      />
+                      <span className="text-[10px] text-white/40 block mt-1">
+                        This instruction is shown to the buyer when adding this item to their custom box.
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
@@ -3124,14 +3312,52 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       itemPrice = it.totalPrice || 0;
                     }
                     return (
-                      <div key={idx} className="py-2.5 flex items-center justify-between">
-                        <div>
-                          <div className="font-bold text-white">
+                      <div key={idx} className="py-3 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-bold text-white text-sm">
                             {it.package ? it.package.name : `Custom Box (${it.selectedItems?.length || 0} items)`}
                           </div>
                           <div className="text-[11px] text-white/60">Qty: {it.quantity}</div>
+
+                          {/* Customer Customization Details (Text & Photo) */}
+                          {(it.customerInputText || it.customerInputImageUrl) && (
+                            <div className="mt-2 bg-[#3a060b]/70 border border-purple-400/30 rounded-lg p-2.5 space-y-1.5 max-w-md">
+                              <div className="text-[10px] text-purple-300 font-bold uppercase tracking-wider flex items-center gap-1">
+                                <Sparkles className="w-3 h-3 text-purple-400" />
+                                <span>Client Customization Details</span>
+                              </div>
+                              {it.customerInputText && (
+                                <div className="text-white text-xs bg-black/40 rounded p-1.5 border border-white/10">
+                                  <span className="text-white/60 font-semibold">Custom Text: </span>
+                                  <span className="text-amber-200 font-medium font-mono">"{it.customerInputText}"</span>
+                                </div>
+                              )}
+                              {it.customerInputImageUrl && (
+                                <div className="pt-1 flex items-center gap-2">
+                                  <div className="w-14 h-14 rounded-lg overflow-hidden border border-purple-400/40 bg-black/60 flex-shrink-0">
+                                    <img
+                                      src={it.customerInputImageUrl}
+                                      alt="Client Custom Photo"
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div>
+                                    <span className="text-[10px] text-white/70 block">Client Uploaded Photo</span>
+                                    <a
+                                      href={it.customerInputImageUrl}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="text-amber-300 hover:underline text-[11px] font-bold inline-flex items-center gap-1 mt-0.5"
+                                    >
+                                      <Eye className="w-3 h-3" /> View Full Image
+                                    </a>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
-                        <div className="font-bold text-amber-300">
+                        <div className="font-bold text-amber-300 text-sm whitespace-nowrap">
                           {isUsd ? `$${(itemPrice * it.quantity).toFixed(2)} USD` : `${(itemPrice * it.quantity).toLocaleString()} ብር`}
                         </div>
                       </div>
