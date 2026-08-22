@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, CUSTOM_ITEMS, PREPARED_PACKAGES } from '../data/giftsData';
-import { ShoppingBag, Star, Eye, X, Check, Search, Filter, Plus, Minus, PackageCheck, Sparkles, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Star, Eye, X, Check, Search, Filter, Plus, Minus, PackageCheck, Sparkles, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useMarket } from '../context/MarketContext';
 import { formatPrice } from '../utils/currency';
@@ -56,6 +56,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('default');
   const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
   // Prepared Packages State
   const [selectedModalPkg, setSelectedModalPkg] = useState<PreparedPackage | null>(null);
@@ -316,7 +317,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   };
 
   const renderPackagesView = () => (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3.5 md:gap-4">
+    <div className={`grid gap-2 sm:gap-3.5 md:gap-4 grid-cols-2 ${isSidebarOpen ? 'md:grid-cols-3 lg:grid-cols-4' : 'md:grid-cols-4 lg:grid-cols-5'}`}>
       {filteredPackages.map((pkg) => (
         <div
           key={pkg.id}
@@ -404,7 +405,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
   const renderBuildView = () => (
     <div className="pb-32">
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3.5">
+      <div className={`grid gap-2 sm:gap-3.5 grid-cols-2 ${isSidebarOpen ? 'md:grid-cols-3 xl:grid-cols-4' : 'md:grid-cols-4 xl:grid-cols-5'}`}>
         {filteredCustomItems.map(item => {
           const qty = customCart[item.id] || 0;
           return (
@@ -588,18 +589,16 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           </div>
         </div>
 
-        {/* Sleek Horizontal Categories Bar & Sort Dropdown */}
-        <div className="flex items-center gap-2 sm:gap-4 border-y border-white/10 py-2.5 sm:py-3 mb-6 sm:mb-10 overflow-visible">
-          
-          {/* Scrollable category chips */}
-          <div className="flex-1 flex gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none py-1 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* Mobile: Horizontal Category Chips (visible on small screens only) */}
+        <div className="flex md:hidden items-center gap-2 border-y border-white/10 py-2.5 mb-5 overflow-visible">
+          <div className="flex-1 flex gap-1.5 overflow-x-auto scrollbar-none py-1 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {dynamicCategories.map(cat => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`flex-shrink-0 px-3.5 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-[11px] font-bold font-inter uppercase tracking-wider rounded-full border transition-all cursor-pointer whitespace-nowrap ${
-                  activeCategory === cat 
-                  ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md scale-[1.02]' 
+                className={`flex-shrink-0 px-3.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-full border transition-all cursor-pointer whitespace-nowrap ${
+                  activeCategory === cat
+                  ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md scale-[1.02]'
                   : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
                 }`}
               >
@@ -607,40 +606,106 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               </button>
             ))}
           </div>
-
-          {/* Sort Dropdown */}
-          <div className="relative shrink-0 z-30" ref={sortMenuRef}>
-            <button 
-              onClick={() => setIsSortOpen(!isSortOpen)}
-              className="flex items-center gap-1.5 sm:gap-2 bg-[#230005]/70 border border-[#D9A514]/25 hover:border-[#F5C542]/60 text-[#FFF8ED] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-[11px] font-bold font-inter uppercase tracking-wider transition-colors cursor-pointer"
-            >
-              <span>Sort</span>
-              <ChevronDown className={`w-3.5 h-3.5 text-[#F5C542] transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {isSortOpen && (
-              <div className="absolute right-0 top-[calc(100%+8px)] w-48 bg-[#230005]/95 border border-[#D9A514]/30 rounded-2xl shadow-[0_16px_36px_rgba(0,0,0,0.7)] overflow-hidden font-inter text-sm backdrop-blur-xl">
-                {[
-                  { id: 'popular', label: 'Popular' },
-                  { id: 'price-asc', label: 'Price: low to high' },
-                  { id: 'price-desc', label: 'Price: high to low' },
-                  { id: 'newest', label: 'Newest' }
-                ].map(opt => (
-                  <button
-                    key={opt.id}
-                    onClick={() => { setSortBy(opt.id); setIsSortOpen(false); }}
-                    className={`w-full text-left px-4 py-3 hover:bg-[#D9A514]/15 transition-colors cursor-pointer ${sortBy === opt.id ? 'text-[#F5C542] font-bold' : 'text-[#FFF8ED]/80'}`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
 
-        {/* Main Content Area */}
-        {mode === 'pkg' ? renderPackagesView() : renderBuildView()}
+        {/* Desktop + Mobile Grid: Sidebar (md+) + Content */}
+        <div className="flex items-start gap-4">
+
+          {/* Vertical Category Sidebar — desktop only */}
+          <aside
+            className="hidden md:flex flex-col flex-shrink-0 transition-[width] duration-300 ease-in-out overflow-hidden"
+            style={{ width: isSidebarOpen ? '196px' : '44px' }}
+          >
+            {/* Sidebar header: label + toggle */}
+            <div className={`flex items-center mb-3 gap-2 ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
+              {isSidebarOpen && (
+                <span className="text-[9px] font-black font-inter uppercase tracking-[0.22em] text-[#F5C542]/60 whitespace-nowrap pl-1">
+                  Categories
+                </span>
+              )}
+              <button
+                onClick={() => setIsSidebarOpen(prev => !prev)}
+                title={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-[#230005]/80 border border-[#D9A514]/25 hover:border-[#F5C542]/60 text-[#FFF8ED]/70 hover:text-[#F5C542] transition-all cursor-pointer flex-shrink-0"
+              >
+                {isSidebarOpen
+                  ? <ChevronLeft className="w-4 h-4" />
+                  : <ChevronRight className="w-4 h-4" />
+                }
+              </button>
+            </div>
+
+            {/* Category Buttons */}
+            <div
+              className="flex flex-col gap-1 overflow-y-auto overflow-x-hidden max-h-[70vh] pr-0.5"
+              style={{
+                opacity: isSidebarOpen ? 1 : 0,
+                pointerEvents: isSidebarOpen ? 'auto' : 'none',
+                transition: 'opacity 200ms ease',
+              }}
+            >
+              {dynamicCategories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`w-full text-left px-3 py-2 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer whitespace-nowrap overflow-hidden text-ellipsis ${
+                    activeCategory === cat
+                    ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                    : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </aside>
+
+          {/* Right Content Panel */}
+          <div className="flex-1 min-w-0">
+
+            {/* Sort & Results Bar */}
+            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-5">
+              <span className="text-[11px] text-white/40 font-inter hidden md:block">
+                {(mode === 'pkg' ? filteredPackages.length : filteredCustomItems.length)}{' '}
+                result{(mode === 'pkg' ? filteredPackages.length : filteredCustomItems.length) !== 1 ? 's' : ''}
+              </span>
+
+              {/* Sort Dropdown */}
+              <div className="relative shrink-0 z-30 ml-auto" ref={sortMenuRef}>
+                <button
+                  onClick={() => setIsSortOpen(!isSortOpen)}
+                  className="flex items-center gap-1.5 sm:gap-2 bg-[#230005]/70 border border-[#D9A514]/25 hover:border-[#F5C542]/60 text-[#FFF8ED] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-[11px] font-bold font-inter uppercase tracking-wider transition-colors cursor-pointer"
+                >
+                  <span>Sort</span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-[#F5C542] transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isSortOpen && (
+                  <div className="absolute right-0 top-[calc(100%+8px)] w-48 bg-[#230005]/95 border border-[#D9A514]/30 rounded-2xl shadow-[0_16px_36px_rgba(0,0,0,0.7)] overflow-hidden font-inter text-sm backdrop-blur-xl z-40">
+                    {[
+                      { id: 'popular', label: 'Popular' },
+                      { id: 'price-asc', label: 'Price: low to high' },
+                      { id: 'price-desc', label: 'Price: high to low' },
+                      { id: 'newest', label: 'Newest' }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={() => { setSortBy(opt.id); setIsSortOpen(false); }}
+                        className={`w-full text-left px-4 py-3 hover:bg-[#D9A514]/15 transition-colors cursor-pointer ${sortBy === opt.id ? 'text-[#F5C542] font-bold' : 'text-[#FFF8ED]/80'}`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Main Content Area */}
+            {mode === 'pkg' ? renderPackagesView() : renderBuildView()}
+
+          </div>
+        </div>
 
       </div>
 

@@ -844,50 +844,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              {/* Database Status Alert */}
-              <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-2xl p-4 shadow-lg">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center flex-shrink-0">
-                    <AlertCircle className="w-5 h-5 text-blue-400" />
-                  </div>
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-bold text-sm text-blue-200 uppercase tracking-wider">
-                        Database Integration Status
-                      </h3>
-                      <span className="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-1 rounded-full font-bold uppercase tracking-wider">
-                        Hybrid Mode
-                      </span>
-                    </div>
-                    <div className="grid sm:grid-cols-2 gap-3 text-xs">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                        <span className="text-white/80">Authentication: <span className="text-emerald-300 font-semibold">Supabase Connected</span></span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                        <span className="text-white/80">Profiles: <span className="text-emerald-300 font-semibold">Supabase Connected</span></span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                        <span className="text-white/80">Packages: <span className="text-amber-300 font-semibold">Now Supabase First!</span></span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                        <span className="text-white/80">Orders: <span className="text-amber-300 font-semibold">Now Supabase First!</span></span>
-                      </div>
-                    </div>
-                    <p className="text-[11px] text-blue-200/70 leading-relaxed mt-2">
-                      <strong>Updated:</strong> All data operations now save ONLY to Supabase (no localStorage backup). 
-                      Check browser console for "✅ Saved to Supabase successfully" messages!
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Database Debug Panel */}
-              <DatabaseDebug session={session} />
-
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
