@@ -7,6 +7,7 @@ export interface GiftCategory {
   description: string;
   image?: string;
   type?: 'package' | 'custom_item' | 'both';
+  subcategories?: string[]; // Optional list of subcategory names (e.g. ['Muslim', 'Christian'])
 }
 
 export interface GiftBoxStyle {
@@ -433,7 +434,8 @@ export const getStoredCategories = async (): Promise<GiftCategory[]> => {
       slug: c.slug || c.name.toLowerCase().replace(/\s+/g, '-'),
       description: c.description || '',
       image: c.image,
-      type: c.type || 'both'
+      type: c.type || 'both',
+      subcategories: Array.isArray(c.subcategories) ? c.subcategories : []
     }));
     
     console.log('✅ Loaded', mapped.length, 'categories from Supabase');
@@ -453,7 +455,16 @@ export const saveStoredCategories = async (categories: GiftCategory[]) => {
   }
 
   try {
-    const { error } = await supabase.from('categories').upsert(categories, { onConflict: 'id' });
+    const payload = categories.map(c => ({
+      id: c.id,
+      name: c.name,
+      slug: c.slug,
+      description: c.description,
+      image: c.image ?? null,
+      type: c.type ?? 'both',
+      subcategories: c.subcategories ?? []
+    }));
+    const { error } = await supabase.from('categories').upsert(payload, { onConflict: 'id' });
     
     if (error) {
       console.error('❌ Supabase save error:', error);

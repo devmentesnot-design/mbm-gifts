@@ -57,6 +57,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   const [sortBy, setSortBy] = useState<string>('default');
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [expandedShopCategories, setExpandedShopCategories] = useState<Set<string>>(new Set());
 
   // Prepared Packages State
   const [selectedModalPkg, setSelectedModalPkg] = useState<PreparedPackage | null>(null);
@@ -123,6 +124,13 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
     return list;
   }, [mode, categories, packages, customItems]);
+
+  // Full GiftCategory objects for currently relevant categories (for subcategory data)
+  const dynamicCategoryObjects = useMemo(() => {
+    if (!categories || categories.length === 0) return [];
+    const allowedType = mode === 'pkg' ? ['package', 'both'] : ['custom_item', 'both'];
+    return categories.filter(c => allowedType.includes(c.type || 'both'));
+  }, [mode, categories]);
 
   // Handle outside click for sort menu
   const sortMenuRef = useRef<HTMLDivElement>(null);
@@ -653,20 +661,59 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
         {/* Mobile: Horizontal Category Chips (visible on small screens only) */}
         <div className="flex md:hidden items-center gap-2 border-y border-white/10 py-2.5 mb-5 overflow-visible">
-          <div className="flex-1 flex gap-1.5 overflow-x-auto scrollbar-none py-1 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {dynamicCategories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`flex-shrink-0 px-3.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-full border transition-all cursor-pointer whitespace-nowrap ${
-                  activeCategory === cat
-                  ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md scale-[1.02]'
-                  : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+          <div className="flex-1 flex flex-col gap-1.5">
+            <div className="flex gap-1.5 overflow-x-auto scrollbar-none py-1 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {dynamicCategories.map(cat => {
+                const catObj = dynamicCategoryObjects.find(c => c.name === cat);
+                const hasSubs = catObj && catObj.subcategories && catObj.subcategories.length > 0;
+                const isExpanded = expandedShopCategories.has(cat);
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setActiveCategory(cat);
+                      if (hasSubs) {
+                        setExpandedShopCategories(prev => {
+                          const next = new Set(prev);
+                          if (next.has(cat)) next.delete(cat); else next.add(cat);
+                          return next;
+                        });
+                      }
+                    }}
+                    className={`flex-shrink-0 px-3.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-full border transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
+                      activeCategory === cat
+                      ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md scale-[1.02]'
+                      : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
+                    }`}
+                  >
+                    {cat}
+                    {hasSubs && <ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />}
+                  </button>
+                );
+              })}
+            </div>
+            {/* Mobile subcategory chips row */}
+            {dynamicCategoryObjects.map(catObj => {
+              if (!catObj.subcategories || catObj.subcategories.length === 0) return null;
+              if (!expandedShopCategories.has(catObj.name)) return null;
+              return (
+                <div key={`subs-${catObj.name}`} className="flex gap-1.5 overflow-x-auto scrollbar-none py-0.5 pl-3 border-l-2 border-[#F5C542]/30">
+                  {catObj.subcategories.map(sub => (
+                    <button
+                      key={sub}
+                      onClick={() => setActiveCategory(sub)}
+                      className={`flex-shrink-0 px-3 py-1 text-[9px] font-bold font-inter uppercase tracking-wider rounded-full border transition-all cursor-pointer whitespace-nowrap ${
+                        activeCategory === sub
+                        ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                        : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED]'
+                      }`}
+                    >
+                      {sub}
+                    </button>
+                  ))}
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -697,7 +744,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               </button>
             </div>
 
-            {/* Category Buttons */}
+            {/* Category Buttons with Subcategory Expand */}
             <div
               className="flex flex-col gap-1 overflow-y-auto overflow-x-hidden max-h-[70vh] pr-0.5"
               style={{
@@ -706,19 +753,55 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 transition: 'opacity 200ms ease',
               }}
             >
-              {dynamicCategories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`w-full text-left px-3 py-2 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer whitespace-nowrap overflow-hidden text-ellipsis ${
-                    activeCategory === cat
-                    ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                    : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+              {dynamicCategories.map(cat => {
+                const catObj = dynamicCategoryObjects.find(c => c.name === cat);
+                const hasSubs = catObj && catObj.subcategories && catObj.subcategories.length > 0;
+                const isExpanded = expandedShopCategories.has(cat);
+                return (
+                  <div key={cat}>
+                    <button
+                      onClick={() => {
+                        setActiveCategory(cat);
+                        if (hasSubs) {
+                          setExpandedShopCategories(prev => {
+                            const next = new Set(prev);
+                            if (next.has(cat)) next.delete(cat); else next.add(cat);
+                            return next;
+                          });
+                        }
+                      }}
+                      className={`w-full text-left px-3 py-2 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1 ${
+                        activeCategory === cat
+                        ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                        : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                      }`}
+                    >
+                      <span className="truncate flex-1">{cat}</span>
+                      {hasSubs && (
+                        <ChevronRight className={`w-3 h-3 flex-shrink-0 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                      )}
+                    </button>
+                    {/* Indented Subcategory Buttons */}
+                    {hasSubs && isExpanded && (
+                      <div className="ml-2 mt-0.5 flex flex-col gap-0.5 border-l border-[#F5C542]/20 pl-2">
+                        {catObj!.subcategories!.map(sub => (
+                          <button
+                            key={sub}
+                            onClick={() => setActiveCategory(sub)}
+                            className={`w-full text-left px-2.5 py-1.5 text-[9px] font-bold font-inter uppercase tracking-wider rounded-md border transition-all cursor-pointer truncate ${
+                              activeCategory === sub
+                              ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
+                              : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
+                            }`}
+                          >
+                            {sub}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </aside>
 

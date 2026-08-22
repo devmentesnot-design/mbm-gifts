@@ -201,12 +201,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     slug: string;
     description: string;
     type: 'package' | 'custom_item' | 'both';
+    subcategories: string[];
   }>({
     name: '',
     slug: '',
     description: '',
     type: 'package',
+    subcategories: [],
   });
+  const [subcategoryInput, setSubcategoryInput] = useState('');
+  // Track expanded parent categories in sidebar filters
+  const [expandedPkgCategories, setExpandedPkgCategories] = useState<Set<string>>(new Set());
+  const [expandedItemCategories, setExpandedItemCategories] = useState<Set<string>>(new Set());
 
   // Gift Box Modal State
   const [boxModalOpen, setBoxModalOpen] = useState(false);
@@ -327,6 +333,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         slug: cat.slug,
         description: cat.description,
         type: cat.type || 'both',
+        subcategories: cat.subcategories || [],
       });
     } else {
       setEditingCategory(null);
@@ -335,8 +342,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         slug: '',
         description: '',
         type: 'package',
+        subcategories: [],
       });
     }
+    setSubcategoryInput('');
     setCategoryModalOpen(true);
   };
 
@@ -354,6 +363,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 slug: categoryForm.slug || categoryForm.name.toLowerCase().replace(/\s+/g, '-'),
                 description: categoryForm.description,
                 type: categoryForm.type,
+                subcategories: categoryForm.subcategories,
               }
             : c
         )
@@ -365,6 +375,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         slug: categoryForm.slug || categoryForm.name.toLowerCase().replace(/\s+/g, '-'),
         description: categoryForm.description,
         type: categoryForm.type,
+        subcategories: categoryForm.subcategories,
       };
       updateCategoriesList([...categoriesList, newCat]);
     }
@@ -1400,25 +1411,69 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </button>
 
           {packageCategories.map((cat) => {
+            const hasSubs = cat.subcategories && cat.subcategories.length > 0;
+            const isExpanded = expandedPkgCategories.has(cat.id);
             const count = packages.filter((p) =>
               p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
             ).length;
             const isActive = pkgCategoryFilter.toLowerCase() === cat.name.toLowerCase();
             return (
-              <button
-                key={cat.id}
-                onClick={() => setPkgCategoryFilter(cat.name)}
-                className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
-                  isActive
-                    ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                    : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
-                }`}
-              >
-                <span className="truncate">{cat.name}</span>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
-                  {count}
-                </span>
-              </button>
+              <div key={cat.id}>
+                <button
+                  onClick={() => {
+                    setPkgCategoryFilter(cat.name);
+                    if (hasSubs) {
+                      setExpandedPkgCategories((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(cat.id)) next.delete(cat.id); else next.add(cat.id);
+                        return next;
+                      });
+                    }
+                  }}
+                  className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                      : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                  }`}
+                >
+                  <span className="truncate flex-1">{cat.name}</span>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                      {count}
+                    </span>
+                    {hasSubs && (
+                      <ChevronRight className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                    )}
+                  </div>
+                </button>
+                {/* Subcategories */}
+                {hasSubs && isExpanded && (
+                  <div className="ml-3 mt-1 flex flex-col gap-1 border-l border-[#F5C542]/20 pl-2">
+                    {cat.subcategories!.map((sub) => {
+                      const subCount = packages.filter((p) =>
+                        p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(sub.toLowerCase())
+                      ).length;
+                      const isSubActive = pkgCategoryFilter.toLowerCase() === sub.toLowerCase();
+                      return (
+                        <button
+                          key={sub}
+                          onClick={() => setPkgCategoryFilter(sub)}
+                          className={`w-full text-left px-2.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
+                            isSubActive
+                              ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                              : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
+                          }`}
+                        >
+                          <span className="truncate">{sub}</span>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/60'}`}>
+                            {subCount}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
@@ -1652,25 +1707,69 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </button>
 
                     {customItemCategories.map((cat) => {
+                      const hasSubs = cat.subcategories && cat.subcategories.length > 0;
+                      const isExpanded = expandedItemCategories.has(cat.id);
                       const count = customItems.filter((i) =>
                         i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
                       ).length;
                       const isActive = itemCategoryFilter.toLowerCase() === cat.name.toLowerCase();
                       return (
-                        <button
-                          key={cat.id}
-                          onClick={() => setItemCategoryFilter(cat.name)}
-                          className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
-                            isActive
-                              ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                              : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
-                          }`}
-                        >
-                          <span className="truncate">{cat.name}</span>
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
-                            {count}
-                          </span>
-                        </button>
+                        <div key={cat.id}>
+                          <button
+                            onClick={() => {
+                              setItemCategoryFilter(cat.name);
+                              if (hasSubs) {
+                                setExpandedItemCategories((prev) => {
+                                  const next = new Set(prev);
+                                  if (next.has(cat.id)) next.delete(cat.id); else next.add(cat.id);
+                                  return next;
+                                });
+                              }
+                            }}
+                            className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                              isActive
+                                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                            }`}
+                          >
+                            <span className="truncate flex-1">{cat.name}</span>
+                            <div className="flex items-center gap-1 flex-shrink-0">
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                                {count}
+                              </span>
+                              {hasSubs && (
+                                <ChevronRight className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                              )}
+                            </div>
+                          </button>
+                          {/* Subcategories */}
+                          {hasSubs && isExpanded && (
+                            <div className="ml-3 mt-1 flex flex-col gap-1 border-l border-[#F5C542]/20 pl-2">
+                              {cat.subcategories!.map((sub) => {
+                                const subCount = customItems.filter((i) =>
+                                  i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(sub.toLowerCase())
+                                ).length;
+                                const isSubActive = itemCategoryFilter.toLowerCase() === sub.toLowerCase();
+                                return (
+                                  <button
+                                    key={sub}
+                                    onClick={() => setItemCategoryFilter(sub)}
+                                    className={`w-full text-left px-2.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
+                                      isSubActive
+                                        ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                                        : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
+                                    }`}
+                                  >
+                                    <span className="truncate">{sub}</span>
+                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/60'}`}>
+                                      {subCount}
+                                    </span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
@@ -1777,6 +1876,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             {cat.type === 'package' ? 'Ready-made Packages' : cat.type === 'custom_item' ? 'Single Custom Items' : 'Universal (Packages & Items)'}
                           </span>
                         </div>
+
+                        {/* Subcategory Pills */}
+                        {cat.subcategories && cat.subcategories.length > 0 && (
+                          <div className="mt-3 pt-3 border-t border-white/10">
+                            <span className="text-[10px] uppercase font-bold tracking-wider text-white/40 block mb-1.5">Subcategories:</span>
+                            <div className="flex flex-wrap gap-1">
+                              {cat.subcategories.map((sub) => (
+                                <span key={sub} className="px-2 py-0.5 rounded-full bg-[#F5C542]/10 border border-[#F5C542]/25 text-amber-300/80 text-[10px] font-bold font-inter">
+                                  {sub}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-end gap-2">
@@ -2042,6 +2155,64 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   placeholder="Brief overview describing this gift category..."
                   className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-xs text-white focus:border-amber-400 focus:outline-none h-20 resize-none"
                 />
+              </div>
+
+              {/* Subcategories Section */}
+              <div>
+                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
+                  Subcategories <span className="text-white/40 normal-case font-normal">(optional)</span>
+                </label>
+                <p className="text-white/40 text-[10px] mb-2 font-inter leading-snug">
+                  Add subcategory names (e.g. "Muslim", "Christian"). Tag items with these names and they will appear grouped under this parent.
+                </p>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={subcategoryInput}
+                    onChange={(e) => setSubcategoryInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if ((e.key === 'Enter' || e.key === ',') && subcategoryInput.trim()) {
+                        e.preventDefault();
+                        const val = subcategoryInput.trim().replace(/,$/,'');
+                        if (val && !categoryForm.subcategories.includes(val)) {
+                          setCategoryForm({ ...categoryForm, subcategories: [...categoryForm.subcategories, val] });
+                        }
+                        setSubcategoryInput('');
+                      }
+                    }}
+                    placeholder="Type a subcategory and press Enter..."
+                    className="flex-1 bg-black/50 border border-white/20 rounded-lg px-3 py-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const val = subcategoryInput.trim();
+                      if (val && !categoryForm.subcategories.includes(val)) {
+                        setCategoryForm({ ...categoryForm, subcategories: [...categoryForm.subcategories, val] });
+                      }
+                      setSubcategoryInput('');
+                    }}
+                    className="px-3 py-2 rounded-lg bg-amber-400/20 border border-amber-400/40 hover:bg-amber-400/40 text-amber-300 text-xs font-bold transition-all cursor-pointer"
+                  >
+                    Add
+                  </button>
+                </div>
+                {categoryForm.subcategories.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {categoryForm.subcategories.map((sub) => (
+                      <span key={sub} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F5C542]/15 border border-[#F5C542]/30 text-amber-300 text-[10px] font-bold font-inter">
+                        {sub}
+                        <button
+                          type="button"
+                          onClick={() => setCategoryForm({ ...categoryForm, subcategories: categoryForm.subcategories.filter((s) => s !== sub) })}
+                          className="text-amber-400/70 hover:text-red-400 transition-colors cursor-pointer ml-0.5"
+                        >
+                          <X className="w-2.5 h-2.5" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="pt-4 border-t border-white/10 flex justify-end gap-2">
