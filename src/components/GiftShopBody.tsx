@@ -86,6 +86,9 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [expandedShopCategories, setExpandedShopCategories] = useState<Set<string>>(new Set());
+  const [pkgPage, setPkgPage] = useState(1);
+  const [buildPage, setBuildPage] = useState(1);
+  const SHOP_PAGE_SIZE = 20; // 5 rows × 4 cols
 
   // Prepared Packages State
   const [selectedModalPkg, setSelectedModalPkg] = useState<PreparedPackage | null>(null);
@@ -180,6 +183,9 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Reset to page 1 whenever filter/search/mode changes
+  useEffect(() => { setPkgPage(1); setBuildPage(1); }, [activeCategory, searchTerm, mode]);
 
   // Smart helper to match item categories (including multiple comma-separated categories) against category names and slugs
   const isCategoryMatch = (itemCat: string, activeCat: string) => {
@@ -527,29 +533,78 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
   const renderPackagesView = () => {
     const isAllMode = activeCategory === 'All' && !searchTerm.trim();
-    const itemsToRender = isAllMode
-      ? onePackagePerCategory.map(({ pkg, category }) => renderPkgCard(pkg, category))
-      : filteredPackages.map((pkg) => renderPkgCard(pkg));
+    const allItems = isAllMode
+      ? onePackagePerCategory.map(({ pkg, category }) => ({ pkg, category }))
+      : filteredPackages.map((pkg) => ({ pkg, category: undefined as string | undefined }));
+
+    const totalPages = Math.ceil(allItems.length / SHOP_PAGE_SIZE);
+    const safePage = Math.min(pkgPage, Math.max(totalPages, 1));
+    const pageItems = allItems.slice((safePage - 1) * SHOP_PAGE_SIZE, safePage * SHOP_PAGE_SIZE);
+    const itemsToRender = pageItems.map(({ pkg, category }) => renderPkgCard(pkg, category));
 
     return (
-      <div className={`grid gap-2 sm:gap-3.5 md:gap-4 grid-cols-2 ${isSidebarOpen ? 'md:grid-cols-3 lg:grid-cols-4' : 'md:grid-cols-4 lg:grid-cols-5'}`}>
-        {itemsToRender}
-        {itemsToRender.length === 0 && (
-          <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
-            <p className="text-sm font-medium mb-2">No gift packages matched your search criteria.</p>
-            {searchTerm && (
-              <button
-                onClick={() => { setSearchTerm(''); setActiveCategory('All'); }}
-                className="text-xs text-amber-300 hover:text-amber-200 underline font-bold uppercase tracking-wider cursor-pointer"
-              >
-                Clear filters and search
-              </button>
-            )}
+      <div>
+        <div className={`grid gap-2 sm:gap-3.5 md:gap-4 grid-cols-2 ${isSidebarOpen ? 'md:grid-cols-3 lg:grid-cols-4' : 'md:grid-cols-4 lg:grid-cols-5'}`}>
+          {itemsToRender}
+          {allItems.length === 0 && (
+            <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
+              <p className="text-sm font-medium mb-2">No gift packages matched your search criteria.</p>
+              {searchTerm && (
+                <button
+                  onClick={() => { setSearchTerm(''); setActiveCategory('All'); }}
+                  className="text-xs text-amber-300 hover:text-amber-200 underline font-bold uppercase tracking-wider cursor-pointer"
+                >
+                  Clear filters and search
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-8 select-none">
+            <button
+              onClick={() => { setPkgPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              disabled={safePage === 1}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+            >
+              <span>‹</span> Prev
+            </button>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                const isActive = p === safePage;
+                const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
+                if (!show) {
+                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-white/30 text-xs px-1">…</span>;
+                  return null;
+                }
+                return (
+                  <button
+                    key={p}
+                    onClick={() => { setPkgPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-black/40 border-white/15 text-white/60 hover:border-amber-400/50 hover:text-amber-300'}`}
+                  >{p}</button>
+                );
+              })}
+            </div>
+            <button
+              onClick={() => { setPkgPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              disabled={safePage === totalPages}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+            >
+              Next <span>›</span>
+            </button>
           </div>
+        )}
+        {totalPages > 1 && (
+          <p className="text-center text-[11px] text-white/40 mt-2 font-inter">
+            Showing {(safePage - 1) * SHOP_PAGE_SIZE + 1}–{Math.min(safePage * SHOP_PAGE_SIZE, allItems.length)} of {allItems.length} packages · Page {safePage} of {totalPages}
+          </p>
         )}
       </div>
     );
   };
+
+
 
   // Helper: renders a single custom item card
   const renderCustomItemCard = (item: CustomBoxOption, assignedCategory?: string) => {
@@ -638,15 +693,20 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
   const renderBuildView = () => {
     const isAllMode = activeCategory === 'All' && !searchTerm.trim();
-    const itemsToRender = isAllMode
-      ? oneCustomItemPerCategory.map(({ item, category }) => renderCustomItemCard(item, category))
-      : filteredCustomItems.map((item) => renderCustomItemCard(item));
+    const allItems = isAllMode
+      ? oneCustomItemPerCategory.map(({ item, category }) => ({ item, category }))
+      : filteredCustomItems.map((item) => ({ item, category: undefined as string | undefined }));
+
+    const totalPages = Math.ceil(allItems.length / SHOP_PAGE_SIZE);
+    const safePage = Math.min(buildPage, Math.max(totalPages, 1));
+    const pageItems = allItems.slice((safePage - 1) * SHOP_PAGE_SIZE, safePage * SHOP_PAGE_SIZE);
+    const itemsToRender = pageItems.map(({ item, category }) => renderCustomItemCard(item, category));
 
     return (
       <div className="pb-32">
         <div className={`grid gap-2 sm:gap-3.5 grid-cols-2 ${isSidebarOpen ? 'md:grid-cols-3 xl:grid-cols-4' : 'md:grid-cols-4 xl:grid-cols-5'}`}>
           {itemsToRender}
-          {itemsToRender.length === 0 && (
+          {allItems.length === 0 && (
             <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
               <p className="text-sm font-medium mb-2">No custom items matched your search criteria.</p>
               {searchTerm && (
@@ -660,6 +720,46 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             </div>
           )}
         </div>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-8 select-none">
+            <button
+              onClick={() => { setBuildPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              disabled={safePage === 1}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+            >
+              <span>‹</span> Prev
+            </button>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                const isActive = p === safePage;
+                const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
+                if (!show) {
+                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-white/30 text-xs px-1">…</span>;
+                  return null;
+                }
+                return (
+                  <button
+                    key={p}
+                    onClick={() => { setBuildPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-black/40 border-white/15 text-white/60 hover:border-amber-400/50 hover:text-amber-300'}`}
+                  >{p}</button>
+                );
+              })}
+            </div>
+            <button
+              onClick={() => { setBuildPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              disabled={safePage === totalPages}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+            >
+              Next <span>›</span>
+            </button>
+          </div>
+        )}
+        {totalPages > 1 && (
+          <p className="text-center text-[11px] text-white/40 mt-2 mb-4 font-inter">
+            Showing {(safePage - 1) * SHOP_PAGE_SIZE + 1}–{Math.min(safePage * SHOP_PAGE_SIZE, allItems.length)} of {allItems.length} items · Page {safePage} of {totalPages}
+          </p>
+        )}
 
         {/* Floating Tag Summary Panel */}
         <div className={`fixed sm:right-6 sm:bottom-6 bottom-0 left-0 sm:left-auto z-40 bg-[#EFE3C8] border-t sm:border border-[#D8C58E] sm:rounded-tl-xl sm:rounded-tr-xl sm:rounded-bl-xl sm:rounded-br-[26px] p-4 sm:p-5 shadow-[0_16px_40px_rgba(31,43,36,0.3)] font-inter w-full sm:w-64 transition-all duration-300 ${mode === 'build' ? 'translate-y-0 opacity-100 sm:rotate-[-2deg] hover:rotate-0' : 'translate-y-full opacity-0 pointer-events-none'}`}>

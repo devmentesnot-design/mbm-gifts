@@ -162,6 +162,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Package Search & Detailed Modal State
   const [pkgSearchTerm, setPkgSearchTerm] = useState('');
   const [pkgCategoryFilter, setPkgCategoryFilter] = useState<string>('all');
+  const [pkgPage, setPkgPage] = useState(1);
   const [isPkgCategorySidebarOpen, setIsPkgCategorySidebarOpen] = useState(true);
   const [pkgModalOpen, setPkgModalOpen] = useState(false);
   const [editingPkg, setEditingPkg] = useState<PreparedPackage | null>(null);
@@ -184,6 +185,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Single Custom Item Search & Modal State
   const [itemSearchTerm, setItemSearchTerm] = useState('');
   const [itemCategoryFilter, setItemCategoryFilter] = useState<string>('all');
+  const [itemPage, setItemPage] = useState(1);
   const [isItemCategorySidebarOpen, setIsItemCategorySidebarOpen] = useState(true);
   const [itemModalOpen, setItemModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CustomBoxOption | null>(null);
@@ -280,6 +282,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Filtered Categories by Usage
   const packageCategories = categoriesList.filter((c) => !c.type || c.type === 'package' || c.type === 'both');
   const customItemCategories = categoriesList.filter((c) => !c.type || c.type === 'custom_item' || c.type === 'both');
+
+  const ADMIN_PAGE_SIZE = 20; // 5 rows × 4 cols
+
+  // Reset pagination on filter or search change
+  useEffect(() => { setPkgPage(1); }, [pkgCategoryFilter, pkgSearchTerm]);
+  useEffect(() => { setItemPage(1); }, [itemCategoryFilter, itemSearchTerm]);
 
   // Filtered Orders
   const filteredOrders = orders.filter((o) => {
@@ -1279,8 +1287,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
     {/* Main Content Area: Grid on Left, Sidebar on Right */}
     <div className="flex items-start gap-5">
-      {/* Packages Grid */}
-      <div className={`flex-1 min-w-0 grid gap-5 grid-cols-1 sm:grid-cols-2 ${isPkgCategorySidebarOpen ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-cols-3 xl:grid-cols-4'}`}>
+      {/* Packages Grid & Pagination Container */}
+      <div className="flex-1 min-w-0 space-y-6">
         {(() => {
           const isAllMode = pkgCategoryFilter === 'all' && !pkgSearchTerm.trim();
           let displayList: Array<{ pkg: PreparedPackage; targetCategory?: string }> = [];
@@ -1315,88 +1323,140 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           if (displayList.length === 0) {
             return (
-              <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
+              <div className="py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
                 <p className="text-sm font-medium">No packages found for this category or search.</p>
               </div>
             );
           }
 
-          return displayList.map(({ pkg, targetCategory }) => {
-            const primaryCat = targetCategory || pkg.category?.split(',')[0]?.trim() || '';
-            const routeCat = targetCategory || primaryCat;
-            return (
-              <div
-                key={pkg.id}
-                className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
-              >
-                <div className="relative h-44 bg-black/40 overflow-hidden">
-                  <img src={pkg.image} alt={pkg.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  {pkg.badge && (
-                    <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full shadow">
-                      {pkg.badge}
-                    </span>
-                  )}
-                  {pkg.requiresCustomInput && (
-                    <span className={`absolute ${pkg.badge ? 'top-8.5' : 'top-3'} left-3 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full shadow backdrop-blur-sm flex items-center gap-1`}>
-                      {pkg.customInputType === 'image' ? <Camera className="w-2.5 h-2.5 text-purple-300" /> : pkg.customInputType === 'both' ? <Sparkles className="w-2.5 h-2.5 text-purple-300" /> : <FileText className="w-2.5 h-2.5 text-purple-300" />}
-                      <span>{pkg.customInputType === 'image' ? 'Photo Required' : pkg.customInputType === 'both' ? 'Photo & Text' : 'Text Required'}</span>
-                    </span>
-                  )}
-                  <span className="absolute bottom-3 right-3 bg-black/80 text-amber-300 border border-white/20 text-[10px] font-bold px-2 py-0.5 rounded-md">
-                    {pkg.itemsIncludedDetailed?.length || pkg.itemsIncluded.length} Items Inside
-                  </span>
-                </div>
+          const totalPages = Math.ceil(displayList.length / ADMIN_PAGE_SIZE);
+          const safePage = Math.min(pkgPage, Math.max(totalPages, 1));
+          const pageItems = displayList.slice((safePage - 1) * ADMIN_PAGE_SIZE, safePage * ADMIN_PAGE_SIZE);
 
-                <div className="p-4 flex-1 flex flex-col justify-between">
-                  <div>
-                    <div className="text-[10px] text-amber-300/80 font-bold uppercase tracking-wider mb-0.5">
-                      {primaryCat}
-                    </div>
-                    <h3 className="font-podium text-lg uppercase font-bold text-white mt-1">{pkg.name}</h3>
-                    <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{pkg.shortDesc}</p>
-                  </div>
-
-                  <div className="pt-4 mt-4 border-t border-white/10">
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-bold text-amber-300 text-lg">ETB {pkg.price.toFixed(2)}</span>
-                        {pkg.price_usd && pkg.price_usd > 0 && (
-                          <span className="text-white/50 text-xs">USD ${pkg.price_usd.toFixed(2)}</span>
+          return (
+            <div>
+              <div className={`grid gap-5 grid-cols-1 sm:grid-cols-2 ${isPkgCategorySidebarOpen ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-cols-3 xl:grid-cols-4'}`}>
+                {pageItems.map(({ pkg, targetCategory }) => {
+                  const primaryCat = targetCategory || pkg.category?.split(',')[0]?.trim() || '';
+                  const routeCat = targetCategory || primaryCat;
+                  return (
+                    <div
+                      key={pkg.id}
+                      className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
+                    >
+                      <div className="relative h-44 bg-black/40 overflow-hidden">
+                        <img src={pkg.image} alt={pkg.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        {pkg.badge && (
+                          <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full shadow">
+                            {pkg.badge}
+                          </span>
                         )}
+                        {pkg.requiresCustomInput && (
+                          <span className={`absolute ${pkg.badge ? 'top-8.5' : 'top-3'} left-3 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full shadow backdrop-blur-sm flex items-center gap-1`}>
+                            {pkg.customInputType === 'image' ? <Camera className="w-2.5 h-2.5 text-purple-300" /> : pkg.customInputType === 'both' ? <Sparkles className="w-2.5 h-2.5 text-purple-300" /> : <FileText className="w-2.5 h-2.5 text-purple-300" />}
+                            <span>{pkg.customInputType === 'image' ? 'Photo Required' : pkg.customInputType === 'both' ? 'Photo & Text' : 'Text Required'}</span>
+                          </span>
+                        )}
+                        <span className="absolute bottom-3 right-3 bg-black/80 text-amber-300 border border-white/20 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                          {pkg.itemsIncludedDetailed?.length || pkg.itemsIncluded.length} Items Inside
+                        </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleOpenPkgModal(pkg)}
-                          className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
-                          title="Edit Package & Internal Items"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeletePkg(pkg.id)}
-                          className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
-                          title="Delete Package"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+
+                      <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="text-[10px] text-amber-300/80 font-bold uppercase tracking-wider mb-0.5">
+                            {primaryCat}
+                          </div>
+                          <h3 className="font-podium text-lg uppercase font-bold text-white mt-1">{pkg.name}</h3>
+                          <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{pkg.shortDesc}</p>
+                        </div>
+
+                        <div className="pt-4 mt-4 border-t border-white/10">
+                          <div className="flex items-center justify-between">
+                            <div className="flex flex-col gap-0.5">
+                              <span className="font-bold text-amber-300 text-lg">ETB {pkg.price.toFixed(2)}</span>
+                              {pkg.price_usd && pkg.price_usd > 0 && (
+                                <span className="text-white/50 text-xs">USD ${pkg.price_usd.toFixed(2)}</span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleOpenPkgModal(pkg)}
+                                className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
+                                title="Edit Package & Internal Items"
+                              >
+                                <Edit2 className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeletePkg(pkg.id)}
+                                className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
+                                title="Delete Package"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* See all button in All mode */}
+                          {pkgCategoryFilter === 'all' && routeCat && (
+                            <button
+                              onClick={() => setPkgCategoryFilter(routeCat)}
+                              className="group/sa mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 text-[11px] text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-lg transition-all cursor-pointer bg-black/20 hover:bg-black/40"
+                            >
+                              <span>See all {routeCat}</span>
+                              <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
-
-                    {/* See all button in All mode */}
-                    {pkgCategoryFilter === 'all' && routeCat && (
-                      <button
-                        onClick={() => setPkgCategoryFilter(routeCat)}
-                        className="group/sa mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 text-[11px] text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-lg transition-all cursor-pointer bg-black/20 hover:bg-black/40"
-                      >
-                        <span>See all {routeCat}</span>
-                        <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
-                      </button>
-                    )}
-                  </div>
-                </div>
+                  );
+                })}
               </div>
-            );
-          });
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-8 select-none">
+                  <button
+                    onClick={() => { setPkgPage((p) => Math.max(1, p - 1)); }}
+                    disabled={safePage === 1}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+                  >
+                    <span>‹</span> Prev
+                  </button>
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                      const isActive = p === safePage;
+                      const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
+                      if (!show) {
+                        if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-white/30 text-xs px-1">…</span>;
+                        return null;
+                      }
+                      return (
+                        <button
+                          key={p}
+                          onClick={() => { setPkgPage(p); }}
+                          className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-black/40 border-white/15 text-white/60 hover:border-amber-400/50 hover:text-amber-300'}`}
+                        >{p}</button>
+                      );
+                    })}
+                  </div>
+                  <button
+                    onClick={() => { setPkgPage((p) => Math.min(totalPages, p + 1)); }}
+                    disabled={safePage === totalPages}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+                  >
+                    Next <span>›</span>
+                  </button>
+                </div>
+              )}
+              {totalPages > 1 && (
+                <p className="text-center text-[11px] text-white/40 mt-2 font-inter">
+                  Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}–{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} packages · Page {safePage} of {totalPages}
+                </p>
+              )}
+            </div>
+          );
         })()}
       </div>
 
@@ -1592,8 +1652,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               {/* Main Content Area: Grid on Left, Sidebar on Right */}
               <div className="flex items-start gap-5">
-                {/* Items Grid */}
-                <div className={`flex-1 min-w-0 grid gap-5 grid-cols-1 sm:grid-cols-2 ${isItemCategorySidebarOpen ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-cols-3 xl:grid-cols-4'}`}>
+                {/* Items Grid & Pagination Container */}
+                <div className="flex-1 min-w-0 space-y-6">
                   {(() => {
                     const isAllMode = itemCategoryFilter === 'all' && !itemSearchTerm.trim();
                     let displayList: Array<{ item: CustomBoxOption; targetCategory?: string }> = [];
@@ -1628,78 +1688,130 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     if (displayList.length === 0) {
                       return (
-                        <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
+                        <div className="py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
                           <p className="text-sm font-medium">No custom items found for this category or search.</p>
                         </div>
                       );
                     }
 
-                    return displayList.map(({ item, targetCategory }) => {
-                      const primaryCat = targetCategory || item.category?.split(',')[0]?.trim() || '';
-                      const routeCat = targetCategory || primaryCat;
-                      return (
-                        <div
-                          key={item.id}
-                          className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
-                        >
-                          <div className="relative h-40 bg-black/40 overflow-hidden">
-                            <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                            {item.requiresCustomInput && (
-                              <span className="absolute top-3 left-3 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full shadow backdrop-blur-sm flex items-center gap-1">
-                                {item.customInputType === 'image' ? <Camera className="w-2.5 h-2.5 text-purple-300" /> : item.customInputType === 'both' ? <Sparkles className="w-2.5 h-2.5 text-purple-300" /> : <FileText className="w-2.5 h-2.5 text-purple-300" />}
-                                <span>{item.customInputType === 'image' ? 'Photo Required' : item.customInputType === 'both' ? 'Photo & Text' : 'Text Required'}</span>
-                              </span>
-                            )}
-                          </div>
+                    const totalPages = Math.ceil(displayList.length / ADMIN_PAGE_SIZE);
+                    const safePage = Math.min(itemPage, Math.max(totalPages, 1));
+                    const pageItems = displayList.slice((safePage - 1) * ADMIN_PAGE_SIZE, safePage * ADMIN_PAGE_SIZE);
 
-                          <div className="p-4 flex-1 flex flex-col justify-between">
-                            <div>
-                              <div className="text-[10px] text-amber-300/80 font-bold uppercase tracking-wider mb-0.5">
-                                {primaryCat}
-                              </div>
-                              <h3 className="font-podium text-base uppercase font-bold text-white">{item.name}</h3>
-                              <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{item.description}</p>
-                            </div>
-
-                            <div className="pt-4 mt-4 border-t border-white/10">
-                              <div className="flex items-center justify-between">
-                                <div className="flex flex-col gap-0.5">
-                                  <span className="font-bold text-amber-300 text-lg">ETB {item.price.toFixed(2)}</span>
-                                  {item.price_usd && item.price_usd > 0 && (
-                                    <span className="text-white/50 text-xs">USD ${item.price_usd.toFixed(2)}</span>
+                    return (
+                      <div>
+                        <div className={`grid gap-5 grid-cols-1 sm:grid-cols-2 ${isItemCategorySidebarOpen ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-cols-3 xl:grid-cols-4'}`}>
+                          {pageItems.map(({ item, targetCategory }) => {
+                            const primaryCat = targetCategory || item.category?.split(',')[0]?.trim() || '';
+                            const routeCat = targetCategory || primaryCat;
+                            return (
+                              <div
+                                key={item.id}
+                                className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
+                              >
+                                <div className="relative h-40 bg-black/40 overflow-hidden">
+                                  <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                  {item.requiresCustomInput && (
+                                    <span className="absolute top-3 left-3 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full shadow backdrop-blur-sm flex items-center gap-1">
+                                      {item.customInputType === 'image' ? <Camera className="w-2.5 h-2.5 text-purple-300" /> : item.customInputType === 'both' ? <Sparkles className="w-2.5 h-2.5 text-purple-300" /> : <FileText className="w-2.5 h-2.5 text-purple-300" />}
+                                      <span>{item.customInputType === 'image' ? 'Photo Required' : item.customInputType === 'both' ? 'Photo & Text' : 'Text Required'}</span>
+                                    </span>
                                   )}
                                 </div>
-                                <div className="flex items-center gap-2">
-                                  <button
-                                    onClick={() => handleOpenItemModal(item)}
-                                    className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
-                                  >
-                                    <Edit2 className="w-4 h-4" />
-                                  </button>
-                                  <button
-                                    onClick={() => handleDeleteItem(item.id)}
-                                    className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </button>
+
+                                <div className="p-4 flex-1 flex flex-col justify-between">
+                                  <div>
+                                    <div className="text-[10px] text-amber-300/80 font-bold uppercase tracking-wider mb-0.5">
+                                      {primaryCat}
+                                    </div>
+                                    <h3 className="font-podium text-base uppercase font-bold text-white">{item.name}</h3>
+                                    <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{item.description}</p>
+                                  </div>
+
+                                  <div className="pt-4 mt-4 border-t border-white/10">
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex flex-col gap-0.5">
+                                        <span className="font-bold text-amber-300 text-lg">ETB {item.price.toFixed(2)}</span>
+                                        {item.price_usd && item.price_usd > 0 && (
+                                          <span className="text-white/50 text-xs">USD ${item.price_usd.toFixed(2)}</span>
+                                        )}
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                        <button
+                                          onClick={() => handleOpenItemModal(item)}
+                                          className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
+                                        >
+                                          <Edit2 className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                          onClick={() => handleDeleteItem(item.id)}
+                                          className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
+                                        >
+                                          <Trash2 className="w-4 h-4" />
+                                        </button>
+                                      </div>
+                                    </div>
+
+                                    {/* See all button in All mode */}
+                                    {itemCategoryFilter === 'all' && routeCat && (
+                                      <button
+                                        onClick={() => setItemCategoryFilter(routeCat)}
+                                        className="group/sa mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 text-[11px] text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-lg transition-all cursor-pointer bg-black/20 hover:bg-black/40"
+                                      >
+                                        <span>See all {routeCat}</span>
+                                        <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
+                                      </button>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
-
-                              {/* See all button in All mode */}
-                              {itemCategoryFilter === 'all' && routeCat && (
-                                <button
-                                  onClick={() => setItemCategoryFilter(routeCat)}
-                                  className="group/sa mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 text-[11px] text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-lg transition-all cursor-pointer bg-black/20 hover:bg-black/40"
-                                >
-                                  <span>See all {routeCat}</span>
-                                  <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
-                                </button>
-                              )}
-                            </div>
-                          </div>
+                            );
+                          })}
                         </div>
-                      );
-                    });
+
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                          <div className="flex items-center justify-center gap-2 mt-8 select-none">
+                            <button
+                              onClick={() => { setItemPage((p) => Math.max(1, p - 1)); }}
+                              disabled={safePage === 1}
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+                            >
+                              <span>‹</span> Prev
+                            </button>
+                            <div className="flex items-center gap-1">
+                              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                                const isActive = p === safePage;
+                                const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
+                                if (!show) {
+                                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-white/30 text-xs px-1">…</span>;
+                                  return null;
+                                }
+                                return (
+                                  <button
+                                    key={p}
+                                    onClick={() => { setItemPage(p); }}
+                                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-black/40 border-white/15 text-white/60 hover:border-amber-400/50 hover:text-amber-300'}`}
+                                  >{p}</button>
+                                );
+                              })}
+                            </div>
+                            <button
+                              onClick={() => { setItemPage((p) => Math.min(totalPages, p + 1)); }}
+                              disabled={safePage === totalPages}
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+                            >
+                              Next <span>›</span>
+                            </button>
+                          </div>
+                        )}
+                        {totalPages > 1 && (
+                          <p className="text-center text-[11px] text-white/40 mt-2 font-inter">
+                            Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}–{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} items · Page {safePage} of {totalPages}
+                          </p>
+                        )}
+                      </div>
+                    );
                   })()}
                 </div>
 
