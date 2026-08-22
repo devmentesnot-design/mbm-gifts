@@ -26,6 +26,7 @@ import {
   Box,
   Upload,
   ArrowLeft,
+  ChevronLeft,
   ChevronRight,
   Menu,
   Image as ImageIcon,
@@ -34,7 +35,8 @@ import {
   Layers,
   Loader2,
   AlertCircle,
-  LogOut
+  LogOut,
+  ArrowRight
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -158,6 +160,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Package Search & Detailed Modal State
   const [pkgSearchTerm, setPkgSearchTerm] = useState('');
   const [pkgCategoryFilter, setPkgCategoryFilter] = useState<string>('all');
+  const [isPkgCategorySidebarOpen, setIsPkgCategorySidebarOpen] = useState(true);
   const [pkgModalOpen, setPkgModalOpen] = useState(false);
   const [editingPkg, setEditingPkg] = useState<PreparedPackage | null>(null);
   const [pkgForm, setPkgForm] = useState({
@@ -176,6 +179,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Single Custom Item Search & Modal State
   const [itemSearchTerm, setItemSearchTerm] = useState('');
   const [itemCategoryFilter, setItemCategoryFilter] = useState<string>('all');
+  const [isItemCategorySidebarOpen, setIsItemCategorySidebarOpen] = useState(true);
   const [itemModalOpen, setItemModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CustomBoxOption | null>(null);
   const [itemForm, setItemForm] = useState({
@@ -1161,151 +1165,273 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           )}
 
-          {/* TAB 3: READY-MADE PACKAGES WITH CATEGORY NAV BAR */}
+          {/* TAB 3: PACKAGES MANAGEMENT */}
           {activeTab === 'packages' && (
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
-                    Ready-made Gift Packages ({packages.length})
-                  </h2>
-                  <p className="text-white/60 text-xs font-inter mt-1">
-                    Manage curated gift bundles, dynamic package categories, and upload separate images & descriptions for each item inside.
-                  </p>
-                </div>
-                <button
-                  onClick={() => handleOpenPkgModal()}
-                  className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>+ Create Ready-made Package</span>
-                </button>
-              </div>
+  <div className="space-y-6">
+    {/* Header & Actions */}
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div>
+        <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+          Ready-made Gift Packages ({packages.length})
+        </h2>
+        <p className="text-white/60 text-xs font-inter mt-1">
+          Manage curated gift bundles, dynamic package categories, and internal sub-items.
+        </p>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative min-w-[220px]">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+          <input
+            type="text"
+            value={pkgSearchTerm}
+            onChange={(e) => setPkgSearchTerm(e.target.value)}
+            placeholder="Search packages..."
+            className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber-400"
+          />
+        </div>
+        <button
+          onClick={() => handleOpenPkgModal()}
+          className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
+        >
+          <Plus className="w-4 h-4" />
+          <span>+ Create Package</span>
+        </button>
+      </div>
+    </div>
 
-              {/* Category Sub-Navbar for Packages */}
-              <div className="bg-[#2a0508]/80 border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shadow-xl">
-                <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-thin">
-                  <button
-                    onClick={() => setPkgCategoryFilter('all')}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold font-inter whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
-                      pkgCategoryFilter === 'all'
-                        ? 'bg-amber-400 text-[#8c1119] shadow-lg scale-105 font-extrabold'
-                        : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
-                    }`}
-                  >
-                    <span>All Packages</span>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] ${pkgCategoryFilter === 'all' ? 'bg-[#8c1119] text-amber-300' : 'bg-black/40 text-white/70'}`}>
-                      {packages.length}
+    {/* Mobile: Horizontal Category Chips */}
+    <div className="flex md:hidden items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+      <button
+        onClick={() => setPkgCategoryFilter('all')}
+        className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold font-inter whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+          pkgCategoryFilter === 'all'
+            ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] font-black shadow-md'
+            : 'bg-black/30 text-white/70 border border-white/10'
+        }`}
+      >
+        <span>All</span>
+        <span className="text-[10px] opacity-80">({packages.length})</span>
+      </button>
+      {packageCategories.map((cat) => {
+        const count = packages.filter((p) =>
+          p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
+        ).length;
+        const isActive = pkgCategoryFilter.toLowerCase() === cat.name.toLowerCase();
+        return (
+          <button
+            key={cat.id}
+            onClick={() => setPkgCategoryFilter(cat.name)}
+            className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold font-inter whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+              isActive
+                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] font-black shadow-md'
+                : 'bg-black/30 text-white/70 border border-white/10'
+            }`}
+          >
+            <span>{cat.name}</span>
+            <span className="text-[10px] opacity-80">({count})</span>
+          </button>
+        );
+      })}
+    </div>
+
+    {/* Main Content Area: Grid on Left, Sidebar on Right */}
+    <div className="flex items-start gap-5">
+      {/* Packages Grid */}
+      <div className={`flex-1 min-w-0 grid gap-5 grid-cols-1 sm:grid-cols-2 ${isPkgCategorySidebarOpen ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-cols-3 xl:grid-cols-4'}`}>
+        {(() => {
+          const isAllMode = pkgCategoryFilter === 'all' && !pkgSearchTerm.trim();
+          let displayList: Array<{ pkg: PreparedPackage; targetCategory?: string }> = [];
+
+          if (isAllMode) {
+            const usedIds = new Set<string>();
+            for (const cat of packageCategories) {
+              const matching = packages.filter((p) =>
+                p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
+              );
+              if (matching.length === 0) continue;
+              const pick = matching.find((p) => !usedIds.has(p.id));
+              if (pick) {
+                usedIds.add(pick.id);
+                displayList.push({ pkg: pick, targetCategory: cat.name });
+              }
+            }
+          } else {
+            displayList = packages
+              .filter((pkg) => {
+                const matchesCategory =
+                  pkgCategoryFilter === 'all' ||
+                  pkg.category?.split(',').map((c) => c.trim().toLowerCase()).includes(pkgCategoryFilter.toLowerCase());
+                const matchesSearch =
+                  !pkgSearchTerm ||
+                  pkg.name.toLowerCase().includes(pkgSearchTerm.toLowerCase()) ||
+                  pkg.shortDesc?.toLowerCase().includes(pkgSearchTerm.toLowerCase());
+                return matchesCategory && matchesSearch;
+              })
+              .map((pkg) => ({ pkg }));
+          }
+
+          if (displayList.length === 0) {
+            return (
+              <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
+                <p className="text-sm font-medium">No packages found for this category or search.</p>
+              </div>
+            );
+          }
+
+          return displayList.map(({ pkg, targetCategory }) => {
+            const primaryCat = targetCategory || pkg.category?.split(',')[0]?.trim() || '';
+            const routeCat = targetCategory || primaryCat;
+            return (
+              <div
+                key={pkg.id}
+                className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
+              >
+                <div className="relative h-44 bg-black/40 overflow-hidden">
+                  <img src={pkg.image} alt={pkg.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  {pkg.badge && (
+                    <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full shadow">
+                      {pkg.badge}
                     </span>
-                  </button>
-
-                  {packageCategories.map((cat) => {
-                    const count = packages.filter((p) =>
-                      p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
-                    ).length;
-                    const isActive = pkgCategoryFilter.toLowerCase() === cat.name.toLowerCase();
-                    return (
-                      <button
-                        key={cat.id}
-                        onClick={() => setPkgCategoryFilter(cat.name)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold font-inter whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
-                          isActive
-                            ? 'bg-amber-400 text-[#8c1119] shadow-lg scale-105 font-extrabold'
-                            : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
-                        }`}
-                      >
-                        <span>{cat.name}</span>
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] ${isActive ? 'bg-[#8c1119] text-amber-300' : 'bg-black/40 text-white/70'}`}>
-                          {count}
-                        </span>
-                      </button>
-                    );
-                  })}
+                  )}
+                  <span className="absolute bottom-3 right-3 bg-black/80 text-amber-300 border border-white/20 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                    {pkg.itemsIncludedDetailed?.length || pkg.itemsIncluded.length} Items Inside
+                  </span>
                 </div>
 
-                <div className="relative min-w-[220px]">
-                  <Search className="w-4 h-4 absolute left-3 top-3 text-white/40" />
-                  <input
-                    type="text"
-                    value={pkgSearchTerm}
-                    onChange={(e) => setPkgSearchTerm(e.target.value)}
-                    placeholder="Search packages..."
-                    className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber-400"
-                  />
-                </div>
-              </div>
+                <div className="p-4 flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="text-[10px] text-amber-300/80 font-bold uppercase tracking-wider mb-0.5">
+                      {primaryCat}
+                    </div>
+                    <h3 className="font-podium text-lg uppercase font-bold text-white mt-1">{pkg.name}</h3>
+                    <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{pkg.shortDesc}</p>
+                  </div>
 
-              {/* Packages Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                {packages
-                  .filter((pkg) => {
-                    const matchesCategory =
-                      pkgCategoryFilter === 'all' ||
-                      pkg.category?.split(',').map((c) => c.trim().toLowerCase()).includes(pkgCategoryFilter.toLowerCase());
-                    const matchesSearch =
-                      !pkgSearchTerm ||
-                      pkg.name.toLowerCase().includes(pkgSearchTerm.toLowerCase()) ||
-                      pkg.shortDesc?.toLowerCase().includes(pkgSearchTerm.toLowerCase());
-                    return matchesCategory && matchesSearch;
-                  })
-                  .map((pkg) => (
-                    <div
-                      key={pkg.id}
-                      className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
-                    >
-                      <div className="relative h-44 bg-black/40 overflow-hidden">
-                        <img src={pkg.image} alt={pkg.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                        {pkg.badge && (
-                          <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full shadow">
-                            {pkg.badge}
-                          </span>
+                  <div className="pt-4 mt-4 border-t border-white/10">
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="font-bold text-amber-300 text-lg">ETB {pkg.price.toFixed(2)}</span>
+                        {pkg.price_usd && pkg.price_usd > 0 && (
+                          <span className="text-white/50 text-xs">USD ${pkg.price_usd.toFixed(2)}</span>
                         )}
-                        <span className="absolute bottom-3 right-3 bg-black/80 text-amber-300 border border-white/20 text-[10px] font-bold px-2 py-0.5 rounded-md">
-                          {pkg.itemsIncludedDetailed?.length || pkg.itemsIncluded.length} Items Inside
-                        </span>
                       </div>
-
-                      <div className="p-4 flex-1 flex flex-col justify-between">
-                        <div>
-                          <h3 className="font-podium text-lg uppercase font-bold text-white mt-1">{pkg.name}</h3>
-                          <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{pkg.shortDesc}</p>
-                        </div>
-
-                        <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
-                          <div className="flex flex-col gap-0.5">
-                            <span className="font-bold text-amber-300 text-lg">ETB {pkg.price.toFixed(2)}</span>
-                            {pkg.price_usd && pkg.price_usd > 0 && (
-                              <span className="text-white/50 text-xs">USD ${pkg.price_usd.toFixed(2)}</span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => handleOpenPkgModal(pkg)}
-                              className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
-                              title="Edit Package & Internal Items"
-                            >
-                              <Edit2 className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDeletePkg(pkg.id)}
-                              className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
-                              title="Delete Package"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleOpenPkgModal(pkg)}
+                          className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
+                          title="Edit Package & Internal Items"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeletePkg(pkg.id)}
+                          className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
+                          title="Delete Package"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     </div>
-                  ))}
-              </div>
-            </div>
-          )}
 
-          {/* TAB 4: SINGLE CUSTOM ITEMS WITH CATEGORY NAV BAR */}
+                    {/* See all button in All mode */}
+                    {pkgCategoryFilter === 'all' && routeCat && (
+                      <button
+                        onClick={() => setPkgCategoryFilter(routeCat)}
+                        className="group/sa mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 text-[11px] text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-lg transition-all cursor-pointer bg-black/20 hover:bg-black/40"
+                      >
+                        <span>See all {routeCat}</span>
+                        <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          });
+        })()}
+      </div>
+
+      {/* Right-Side Vertical Collapsible Category Sidebar */}
+      <aside
+        className="hidden md:flex flex-col flex-shrink-0 transition-[width] duration-300 ease-in-out overflow-hidden bg-[#240004]/80 border border-[#D9A514]/20 rounded-2xl p-2.5 shadow-xl sticky top-4"
+        style={{ width: isPkgCategorySidebarOpen ? '220px' : '48px' }}
+      >
+        {/* Sidebar Header & Toggle */}
+        <div className={`flex items-center mb-3 pb-2 border-b border-white/10 gap-2 ${isPkgCategorySidebarOpen ? 'justify-between' : 'justify-center'}`}>
+          {isPkgCategorySidebarOpen && (
+            <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542] whitespace-nowrap pl-1">
+              Categories
+            </span>
+          )}
+          <button
+            onClick={() => setIsPkgCategorySidebarOpen((prev) => !prev)}
+            title={isPkgCategorySidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+            className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b0003] border border-[#D9A514]/30 hover:border-[#F5C542] text-[#FFF8ED]/80 hover:text-[#F5C542] transition-all cursor-pointer flex-shrink-0 shadow"
+          >
+            {isPkgCategorySidebarOpen ? (
+              <ChevronRight className="w-3.5 h-3.5" />
+            ) : (
+              <ChevronLeft className="w-3.5 h-3.5" />
+            )}
+          </button>
+        </div>
+
+        {/* Categories List */}
+        <div
+          className="flex flex-col gap-1.5 overflow-y-auto max-h-[65vh] pr-0.5"
+          style={{
+            opacity: isPkgCategorySidebarOpen ? 1 : 0,
+            pointerEvents: isPkgCategorySidebarOpen ? 'auto' : 'none',
+            transition: 'opacity 200ms ease',
+          }}
+        >
+          <button
+            onClick={() => setPkgCategoryFilter('all')}
+            className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+              pkgCategoryFilter === 'all'
+                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+            }`}
+          >
+            <span className="truncate">All Packages</span>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${pkgCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+              {packages.length}
+            </span>
+          </button>
+
+          {packageCategories.map((cat) => {
+            const count = packages.filter((p) =>
+              p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
+            ).length;
+            const isActive = pkgCategoryFilter.toLowerCase() === cat.name.toLowerCase();
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setPkgCategoryFilter(cat.name)}
+                className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                  isActive
+                    ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                    : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                }`}
+              >
+                <span className="truncate">{cat.name}</span>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </aside>
+    </div>
+  </div>
+)}
+
+          {/* TAB 4: SINGLE CUSTOM ITEMS WITH RIGHT CATEGORY SIDEBAR */}
           {activeTab === 'customItems' && (
             <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              {/* Header & Actions */}
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div>
                   <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
                     Single Custom Gift Items ({customItems.length})
@@ -1314,121 +1440,241 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     Upload and manage individual item options for custom box builders, categorized using your Category Menu.
                   </p>
                 </div>
-                <button
-                  onClick={() => handleOpenItemModal()}
-                  className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>+ Add Single Item</span>
-                </button>
-              </div>
-
-              {/* Category Sub-Navbar for Single Items */}
-              <div className="bg-[#2a0508]/80 border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shadow-xl">
-                <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-thin">
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="relative min-w-[220px]">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+                    <input
+                      type="text"
+                      value={itemSearchTerm}
+                      onChange={(e) => setItemSearchTerm(e.target.value)}
+                      placeholder="Search custom items..."
+                      className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
                   <button
-                    onClick={() => setItemCategoryFilter('all')}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold font-inter whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
-                      itemCategoryFilter === 'all'
-                        ? 'bg-amber-400 text-[#8c1119] shadow-lg scale-105 font-extrabold'
-                        : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
-                    }`}
+                    onClick={() => handleOpenItemModal()}
+                    className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
                   >
-                    <span>All Items</span>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] ${itemCategoryFilter === 'all' ? 'bg-[#8c1119] text-amber-300' : 'bg-black/40 text-white/70'}`}>
-                      {customItems.length}
-                    </span>
+                    <Plus className="w-4 h-4" />
+                    <span>+ Add Single Item</span>
                   </button>
-
-                  {customItemCategories.map((cat) => {
-                    const count = customItems.filter((i) =>
-                      i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
-                    ).length;
-                    const isActive = itemCategoryFilter.toLowerCase() === cat.name.toLowerCase();
-                    return (
-                      <button
-                        key={cat.id}
-                        onClick={() => setItemCategoryFilter(cat.name)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold font-inter whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
-                          isActive
-                            ? 'bg-amber-400 text-[#8c1119] shadow-lg scale-105 font-extrabold'
-                            : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
-                        }`}
-                      >
-                        <span>{cat.name}</span>
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] ${isActive ? 'bg-[#8c1119] text-amber-300' : 'bg-black/40 text-white/70'}`}>
-                          {count}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="relative min-w-[220px]">
-                  <Search className="w-4 h-4 absolute left-3 top-3 text-white/40" />
-                  <input
-                    type="text"
-                    value={itemSearchTerm}
-                    onChange={(e) => setItemSearchTerm(e.target.value)}
-                    placeholder="Search custom items..."
-                    className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber-400"
-                  />
                 </div>
               </div>
 
-              {/* Items Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                {customItems
-                  .filter((item) => {
-                    const matchesCategory =
-                      itemCategoryFilter === 'all' ||
-                      item.category?.split(',').map((c) => c.trim().toLowerCase()).includes(itemCategoryFilter.toLowerCase());
-                    const matchesSearch =
-                      !itemSearchTerm ||
-                      item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
-                      item.description?.toLowerCase().includes(itemSearchTerm.toLowerCase());
-                    return matchesCategory && matchesSearch;
-                  })
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
+              {/* Mobile: Horizontal Category Chips */}
+              <div className="flex md:hidden items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+                <button
+                  onClick={() => setItemCategoryFilter('all')}
+                  className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold font-inter whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+                    itemCategoryFilter === 'all'
+                      ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] font-black shadow-md'
+                      : 'bg-black/30 text-white/70 border border-white/10'
+                  }`}
+                >
+                  <span>All</span>
+                  <span className="text-[10px] opacity-80">({customItems.length})</span>
+                </button>
+                {customItemCategories.map((cat) => {
+                  const count = customItems.filter((i) =>
+                    i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
+                  ).length;
+                  const isActive = itemCategoryFilter.toLowerCase() === cat.name.toLowerCase();
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => setItemCategoryFilter(cat.name)}
+                      className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold font-inter whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+                        isActive
+                          ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] font-black shadow-md'
+                          : 'bg-black/30 text-white/70 border border-white/10'
+                      }`}
                     >
-                      <div className="relative h-40 bg-black/40 overflow-hidden">
-                        <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      </div>
+                      <span>{cat.name}</span>
+                      <span className="text-[10px] opacity-80">({count})</span>
+                    </button>
+                  );
+                })}
+              </div>
 
-                      <div className="p-4 flex-1 flex flex-col justify-between">
-                        <div>
-                          <h3 className="font-podium text-base uppercase font-bold text-white">{item.name}</h3>
-                          <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{item.description}</p>
-                        </div>
+              {/* Main Content Area: Grid on Left, Sidebar on Right */}
+              <div className="flex items-start gap-5">
+                {/* Items Grid */}
+                <div className={`flex-1 min-w-0 grid gap-5 grid-cols-1 sm:grid-cols-2 ${isItemCategorySidebarOpen ? 'lg:grid-cols-2 xl:grid-cols-3' : 'lg:grid-cols-3 xl:grid-cols-4'}`}>
+                  {(() => {
+                    const isAllMode = itemCategoryFilter === 'all' && !itemSearchTerm.trim();
+                    let displayList: Array<{ item: CustomBoxOption; targetCategory?: string }> = [];
 
-                        <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
-                          <div className="flex flex-col gap-0.5">
-                            <span className="font-bold text-amber-300 text-lg">ETB {item.price.toFixed(2)}</span>
-                            {item.price_usd && item.price_usd > 0 && (
-                              <span className="text-white/50 text-xs">USD ${item.price_usd.toFixed(2)}</span>
-                            )}
+                    if (isAllMode) {
+                      const usedIds = new Set<string>();
+                      for (const cat of customItemCategories) {
+                        const matching = customItems.filter((i) =>
+                          i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
+                        );
+                        if (matching.length === 0) continue;
+                        const pick = matching.find((i) => !usedIds.has(i.id));
+                        if (pick) {
+                          usedIds.add(pick.id);
+                          displayList.push({ item: pick, targetCategory: cat.name });
+                        }
+                      }
+                    } else {
+                      displayList = customItems
+                        .filter((item) => {
+                          const matchesCategory =
+                            itemCategoryFilter === 'all' ||
+                            item.category?.split(',').map((c) => c.trim().toLowerCase()).includes(itemCategoryFilter.toLowerCase());
+                          const matchesSearch =
+                            !itemSearchTerm ||
+                            item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
+                            item.description?.toLowerCase().includes(itemSearchTerm.toLowerCase());
+                          return matchesCategory && matchesSearch;
+                        })
+                        .map((item) => ({ item }));
+                    }
+
+                    if (displayList.length === 0) {
+                      return (
+                        <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
+                          <p className="text-sm font-medium">No custom items found for this category or search.</p>
+                        </div>
+                      );
+                    }
+
+                    return displayList.map(({ item, targetCategory }) => {
+                      const primaryCat = targetCategory || item.category?.split(',')[0]?.trim() || '';
+                      const routeCat = targetCategory || primaryCat;
+                      return (
+                        <div
+                          key={item.id}
+                          className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
+                        >
+                          <div className="relative h-40 bg-black/40 overflow-hidden">
+                            <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           </div>
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => handleOpenItemModal(item)}
-                              className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
-                            >
-                              <Edit2 className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteItem(item.id)}
-                              className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+
+                          <div className="p-4 flex-1 flex flex-col justify-between">
+                            <div>
+                              <div className="text-[10px] text-amber-300/80 font-bold uppercase tracking-wider mb-0.5">
+                                {primaryCat}
+                              </div>
+                              <h3 className="font-podium text-base uppercase font-bold text-white">{item.name}</h3>
+                              <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{item.description}</p>
+                            </div>
+
+                            <div className="pt-4 mt-4 border-t border-white/10">
+                              <div className="flex items-center justify-between">
+                                <div className="flex flex-col gap-0.5">
+                                  <span className="font-bold text-amber-300 text-lg">ETB {item.price.toFixed(2)}</span>
+                                  {item.price_usd && item.price_usd > 0 && (
+                                    <span className="text-white/50 text-xs">USD ${item.price_usd.toFixed(2)}</span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={() => handleOpenItemModal(item)}
+                                    className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
+                                  >
+                                    <Edit2 className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteItem(item.id)}
+                                    className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* See all button in All mode */}
+                              {itemCategoryFilter === 'all' && routeCat && (
+                                <button
+                                  onClick={() => setItemCategoryFilter(routeCat)}
+                                  className="group/sa mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 text-[11px] text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-lg transition-all cursor-pointer bg-black/20 hover:bg-black/40"
+                                >
+                                  <span>See all {routeCat}</span>
+                                  <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
+                                </button>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  ))}
+                      );
+                    });
+                  })()}
+                </div>
+
+                {/* Right-Side Vertical Collapsible Category Sidebar */}
+                <aside
+                  className="hidden md:flex flex-col flex-shrink-0 transition-[width] duration-300 ease-in-out overflow-hidden bg-[#240004]/80 border border-[#D9A514]/20 rounded-2xl p-2.5 shadow-xl sticky top-4"
+                  style={{ width: isItemCategorySidebarOpen ? '220px' : '48px' }}
+                >
+                  {/* Sidebar Header & Toggle */}
+                  <div className={`flex items-center mb-3 pb-2 border-b border-white/10 gap-2 ${isItemCategorySidebarOpen ? 'justify-between' : 'justify-center'}`}>
+                    {isItemCategorySidebarOpen && (
+                      <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542] whitespace-nowrap pl-1">
+                        Categories
+                      </span>
+                    )}
+                    <button
+                      onClick={() => setIsItemCategorySidebarOpen((prev) => !prev)}
+                      title={isItemCategorySidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+                      className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b0003] border border-[#D9A514]/30 hover:border-[#F5C542] text-[#FFF8ED]/80 hover:text-[#F5C542] transition-all cursor-pointer flex-shrink-0 shadow"
+                    >
+                      {isItemCategorySidebarOpen ? (
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      ) : (
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Categories List */}
+                  <div
+                    className="flex flex-col gap-1.5 overflow-y-auto max-h-[65vh] pr-0.5"
+                    style={{
+                      opacity: isItemCategorySidebarOpen ? 1 : 0,
+                      pointerEvents: isItemCategorySidebarOpen ? 'auto' : 'none',
+                      transition: 'opacity 200ms ease',
+                    }}
+                  >
+                    <button
+                      onClick={() => setItemCategoryFilter('all')}
+                      className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                        itemCategoryFilter === 'all'
+                          ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                          : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                      }`}
+                    >
+                      <span className="truncate">All Items</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${itemCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                        {customItems.length}
+                      </span>
+                    </button>
+
+                    {customItemCategories.map((cat) => {
+                      const count = customItems.filter((i) =>
+                        i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
+                      ).length;
+                      const isActive = itemCategoryFilter.toLowerCase() === cat.name.toLowerCase();
+                      return (
+                        <button
+                          key={cat.id}
+                          onClick={() => setItemCategoryFilter(cat.name)}
+                          className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                            isActive
+                              ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                              : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                          }`}
+                        >
+                          <span className="truncate">{cat.name}</span>
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </aside>
               </div>
             </div>
           )}

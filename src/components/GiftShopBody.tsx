@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, CUSTOM_ITEMS, PREPARED_PACKAGES } from '../data/giftsData';
-import { ShoppingBag, Star, Eye, X, Check, Search, Filter, Plus, Minus, PackageCheck, Sparkles, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShoppingBag, Star, Eye, X, Check, Search, Filter, Plus, Minus, PackageCheck, Sparkles, ChevronDown, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useMarket } from '../context/MarketContext';
 import { formatPrice } from '../utils/currency';
@@ -233,6 +233,44 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     return result;
   }, [customItems, activeCategory, searchTerm, sortBy, categories, buyerMarket]);
 
+  // In "All" mode: select exactly ONE representative item per category
+  const onePackagePerCategory = useMemo(() => {
+    const nonAll = dynamicCategories.filter(c => c !== 'All');
+    const result: Array<{ pkg: PreparedPackage; category: string }> = [];
+    const usedIds = new Set<string>();
+
+    for (const cat of nonAll) {
+      const matching = packages.filter(p => isCategoryMatch(p.category, cat));
+      if (matching.length === 0) continue;
+      // Pick an available item not already chosen for another category
+      const pick = matching.find(p => !usedIds.has(p.id));
+      if (pick) {
+        usedIds.add(pick.id);
+        result.push({ pkg: pick, category: cat });
+      }
+    }
+    return result;
+  }, [dynamicCategories, packages, categories]);
+
+  // In "All" mode: select exactly ONE representative custom item per category (e.g. 1 drink, 1 flower)
+  const oneCustomItemPerCategory = useMemo(() => {
+    const nonAll = dynamicCategories.filter(c => c !== 'All');
+    const result: Array<{ item: CustomBoxOption; category: string }> = [];
+    const usedIds = new Set<string>();
+
+    for (const cat of nonAll) {
+      const matching = customItems.filter(i => isCategoryMatch(i.category, cat));
+      if (matching.length === 0) continue;
+      // Pick an available item not already chosen for another category
+      const pick = matching.find(i => !usedIds.has(i.id));
+      if (pick) {
+        usedIds.add(pick.id);
+        result.push({ item: pick, category: cat });
+      }
+    }
+    return result;
+  }, [dynamicCategories, customItems, categories]);
+
   const handleModalAdd = () => {
     if (selectedModalPkg) {
       onAddToCartPrepared(selectedModalPkg, giftNote);
@@ -316,168 +354,97 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     }
   };
 
-  const renderPackagesView = () => (
-    <div className={`grid gap-2 sm:gap-3.5 md:gap-4 grid-cols-2 ${isSidebarOpen ? 'md:grid-cols-3 lg:grid-cols-4' : 'md:grid-cols-4 lg:grid-cols-5'}`}>
-      {filteredPackages.map((pkg) => (
-        <div
-          key={pkg.id}
-          className="group relative luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl overflow-hidden flex flex-col justify-between w-full shadow-lg"
-        >
-          {/* Square Image Container with Inner Border */}
-          <div className="p-1.5 sm:p-2.5">
-            <div 
-              className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
-              onClick={() => handlePackageClick(pkg)}
-            >
-              <img
-                src={pkg.image}
-                alt={pkg.name}
-                className="absolute inset-0 w-full h-full object-contain p-1.5 sm:p-2.5 group-hover:scale-105 transition-transform duration-700"
-              />
-              {pkg.badge && (
-                <span className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] text-[8px] sm:text-[10px] font-black tracking-wider sm:tracking-widest px-1.5 sm:px-2.5 py-0.5 sm:py-1 uppercase rounded-full shadow-md z-10">
-                  {pkg.badge}
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Content Area */}
-          <div className="p-2 sm:p-4 pt-0 flex-1 flex flex-col justify-between">
-            <div className="cursor-pointer" onClick={() => handlePackageClick(pkg)}>
-              <div className="text-[9px] sm:text-[10px] text-amber-300/90 font-bold uppercase tracking-wider truncate mb-0.5">
-                {pkg.category?.includes(',') ? pkg.category.split(',')[0].trim() : pkg.category}
-              </div>
-              <h3 className="font-podium text-xs sm:text-lg uppercase font-bold text-white tracking-wide mb-1 group-hover:text-amber-300 transition-colors line-clamp-1">
-                {pkg.name}
-              </h3>
-              <p className="text-white/60 text-[10px] sm:text-[12px] font-inter line-clamp-2 leading-tight sm:leading-relaxed mb-2 sm:mb-3">
-                {pkg.shortDesc}
-              </p>
-            </div>
-            
-            <div className="pt-2 sm:pt-3 mt-auto border-t border-white/10 z-20">
-              <div className="flex items-center justify-between gap-1 mb-1.5 sm:mb-2.5">
-                <span className="text-xs sm:text-xl font-bold font-inter text-amber-300">
-                  {formatPrice(getPkgPrice(pkg), currency)}
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row items-stretch gap-1 sm:gap-2">
-                {/* Details Button */}
-                <button
-                  onClick={(e) => { e.stopPropagation(); handlePackageClick(pkg); }}
-                  className="flex-1 bg-black/50 hover:bg-black/80 text-amber-300 border border-amber-400/40 hover:border-amber-400 px-1.5 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer shadow-sm"
-                  title="View Package Details"
-                >
-                  <Eye className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
-                  <span>Details</span>
-                </button>
-
-                {/* Add to Cart Button */}
-                <button
-                  onClick={(e) => { e.stopPropagation(); onAddToCartPrepared(pkg); }}
-                  className="flex-1 bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-1.5 sm:px-3 py-1 sm:py-2 text-[9px] sm:text-xs font-inter uppercase tracking-wider rounded-md sm:rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer shadow-md shadow-amber-400/20"
-                  title="Add to Cart"
-                >
-                  <ShoppingBag className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
-                  <span>Add</span>
-                </button>
-              </div>
-            </div>
+  // Helper: renders a single package card
+  const renderPkgCard = (pkg: PreparedPackage, targetCategory?: string) => {
+    const cats = pkg.category?.split(',').map(c => c.trim()).filter(Boolean) || [];
+    const primaryCategory = targetCategory || cats[0] || (pkg.category ?? '');
+    const routeCategory = targetCategory || cats[0] || primaryCategory;
+    return (
+      <div
+        key={pkg.id}
+        className="group relative luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl overflow-hidden flex flex-col justify-between w-full shadow-lg"
+      >
+        <div className="p-1.5 sm:p-2.5">
+          <div
+            className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
+            onClick={() => handlePackageClick(pkg)}
+          >
+            <img
+              src={pkg.image}
+              alt={pkg.name}
+              className="absolute inset-0 w-full h-full object-contain p-1.5 sm:p-2.5 group-hover:scale-105 transition-transform duration-700"
+            />
+            {pkg.badge && (
+              <span className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] text-[8px] sm:text-[10px] font-black tracking-wider sm:tracking-widest px-1.5 sm:px-2.5 py-0.5 sm:py-1 uppercase rounded-full shadow-md z-10">
+                {pkg.badge}
+              </span>
+            )}
           </div>
         </div>
-      ))}
-      {filteredPackages.length === 0 && (
-        <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
-          <p className="text-sm font-medium mb-2">No gift packages matched your search criteria.</p>
-          {searchTerm && (
-            <button
-              onClick={() => { setSearchTerm(''); setActiveCategory('All'); }}
-              className="text-xs text-amber-300 hover:text-amber-200 underline font-bold uppercase tracking-wider cursor-pointer"
-            >
-              Clear filters and search
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  );
-
-  const renderBuildView = () => (
-    <div className="pb-32">
-      <div className={`grid gap-2 sm:gap-3.5 grid-cols-2 ${isSidebarOpen ? 'md:grid-cols-3 xl:grid-cols-4' : 'md:grid-cols-4 xl:grid-cols-5'}`}>
-        {filteredCustomItems.map(item => {
-          const qty = customCart[item.id] || 0;
-          return (
-            <div key={item.id} className="group luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl p-2 sm:p-3.5 flex flex-col justify-between w-full shadow-lg">
-              {/* Square Image Container with Inner Border */}
-              <div 
-                onClick={() => setSelectedCustomItemModal(item)}
-                className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
+        <div className="p-2 sm:p-4 pt-0 flex-1 flex flex-col justify-between">
+          <div className="cursor-pointer" onClick={() => handlePackageClick(pkg)}>
+            <div className="text-[9px] sm:text-[10px] text-amber-300/90 font-bold uppercase tracking-wider truncate mb-0.5">
+              {primaryCategory}
+            </div>
+            <h3 className="font-podium text-xs sm:text-lg uppercase font-bold text-white tracking-wide mb-1 group-hover:text-amber-300 transition-colors line-clamp-1">
+              {pkg.name}
+            </h3>
+            <p className="text-white/60 text-[10px] sm:text-[12px] font-inter line-clamp-2 leading-tight sm:leading-relaxed mb-2 sm:mb-3">
+              {pkg.shortDesc}
+            </p>
+          </div>
+          <div className="pt-2 sm:pt-3 mt-auto border-t border-white/10 z-20">
+            <div className="flex items-center justify-between gap-1 mb-1.5 sm:mb-2.5">
+              <span className="text-xs sm:text-xl font-bold font-inter text-amber-300">
+                {formatPrice(getPkgPrice(pkg), currency)}
+              </span>
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch gap-1 sm:gap-2">
+              <button
+                onClick={(e) => { e.stopPropagation(); handlePackageClick(pkg); }}
+                className="flex-1 bg-black/50 hover:bg-black/80 text-amber-300 border border-amber-400/40 hover:border-amber-400 px-1.5 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer shadow-sm"
+                title="View Package Details"
               >
-                <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-contain p-1.5 sm:p-2.5 group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="bg-[#230005]/90 text-[#F5C542] border border-[#D9A514]/50 text-[9px] sm:text-[11px] font-bold uppercase tracking-wider px-2 sm:px-3 py-1 sm:py-1.5 rounded-full flex items-center gap-1 shadow-lg backdrop-blur-sm">
-                    <Eye className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#F5C542]" />
-                    <span className="hidden sm:inline">View Details</span>
-                  </span>
-                </div>
-              </div>
-
-              {/* Title & Category Info */}
-              <div className="mt-2 sm:mt-3 cursor-pointer flex-1 flex flex-col" onClick={() => setSelectedCustomItemModal(item)}>
-                <div className="text-[9px] sm:text-[10px] text-amber-300/90 font-bold uppercase tracking-wider truncate mb-0.5">
-                  {item.category?.includes(',') ? item.category.split(',')[0].trim() : item.category}
-                </div>
-                <div className="font-podium font-bold text-xs sm:text-base text-white uppercase line-clamp-1 group-hover:text-amber-300 transition-colors">{item.name}</div>
-                <p className="text-white/60 text-[10px] sm:text-xs font-inter line-clamp-2 mt-0.5 sm:mt-1 leading-tight sm:leading-snug">{item.description}</p>
-              </div>
-              
-              {/* Price & Responsive Action Controls */}
-              <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-white/10">
-                <div className="flex items-center justify-between gap-1 mb-1.5 sm:mb-2.5">
-                  <span className="font-inter font-bold text-xs sm:text-lg text-amber-300">
-                    {formatPrice(getItemPrice(item), currency)}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1 sm:gap-2">
-                  {/* View Details Button */}
-                  <button
-                    onClick={() => setSelectedCustomItemModal(item)}
-                    className="flex-1 bg-black/40 hover:bg-black/70 text-amber-300 border border-amber-400/30 hover:border-amber-400 px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap shadow-sm"
-                    title="View Item Details"
-                  >
-                    <Eye className="w-3 sm:w-4 h-3 sm:h-4 text-amber-300" />
-                    <span className="hidden sm:inline">Details</span>
-                  </button>
-
-                  {/* Quantity Counter */}
-                  <div className="flex items-center border border-white/20 rounded-md sm:rounded-lg overflow-hidden bg-black/40">
-                    <button 
-                      onClick={() => handleCustomQtyChange(item.id, -1)} 
-                      className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
-                      title="Decrease quantity"
-                    >
-                      <Minus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
-                    </button>
-                    <span className="w-5 sm:w-7 text-center text-xs sm:text-sm font-bold text-white font-inter">{qty}</span>
-                    <button 
-                      onClick={() => handleCustomQtyChange(item.id, 1)} 
-                      className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
-                      title="Increase quantity"
-                    >
-                      <Plus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
+                <Eye className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                <span>Details</span>
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); onAddToCartPrepared(pkg); }}
+                className="flex-1 bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-1.5 sm:px-3 py-1 sm:py-2 text-[9px] sm:text-xs font-inter uppercase tracking-wider rounded-md sm:rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer shadow-md shadow-amber-400/20"
+                title="Add to Cart"
+              >
+                <ShoppingBag className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                <span>Add</span>
+              </button>
             </div>
-          );
-        })}
-        {filteredCustomItems.length === 0 && (
+            {/* See all button at bottom of card — shown when in 'All' browse */}
+            {activeCategory === 'All' && routeCategory && (
+              <button
+                onClick={(e) => { e.stopPropagation(); setActiveCategory(routeCategory); }}
+                className="group/sa mt-2 w-full flex items-center justify-center gap-1.5 py-1 text-[10px] sm:text-xs text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-md transition-all cursor-pointer bg-black/20 hover:bg-black/40"
+              >
+                <span>See all {routeCategory}</span>
+                <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderPackagesView = () => {
+    const isAllMode = activeCategory === 'All' && !searchTerm.trim();
+    const itemsToRender = isAllMode
+      ? onePackagePerCategory.map(({ pkg, category }) => renderPkgCard(pkg, category))
+      : filteredPackages.map((pkg) => renderPkgCard(pkg));
+
+    return (
+      <div className={`grid gap-2 sm:gap-3.5 md:gap-4 grid-cols-2 ${isSidebarOpen ? 'md:grid-cols-3 lg:grid-cols-4' : 'md:grid-cols-4 lg:grid-cols-5'}`}>
+        {itemsToRender}
+        {itemsToRender.length === 0 && (
           <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
-            <p className="text-sm font-medium mb-2">No custom items matched your search criteria.</p>
+            <p className="text-sm font-medium mb-2">No gift packages matched your search criteria.</p>
             {searchTerm && (
               <button
                 onClick={() => { setSearchTerm(''); setActiveCategory('All'); }}
@@ -489,46 +456,141 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           </div>
         )}
       </div>
+    );
+  };
 
-      {/* Floating Tag Summary Panel */}
-      <div className={`fixed sm:right-6 sm:bottom-6 bottom-0 left-0 sm:left-auto z-40 bg-[#EFE3C8] border-t sm:border border-[#D8C58E] sm:rounded-tl-xl sm:rounded-tr-xl sm:rounded-bl-xl sm:rounded-br-[26px] p-4 sm:p-5 shadow-[0_16px_40px_rgba(31,43,36,0.3)] font-inter w-full sm:w-64 transition-all duration-300 ${mode === 'build' ? 'translate-y-0 opacity-100 sm:rotate-[-2deg] hover:rotate-0' : 'translate-y-full opacity-0 pointer-events-none'}`}>
-        {/* Decorative Tag Hole (Desktop only visually better) */}
-        <div className="hidden sm:block absolute left-4 top-4 w-3.5 h-3.5 rounded-full bg-black/90 border-2 border-[#B79D5D] shadow-inner z-10" />
-        <div className="hidden sm:block absolute left-[-6px] top-[14px] w-5 h-0.5 bg-gradient-to-r from-[#8c1119] via-[#8c1119] to-transparent rotate-[35deg]" />
-        
-        <div className="sm:pl-6 relative z-10 flex flex-col max-h-[60vh]">
-          <div className="text-[10px] uppercase tracking-widest text-[#6E5B2B] font-bold mb-1">Your gift box</div>
-          <div className="text-xs text-[#5A4C22] mb-1.5 font-medium">{customCartSummary.count} item{customCartSummary.count !== 1 ? 's' : ''}</div>
-          <div className="font-podium font-bold text-2xl text-[#163830] leading-none mb-3 border-b border-[#D8C58E] pb-3">
-            {formatPrice(customCartSummary.total, currency)}
+  // Helper: renders a single custom item card
+  const renderCustomItemCard = (item: CustomBoxOption, assignedCategory?: string) => {
+    const qty = customCart[item.id] || 0;
+    const cats = item.category?.split(',').map(c => c.trim()).filter(Boolean) || [];
+    const primaryCategory = assignedCategory || cats[0] || (item.category ?? '');
+    const routeCategory = assignedCategory || (cats.length > 1 ? cats[Math.floor(Math.random() * cats.length)] : primaryCategory);
+    return (
+      <div key={item.id} className="group luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl p-2 sm:p-3.5 flex flex-col justify-between w-full shadow-lg">
+        <div
+          onClick={() => setSelectedCustomItemModal(item)}
+          className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
+        >
+          <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-contain p-1.5 sm:p-2.5 group-hover:scale-105 transition-transform duration-500" />
+          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <span className="bg-[#230005]/90 text-[#F5C542] border border-[#D9A514]/50 text-[9px] sm:text-[11px] font-bold uppercase tracking-wider px-2 sm:px-3 py-1 sm:py-1.5 rounded-full flex items-center gap-1 shadow-lg backdrop-blur-sm">
+              <Eye className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#F5C542]" />
+              <span className="hidden sm:inline">View Details</span>
+            </span>
           </div>
-          
-          <div className="overflow-y-auto pr-1 mb-3 space-y-1 scrollbar-hide text-[11px] text-[#5A4C22] font-medium leading-tight">
-            {Object.entries(customCart).map(([id, qty]) => {
-              const item = customItems.find(i => i.id === id);
-              if (!item) return null;
-              return (
-                <div key={id} className="flex justify-between gap-2">
-                  <span className="truncate">{qty}x {item.name}</span>
-                </div>
-              );
-            })}
+        </div>
+        <div className="mt-2 sm:mt-3 cursor-pointer flex-1 flex flex-col" onClick={() => setSelectedCustomItemModal(item)}>
+          <div className="text-[9px] sm:text-[10px] text-amber-300/90 font-bold uppercase tracking-wider truncate mb-0.5">
+            {primaryCategory}
           </div>
-          
-          {customCartSummary.count === 0 ? (
-            <div className="text-[11px] text-[#7A6A38] font-medium pt-1">Add items to start building</div>
-          ) : (
-            <button 
-              onClick={handleAddCustomBoxToCart}
-              className="w-full bg-[#8c1119] hover:bg-[#6e0d13] text-white font-bold text-[13px] uppercase tracking-wider py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-md mt-auto"
+          <div className="font-podium font-bold text-xs sm:text-base text-white uppercase line-clamp-1 group-hover:text-amber-300 transition-colors">{item.name}</div>
+          <p className="text-white/60 text-[10px] sm:text-xs font-inter line-clamp-2 mt-0.5 sm:mt-1 leading-tight sm:leading-snug">{item.description}</p>
+        </div>
+        <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-white/10">
+          <div className="flex items-center justify-between gap-1 mb-1.5 sm:mb-2.5">
+            <span className="font-inter font-bold text-xs sm:text-lg text-amber-300">
+              {formatPrice(getItemPrice(item), currency)}
+            </span>
+          </div>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <button
+              onClick={() => setSelectedCustomItemModal(item)}
+              className="flex-1 bg-black/40 hover:bg-black/70 text-amber-300 border border-amber-400/30 hover:border-amber-400 px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap shadow-sm"
+              title="View Item Details"
             >
-              Add box to cart
+              <Eye className="w-3 sm:w-4 h-3 sm:h-4 text-amber-300" />
+              <span className="hidden sm:inline">Details</span>
+            </button>
+            <div className="flex items-center border border-white/20 rounded-md sm:rounded-lg overflow-hidden bg-black/40">
+              <button onClick={() => handleCustomQtyChange(item.id, -1)} className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer" title="Decrease quantity">
+                <Minus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+              </button>
+              <span className="w-5 sm:w-7 text-center text-xs sm:text-sm font-bold text-white font-inter">{qty}</span>
+              <button onClick={() => handleCustomQtyChange(item.id, 1)} className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer" title="Increase quantity">
+                <Plus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+              </button>
+            </div>
+          </div>
+          {/* See all button at bottom of card — shown when in 'All' browse */}
+          {activeCategory === 'All' && routeCategory && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setActiveCategory(routeCategory); }}
+              className="group/sa mt-2 w-full flex items-center justify-center gap-1.5 py-1 text-[10px] sm:text-xs text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-md transition-all cursor-pointer bg-black/20 hover:bg-black/40"
+            >
+              <span>See all {routeCategory}</span>
+              <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
             </button>
           )}
         </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  const renderBuildView = () => {
+    const isAllMode = activeCategory === 'All' && !searchTerm.trim();
+    const itemsToRender = isAllMode
+      ? oneCustomItemPerCategory.map(({ item, category }) => renderCustomItemCard(item, category))
+      : filteredCustomItems.map((item) => renderCustomItemCard(item));
+
+    return (
+      <div className="pb-32">
+        <div className={`grid gap-2 sm:gap-3.5 grid-cols-2 ${isSidebarOpen ? 'md:grid-cols-3 xl:grid-cols-4' : 'md:grid-cols-4 xl:grid-cols-5'}`}>
+          {itemsToRender}
+          {itemsToRender.length === 0 && (
+            <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
+              <p className="text-sm font-medium mb-2">No custom items matched your search criteria.</p>
+              {searchTerm && (
+                <button
+                  onClick={() => { setSearchTerm(''); setActiveCategory('All'); }}
+                  className="text-xs text-amber-300 hover:text-amber-200 underline font-bold uppercase tracking-wider cursor-pointer"
+                >
+                  Clear filters and search
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Floating Tag Summary Panel */}
+        <div className={`fixed sm:right-6 sm:bottom-6 bottom-0 left-0 sm:left-auto z-40 bg-[#EFE3C8] border-t sm:border border-[#D8C58E] sm:rounded-tl-xl sm:rounded-tr-xl sm:rounded-bl-xl sm:rounded-br-[26px] p-4 sm:p-5 shadow-[0_16px_40px_rgba(31,43,36,0.3)] font-inter w-full sm:w-64 transition-all duration-300 ${mode === 'build' ? 'translate-y-0 opacity-100 sm:rotate-[-2deg] hover:rotate-0' : 'translate-y-full opacity-0 pointer-events-none'}`}>
+          {/* Decorative Tag Hole (Desktop only visually better) */}
+          <div className="hidden sm:block absolute left-4 top-4 w-3.5 h-3.5 rounded-full bg-black/90 border-2 border-[#B79D5D] shadow-inner z-10" />
+          <div className="hidden sm:block absolute left-[-6px] top-[14px] w-5 h-0.5 bg-gradient-to-r from-[#8c1119] via-[#8c1119] to-transparent rotate-[35deg]" />
+          
+          <div className="sm:pl-6 relative z-10 flex flex-col max-h-[60vh]">
+            <div className="text-[10px] uppercase tracking-widest text-[#6E5B2B] font-bold mb-1">Your gift box</div>
+            <div className="text-xs text-[#5A4C22] mb-1.5 font-medium">{customCartSummary.count} item{customCartSummary.count !== 1 ? 's' : ''}</div>
+            <div className="font-podium font-bold text-2xl text-[#163830] leading-none mb-3 border-b border-[#D8C58E] pb-3">
+              {formatPrice(customCartSummary.total, currency)}
+            </div>
+            
+            <div className="overflow-y-auto pr-1 mb-3 space-y-1 scrollbar-hide text-[11px] text-[#5A4C22] font-medium leading-tight">
+              {Object.entries(customCart).map(([id, qty]) => {
+                const item = customItems.find(i => i.id === id);
+                if (!item) return null;
+                return (
+                  <div key={id} className="flex justify-between gap-2">
+                    <span className="truncate">{qty}x {item.name}</span>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {customCartSummary.count === 0 ? (
+              <div className="text-[11px] text-[#7A6A38] font-medium pt-1">Add items to start building</div>
+            ) : (
+              <button 
+                onClick={handleAddCustomBoxToCart}
+                className="w-full bg-[#8c1119] hover:bg-[#6e0d13] text-white font-bold text-[13px] uppercase tracking-wider py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-md mt-auto"
+              >
+                Add box to cart
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section id="packages" className="w-full px-2 sm:px-6 md:px-10 lg:px-16 py-10 sm:py-16 lg:py-24 bg-[#2B0005]/40 backdrop-blur-[2px] border-t border-b border-[#D9A514]/15 relative">
