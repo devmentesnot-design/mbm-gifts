@@ -15,20 +15,34 @@ export interface CartItemPrepared {
   customerInputImageUrl?: string; // Cloudinary URL of customer-uploaded image
 }
 
+export interface CartItemSingle {
+  id: string;
+  type: 'single' | 'item';
+  item: CustomBoxOption;
+  quantity: number;
+  totalPrice?: number;
+  customNote?: string;
+  customerInputText?: string;     // Customer-provided text (e.g. name to print)
+  customerInputImageUrl?: string; // Cloudinary URL of customer-uploaded image
+}
+
 export interface CartItemCustom {
   id: string;
-  type: 'custom';
-  boxStyle: CustomBoxOption;
-  selectedItems: CustomBoxOption[];
-  cardMessage: string;
-  ribbonColor: string;
+  type: 'custom' | 'single' | 'item';
+  item?: CustomBoxOption;
+  boxStyle?: CustomBoxOption;
+  selectedItems?: CustomBoxOption[];
+  cardMessage?: string;
+  ribbonColor?: string;
   quantity: number;
-  totalPrice: number;
+  totalPrice?: number;
+  customNote?: string;
   customerInputText?: string;     // Customer-provided text per item
   customerInputImageUrl?: string; // Cloudinary URL of customer-uploaded image
 }
 
-export type CartItem = CartItemPrepared | CartItemCustom;
+export type CartItem = CartItemPrepared | CartItemCustom | CartItemSingle;
+
 
 export type OrderStatus = 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
 

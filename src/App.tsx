@@ -430,33 +430,67 @@ export default function App() {
     navigateTo('/cart');
   };
 
-  // Add custom built box to cart
+  // Add single items / custom items to cart as individual line items
   const handleAddToCartCustom = (customBox: {
-    boxStyle: CustomBoxOption;
+    boxStyle?: CustomBoxOption;
     selectedItems: CustomBoxOption[];
-    cardMessage: string;
-    ribbonColor: string;
-    totalPrice: number;
+    cardMessage?: string;
+    ribbonColor?: string;
+    totalPrice?: number;
     customerInputText?: string;
     customerInputImageUrl?: string;
   }) => {
-    const newItem: CartItemCustom = {
-      id: `cart-custom-${Date.now()}-${Math.random()}`,
-      type: 'custom',
-      boxStyle: customBox.boxStyle,
-      selectedItems: customBox.selectedItems,
-      cardMessage: customBox.cardMessage,
-      ribbonColor: customBox.ribbonColor,
-      quantity: 1,
-      totalPrice: customBox.totalPrice,
-      customerInputText: customBox.customerInputText,
-      customerInputImageUrl: customBox.customerInputImageUrl,
-    };
-    setCartItems([...cartItems, newItem]);
+    if (!customBox.selectedItems || customBox.selectedItems.length === 0) return;
+
+    // Group the items by ID so we know each unique item's quantity
+    const itemCounts = new Map<string, { item: CustomBoxOption; qty: number }>();
+    customBox.selectedItems.forEach((it) => {
+      const existing = itemCounts.get(it.id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        itemCounts.set(it.id, { item: it, qty: 1 });
+      }
+    });
+
+    let currentList = [...cartItems];
+
+    itemCounts.forEach(({ item, qty }) => {
+      // Check if this single item already exists in cart with same customization
+      const existingIdx = currentList.findIndex(
+        (ci) =>
+          ci.type !== 'package' &&
+          (('item' in ci && ci.item?.id === item.id) ||
+           ('selectedItems' in ci && ci.selectedItems?.length === 1 && ci.selectedItems[0]?.id === item.id)) &&
+          ci.customerInputText === customBox.customerInputText &&
+          ci.customerInputImageUrl === customBox.customerInputImageUrl
+      );
+
+      if (existingIdx > -1) {
+        currentList[existingIdx] = {
+          ...currentList[existingIdx],
+          quantity: currentList[existingIdx].quantity + qty,
+        };
+      } else {
+        const newItem: CartItem = {
+          id: `cart-single-${item.id}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          type: 'single',
+          item: item,
+          quantity: qty,
+          customNote: customBox.cardMessage,
+          customerInputText: customBox.customerInputText,
+          customerInputImageUrl: customBox.customerInputImageUrl,
+        };
+        currentList.push(newItem);
+      }
+    });
+
+    setCartItems(currentList);
     
-    // Auto navigate to cart when a custom box is completed
+    // Auto navigate to cart
     handleNavigateToCart();
   };
+
 
   // Quantity updates
   const handleUpdateQuantity = (id: string, delta: number) => {

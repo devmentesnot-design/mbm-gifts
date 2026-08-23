@@ -783,18 +783,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     });
 
     if (selectedOrderCustomItems.length > 0) {
-      const boxTotal = selectedOrderCustomItems.reduce((acc, i) => acc + i.price, 0);
-      orderItems.push({
-        id: `item-custom-${Date.now()}`,
-        type: 'custom',
-        boxStyle: giftBoxesList[0],
-        selectedItems: selectedOrderCustomItems,
-        cardMessage: orderNote,
-        ribbonColor: 'Gold Satin Ribbon',
-        quantity: 1,
-        totalPrice: boxTotal,
+      selectedOrderCustomItems.forEach((ci) => {
+        orderItems.push({
+          id: `item-single-${ci.id}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          type: 'single',
+          item: ci,
+          quantity: 1,
+          totalPrice: ci.price,
+          customNote: orderNote,
+        });
+        subtotal += ci.price;
       });
-      subtotal += boxTotal;
     }
 
     if (orderItems.length === 0) {
@@ -3708,20 +3707,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   {selectedOrderDetails.items.map((it: any, idx: number) => {
                     const isUsd = selectedOrderDetails.currency === 'USD' || selectedOrderDetails.buyerMarket === 'INTERNATIONAL';
                     let itemPrice = 0;
-                    if (it.package) {
+                    const isPkg = !!it.package;
+                    const singleObj = ('item' in it && it.item) ? it.item : ('selectedItems' in it ? it.selectedItems?.[0] : null);
+                    const title = isPkg ? it.package.name : (singleObj?.name || 'Single Item');
+                    if (isPkg) {
                       itemPrice = isUsd && it.package.price_usd != null && it.package.price_usd > 0
                         ? it.package.price_usd
                         : (isUsd ? Math.round((it.package.price / 120) * 100) / 100 : it.package.price);
                     } else {
-                      itemPrice = it.totalPrice || 0;
+                      if (singleObj) {
+                        itemPrice = isUsd && singleObj.price_usd != null && singleObj.price_usd > 0
+                          ? singleObj.price_usd
+                          : (isUsd ? Math.round((singleObj.price / 120) * 100) / 100 : singleObj.price);
+                      } else {
+                        itemPrice = it.totalPrice || 0;
+                      }
                     }
                     return (
                       <div key={idx} className="py-3 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <div className="font-bold text-white text-sm">
-                            {it.package ? it.package.name : `Custom Box (${it.selectedItems?.length || 0} items)`}
+                            {title}
                           </div>
-                          <div className="text-[11px] text-white/60">Qty: {it.quantity}</div>
+                          <div className="text-[11px] text-white/60">Qty: {it.quantity} • {isPkg ? 'Ready-Made Package' : (singleObj?.category || 'Single Item')}</div>
 
                           {/* Customer Customization Details (Text & Photo) */}
                           {(it.customerInputText || it.customerInputImageUrl) && (

@@ -314,9 +314,15 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                   </span>
                   <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                     {order.items.map((it, idx) => {
-                      const itemTotal = it.type === 'package'
-                        ? (currency === 'USD' ? (it.package?.price_usd || Math.round((it.package?.price / 120) * 100) / 100) : it.package?.price) * it.quantity
-                        : (it.totalPrice || 0) * it.quantity;
+                      const isPkg = it.type === 'package';
+                      const singleObj = ('item' in it && it.item) ? it.item : ('selectedItems' in it ? it.selectedItems?.[0] : null);
+                      const title = isPkg ? (it.package?.name || 'Gift Package') : (singleObj?.name || 'Single Item');
+                      
+                      const unitPrice = isPkg
+                        ? (currency === 'USD' ? (it.package?.price_usd || Math.round((it.package?.price / 120) * 100) / 100) : it.package?.price)
+                        : (singleObj ? (currency === 'USD' ? (singleObj.price_usd || Math.round((singleObj.price / 120) * 100) / 100) : singleObj.price) : (it.totalPrice || 0));
+                      const itemTotal = (unitPrice || 0) * it.quantity;
+
                       return (
                         <div
                           key={idx}
@@ -324,7 +330,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                         >
                           <div className="truncate pr-2">
                             <div className="font-bold text-white truncate">
-                              {it.quantity}x {it.type === 'package' ? it.package?.name : 'Custom Gift Box'}
+                              {it.quantity}x {title}
                             </div>
                           </div>
                           <span className="text-amber-300 font-bold flex-shrink-0">

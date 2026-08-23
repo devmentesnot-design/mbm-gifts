@@ -38,11 +38,11 @@ interface GiftShopBodyProps {
     customerInputImageUrl?: string
   ) => void;
   onAddToCartCustom: (customBox: {
-    boxStyle: CustomBoxOption;
+    boxStyle?: CustomBoxOption;
     selectedItems: CustomBoxOption[];
-    cardMessage: string;
-    ribbonColor: string;
-    totalPrice: number;
+    cardMessage?: string;
+    ribbonColor?: string;
+    totalPrice?: number;
     customerInputText?: string;
     customerInputImageUrl?: string;
   }) => void;
@@ -1517,7 +1517,14 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   if (customPromptTarget.pkg) {
                     onAddToCartPrepared(customPromptTarget.pkg, '', clientCustomText, clientCustomImageUrl);
                   } else if (customPromptTarget.item) {
-                    handleCustomQtyChange(customPromptTarget.item.id, 1);
+                    onAddToCartCustom({
+                      selectedItems: [customPromptTarget.item],
+                      cardMessage: '',
+                      ribbonColor: 'Gold Satin Ribbon',
+                      totalPrice: getItemPrice(customPromptTarget.item),
+                      customerInputText: clientCustomText,
+                      customerInputImageUrl: clientCustomImageUrl,
+                    });
                   }
 
                   setCustomPromptTarget(null);
@@ -1527,7 +1534,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 className="flex-[2] py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-amber-400/20 transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <Check className="w-4 h-4 stroke-[3]" />
-                <span>Confirm & Add To Box</span>
+                <span>Confirm & Add To Cart</span>
               </button>
             </div>
           </div>
@@ -1535,7 +1542,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
       )}
 
       {/* ========================================================================= */}
-      {/* FLOATING CUSTOM GIFT BOX SUMMARY PANEL (Viewport-fixed on scroll) */}
+      {/* FLOATING SELECTED ITEMS SUMMARY PANEL (Viewport-fixed on scroll) */}
       {/* ========================================================================= */}
       <div
         className={`fixed z-50 transition-all duration-300 ${
@@ -1552,7 +1559,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           <div className="sm:pl-6 relative z-10 flex flex-col max-h-[50vh]">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-[10px] uppercase tracking-widest text-[#6E5B2B] font-bold">Your gift box</div>
+                <div className="text-[10px] uppercase tracking-widest text-[#6E5B2B] font-bold">Selected Items</div>
                 <div className="text-xs text-[#5A4C22] font-medium">{customCartSummary.count} item{customCartSummary.count !== 1 ? 's' : ''}</div>
               </div>
               <div className="font-podium font-bold text-xl sm:text-2xl text-[#163830] leading-none">
@@ -1576,13 +1583,13 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             )}
 
             {customCartSummary.count === 0 ? (
-              <div className="text-[11px] text-[#7A6A38] font-medium pt-2 text-center">Add items below to start building</div>
+              <div className="text-[11px] text-[#7A6A38] font-medium pt-2 text-center">Select items below to add to cart</div>
             ) : (
               <button 
                 onClick={handleAddCustomBoxToCart}
                 className="w-full bg-[#8c1119] hover:bg-[#6e0d13] text-white font-bold text-[13px] uppercase tracking-wider py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg mt-2 transform hover:-translate-y-0.5"
               >
-                Add box to cart
+                Add to Cart
               </button>
             )}
           </div>

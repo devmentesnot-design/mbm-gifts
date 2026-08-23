@@ -158,22 +158,28 @@ export const OfficialReceiptModal: React.FC<OfficialReceiptModalProps> = ({
               <tbody className="divide-y divide-slate-100">
                 {order.items.map((it, idx) => {
                   const isPkg = it.type === 'package';
-                  const title = isPkg ? it.package.name : 'Custom Gift Box';
+                  const singleObj = ('item' in it && it.item) ? it.item : ('selectedItems' in it ? it.selectedItems?.[0] : null);
+                  const title = isPkg ? (it.package?.name || 'Gift Package') : (singleObj?.name || 'Single Item');
+                  const categoryOrDesc = isPkg ? `${it.package?.category || 'Package'}` : (singleObj?.category || 'Single Item');
+                  const itemTypeLabel = isPkg ? 'Package' : 'Single Item';
                   
                   let unitPrice = 0;
                   if (currency === 'USD') {
                     if (isPkg) {
-                      unitPrice = it.package.price_usd != null && it.package.price_usd > 0
-                        ? it.package.price_usd
-                        : Math.round((it.package.price / 120) * 100) / 100;
+                      unitPrice = it.package?.price_usd != null && it.package?.price_usd > 0
+                        ? it.package?.price_usd
+                        : Math.round((it.package?.price / 120) * 100) / 100;
                     } else {
-                      unitPrice = it.selectedItems?.reduce((s, si) => {
-                        const p = si.price_usd != null && si.price_usd > 0 ? si.price_usd : Math.round((si.price / 120) * 100) / 100;
-                        return s + p;
-                      }, 0) || it.totalPrice;
+                      if (singleObj) {
+                        unitPrice = singleObj.price_usd != null && singleObj.price_usd > 0
+                          ? singleObj.price_usd
+                          : Math.round((singleObj.price / 120) * 100) / 100;
+                      } else {
+                        unitPrice = it.totalPrice || 0;
+                      }
                     }
                   } else {
-                    unitPrice = isPkg ? it.package.price : it.totalPrice;
+                    unitPrice = isPkg ? it.package?.price : (singleObj ? singleObj.price : (it.totalPrice || 0));
                   }
 
                   return (
@@ -181,10 +187,10 @@ export const OfficialReceiptModal: React.FC<OfficialReceiptModalProps> = ({
                       <td className="py-2 px-2">
                         <div className="font-bold text-slate-800 text-xs">{title}</div>
                         <div className="text-[9px] text-slate-400">
-                          {isPkg ? `${it.package.category}` : `${it.selectedItems?.length || 0} customized items`}
+                          {categoryOrDesc}
                         </div>
                       </td>
-                      <td className="py-2 px-2 text-center text-slate-500 text-[11px]">{isPkg ? 'Package' : 'Custom Box'}</td>
+                      <td className="py-2 px-2 text-center text-slate-500 text-[11px]">{itemTypeLabel}</td>
                       <td className="py-2 px-2 text-center font-semibold text-slate-700 text-xs">{it.quantity}</td>
                       <td className="py-2 px-2 text-right text-slate-600 text-xs">{formatPrice(unitPrice, currency)}</td>
                       <td className="py-2 px-2 text-right font-bold text-slate-900 text-xs">{formatPrice(unitPrice * it.quantity, currency)}</td>

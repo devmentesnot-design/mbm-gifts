@@ -323,8 +323,10 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                         <div className="space-y-3">
                           {ord.items.map((item) => {
                             const isPkg = item.type === 'package';
-                            const title = isPkg ? item.package.name : 'Custom Gift Box';
-                            const img = isPkg ? item.package.image : item.boxStyle.image;
+                            const singleObj = ('item' in item && item.item) ? item.item : ('selectedItems' in item ? item.selectedItems?.[0] : null);
+                            const title = isPkg ? (item.package?.name || 'Gift Package') : (singleObj?.name || 'Single Item');
+                            const img = isPkg ? (item.package?.image || '') : (singleObj?.image || ('boxStyle' in item ? item.boxStyle?.image : ''));
+                            const subtitle = isPkg ? `${item.package?.category || 'Ready-made'} • Package` : (singleObj?.category ? `${singleObj.category} • Single Item` : 'Single Item');
                             
                             // Determine item unit price in the order's specific currency
                             let unitPrice = 0;
@@ -334,22 +336,31 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                                   ? item.package.price_usd
                                   : Math.round((item.package.price / 120) * 100) / 100;
                               } else {
-                                unitPrice = item.selectedItems?.reduce((s, si) => {
-                                  const p = si.price_usd != null && si.price_usd > 0 ? si.price_usd : Math.round((si.price / 120) * 100) / 100;
-                                  return s + p;
-                                }, 0) || item.totalPrice;
+                                if (singleObj) {
+                                  unitPrice = singleObj.price_usd != null && singleObj.price_usd > 0
+                                    ? singleObj.price_usd
+                                    : Math.round((singleObj.price / 120) * 100) / 100;
+                                } else {
+                                  unitPrice = item.totalPrice || 0;
+                                }
                               }
                             } else {
-                              unitPrice = isPkg ? item.package.price : item.totalPrice;
+                              unitPrice = isPkg ? item.package.price : (singleObj ? singleObj.price : (item.totalPrice || 0));
                             }
 
                             return (
                               <div key={item.id} className="bg-black/20 border border-white/5 rounded-xl p-3 flex items-center gap-3">
-                                <img src={img} alt={title} className="w-12 h-12 rounded-lg object-cover bg-black/40 border border-white/10 flex-shrink-0" />
+                                {img ? (
+                                  <img src={img} alt={title} className="w-12 h-12 rounded-lg object-cover bg-black/40 border border-white/10 flex-shrink-0" />
+                                ) : (
+                                  <div className="w-12 h-12 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 text-white/30">
+                                    🎁
+                                  </div>
+                                )}
                                 <div className="flex-1 min-w-0">
                                   <div className="font-podium text-sm uppercase text-white truncate font-bold">{title}</div>
                                   <div className="text-[11px] text-white/50 truncate">
-                                    {isPkg ? `${item.package.category} • Package` : `Custom Box • ${item.selectedItems.length} items`}
+                                    {subtitle}
                                   </div>
                                 </div>
                                 <div className="text-right flex-shrink-0">

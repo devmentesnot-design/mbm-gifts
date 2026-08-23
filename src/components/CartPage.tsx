@@ -81,7 +81,7 @@ export const CartPage: React.FC<CartPageProps> = ({
     return box.price;
   };
 
-  const hasCustomItems = items.some((item) => item.type === 'custom');
+  const hasCustomItems = items.some((item) => item.type !== 'package');
   const selectedBox = hasCustomItems ? (giftBoxes.find((b) => b.id === selectedBoxId) || giftBoxes[0]) : undefined;
   const wrapTier = hasCustomItems && selectedBox ? getBoxPrice(selectedBox) : 0;
   const [shipMode, setShipMode] = useState<'recipient' | 'me'>(draft.shipMode || 'recipient');
@@ -116,6 +116,32 @@ export const CartPage: React.FC<CartPageProps> = ({
     } catch {}
   }, [phone, address, city, deliveryDate, recipientName, senderName, giftMessage, selectedBoxId, shipMode]);
 
+  // Cart Helpers
+  const getItemName = (item: CartItem): string => {
+    if (item.type === 'package') return item.package?.name || 'Gift Package';
+    if ('item' in item && item.item) return item.item.name;
+    if ('selectedItems' in item && item.selectedItems && item.selectedItems[0]) return item.selectedItems[0].name;
+    return 'Single Item';
+  };
+
+  const getItemSubtitle = (item: CartItem): string => {
+    if (item.type === 'package') return 'Ready-made package';
+    if ('item' in item && item.item) return item.item.category || 'Single item';
+    if ('selectedItems' in item && item.selectedItems && item.selectedItems[0]) {
+      return item.selectedItems[0].category || 'Single item';
+    }
+    return 'Single item';
+  };
+
+  const getItemImage = (item: CartItem): string => {
+    if (item.type === 'package') return item.package?.image || '';
+    if ('item' in item && item.item) return item.item.image || '';
+    if ('selectedItems' in item && item.selectedItems && item.selectedItems[0]?.image) {
+      return item.selectedItems[0].image;
+    }
+    return '';
+  };
+
   // Cart Calculations
   const calculateItemPrice = (item: CartItem): number => {
     if (item.type === 'package') {
@@ -124,14 +150,14 @@ export const CartPage: React.FC<CartPageProps> = ({
         : item.package.price;
       return price * item.quantity;
     } else {
-      if (buyerMarket === 'INTERNATIONAL') {
-        const subItemsTotal = item.selectedItems.reduce((sum, si) => {
-          const p = si.price_usd != null && si.price_usd > 0 ? si.price_usd : Math.round((si.price / 120) * 100) / 100;
-          return sum + p;
-        }, 0);
-        return subItemsTotal * item.quantity;
+      const single = ('item' in item && item.item) ? item.item : ('selectedItems' in item ? item.selectedItems?.[0] : null);
+      if (single) {
+        const price = buyerMarket === 'INTERNATIONAL'
+          ? (single.price_usd != null && single.price_usd > 0 ? single.price_usd : Math.round((single.price / 120) * 100) / 100)
+          : single.price;
+        return price * item.quantity;
       }
-      return item.totalPrice * item.quantity;
+      return (item.totalPrice || 0) * item.quantity;
     }
   };
 
@@ -323,71 +349,82 @@ export const CartPage: React.FC<CartPageProps> = ({
               <div>
                 {/* Cart Items List */}
                 <div className="space-y-4">
-                  {items.map((item) => (
-                    <div key={item.id} className="bg-[#2a0407] border border-white/10 rounded-2xl p-4 flex gap-4">
-                      <div className="w-20 h-20 bg-black/50 border border-white/10 rounded-xl overflow-hidden flex-shrink-0">
-                        {item.type === 'package' && item.package.image ? (
-                          <img
-                            src={item.package.image}
-                            alt={item.package.name}
-                            className="w-full h-full object-cover"
-                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                          />
-                        ) : item.type === 'custom' && item.selectedItems[0]?.image ? (
-                          <img
-                            src={item.selectedItems[0].image}
-                            alt="Custom box"
-                            className="w-full h-full object-cover"
-                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Box className="w-8 h-8 text-white/20" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start gap-4">
-                          <div>
-                            <div className="font-podium text-lg uppercase text-white truncate">
-                              {item.type === 'package' ? item.package.name : 'Custom Gift Box'}
+                  {items.map((item) => {
+                    const itemName = getItemName(item);
+                    const itemSubtitle = getItemSubtitle(item);
+                    const itemImg = getItemImage(item);
+                    return (
+                      <div key={item.id} className="bg-[#2a0407] border border-white/10 rounded-2xl p-4 flex gap-4">
+                        <div className="w-20 h-20 bg-black/50 border border-white/10 rounded-xl overflow-hidden flex-shrink-0">
+                          {itemImg ? (
+                            <img
+                              src={itemImg}
+                              alt={itemName}
+                              className="w-full h-full object-cover"
+                              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Box className="w-8 h-8 text-white/20" />
                             </div>
-                            <div className="text-xs text-white/50 mt-1">
-                              {item.type === 'package' ? 'Ready-made package' : `Build your own — ${item.selectedItems.length} items`}
-                            </div>
-                          </div>
-                          <div className="font-bold text-amber-300">
-                            {formatPrice(calculateItemPrice(item), currency)}
-                          </div>
+                          )}
                         </div>
-
-                        {/* Custom Box Contents Toggle */}
-                        {item.type === 'custom' && (
-                          <div className="mt-2">
-                            <button
-                              onClick={() => toggleContents(item.id)}
-                              className="text-[11px] text-[#8c1119] bg-amber-400/90 hover:bg-amber-400 px-2 py-0.5 rounded font-bold uppercase tracking-wider cursor-pointer"
-                            >
-                              {expandedItems[item.id] ? "Hide inside ▴" : "What's inside ▾"}
-                            </button>
-                            {expandedItems[item.id] && (
-                              <div className="mt-3 pt-3 border-t border-white/10 text-xs text-white/70 space-y-1">
-                                {item.selectedItems.map((si, idx) => {
-                                  const singlePrice = buyerMarket === 'INTERNATIONAL'
-                                    ? (si.price_usd != null && si.price_usd > 0 ? si.price_usd : Math.round((si.price / 120) * 100) / 100)
-                                    : si.price;
-                                  return (
-                                    <div key={idx} className="flex justify-between">
-                                      <span className="truncate pr-4">{si.name}</span>
-                                      <span className="text-white/40">{formatPrice(singlePrice, currency)}</span>
-                                    </div>
-                                  );
-                                })}
-                                <div className="text-amber-300/70 pt-1 italic">{item.boxStyle.name}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start gap-4">
+                            <div>
+                              <div className="font-podium text-lg uppercase text-white truncate">
+                                {itemName}
                               </div>
-                            )}
+                              <div className="text-xs text-white/50 mt-1">
+                                {itemSubtitle}
+                              </div>
+                            </div>
+                            <div className="font-bold text-amber-300">
+                              {formatPrice(calculateItemPrice(item), currency)}
+                            </div>
                           </div>
-                        )}
+
+                          {/* Ready-Made Package Contents Toggle */}
+                          {item.type === 'package' && (
+                            (item.package.itemsIncludedDetailed && item.package.itemsIncludedDetailed.length > 0) ||
+                            (item.package.itemsIncluded && item.package.itemsIncluded.length > 0)
+                          ) && (
+                            <div className="mt-2.5">
+                              <button
+                                type="button"
+                                onClick={() => toggleContents(item.id)}
+                                className="text-[11px] text-[#8c1119] bg-amber-400/95 hover:bg-amber-300 px-2.5 py-0.5 rounded font-bold uppercase tracking-wider cursor-pointer transition-colors shadow-sm"
+                              >
+                                {expandedItems[item.id] ? "Hide inside ▴" : "What's inside ▾"}
+                              </button>
+                              {expandedItems[item.id] && (
+                                <div className="mt-3 pt-3 border-t border-white/10 text-xs text-white/80 space-y-2 bg-black/40 p-3 rounded-xl">
+                                  <div className="text-[10px] uppercase font-bold text-amber-300 tracking-wider">Package Contents:</div>
+                                  {item.package.itemsIncludedDetailed && item.package.itemsIncludedDetailed.length > 0 ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                                      {item.package.itemsIncludedDetailed.map((det, idx) => (
+                                        <div key={idx} className="flex items-center gap-2 bg-black/30 p-1.5 rounded-lg border border-white/5">
+                                          {det.image && (
+                                            <img src={det.image} alt={det.name} className="w-8 h-8 object-cover rounded-md border border-white/10 flex-shrink-0" />
+                                          )}
+                                          <span className="truncate text-white font-medium text-[11px]">• {det.name}</span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <ul className="space-y-1 pl-1">
+                                      {item.package.itemsIncluded.map((pkgItemName, idx) => (
+                                        <li key={idx} className="text-white/80 text-xs flex items-center gap-1.5">
+                                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                                          <span>{pkgItemName}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
 
                         {/* Customer-provided Customization (Photo / Custom Text) */}
                         {(item.customerInputText || item.customerInputImageUrl) && (
@@ -432,8 +469,9 @@ export const CartPage: React.FC<CartPageProps> = ({
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
+              </div>
 
                 {/* Gift Wrap / Box Styles — only shown for custom boxes when admin has added boxes in DB */}
                 {hasCustomItems && giftBoxes.length > 0 && (
