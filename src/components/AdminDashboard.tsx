@@ -28,6 +28,7 @@ import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Menu,
   Image as ImageIcon,
   Tag,
@@ -164,6 +165,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [pkgCategoryFilter, setPkgCategoryFilter] = useState<string>('all');
   const [pkgPage, setPkgPage] = useState(1);
   const [isPkgCategorySidebarOpen, setIsPkgCategorySidebarOpen] = useState(true);
+  const [isMobilePkgCategoryOpen, setIsMobilePkgCategoryOpen] = useState(false);
   const [pkgModalOpen, setPkgModalOpen] = useState(false);
   const [editingPkg, setEditingPkg] = useState<PreparedPackage | null>(null);
   const [pkgForm, setPkgForm] = useState({
@@ -187,6 +189,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [itemCategoryFilter, setItemCategoryFilter] = useState<string>('all');
   const [itemPage, setItemPage] = useState(1);
   const [isItemCategorySidebarOpen, setIsItemCategorySidebarOpen] = useState(true);
+  const [isMobileItemCategoryOpen, setIsMobileItemCategoryOpen] = useState(false);
   const [itemModalOpen, setItemModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CustomBoxOption | null>(null);
   const [itemForm, setItemForm] = useState({
@@ -1250,39 +1253,111 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       </div>
     </div>
 
-    {/* Mobile: Horizontal Category Chips */}
-    <div className="flex md:hidden items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+    {/* Mobile: Vertical Category Menu (Matches PC Sidebar) */}
+    <div className="md:hidden mb-4 bg-[#240004]/80 border border-[#D9A514]/20 rounded-2xl p-3 shadow-lg">
       <button
-        onClick={() => setPkgCategoryFilter('all')}
-        className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold font-inter whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
-          pkgCategoryFilter === 'all'
-            ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] font-black shadow-md'
-            : 'bg-black/30 text-white/70 border border-white/10'
-        }`}
+        onClick={() => setIsMobilePkgCategoryOpen(!isMobilePkgCategoryOpen)}
+        className="w-full flex items-center justify-between py-1 text-left cursor-pointer"
       >
-        <span>All</span>
-        <span className="text-[10px] opacity-80">({packages.length})</span>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542]">
+            Categories
+          </span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/40 text-amber-300 font-bold border border-amber-400/30">
+            {pkgCategoryFilter === 'all' ? 'All Packages' : pkgCategoryFilter}
+          </span>
+        </div>
+        <div className="flex items-center gap-1 text-xs font-bold text-amber-300">
+          <span>{isMobilePkgCategoryOpen ? 'Hide Menu' : 'Browse Categories'}</span>
+          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobilePkgCategoryOpen ? 'rotate-180' : ''}`} />
+        </div>
       </button>
-      {packageCategories.map((cat) => {
-        const count = packages.filter((p) =>
-          p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
-        ).length;
-        const isActive = pkgCategoryFilter.toLowerCase() === cat.name.toLowerCase();
-        return (
+
+      {isMobilePkgCategoryOpen && (
+        <div className="mt-3 pt-3 border-t border-white/10 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto pr-1">
           <button
-            key={cat.id}
-            onClick={() => setPkgCategoryFilter(cat.name)}
-            className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold font-inter whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
-              isActive
-                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] font-black shadow-md'
-                : 'bg-black/30 text-white/70 border border-white/10'
+            onClick={() => setPkgCategoryFilter('all')}
+            className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+              pkgCategoryFilter === 'all'
+                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
             }`}
           >
-            <span>{cat.name}</span>
-            <span className="text-[10px] opacity-80">({count})</span>
+            <span>All Packages</span>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${pkgCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+              {packages.length}
+            </span>
           </button>
-        );
-      })}
+
+          {packageCategories.map((cat) => {
+            const hasSubs = cat.subcategories && cat.subcategories.length > 0;
+            const isExpanded = expandedPkgCategories.has(cat.id);
+            const count = packages.filter((p) =>
+              p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
+            ).length;
+            const isActive = pkgCategoryFilter.toLowerCase() === cat.name.toLowerCase();
+            return (
+              <div key={cat.id}>
+                <button
+                  onClick={() => {
+                    setPkgCategoryFilter(cat.name);
+                    if (hasSubs) {
+                      setExpandedPkgCategories((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(cat.id)) next.delete(cat.id); else next.add(cat.id);
+                        return next;
+                      });
+                    }
+                  }}
+                  className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                      : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
+                  }`}
+                >
+                  <span className="truncate flex-1">{cat.name}</span>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                      {count}
+                    </span>
+                    {hasSubs && (
+                      <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                    )}
+                  </div>
+                </button>
+
+                {hasSubs && isExpanded && (
+                  <div className="ml-3 mt-1.5 flex flex-col gap-1 border-l-2 border-[#F5C542]/30 pl-2.5">
+                    {cat.subcategories!.map((sub) => {
+                      const subKey = `${cat.name} > ${sub}`;
+                      const subCount = packages.filter((p) =>
+                        p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(subKey.toLowerCase())
+                      ).length;
+                      const isSubActive = pkgCategoryFilter.toLowerCase() === subKey.toLowerCase();
+                      return (
+                        <button
+                          key={sub}
+                          onClick={() => setPkgCategoryFilter(subKey)}
+                          className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
+                            isSubActive
+                              ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
+                              : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/70 hover:border-[#F5C542]/40 hover:text-[#FFF8ED]'
+                          }`}
+                        >
+                          <span className="truncate">↳ {sub}</span>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/60'}`}>
+                            {subCount}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
 
     {/* Main Content Area: Grid on Left, Sidebar on Right */}
@@ -1615,39 +1690,111 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              {/* Mobile: Horizontal Category Chips */}
-              <div className="flex md:hidden items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+              {/* Mobile: Vertical Category Menu (Matches PC Sidebar) */}
+              <div className="md:hidden mb-4 bg-[#240004]/80 border border-[#D9A514]/20 rounded-2xl p-3 shadow-lg">
                 <button
-                  onClick={() => setItemCategoryFilter('all')}
-                  className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold font-inter whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
-                    itemCategoryFilter === 'all'
-                      ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] font-black shadow-md'
-                      : 'bg-black/30 text-white/70 border border-white/10'
-                  }`}
+                  onClick={() => setIsMobileItemCategoryOpen(!isMobileItemCategoryOpen)}
+                  className="w-full flex items-center justify-between py-1 text-left cursor-pointer"
                 >
-                  <span>All</span>
-                  <span className="text-[10px] opacity-80">({customItems.length})</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542]">
+                      Categories
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/40 text-amber-300 font-bold border border-amber-400/30">
+                      {itemCategoryFilter === 'all' ? 'All Custom Items' : itemCategoryFilter}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs font-bold text-amber-300">
+                    <span>{isMobileItemCategoryOpen ? 'Hide Menu' : 'Browse Categories'}</span>
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobileItemCategoryOpen ? 'rotate-180' : ''}`} />
+                  </div>
                 </button>
-                {customItemCategories.map((cat) => {
-                  const count = customItems.filter((i) =>
-                    i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
-                  ).length;
-                  const isActive = itemCategoryFilter.toLowerCase() === cat.name.toLowerCase();
-                  return (
+
+                {isMobileItemCategoryOpen && (
+                  <div className="mt-3 pt-3 border-t border-white/10 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto pr-1">
                     <button
-                      key={cat.id}
-                      onClick={() => setItemCategoryFilter(cat.name)}
-                      className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold font-inter whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
-                        isActive
-                          ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] font-black shadow-md'
-                          : 'bg-black/30 text-white/70 border border-white/10'
+                      onClick={() => setItemCategoryFilter('all')}
+                      className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                        itemCategoryFilter === 'all'
+                          ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                          : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
                       }`}
                     >
-                      <span>{cat.name}</span>
-                      <span className="text-[10px] opacity-80">({count})</span>
+                      <span>All Custom Items</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${itemCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                        {customItems.length}
+                      </span>
                     </button>
-                  );
-                })}
+
+                    {customItemCategories.map((cat) => {
+                      const hasSubs = cat.subcategories && cat.subcategories.length > 0;
+                      const isExpanded = expandedItemCategories.has(cat.id);
+                      const count = customItems.filter((i) =>
+                        i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
+                      ).length;
+                      const isActive = itemCategoryFilter.toLowerCase() === cat.name.toLowerCase();
+                      return (
+                        <div key={cat.id}>
+                          <button
+                            onClick={() => {
+                              setItemCategoryFilter(cat.name);
+                              if (hasSubs) {
+                                setExpandedItemCategories((prev) => {
+                                  const next = new Set(prev);
+                                  if (next.has(cat.id)) next.delete(cat.id); else next.add(cat.id);
+                                  return next;
+                                });
+                              }
+                            }}
+                            className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                              isActive
+                                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
+                            }`}
+                          >
+                            <span className="truncate flex-1">{cat.name}</span>
+                            <div className="flex items-center gap-1.5 flex-shrink-0">
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                                {count}
+                              </span>
+                              {hasSubs && (
+                                <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                              )}
+                            </div>
+                          </button>
+
+                          {hasSubs && isExpanded && (
+                            <div className="ml-3 mt-1.5 flex flex-col gap-1 border-l-2 border-[#F5C542]/30 pl-2.5">
+                              {cat.subcategories!.map((sub) => {
+                                const subKey = `${cat.name} > ${sub}`;
+                                const subCount = customItems.filter((i) =>
+                                  i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(subKey.toLowerCase())
+                                ).length;
+                                const isSubActive = itemCategoryFilter.toLowerCase() === subKey.toLowerCase();
+                                return (
+                                  <button
+                                    key={sub}
+                                    onClick={() => setItemCategoryFilter(subKey)}
+                                    className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
+                                      isSubActive
+                                        ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
+                                        : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/70 hover:border-[#F5C542]/40 hover:text-[#FFF8ED]'
+                                    }`}
+                                  >
+                                    <span className="truncate">↳ {sub}</span>
+                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/60'}`}>
+                                      {subCount}
+                                    </span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Main Content Area: Grid on Left, Sidebar on Right */}

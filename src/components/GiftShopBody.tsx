@@ -85,6 +85,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   const [sortBy, setSortBy] = useState<string>('default');
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isMobileCategoryOpen, setIsMobileCategoryOpen] = useState<boolean>(false);
   const [expandedShopCategories, setExpandedShopCategories] = useState<Set<string>>(new Set());
   const [pkgPage, setPkgPage] = useState(1);
   const [buildPage, setBuildPage] = useState(1);
@@ -861,62 +862,88 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           </div>
         </div>
 
-        {/* Mobile: Horizontal Category Chips (visible on small screens only) */}
-        <div className="flex md:hidden items-center gap-2 border-y border-white/10 py-2.5 mb-5 overflow-visible">
-          <div className="flex-1 flex flex-col gap-1.5">
-            <div className="flex gap-1.5 overflow-x-auto scrollbar-none py-1 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {dynamicCategories.map(cat => {
-                const catObj = dynamicCategoryObjects.find(c => c.name === cat);
+        {/* Mobile: Vertical Category Menu (Matches PC Sidebar) */}
+        <div className="md:hidden mb-5 bg-[#230005]/80 border border-[#D9A514]/25 rounded-2xl p-3 shadow-lg backdrop-blur-sm font-inter">
+          {/* Header / Toggle Button */}
+          <button
+            onClick={() => setIsMobileCategoryOpen(!isMobileCategoryOpen)}
+            className="w-full flex items-center justify-between py-1 text-left cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542]">
+                Categories
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/40 text-amber-300 font-bold border border-amber-400/30">
+                {activeCategory}
+              </span>
+            </div>
+            <div className="flex items-center gap-1 text-xs font-bold text-amber-300">
+              <span>{isMobileCategoryOpen ? 'Hide Menu' : 'Browse Categories'}</span>
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobileCategoryOpen ? 'rotate-180' : ''}`} />
+            </div>
+          </button>
+
+          {/* Vertical Category Tree List */}
+          {isMobileCategoryOpen && (
+            <div className="mt-3 pt-3 border-t border-white/10 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto pr-1">
+              {dynamicCategories.map((cat) => {
+                const catObj = dynamicCategoryObjects.find((c) => c.name === cat);
                 const hasSubs = catObj && catObj.subcategories && catObj.subcategories.length > 0;
                 const isExpanded = expandedShopCategories.has(cat);
+                const isCatActive = activeCategory === cat;
                 return (
-                  <button
-                    key={cat}
-                    onClick={() => {
-                      setActiveCategory(cat);
-                      if (hasSubs) {
-                        setExpandedShopCategories(prev => {
-                          const next = new Set(prev);
-                          if (next.has(cat)) next.delete(cat); else next.add(cat);
-                          return next;
-                        });
-                      }
-                    }}
-                    className={`flex-shrink-0 px-3.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-full border transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
-                      activeCategory === cat
-                      ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md scale-[1.02]'
-                      : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
-                    }`}
-                  >
-                    {cat}
-                    {hasSubs && <ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />}
-                  </button>
+                  <div key={cat}>
+                    <button
+                      onClick={() => {
+                        setActiveCategory(cat);
+                        if (hasSubs) {
+                          setExpandedShopCategories((prev) => {
+                            const next = new Set(prev);
+                            if (next.has(cat)) next.delete(cat);
+                            else next.add(cat);
+                            return next;
+                          });
+                        }
+                      }}
+                      className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                        isCatActive
+                          ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                          : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                      }`}
+                    >
+                      <span className="truncate flex-1">{cat}</span>
+                      {hasSubs && (
+                        <ChevronRight className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                      )}
+                    </button>
+
+                    {/* Subcategories Vertical List */}
+                    {hasSubs && isExpanded && (
+                      <div className="ml-3 mt-1.5 flex flex-col gap-1 border-l-2 border-[#F5C542]/30 pl-2.5">
+                        {catObj!.subcategories!.map((sub) => {
+                          const isSubActive = activeCategory === sub || activeCategory === `${cat} > ${sub}`;
+                          return (
+                            <button
+                              key={sub}
+                              onClick={() => setActiveCategory(sub)}
+                              className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${
+                                isSubActive
+                                  ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
+                                  : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/70 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
+                              }`}
+                            >
+                              <span className="text-[#F5C542]/70 font-normal">↳</span>
+                              <span className="truncate">{sub}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
-            {/* Mobile subcategory chips row */}
-            {dynamicCategoryObjects.map(catObj => {
-              if (!catObj.subcategories || catObj.subcategories.length === 0) return null;
-              if (!expandedShopCategories.has(catObj.name)) return null;
-              return (
-                <div key={`subs-${catObj.name}`} className="flex gap-1.5 overflow-x-auto scrollbar-none py-0.5 pl-3 border-l-2 border-[#F5C542]/30">
-                  {catObj.subcategories.map(sub => (
-                    <button
-                      key={sub}
-                      onClick={() => setActiveCategory(sub)}
-                      className={`flex-shrink-0 px-3 py-1 text-[9px] font-bold font-inter uppercase tracking-wider rounded-full border transition-all cursor-pointer whitespace-nowrap ${
-                        activeCategory === sub
-                        ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                        : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED]'
-                      }`}
-                    >
-                      {sub}
-                    </button>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
+          )}
         </div>
 
         {/* Desktop + Mobile Grid: Sidebar (md+) + Content */}
