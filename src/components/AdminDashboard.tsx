@@ -2588,21 +2588,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       Categories (Select One or More) <span className="text-red-400">*</span>
                     </label>
                     <div className="space-y-2">
-                      <div className="p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px] space-y-2">
-                        {packageCategories.map((c) => {
-                          const selectedList = pkgForm.category.split(',').map((s) => s.trim()).filter(Boolean);
-                          const isSelected = selectedList.some((s) => s.toLowerCase() === c.name.toLowerCase());
-                          return (
-                            <div key={c.id}>
-                              {/* Parent category pill */}
+                      <div className="p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px]">
+                        {/* Parent category pills row */}
+                        <div className="flex flex-wrap gap-2">
+                          {packageCategories.map((c) => {
+                            const selectedList = pkgForm.category.split(',').map((s) => s.trim()).filter(Boolean);
+                            const isSelected = selectedList.some((s) => s.toLowerCase() === c.name.toLowerCase());
+                            return (
                               <button
+                                key={c.id}
                                 type="button"
                                 onClick={() => {
+                                  const curList = pkgForm.category.split(',').map((s) => s.trim()).filter(Boolean);
                                   let newList: string[];
                                   if (isSelected) {
-                                    newList = selectedList.filter((s) => s.toLowerCase() !== c.name.toLowerCase());
+                                    newList = curList.filter((s) => s.toLowerCase() !== c.name.toLowerCase());
                                   } else {
-                                    newList = [...selectedList, c.name];
+                                    newList = [...curList, c.name];
                                   }
                                   setPkgForm({ ...pkgForm, category: newList.join(', ') });
                                 }}
@@ -2615,41 +2617,52 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-white/40" />}
                                 <span>{c.name}</span>
                               </button>
-                              {/* Subcategory pills indented under parent */}
-                              {c.subcategories && c.subcategories.length > 0 && (
-                                <div className="flex flex-wrap gap-1 mt-1 ml-4 pl-2 border-l border-amber-400/20">
-                                  {c.subcategories.map((sub) => {
-                                    const subKey = `${c.name} > ${sub}`;
-                                    const isSubSelected = selectedList.some((s) => s.toLowerCase() === subKey.toLowerCase());
-                                    return (
-                                      <button
-                                        type="button"
-                                        key={sub}
-                                        onClick={() => {
-                                          let newList: string[];
-                                          if (isSubSelected) {
-                                            newList = selectedList.filter((s) => s.toLowerCase() !== subKey.toLowerCase());
-                                          } else {
-                                            newList = [...selectedList, subKey];
-                                          }
-                                          setPkgForm({ ...pkgForm, category: newList.join(', ') });
-                                        }}
-                                        className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 cursor-pointer ${
-                                          isSubSelected
-                                            ? 'bg-amber-300 text-[#8c1119] border border-amber-300 shadow-sm'
-                                            : 'bg-black/40 text-white/60 border border-white/10 hover:border-amber-300/40 hover:text-white'
-                                        }`}
-                                      >
-                                        {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-white/30">↳</span>}
-                                        <span>{sub}</span>
-                                      </button>
-                                    );
-                                  })}
+                            );
+                          })}
+                        </div>
+                        {/* Subcategory pills grouped by parent */}
+                        {packageCategories.some((c) => c.subcategories && c.subcategories.length > 0) && (
+                          <div className="mt-3 space-y-2">
+                            {packageCategories.filter((c) => c.subcategories && c.subcategories.length > 0).map((c) => {
+                              const selectedList = pkgForm.category.split(',').map((s) => s.trim()).filter(Boolean);
+                              return (
+                                <div key={`sub-${c.id}`} className="pl-2 border-l border-amber-400/20">
+                                  <span className="text-[10px] text-amber-400/70 font-bold uppercase tracking-wider">{c.name} ↳</span>
+                                  <div className="flex flex-wrap gap-1 mt-1">
+                                    {c.subcategories!.map((sub) => {
+                                      const subKey = `${c.name} > ${sub}`;
+                                      const isSubSelected = selectedList.some((s) => s.toLowerCase() === subKey.toLowerCase());
+                                      return (
+                                        <button
+                                          type="button"
+                                          key={sub}
+                                          onClick={() => {
+                                            const curList = pkgForm.category.split(',').map((s) => s.trim()).filter(Boolean);
+                                            let newList: string[];
+                                            if (isSubSelected) {
+                                              newList = curList.filter((s) => s.toLowerCase() !== subKey.toLowerCase());
+                                            } else {
+                                              newList = [...curList, subKey];
+                                            }
+                                            setPkgForm({ ...pkgForm, category: newList.join(', ') });
+                                          }}
+                                          className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 cursor-pointer ${
+                                            isSubSelected
+                                              ? 'bg-amber-300 text-[#8c1119] border border-amber-300 shadow-sm'
+                                              : 'bg-black/40 text-white/60 border border-white/10 hover:border-amber-300/40 hover:text-white'
+                                          }`}
+                                        >
+                                          {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-white/30">↳</span>}
+                                          <span>{sub}</span>
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
                                 </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                       <input
                         type="text"
@@ -3024,21 +3037,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     Categories (Select One or More) <span className="text-red-400">*</span>
                   </label>
                   <div className="space-y-2">
-                    <div className="p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px] space-y-2">
-                      {customItemCategories.map((c) => {
-                        const selectedList = itemForm.category.split(',').map((s) => s.trim()).filter(Boolean);
-                        const isSelected = selectedList.some((s) => s.toLowerCase() === c.name.toLowerCase());
-                        return (
-                          <div key={c.id}>
-                            {/* Parent category pill */}
+                    <div className="p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px]">
+                      {/* Parent category pills row */}
+                      <div className="flex flex-wrap gap-2">
+                        {customItemCategories.map((c) => {
+                          const selectedList = itemForm.category.split(',').map((s) => s.trim()).filter(Boolean);
+                          const isSelected = selectedList.some((s) => s.toLowerCase() === c.name.toLowerCase());
+                          return (
                             <button
+                              key={c.id}
                               type="button"
                               onClick={() => {
+                                const curList = itemForm.category.split(',').map((s) => s.trim()).filter(Boolean);
                                 let newList: string[];
                                 if (isSelected) {
-                                  newList = selectedList.filter((s) => s.toLowerCase() !== c.name.toLowerCase());
+                                  newList = curList.filter((s) => s.toLowerCase() !== c.name.toLowerCase());
                                 } else {
-                                  newList = [...selectedList, c.name];
+                                  newList = [...curList, c.name];
                                 }
                                 setItemForm({ ...itemForm, category: newList.join(', ') });
                               }}
@@ -3051,41 +3066,52 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-white/40" />}
                               <span>{c.name}</span>
                             </button>
-                            {/* Subcategory pills indented under parent */}
-                            {c.subcategories && c.subcategories.length > 0 && (
-                              <div className="flex flex-wrap gap-1 mt-1 ml-4 pl-2 border-l border-amber-400/20">
-                                {c.subcategories.map((sub) => {
-                                  const subKey = `${c.name} > ${sub}`;
-                                  const isSubSelected = selectedList.some((s) => s.toLowerCase() === subKey.toLowerCase());
-                                  return (
-                                    <button
-                                      type="button"
-                                      key={sub}
-                                      onClick={() => {
-                                        let newList: string[];
-                                        if (isSubSelected) {
-                                          newList = selectedList.filter((s) => s.toLowerCase() !== subKey.toLowerCase());
-                                        } else {
-                                          newList = [...selectedList, subKey];
-                                        }
-                                        setItemForm({ ...itemForm, category: newList.join(', ') });
-                                      }}
-                                      className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 cursor-pointer ${
-                                        isSubSelected
-                                          ? 'bg-amber-300 text-[#8c1119] border border-amber-300 shadow-sm'
-                                          : 'bg-black/40 text-white/60 border border-white/10 hover:border-amber-300/40 hover:text-white'
-                                      }`}
-                                    >
-                                      {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-white/30">↳</span>}
-                                      <span>{sub}</span>
-                                    </button>
-                                  );
-                                })}
+                          );
+                        })}
+                      </div>
+                      {/* Subcategory pills grouped by parent */}
+                      {customItemCategories.some((c) => c.subcategories && c.subcategories.length > 0) && (
+                        <div className="mt-3 space-y-2">
+                          {customItemCategories.filter((c) => c.subcategories && c.subcategories.length > 0).map((c) => {
+                            const selectedList = itemForm.category.split(',').map((s) => s.trim()).filter(Boolean);
+                            return (
+                              <div key={`sub-${c.id}`} className="pl-2 border-l border-amber-400/20">
+                                <span className="text-[10px] text-amber-400/70 font-bold uppercase tracking-wider">{c.name} ↳</span>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {c.subcategories!.map((sub) => {
+                                    const subKey = `${c.name} > ${sub}`;
+                                    const isSubSelected = selectedList.some((s) => s.toLowerCase() === subKey.toLowerCase());
+                                    return (
+                                      <button
+                                        type="button"
+                                        key={sub}
+                                        onClick={() => {
+                                          const curList = itemForm.category.split(',').map((s) => s.trim()).filter(Boolean);
+                                          let newList: string[];
+                                          if (isSubSelected) {
+                                            newList = curList.filter((s) => s.toLowerCase() !== subKey.toLowerCase());
+                                          } else {
+                                            newList = [...curList, subKey];
+                                          }
+                                          setItemForm({ ...itemForm, category: newList.join(', ') });
+                                        }}
+                                        className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 cursor-pointer ${
+                                          isSubSelected
+                                            ? 'bg-amber-300 text-[#8c1119] border border-amber-300 shadow-sm'
+                                            : 'bg-black/40 text-white/60 border border-white/10 hover:border-amber-300/40 hover:text-white'
+                                        }`}
+                                      >
+                                        {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-white/30">↳</span>}
+                                        <span>{sub}</span>
+                                      </button>
+                                    );
+                                  })}
+                                </div>
                               </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                     <input
                       type="text"
