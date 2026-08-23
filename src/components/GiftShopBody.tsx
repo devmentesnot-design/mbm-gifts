@@ -761,50 +761,12 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             Showing {(safePage - 1) * SHOP_PAGE_SIZE + 1}–{Math.min(safePage * SHOP_PAGE_SIZE, allItems.length)} of {allItems.length} items · Page {safePage} of {totalPages}
           </p>
         )}
-
-        {/* Floating Tag Summary Panel */}
-        <div className={`fixed sm:right-6 sm:bottom-6 bottom-0 left-0 sm:left-auto z-40 bg-[#EFE3C8] border-t sm:border border-[#D8C58E] sm:rounded-tl-xl sm:rounded-tr-xl sm:rounded-bl-xl sm:rounded-br-[26px] p-4 sm:p-5 shadow-[0_16px_40px_rgba(31,43,36,0.3)] font-inter w-full sm:w-64 transition-all duration-300 ${mode === 'build' ? 'translate-y-0 opacity-100 sm:rotate-[-2deg] hover:rotate-0' : 'translate-y-full opacity-0 pointer-events-none'}`}>
-          {/* Decorative Tag Hole (Desktop only visually better) */}
-          <div className="hidden sm:block absolute left-4 top-4 w-3.5 h-3.5 rounded-full bg-black/90 border-2 border-[#B79D5D] shadow-inner z-10" />
-          <div className="hidden sm:block absolute left-[-6px] top-[14px] w-5 h-0.5 bg-gradient-to-r from-[#8c1119] via-[#8c1119] to-transparent rotate-[35deg]" />
-          
-          <div className="sm:pl-6 relative z-10 flex flex-col max-h-[60vh]">
-            <div className="text-[10px] uppercase tracking-widest text-[#6E5B2B] font-bold mb-1">Your gift box</div>
-            <div className="text-xs text-[#5A4C22] mb-1.5 font-medium">{customCartSummary.count} item{customCartSummary.count !== 1 ? 's' : ''}</div>
-            <div className="font-podium font-bold text-2xl text-[#163830] leading-none mb-3 border-b border-[#D8C58E] pb-3">
-              {formatPrice(customCartSummary.total, currency)}
-            </div>
-            
-            <div className="overflow-y-auto pr-1 mb-3 space-y-1 scrollbar-hide text-[11px] text-[#5A4C22] font-medium leading-tight">
-              {Object.entries(customCart).map(([id, qty]) => {
-                const item = customItems.find(i => i.id === id);
-                if (!item) return null;
-                return (
-                  <div key={id} className="flex justify-between gap-2">
-                    <span className="truncate">{qty}x {item.name}</span>
-                  </div>
-                );
-              })}
-            </div>
-            
-            {customCartSummary.count === 0 ? (
-              <div className="text-[11px] text-[#7A6A38] font-medium pt-1">Add items to start building</div>
-            ) : (
-              <button 
-                onClick={handleAddCustomBoxToCart}
-                className="w-full bg-[#8c1119] hover:bg-[#6e0d13] text-white font-bold text-[13px] uppercase tracking-wider py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-md mt-auto"
-              >
-                Add box to cart
-              </button>
-            )}
-          </div>
-        </div>
       </div>
     );
   };
 
   return (
-    <section id="packages" className="w-full px-2 sm:px-6 md:px-10 lg:px-16 py-10 sm:py-16 lg:py-24 bg-[#2B0005]/40 backdrop-blur-[2px] border-t border-b border-[#D9A514]/15 relative">
+    <section id="packages" className="w-full px-2 sm:px-6 md:px-10 lg:px-16 py-10 sm:py-16 lg:py-24 bg-[#2B0005]/40 border-t border-b border-[#D9A514]/15 relative">
       <div className="max-w-[1400px] mx-auto">
         
         {/* Section Header */}
@@ -1571,6 +1533,61 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           </div>
         </div>
       )}
+
+      {/* ========================================================================= */}
+      {/* FLOATING CUSTOM GIFT BOX SUMMARY PANEL (Viewport-fixed on scroll) */}
+      {/* ========================================================================= */}
+      <div
+        className={`fixed z-50 transition-all duration-300 ${
+          mode === 'build'
+            ? 'translate-y-0 opacity-100'
+            : 'translate-y-full opacity-0 pointer-events-none'
+        } bottom-4 left-3 right-3 sm:left-auto sm:right-6 sm:bottom-6 sm:w-72`}
+      >
+        <div className="relative bg-[#EFE3C8] border border-[#D8C58E] rounded-2xl sm:rounded-tl-xl sm:rounded-tr-xl sm:rounded-bl-xl sm:rounded-br-[26px] p-4 sm:p-5 shadow-[0_16px_40px_rgba(0,0,0,0.6)] font-inter sm:rotate-[-2deg] hover:rotate-0 transition-transform">
+          {/* Decorative Tag Hole */}
+          <div className="hidden sm:block absolute left-4 top-4 w-3.5 h-3.5 rounded-full bg-black/90 border-2 border-[#B79D5D] shadow-inner z-10" />
+          <div className="hidden sm:block absolute left-[-6px] top-[14px] w-5 h-0.5 bg-gradient-to-r from-[#8c1119] via-[#8c1119] to-transparent rotate-[35deg]" />
+
+          <div className="sm:pl-6 relative z-10 flex flex-col max-h-[50vh]">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-[10px] uppercase tracking-widest text-[#6E5B2B] font-bold">Your gift box</div>
+                <div className="text-xs text-[#5A4C22] font-medium">{customCartSummary.count} item{customCartSummary.count !== 1 ? 's' : ''}</div>
+              </div>
+              <div className="font-podium font-bold text-xl sm:text-2xl text-[#163830] leading-none">
+                {formatPrice(customCartSummary.total, currency)}
+              </div>
+            </div>
+
+            {/* List of items if any */}
+            {customCartSummary.count > 0 && (
+              <div className="overflow-y-auto pr-1 my-2.5 max-h-24 space-y-1 scrollbar-hide text-[11px] text-[#5A4C22] font-medium leading-tight border-t border-b border-[#D8C58E]/60 py-1.5">
+                {Object.entries(customCart).map(([id, qty]) => {
+                  const item = customItems.find(i => i.id === id);
+                  if (!item) return null;
+                  return (
+                    <div key={id} className="flex justify-between gap-2">
+                      <span className="truncate">{qty}x {item.name}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {customCartSummary.count === 0 ? (
+              <div className="text-[11px] text-[#7A6A38] font-medium pt-2 text-center">Add items below to start building</div>
+            ) : (
+              <button 
+                onClick={handleAddCustomBoxToCart}
+                className="w-full bg-[#8c1119] hover:bg-[#6e0d13] text-white font-bold text-[13px] uppercase tracking-wider py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg mt-2 transform hover:-translate-y-0.5"
+              >
+                Add box to cart
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
     </section>
   );
 };
