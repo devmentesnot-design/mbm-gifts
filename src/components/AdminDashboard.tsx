@@ -286,6 +286,55 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const packageCategories = categoriesList.filter((c) => !c.type || c.type === 'package' || c.type === 'both');
   const customItemCategories = categoriesList.filter((c) => !c.type || c.type === 'custom_item' || c.type === 'both');
 
+  /**
+   * Normalize a raw comma-separated category string by matching each token
+   * case-insensitively against the categoriesList names and slugs.
+   * If a match is found, we replace the token with the canonical display name.
+   * Unmatched tokens are kept as-is.
+   */
+  const normalizeCategoryString = (raw: string): string => {
+    if (!raw) return '';
+    return raw
+      .split(',')
+      .map((token) => {
+        const t = token.trim();
+        if (!t) return null;
+        // Try exact match first (case-insensitive)
+        const exact = categoriesList.find(
+          (c) => c.name.toLowerCase() === t.toLowerCase()
+        );
+        if (exact) return exact.name;
+        // Try slug match
+        const bySlug = categoriesList.find(
+          (c) => c.slug && c.slug.toLowerCase() === t.toLowerCase().replace(/\s+/g, '-')
+        );
+        if (bySlug) return bySlug.name;
+        // Try partial/substring match (e.g. "Valentine" matches "Valentine's Day")
+        const partial = categoriesList.find(
+          (c) =>
+            c.name.toLowerCase().includes(t.toLowerCase()) ||
+            t.toLowerCase().includes(c.name.toLowerCase())
+        );
+        if (partial) return partial.name;
+        // Check subcategory format "Parent > Sub"
+        if (t.includes('>')) {
+          const [parentPart, subPart] = t.split('>').map((s) => s.trim());
+          const parentCat = categoriesList.find(
+            (c) => c.name.toLowerCase() === parentPart.toLowerCase()
+          );
+          if (parentCat && parentCat.subcategories) {
+            const sub = parentCat.subcategories.find(
+              (s) => s.toLowerCase() === subPart.toLowerCase()
+            );
+            if (sub) return `${parentCat.name} > ${sub}`;
+          }
+        }
+        return t; // keep as-is if no match
+      })
+      .filter(Boolean)
+      .join(', ');
+  };
+
   const ADMIN_PAGE_SIZE = 20; // 5 rows × 4 cols
 
   // Reset pagination on filter or search change
@@ -500,7 +549,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setEditingPkg(pkg);
       setPkgForm({
         name: pkg.name,
-        category: pkg.category,
+      category: normalizeCategoryString(pkg.category),
         price: pkg.price.toString(),
         price_usd: pkg.price_usd != null ? pkg.price_usd.toString() : '',
         shortDesc: pkg.shortDesc,
@@ -634,7 +683,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setEditingItem(item);
       setItemForm({
         name: item.name,
-        category: item.category,
+        category: normalizeCategoryString(item.category),
         price: item.price.toString(),
         price_usd: item.price_usd != null ? item.price_usd.toString() : '',
         description: item.description,
