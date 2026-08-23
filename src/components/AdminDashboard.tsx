@@ -1221,7 +1221,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </div>
                         </td>
                         <td className="py-4 px-3 text-white/80 font-medium">
-                          {ord.items.length} item{ord.items.length !== 1 ? 's' : ''}
+                          <div>{ord.items.length} item{ord.items.length !== 1 ? 's' : ''}</div>
+                          {ord.items.some((it: any) => it.customerInputText || it.customerInputImageUrl) && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-purple-300 bg-purple-900/40 border border-purple-500/40 px-2 py-0.5 rounded-full mt-1">
+                              <Sparkles className="w-2.5 h-2.5 text-purple-400" />
+                              <span>Customized</span>
+                            </span>
+                          )}
                         </td>
                         <td className="py-4 px-3">
                           <div className="font-bold text-amber-300 text-sm">

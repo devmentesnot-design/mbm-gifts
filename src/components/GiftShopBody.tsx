@@ -19,7 +19,8 @@ import {
   Camera,
   FileText,
   Upload,
-  Loader2
+  Loader2,
+  PenTool
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useMarket } from '../context/MarketContext';
@@ -1301,57 +1302,181 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     {formatPrice(getItemPrice(selectedCustomItemModal), currency)}
                   </div>
 
-                  <p className="text-white/85 text-xs sm:text-sm font-inter leading-relaxed mb-5">
+                  <p className="text-white/85 text-xs sm:text-sm font-inter leading-relaxed mb-4">
                     {selectedCustomItemModal.description}
                   </p>
 
-                  <div className="bg-black/30 border border-white/10 rounded-xl p-3 mb-6 text-xs text-white/80 font-inter space-y-1">
-                    <div className="flex items-center gap-2 text-amber-300 font-bold uppercase text-[11px] tracking-wider">
-                      <Sparkles className="w-4 h-4 text-amber-300" />
-                      <span>Signature Quality</span>
+                  {/* Client Customization Section if item requires custom input */}
+                  {selectedCustomItemModal.requiresCustomInput && (
+                    <div className="bg-[#3a060b]/90 border border-amber-400/40 rounded-2xl p-4 sm:p-5 mb-5 space-y-4 shadow-lg">
+                      <div className="flex items-center gap-1.5 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-amber-400" />
+                        <span>{selectedCustomItemModal.customInputLabel || 'Required Customization Details'}</span>
+                      </div>
+
+                      {/* Photo Upload */}
+                      {(selectedCustomItemModal.customInputType === 'image' || selectedCustomItemModal.customInputType === 'both') && (
+                        <div>
+                          <label className="block text-xs uppercase tracking-wider text-amber-300 font-bold mb-2 flex items-center justify-between">
+                            <span className="flex items-center gap-1.5">
+                              <Camera className="w-3.5 h-3.5" />
+                              <span>Upload Your Custom Photo <span className="text-red-400">*</span></span>
+                            </span>
+                            <span className="text-[10px] text-white/50 font-normal">PNG, JPG up to 10MB</span>
+                          </label>
+
+                          {clientCustomImageUrl ? (
+                            <div className="flex items-center gap-3 bg-black/50 border border-emerald-500/40 rounded-xl p-3">
+                              <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-black/60 flex-shrink-0">
+                                <img src={clientCustomImageUrl} alt="Uploaded preview" className="w-full h-full object-cover" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <span className="text-emerald-300 text-xs font-bold flex items-center gap-1">
+                                  <Check className="w-3.5 h-3.5" /> Photo Attached
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => setClientCustomImageUrl('')}
+                                  className="text-red-400 hover:text-red-300 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
+                                >
+                                  <X className="w-3 h-3" /> Remove & Change
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-amber-400/40 hover:border-amber-400 rounded-xl p-3.5 cursor-pointer bg-black/40 hover:bg-black/60 transition-all text-center">
+                              {isUploadingClientPhoto ? (
+                                <div className="flex items-center gap-2 text-amber-300 text-xs font-bold py-1.5">
+                                  <Loader2 className="w-5 h-5 animate-spin" />
+                                  <span>Uploading photo...</span>
+                                </div>
+                              ) : (
+                                <>
+                                  <Upload className="w-5 h-5 text-amber-300 mb-1" />
+                                  <span className="text-xs font-bold text-white">Click to Choose Photo</span>
+                                  <span className="text-[10px] text-white/50 mt-0.5">High resolution recommended</span>
+                                </>
+                              )}
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                disabled={isUploadingClientPhoto}
+                                onChange={handleClientPhotoUpload}
+                              />
+                            </label>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Text Input */}
+                      {(selectedCustomItemModal.customInputType === 'text' || selectedCustomItemModal.customInputType === 'both') && (
+                        <div>
+                          <label className="block text-xs uppercase tracking-wider text-amber-300 font-bold mb-1.5 flex items-center gap-1.5">
+                            <PenTool className="w-3.5 h-3.5" />
+                            <span>{selectedCustomItemModal.customInputLabel || 'Your Custom Name / Text'} <span className="text-red-400">*</span></span>
+                          </label>
+                          <input
+                            type="text"
+                            value={clientCustomText}
+                            onChange={(e) => setClientCustomText(e.target.value)}
+                            placeholder={selectedCustomItemModal.customInputLabel || 'e.g. Happy Birthday Sarah, To My Love'}
+                            className="w-full bg-black/60 border border-white/20 rounded-xl p-3 text-xs text-white placeholder:text-white/40 focus:border-amber-400 focus:outline-none transition-colors"
+                          />
+                        </div>
+                      )}
                     </div>
-                    <p className="text-white/70 text-[11px]">
-                      Hand-packed in your custom velvet box with gold foil wrapping.
-                    </p>
-                  </div>
+                  )}
+
+                  {!selectedCustomItemModal.requiresCustomInput && (
+                    <div className="bg-black/30 border border-white/10 rounded-xl p-3 mb-6 text-xs text-white/80 font-inter space-y-1">
+                      <div className="flex items-center gap-2 text-amber-300 font-bold uppercase text-[11px] tracking-wider">
+                        <Sparkles className="w-4 h-4 text-amber-300" />
+                        <span>Signature Quality</span>
+                      </div>
+                      <p className="text-white/70 text-[11px]">
+                        Hand-packed in your custom luxury box with gold foil wrapping.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                {/* Add to Custom Box Quantity Controls */}
+                {/* Add to Cart Controls */}
                 <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
-                  <span className="text-xs text-white/70 font-bold uppercase tracking-wider">In Box:</span>
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center border border-white/20 rounded-full overflow-hidden bg-black/40 h-10">
-                      <button
-                        onClick={() => handleCustomQtyChange(selectedCustomItemModal.id, -1)}
-                        className="w-10 h-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/15 transition-colors cursor-pointer"
-                        title="Decrease quantity"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <span className="w-10 text-center text-sm font-bold text-white font-inter">
-                        {customCart[selectedCustomItemModal.id] || 0}
-                      </span>
-                      <button
-                        onClick={() => handleCustomQtyChange(selectedCustomItemModal.id, 1)}
-                        className="w-10 h-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/15 transition-colors cursor-pointer"
-                        title="Increase quantity"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-
+                  {selectedCustomItemModal.requiresCustomInput ? (
                     <button
                       onClick={() => {
-                        if (!customCart[selectedCustomItemModal.id]) {
-                          handleCustomQtyChange(selectedCustomItemModal.id, 1);
+                        if (
+                          (selectedCustomItemModal.customInputType === 'text' || selectedCustomItemModal.customInputType === 'both') &&
+                          !clientCustomText.trim()
+                        ) {
+                          alert(`Please fill in required custom text: ${selectedCustomItemModal.customInputLabel || 'Custom text'}`);
+                          return;
                         }
+                        if (
+                          (selectedCustomItemModal.customInputType === 'image' || selectedCustomItemModal.customInputType === 'both') &&
+                          !clientCustomImageUrl
+                        ) {
+                          alert('Please upload your photo before adding to cart.');
+                          return;
+                        }
+
+                        onAddToCartCustom({
+                          selectedItems: [selectedCustomItemModal],
+                          cardMessage: '',
+                          ribbonColor: 'Gold Satin Ribbon',
+                          totalPrice: getItemPrice(selectedCustomItemModal),
+                          customerInputText: clientCustomText,
+                          customerInputImageUrl: clientCustomImageUrl,
+                        });
+
                         setSelectedCustomItemModal(null);
+                        setClientCustomText('');
+                        setClientCustomImageUrl('');
                       }}
-                      className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md"
+                      className="w-full bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg flex items-center justify-center gap-2"
                     >
-                      Done
+                      <ShoppingBag className="w-4 h-4" />
+                      <span>Add Item to Cart — {formatPrice(getItemPrice(selectedCustomItemModal), currency)}</span>
                     </button>
-                  </div>
+                  ) : (
+                    <>
+                      <span className="text-xs text-white/70 font-bold uppercase tracking-wider">Quantity:</span>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center border border-white/20 rounded-full overflow-hidden bg-black/40 h-10">
+                          <button
+                            onClick={() => handleCustomQtyChange(selectedCustomItemModal.id, -1)}
+                            className="w-10 h-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/15 transition-colors cursor-pointer"
+                            title="Decrease quantity"
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="w-10 text-center text-sm font-bold text-white font-inter">
+                            {customCart[selectedCustomItemModal.id] || 0}
+                          </span>
+                          <button
+                            onClick={() => handleCustomQtyChange(selectedCustomItemModal.id, 1)}
+                            className="w-10 h-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/15 transition-colors cursor-pointer"
+                            title="Increase quantity"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            if (!customCart[selectedCustomItemModal.id]) {
+                              handleCustomQtyChange(selectedCustomItemModal.id, 1);
+                            }
+                            setSelectedCustomItemModal(null);
+                          }}
+                          className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md"
+                        >
+                          Done
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
