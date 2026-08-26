@@ -605,9 +605,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   const handleUpdateSubItem = (index: number, field: keyof PackageItemDetail, value: string) => {
-    const updated = [...pkgSubItems];
-    updated[index] = { ...updated[index], [field]: value };
-    setPkgSubItems(updated);
+    setPkgSubItems((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  };
+
+  const handleSelectCustomItemForSubItem = (index: number, item: CustomBoxOption) => {
+    setPkgSubItems((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        name: item.name,
+        image: item.image || '',
+        description: item.description || '',
+      };
+      return updated;
+    });
   };
 
   const handleRemoveSubItem = (index: number) => {
@@ -2945,16 +2960,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             Item Name <span className="text-red-400">*</span>
                           </label>
                           <select
-                            required
-                            value={subItem.name}
+                            value={customItems.some((i) => i.name === subItem.name) ? subItem.name : (subItem.name ? '__custom__' : '')}
                             onChange={(e) => {
-                              const selectedItem = customItems.find(item => item.name === e.target.value);
-                              if (selectedItem) {
-                                handleUpdateSubItem(index, 'name', selectedItem.name);
-                                handleUpdateSubItem(index, 'image', selectedItem.image);
-                                handleUpdateSubItem(index, 'description', selectedItem.description);
+                              const val = e.target.value;
+                              if (val === '__custom__') {
+                                handleUpdateSubItem(index, 'name', '__custom__');
+                              } else if (val) {
+                                const selectedItem = customItems.find((item) => item.name === val);
+                                if (selectedItem) {
+                                  handleSelectCustomItemForSubItem(index, selectedItem);
+                                }
                               } else {
-                                handleUpdateSubItem(index, 'name', e.target.value);
+                                handleUpdateSubItem(index, 'name', '');
                               }
                             }}
                             className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none cursor-pointer"
@@ -2967,9 +2984,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             ))}
                             <option value="__custom__">+ Enter Custom Item Name</option>
                           </select>
-                          {subItem.name === '__custom__' && (
+                          {(!customItems.some((i) => i.name === subItem.name) || subItem.name === '__custom__') && (
                             <input
                               type="text"
+                              value={subItem.name === '__custom__' ? '' : subItem.name}
                               placeholder="Enter custom item name..."
                               className="w-full bg-black/60 border border-amber-400/40 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none mt-2"
                               onChange={(e) => handleUpdateSubItem(index, 'name', e.target.value)}
