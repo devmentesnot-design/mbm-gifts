@@ -334,7 +334,13 @@ export const getStoredOrders = async (): Promise<any[]> => {
       currency: o.currency || 'ETB',
       deliveryFee: o.delivery_fee || 0,
       chapaTxRef: o.chapa_tx_ref || null,
-      paymentStatus: o.payment_status || (o.payment_receipt_url ? 'PAID' : 'PENDING_PAYMENT')
+      paymentStatus: o.payment_status || (o.payment_receipt_url ? (o.payment_method?.includes('Manual') ? 'UNDER_REVIEW' : 'PAID') : 'PENDING_PAYMENT'),
+      senderName: o.sender_name || null,
+      transactionId: o.transaction_id || null,
+      rejectionReason: o.rejection_reason || null,
+      paymentSubmittedAt: o.payment_submitted_at || null,
+      reviewedAt: o.reviewed_at || null,
+      reviewedBy: o.reviewed_by || null,
     }));
     
     console.log('✅ Loaded', mapped.length, 'orders from Supabase');
@@ -374,7 +380,13 @@ export const saveSingleOrder = async (order: any) => {
       currency: order.currency || 'ETB',
       delivery_fee: order.deliveryFee || 0,
       chapa_tx_ref: order.chapaTxRef || null,
-      payment_status: order.paymentStatus || 'PENDING_PAYMENT'
+      payment_status: order.paymentStatus || 'PENDING_PAYMENT',
+      sender_name: order.senderName || null,
+      transaction_id: order.transactionId || null,
+      rejection_reason: order.rejectionReason || null,
+      payment_submitted_at: order.paymentSubmittedAt || (order.paymentStatus === 'UNDER_REVIEW' || order.paymentReceiptUrl ? new Date().toISOString() : null),
+      reviewed_at: order.reviewedAt || null,
+      reviewed_by: order.reviewedBy || null,
     };
     
     console.log('📝 Formatted order payload for DB:', formattedOrder);
@@ -412,6 +424,50 @@ export const updateOrderStatusInDb = async (orderId: string, newStatus: string) 
   }
 
   console.log('✅ Order status updated in Supabase');
+  return data;
+};
+
+export const updatePaymentVerificationInDb = async (
+  orderId: string,
+  updates: {
+    paymentStatus: string;
+    orderStatus?: string;
+    rejectionReason?: string | null;
+    reviewedBy?: string | null;
+    reviewedAt?: string | null;
+  }
+) => {
+  console.log('📝 Updating payment verification in Supabase:', orderId, updates);
+
+  if (!isSupabaseConfigured) {
+    throw new Error('Supabase not configured');
+  }
+
+  const payload: any = {
+    payment_status: updates.paymentStatus,
+    reviewed_at: updates.reviewedAt || new Date().toISOString(),
+    reviewed_by: updates.reviewedBy || 'Admin',
+  };
+
+  if (updates.rejectionReason !== undefined) {
+    payload.rejection_reason = updates.rejectionReason;
+  }
+
+  if (updates.orderStatus) {
+    payload.status = updates.orderStatus;
+  }
+
+  const { data, error } = await supabase
+    .from('orders')
+    .update(payload)
+    .eq('id', orderId);
+
+  if (error) {
+    console.error('❌ Failed to update payment verification in Supabase:', error);
+    throw error;
+  }
+
+  console.log('✅ Payment verification updated in Supabase for order:', orderId);
   return data;
 };
 

@@ -17,7 +17,7 @@ import { MyOrdersPage } from './components/MyOrdersPage';
 import { ProfilePage } from './components/ProfilePage';
 import { MarketWelcomeModal } from './components/MarketWelcomeModal';
 import { supabase } from './lib/supabase';
-import { CartItem, CartItemPrepared, CartItemCustom, Order, OrderStatus } from './types/cart';
+import { CartItem, CartItemPrepared, CartItemCustom, Order, OrderStatus, PaymentStatus } from './types/cart';
 import {
   PreparedPackage,
   CustomBoxOption,
@@ -356,24 +356,32 @@ export default function App() {
     receiptUrl: string,
     paymentMethod: string,
     chapaTxRef?: string,
-    paymentStatus?: 'PAID' | 'PENDING_PAYMENT'
+    paymentStatus?: PaymentStatus,
+    senderName?: string,
+    transactionId?: string
   ) => {
     if (pendingOrder) {
       console.log('💾 Saving finalized order to database:', pendingOrder.id);
       
+      const nowIso = new Date().toISOString();
+      const isPaid = paymentStatus === 'PAID';
+
       // Update order with payment receipt, method, and transaction reference
       const finalizedOrder: Order = {
         ...pendingOrder,
         paymentReceiptUrl: receiptUrl,
         paymentMethod: paymentMethod,
         chapaTxRef: chapaTxRef || pendingOrder.chapaTxRef,
-        paymentStatus: paymentStatus || 'PAID',
-        status: paymentStatus === 'PAID' ? 'Processing' : 'Pending',
+        paymentStatus: paymentStatus || (paymentMethod.includes('Manual') ? 'UNDER_REVIEW' : 'PAID'),
+        status: isPaid ? 'Processing' : 'Pending',
+        senderName: senderName || pendingOrder.senderName,
+        transactionId: transactionId || pendingOrder.transactionId,
+        paymentSubmittedAt: nowIso,
       };
       
       try {
         await saveSingleOrder(finalizedOrder);
-        console.log('✅ Order saved to database successfully with Chapa reference:', finalizedOrder.id);
+        console.log('✅ Order saved to database successfully:', finalizedOrder.id);
         
         // Fetch fresh orders directly from DB
         const freshOrders = await getStoredOrders();
@@ -383,8 +391,9 @@ export default function App() {
         setCartItems([]);
         localStorage.removeItem('mbm_gifts_cart');
         
-        // Keep finalized order in pendingOrder state so the Official Receipt stays permanently on screen
+        // Keep finalized order in pendingOrder state
         setPendingOrder(finalizedOrder);
+        localStorage.setItem('mbm_pending_order', JSON.stringify(finalizedOrder));
       } catch (err: any) {
         console.error('❌ Failed to save order to database:', err);
         alert('Database Order Save Error: ' + (err?.message || 'Could not save order to database. Please check Supabase configuration or try again.'));
@@ -620,17 +629,21 @@ export default function App() {
   if (currentPath === '/checkout/payment') {
     const searchParams = new URLSearchParams(window.location.search);
     const returnTxRef = searchParams.get('tx_ref') || searchParams.get('trx_ref');
+    const orderIdParam = searchParams.get('order_id');
     
     let activeOrder: Order | null = pendingOrder;
+    if (orderIdParam) {
+      activeOrder = orders.find(o => o.id === orderIdParam) || null;
+    }
     if (!activeOrder && returnTxRef) {
       activeOrder = orders.find(o => o.chapaTxRef === returnTxRef || returnTxRef.includes(o.id)) || null;
-      if (!activeOrder) {
-        const savedPending = localStorage.getItem('mbm_pending_order');
-        if (savedPending) {
-          try { 
-            activeOrder = JSON.parse(savedPending) as Order; 
-          } catch(e) {}
-        }
+    }
+    if (!activeOrder) {
+      const savedPending = localStorage.getItem('mbm_pending_order');
+      if (savedPending) {
+        try { 
+          activeOrder = JSON.parse(savedPending) as Order; 
+        } catch(e) {}
       }
     }
 
@@ -682,6 +695,7 @@ export default function App() {
         orders={orders}
         session={session}
         onNavigate={navigateTo}
+        onSelectOrderForPayment={(ord) => setPendingOrder(ord)}
       />
     );
   }

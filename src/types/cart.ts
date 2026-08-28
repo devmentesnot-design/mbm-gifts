@@ -59,6 +59,16 @@ export interface OrderCustomerInfo {
   giftMessage?: string;
 }
 
+export type PaymentStatus = 
+  | 'PENDING_PAYMENT' 
+  | 'PAYMENT_SUBMITTED' 
+  | 'UNDER_REVIEW' 
+  | 'PAID' 
+  | 'REJECTED' 
+  | 'CANCELLED' 
+  | 'EXPIRED'
+  | 'PAYMENT_FAILED';
+
 export interface Order {
   id: string;
   createdAt: string; // ISO date string or formatted date
@@ -77,5 +87,12 @@ export interface Order {
   currency?: MarketCurrency;  // 'ETB' | 'USD'
   deliveryFee?: number;       // 0 for both markets currently
   chapaTxRef?: string;        // Chapa transaction reference ID
-  paymentStatus?: 'PENDING_PAYMENT' | 'PAID' | 'PAYMENT_FAILED';
+  paymentStatus?: PaymentStatus;
+  // Manual payment verification fields
+  senderName?: string;        // Name used by customer to send manual payment
+  transactionId?: string;     // Optional transaction/reference ID
+  rejectionReason?: string;   // Admin rejection reason if payment is rejected
+  paymentSubmittedAt?: string;// Timestamp when customer submitted payment proof
+  reviewedAt?: string;        // Timestamp when admin approved or rejected
+  reviewedBy?: string;        // Admin user who reviewed the payment
 }

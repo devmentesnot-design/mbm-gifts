@@ -1,6 +1,25 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Package, Truck, Check, Clock, ChevronDown, ChevronUp, Search, Filter, ShoppingBag, Headset, ShieldCheck, CreditCard, FileText } from 'lucide-react';
-import { Order, OrderStatus } from '../types/cart';
+import {
+  ArrowLeft,
+  Package,
+  Truck,
+  Check,
+  Clock,
+  ChevronDown,
+  ChevronUp,
+  Search,
+  Filter,
+  ShoppingBag,
+  Headset,
+  ShieldCheck,
+  CreditCard,
+  FileText,
+  AlertCircle,
+  RefreshCw,
+  Eye,
+  User,
+} from 'lucide-react';
+import { Order, OrderStatus, PaymentStatus } from '../types/cart';
 import { formatPrice } from '../utils/currency';
 import { OfficialReceiptModal } from './OfficialReceiptModal';
 
@@ -8,28 +27,43 @@ interface MyOrdersPageProps {
   orders: Order[];
   session: any;
   onNavigate: (path: string) => void;
+  onSelectOrderForPayment?: (order: Order) => void;
 }
 
-export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onNavigate }) => {
+export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
+  orders,
+  session,
+  onNavigate,
+  onSelectOrderForPayment,
+}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [expandedOrders, setExpandedOrders] = useState<Record<string, boolean>>({});
   const [selectedReceiptOrder, setSelectedReceiptOrder] = useState<Order | null>(null);
 
   const toggleExpand = (id: string) => {
-    setExpandedOrders(prev => ({ ...prev, [id]: !prev[id] }));
+    setExpandedOrders((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const filteredOrders = orders.filter(ord => {
-    const matchesSearch = ord.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredOrders = orders.filter((ord) => {
+    const matchesSearch =
+      ord.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       ord.customer.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (ord.senderName && ord.senderName.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (ord.chapaTxRef && ord.chapaTxRef.toLowerCase().includes(searchTerm.toLowerCase())) ||
       ord.customer.phone.includes(searchTerm);
-    const matchesStatus = statusFilter === 'all' || ord.status.toLowerCase() === statusFilter.toLowerCase();
+
+    const matchesStatus =
+      statusFilter === 'all' ||
+      ord.status.toLowerCase() === statusFilter.toLowerCase() ||
+      (statusFilter === 'under_review' && (ord.paymentStatus === 'UNDER_REVIEW' || ord.paymentStatus === 'PAYMENT_SUBMITTED')) ||
+      (statusFilter === 'rejected' && ord.paymentStatus === 'REJECTED') ||
+      (statusFilter === 'paid' && ord.paymentStatus === 'PAID');
+
     return matchesSearch && matchesStatus;
   });
 
-  const getStatusBadge = (status: OrderStatus) => {
+  const getOrderStatusBadge = (status: OrderStatus) => {
     switch (status) {
       case 'Pending':
         return (
@@ -42,7 +76,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
         return (
           <span className="bg-blue-500/20 text-blue-300 border border-blue-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
             <Package className="w-3.5 h-3.5" />
-            Processing
+            Processing / Confirmed
           </span>
         );
       case 'Shipped':
@@ -59,8 +93,49 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
             Delivered
           </span>
         );
+      case 'Cancelled':
+        return (
+          <span className="bg-red-500/20 text-red-300 border border-red-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
+            <AlertCircle className="w-3.5 h-3.5" />
+            Cancelled
+          </span>
+        );
       default:
         return null;
+    }
+  };
+
+  const getPaymentStatusBadge = (status?: PaymentStatus) => {
+    switch (status) {
+      case 'PAID':
+        return (
+          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1">
+            <ShieldCheck className="w-3 h-3 text-emerald-400" />
+            <span>PAID</span>
+          </span>
+        );
+      case 'UNDER_REVIEW':
+      case 'PAYMENT_SUBMITTED':
+        return (
+          <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+            <span>UNDER REVIEW</span>
+          </span>
+        );
+      case 'REJECTED':
+        return (
+          <span className="bg-red-500/20 text-red-300 border border-red-500/40 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1">
+            <AlertCircle className="w-3 h-3 text-red-400" />
+            <span>PAYMENT REJECTED</span>
+          </span>
+        );
+      default:
+        return (
+          <span className="bg-amber-400/15 text-amber-200/80 border border-amber-400/30 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            <span>PENDING PAYMENT</span>
+          </span>
+        );
     }
   };
 
@@ -69,31 +144,55 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
     return 'ETB';
   };
 
+  const handleResubmitPayment = (order: Order) => {
+    try {
+      localStorage.setItem('mbm_pending_order', JSON.stringify(order));
+    } catch {}
+    if (onSelectOrderForPayment) {
+      onSelectOrderForPayment(order);
+    }
+    onNavigate('/checkout/payment');
+  };
+
   return (
     <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005]">
       {/* Top Header Navigation */}
       <div className="border-b border-[#D9A514]/20 bg-[#2B0005]/80 sticky top-0 z-30 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <button 
+          <button
             onClick={() => onNavigate('/')}
             className="flex items-center gap-2 text-white/70 hover:text-white transition-colors cursor-pointer text-xs sm:text-sm uppercase tracking-wider font-bold"
           >
             <ArrowLeft className="w-4 h-4 text-amber-300" />
             <span>Back to Shop</span>
           </button>
-          
-          <img src="/logo.png" alt="MBM Gifts" referrerPolicy="no-referrer" className="h-24 sm:h-28 w-auto object-contain drop-shadow-md" />
+
+          <img
+            src="/logo.png"
+            alt="MBM Gifts"
+            referrerPolicy="no-referrer"
+            className="h-24 sm:h-28 w-auto object-contain drop-shadow-md"
+          />
 
           {session && (
             <div className="flex items-center gap-2.5 bg-black/40 border border-amber-400/40 rounded-full pl-1.5 pr-3 py-1">
               {(() => {
-                const avatarUrl = session.user?.user_metadata?.avatar_url || session.user?.user_metadata?.picture || null;
-                const fullName = session.user?.user_metadata?.full_name || session.user?.user_metadata?.name || '';
-                const firstName = fullName.trim() ? fullName.trim().split(' ')[0] : (session.user?.email?.split('@')[0] || 'User').charAt(0).toUpperCase() + (session.user?.email?.split('@')[0] || 'user').slice(1);
-                
+                const avatarUrl =
+                  session.user?.user_metadata?.avatar_url ||
+                  session.user?.user_metadata?.picture ||
+                  null;
+                const fullName =
+                  session.user?.user_metadata?.full_name ||
+                  session.user?.user_metadata?.name ||
+                  '';
+                const firstName = fullName.trim()
+                  ? fullName.trim().split(' ')[0]
+                  : (session.user?.email?.split('@')[0] || 'User').charAt(0).toUpperCase() +
+                    (session.user?.email?.split('@')[0] || 'user').slice(1);
+
                 return avatarUrl ? (
-                  <img 
-                    src={avatarUrl} 
+                  <img
+                    src={avatarUrl}
                     alt={firstName}
                     className="w-7 h-7 rounded-full object-cover border-2 border-amber-400/50"
                     referrerPolicy="no-referrer"
@@ -106,7 +205,10 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
               })()}
               <span className="font-semibold tracking-wide text-amber-200 text-xs max-w-[100px] truncate">
                 {(() => {
-                  const fullName = session.user?.user_metadata?.full_name || session.user?.user_metadata?.name || '';
+                  const fullName =
+                    session.user?.user_metadata?.full_name ||
+                    session.user?.user_metadata?.name ||
+                    '';
                   if (fullName.trim()) {
                     return fullName.trim().split(' ')[0];
                   }
@@ -122,7 +224,6 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
 
       {/* Main Content Container */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-12">
-        
         {/* Page Header Title */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-6 border-b border-white/10">
           <div>
@@ -138,7 +239,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
               My Orders
             </h1>
             <p className="text-white/60 text-xs sm:text-sm mt-1">
-              Track delivery progress, review package items, and verify Chapa payment receipts.
+              Track delivery progress, review payment verification status, and print official receipts.
             </p>
           </div>
 
@@ -158,7 +259,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
               <input
                 type="text"
-                placeholder="Search order ID, name, or ref..."
+                placeholder="Search order ID, sender name, ref..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full bg-black/40 border border-white/15 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
@@ -170,17 +271,22 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
               <span className="text-[11px] text-white/40 uppercase tracking-wider mr-1 flex items-center gap-1">
                 <Filter className="w-3 h-3" />
               </span>
-              {['all', 'pending', 'delivered'].map((st) => (
+              {[
+                { id: 'all', label: 'All Orders' },
+                { id: 'under_review', label: 'Under Review' },
+                { id: 'paid', label: 'Paid / Confirmed' },
+                { id: 'rejected', label: 'Needs Action' },
+              ].map((st) => (
                 <button
-                  key={st}
-                  onClick={() => setStatusFilter(st)}
+                  key={st.id}
+                  onClick={() => setStatusFilter(st.id)}
                   className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
-                    statusFilter === st
+                    statusFilter === st.id
                       ? 'bg-amber-400 text-[#8c1119] shadow-sm'
                       : 'bg-black/30 text-white/60 hover:text-white border border-white/10'
                   }`}
                 >
-                  {st}
+                  {st.label}
                 </button>
               ))}
             </div>
@@ -193,9 +299,11 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300">
               <Truck className="w-10 h-10" />
             </div>
-            <h2 className="font-podium text-2xl uppercase text-white mb-2 tracking-wider">No Orders Placed Yet</h2>
+            <h2 className="font-podium text-2xl uppercase text-white mb-2 tracking-wider">
+              No Orders Placed Yet
+            </h2>
             <p className="text-sm text-white/60 max-w-md mx-auto mb-8 leading-relaxed">
-              When you send gifts or create custom gift boxes with MBM Gifts, your live order status and tracking details will appear right here.
+              When you send gifts or create custom gift boxes with MBM Gifts, your live order status and payment verification will appear right here.
             </p>
             <button
               onClick={() => onNavigate('/')}
@@ -209,8 +317,11 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
           <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-10 text-center text-white/50">
             <p className="text-sm">No orders matching your search or filter criteria.</p>
             <button
-              onClick={() => { setSearchTerm(''); setStatusFilter('all'); }}
-              className="mt-3 text-xs text-amber-300 underline uppercase tracking-wider font-bold"
+              onClick={() => {
+                setSearchTerm('');
+                setStatusFilter('all');
+              }}
+              className="mt-3 text-xs text-amber-300 underline uppercase tracking-wider font-bold cursor-pointer"
             >
               Clear filters
             </button>
@@ -218,12 +329,15 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
         ) : (
           <div className="space-y-6">
             {filteredOrders.map((ord, idx) => {
-              const isExpanded = expandedOrders[ord.id] ?? (idx === 0);
+              const isExpanded = expandedOrders[ord.id] ?? idx === 0;
               const ordCurr = getOrderCurrency(ord);
-              const isPaid = ord.paymentStatus === 'PAID' || ord.status === 'Processing' || ord.status === 'Delivered';
+              const isPaid = ord.paymentStatus === 'PAID';
+              const isUnderReview =
+                ord.paymentStatus === 'UNDER_REVIEW' || ord.paymentStatus === 'PAYMENT_SUBMITTED';
+              const isRejected = ord.paymentStatus === 'REJECTED';
 
               return (
-                <div 
+                <div
                   key={ord.id}
                   className="bg-[#2a0407] border border-white/10 hover:border-amber-400/30 transition-all rounded-2xl overflow-hidden shadow-xl"
                 >
@@ -241,14 +355,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                         </span>
 
                         {/* Payment Status Badge */}
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border flex items-center gap-1 ${
-                          isPaid
-                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                            : 'bg-amber-400/20 text-amber-300 border-amber-400/40'
-                        }`}>
-                          <ShieldCheck className="w-3 h-3" />
-                          <span>{isPaid ? 'PAID' : 'PENDING PAYMENT'}</span>
-                        </span>
+                        {getPaymentStatusBadge(ord.paymentStatus)}
                       </div>
 
                       <div className="flex items-center justify-between md:justify-end gap-4 text-xs text-white/70">
@@ -272,18 +379,25 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                       </div>
                     </div>
 
-                    {/* Status Badge & Chapa Reference */}
+                    {/* Status Badge & Chapa/Manual Reference */}
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-                      <div className="inline-flex">
-                        {getStatusBadge(ord.status)}
-                      </div>
+                      <div className="inline-flex">{getOrderStatusBadge(ord.status)}</div>
 
-                      {ord.chapaTxRef && (
-                        <div className="flex items-center gap-1.5 text-[11px] bg-black/40 border border-white/10 px-2.5 py-1 rounded-lg">
-                          <span className="text-white/50">Chapa Ref:</span>
-                          <span className="font-mono text-amber-300 font-bold">{ord.chapaTxRef}</span>
-                        </div>
-                      )}
+                      <div className="flex flex-wrap items-center gap-2">
+                        {ord.senderName && (
+                          <div className="flex items-center gap-1.5 text-[11px] bg-black/40 border border-amber-400/20 px-2.5 py-1 rounded-lg text-amber-200">
+                            <User className="w-3 h-3 text-amber-300" />
+                            <span>Sender: <strong>{ord.senderName}</strong></span>
+                          </div>
+                        )}
+
+                        {ord.chapaTxRef && (
+                          <div className="flex items-center gap-1.5 text-[11px] bg-black/40 border border-white/10 px-2.5 py-1 rounded-lg">
+                            <span className="text-white/50">Chapa Ref:</span>
+                            <span className="font-mono text-amber-300 font-bold">{ord.chapaTxRef}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -291,10 +405,52 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                   {isExpanded && (
                     <div className="p-5 md:p-6 space-y-6">
                       
+                      {/* Special Banner for UNDER_REVIEW */}
+                      {isUnderReview && (
+                        <div className="bg-amber-400/10 border border-amber-400/30 rounded-xl p-4 flex items-start gap-3 text-xs text-amber-200">
+                          <Clock className="w-5 h-5 text-amber-300 flex-shrink-0 mt-0.5 animate-pulse" />
+                          <div>
+                            <strong className="text-amber-300 block mb-0.5">Payment Verification in Progress</strong>
+                            Your payment proof has been submitted. Our team is verifying your payment with our accounts. Your order will be confirmed upon verification.
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Special Banner for REJECTED */}
+                      {isRejected && (
+                        <div className="bg-red-500/15 border border-red-500/40 rounded-xl p-4 space-y-3 text-xs">
+                          <div className="flex items-start gap-3 text-red-200">
+                            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                            <div className="flex-1">
+                              <strong className="text-red-300 block mb-0.5">Payment Verification Unsuccessful</strong>
+                              {ord.rejectionReason ? (
+                                <p className="bg-black/30 p-2.5 rounded-lg border border-red-500/20 text-red-100 mt-1">
+                                  Reason: "{ord.rejectionReason}"
+                                </p>
+                              ) : (
+                                <p>We could not locate this payment record with the details provided.</p>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="pt-2 flex justify-end">
+                            <button
+                              onClick={() => handleResubmitPayment(ord)}
+                              className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-md"
+                            >
+                              <RefreshCw className="w-3.5 h-3.5" />
+                              <span>Re-submit Payment Proof</span>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
                       {/* Customer & Recipient Info Grid */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/30 border border-white/10 rounded-xl p-4 text-xs">
                         <div>
-                          <span className="text-amber-300 uppercase font-bold text-[10px] tracking-wider block mb-1">Customer / Recipient</span>
+                          <span className="text-amber-300 uppercase font-bold text-[10px] tracking-wider block mb-1">
+                            Customer / Recipient
+                          </span>
                           <div className="text-white font-semibold">{ord.customer.fullName}</div>
                           <div className="text-white/60">{ord.customer.phone}</div>
                           <div className="text-white/40 text-[11px]">{ord.customer.email}</div>
@@ -306,7 +462,9 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                         </div>
 
                         <div>
-                          <span className="text-amber-300 uppercase font-bold text-[10px] tracking-wider block mb-1">Delivery Destination (Ethiopia)</span>
+                          <span className="text-amber-300 uppercase font-bold text-[10px] tracking-wider block mb-1">
+                            Delivery Destination (Ethiopia)
+                          </span>
                           <div className="text-white font-semibold">{ord.customer.address}</div>
                           <div className="text-white/60">{ord.customer.city}</div>
                           {ord.customer.giftMessage && (
@@ -319,25 +477,41 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
 
                       {/* Items in this Order */}
                       <div>
-                        <span className="text-white/50 uppercase font-bold text-[10px] tracking-widest block mb-3">Items Included ({ord.items.length})</span>
+                        <span className="text-white/50 uppercase font-bold text-[10px] tracking-widest block mb-3">
+                          Items Included ({ord.items.length})
+                        </span>
                         <div className="space-y-3">
                           {ord.items.map((item) => {
                             const isPkg = item.type === 'package';
-                            const singleObj = ('item' in item && item.item) ? item.item : ('selectedItems' in item ? item.selectedItems?.[0] : null);
-                            const title = isPkg ? (item.package?.name || 'Gift Package') : (singleObj?.name || 'Single Item');
-                            const img = isPkg ? (item.package?.image || '') : (singleObj?.image || ('boxStyle' in item ? item.boxStyle?.image : ''));
-                            const subtitle = isPkg ? `${item.package?.category || 'Ready-made'} • Package` : (singleObj?.category ? `${singleObj.category} • Single Item` : 'Single Item');
-                            
-                            // Determine item unit price in the order's specific currency
+                            const singleObj =
+                              'item' in item && item.item
+                                ? item.item
+                                : 'selectedItems' in item
+                                ? item.selectedItems?.[0]
+                                : null;
+                            const title = isPkg
+                              ? item.package?.name || 'Gift Package'
+                              : singleObj?.name || 'Single Item';
+                            const img = isPkg
+                              ? item.package?.image || ''
+                              : singleObj?.image || ('boxStyle' in item ? item.boxStyle?.image : '');
+                            const subtitle = isPkg
+                              ? `${item.package?.category || 'Ready-made'} • Package`
+                              : singleObj?.category
+                              ? `${singleObj.category} • Single Item`
+                              : 'Single Item';
+
                             let unitPrice = 0;
                             if (ordCurr === 'USD') {
                               if (isPkg) {
-                                unitPrice = item.package.price_usd != null && item.package.price_usd > 0
-                                  ? item.package.price_usd
-                                  : Math.round((item.package.price / 120) * 100) / 100;
+                                unitPrice =
+                                  item.package.price_usd != null && item.package.price_usd > 0
+                                    ? item.package.price_usd
+                                    : Math.round((item.package.price / 120) * 100) / 100;
                               } else {
                                 if (singleObj) {
-                                  unitPrice = singleObj.price_usd != null && singleObj.price_usd > 0
+                                  unitPrice =
+                                    singleObj.price_usd != null && singleObj.price_usd > 0
                                     ? singleObj.price_usd
                                     : Math.round((singleObj.price / 120) * 100) / 100;
                                 } else {
@@ -345,20 +519,33 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                                 }
                               }
                             } else {
-                              unitPrice = isPkg ? item.package.price : (singleObj ? singleObj.price : (item.totalPrice || 0));
+                              unitPrice = isPkg
+                                ? item.package.price
+                                : singleObj
+                                ? singleObj.price
+                                : item.totalPrice || 0;
                             }
 
                             return (
-                              <div key={item.id} className="bg-black/20 border border-white/5 rounded-xl p-3 flex items-center gap-3">
+                              <div
+                                key={item.id}
+                                className="bg-black/20 border border-white/5 rounded-xl p-3 flex items-center gap-3"
+                              >
                                 {img ? (
-                                  <img src={img} alt={title} className="w-12 h-12 rounded-lg object-cover bg-black/40 border border-white/10 flex-shrink-0" />
+                                  <img
+                                    src={img}
+                                    alt={title}
+                                    className="w-12 h-12 rounded-lg object-cover bg-black/40 border border-white/10 flex-shrink-0"
+                                  />
                                 ) : (
                                   <div className="w-12 h-12 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 text-white/30">
                                     🎁
                                   </div>
                                 )}
                                 <div className="flex-1 min-w-0">
-                                  <div className="font-podium text-sm uppercase text-white truncate font-bold">{title}</div>
+                                  <div className="font-podium text-sm uppercase text-white truncate font-bold">
+                                    {title}
+                                  </div>
                                   <div className="text-[11px] text-white/50 truncate">
                                     {subtitle}
                                   </div>
@@ -381,16 +568,32 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({ orders, session, onN
                           <div className="flex items-center gap-2">
                             <CreditCard className="w-4 h-4 text-amber-300" />
                             <span className="text-white/70">Payment:</span>
-                            <span className="font-semibold text-white">{ord.paymentMethod || 'Chapa Payment'}</span>
+                            <span className="font-semibold text-white">
+                              {ord.paymentMethod || 'Manual Transfer'}
+                            </span>
                           </div>
-                          
-                          <button
-                            onClick={() => setSelectedReceiptOrder(ord)}
-                            className="bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/40 text-amber-300 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
-                          >
-                            <FileText className="w-3.5 h-3.5" />
-                            <span>View / Print Official Receipt</span>
-                          </button>
+
+                          {ord.paymentReceiptUrl && (
+                            <a
+                              href={ord.paymentReceiptUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+                            >
+                              <Eye className="w-3.5 h-3.5 text-amber-300" />
+                              <span>View Receipt</span>
+                            </a>
+                          )}
+
+                          {isPaid && (
+                            <button
+                              onClick={() => setSelectedReceiptOrder(ord)}
+                              className="bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/40 text-amber-300 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                            >
+                              <FileText className="w-3.5 h-3.5" />
+                              <span>View Official Invoice</span>
+                            </button>
+                          )}
                         </div>
 
                         <div className="flex items-center gap-3">

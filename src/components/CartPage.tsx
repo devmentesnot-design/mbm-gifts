@@ -263,7 +263,7 @@ export const CartPage: React.FC<CartPageProps> = ({
       subtotal: subtotal,
       shipping: 0,
       total: serverValidatedTotal,  // Server-validated total
-      paymentMethod: 'Chapa Payment Gateway',
+      paymentMethod: 'Pending Payment Selection',
       paymentStatus: 'PENDING_PAYMENT',
       giftBoxStyle: selectedBox?.name || 'Standard Box',
       giftBoxPrice: wrapTier,
@@ -771,12 +771,12 @@ export const CartPage: React.FC<CartPageProps> = ({
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4" />
-                      <span>{session ? 'Proceed to Chapa Payment' : 'Sign up to place order'}</span>
+                      <span>{session ? 'Proceed to Payment' : 'Sign up to place order'}</span>
                     </>
                   )}
                 </button>
                 <p className="text-center text-[10px] text-white/40 mt-4 uppercase tracking-widest">
-                  {session ? "Secure Checkout Powered by Chapa" : 'Create an account to complete your purchase'}
+                  {session ? "100% Secure Checkout • Telebirr, Bank Transfer & Chapa" : 'Create an account to complete your purchase'}
                 </p>
               </div>
             </div>

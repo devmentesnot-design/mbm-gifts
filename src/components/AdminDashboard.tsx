@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, DEFAULT_CATEGORIES, DEFAULT_GIFT_BOXES, PackageItemDetail, getStoredCategories, saveStoredCategories, deleteStoredCategory, getStoredGiftBoxes, saveStoredGiftBoxes, deleteStoredGiftBox, deleteStoredPackage, deleteStoredCustomItem } from '../data/giftsData';
-import { Order, OrderStatus } from '../types/cart';
+import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, DEFAULT_CATEGORIES, DEFAULT_GIFT_BOXES, PackageItemDetail, getStoredCategories, saveStoredCategories, deleteStoredCategory, getStoredGiftBoxes, saveStoredGiftBoxes, deleteStoredGiftBox, deleteStoredPackage, deleteStoredCustomItem, updatePaymentVerificationInDb } from '../data/giftsData';
+import { Order, OrderStatus, PaymentStatus } from '../types/cart';
 import { uploadToCloudinary } from '../utils/cloudinary';
+import { formatPrice } from '../utils/currency';
 import { DatabaseDebug } from './DatabaseDebug';
 import {
   X,
@@ -39,7 +40,14 @@ import {
   LogOut,
   ArrowRight,
   Camera,
-  FileText
+  FileText,
+  ShieldCheck,
+  ShieldAlert,
+  ThumbsUp,
+  ThumbsDown,
+  ExternalLink,
+  User,
+  RefreshCw,
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -83,9 +91,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onCreateOrder,
   session,
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'packages' | 'customItems' | 'categories' | 'giftBoxes' | 'customers'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'payments' | 'packages' | 'customItems' | 'categories' | 'giftBoxes' | 'customers'>('overview');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+
+  // Payment Verification State
+  const [paymentFilter, setPaymentFilter] = useState<'all' | 'under_review' | 'paid' | 'rejected'>('under_review');
+  const [paymentSearchTerm, setPaymentSearchTerm] = useState('');
+  const [rejectingPaymentOrder, setRejectingPaymentOrder] = useState<Order | null>(null);
+  const [rejectionReasonInput, setRejectionReasonInput] = useState('');
+  const [viewingReceiptUrl, setViewingReceiptUrl] = useState<string | null>(null);
+  const [isProcessingPaymentAction, setIsProcessingPaymentAction] = useState(false);
 
   const handleCloudinaryUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -102,6 +118,88 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       alert(`Cloudinary Upload Warning: ${err?.message || 'Upload failed'}`);
     } finally {
       setUploadingImage(false);
+    }
+  };
+
+  // Payment Approval & Rejection Handlers
+  const handleApprovePayment = async (orderToApprove: Order) => {
+    if (!confirm(`Are you sure you want to approve payment for order ${orderToApprove.id}? This will confirm the order and mark it as PAID.`)) {
+      return;
+    }
+
+    setIsProcessingPaymentAction(true);
+    const reviewerName = session?.user?.email || 'Admin';
+    const nowIso = new Date().toISOString();
+
+    try {
+      await updatePaymentVerificationInDb(orderToApprove.id, {
+        paymentStatus: 'PAID',
+        orderStatus: 'Processing',
+        reviewedBy: reviewerName,
+        reviewedAt: nowIso,
+        rejectionReason: null,
+      });
+
+      onUpdateOrderStatus(orderToApprove.id, 'Processing');
+
+      if (selectedOrderDetails && selectedOrderDetails.id === orderToApprove.id) {
+        setSelectedOrderDetails({
+          ...selectedOrderDetails,
+          paymentStatus: 'PAID',
+          status: 'Processing',
+          reviewedBy: reviewerName,
+          reviewedAt: nowIso,
+          rejectionReason: undefined,
+        });
+      }
+    } catch (err: any) {
+      console.error('❌ Error approving payment:', err);
+      alert('Failed to approve payment: ' + (err?.message || 'Database error'));
+    } finally {
+      setIsProcessingPaymentAction(false);
+    }
+  };
+
+  const handleOpenRejectModal = (orderToReject: Order) => {
+    setRejectingPaymentOrder(orderToReject);
+    setRejectionReasonInput(
+      orderToReject.rejectionReason || 'Transfer amount or sender name could not be verified in payment account statements.'
+    );
+  };
+
+  const handleConfirmRejectPayment = async () => {
+    if (!rejectingPaymentOrder) return;
+
+    const reason = rejectionReasonInput.trim() || 'Payment details could not be confirmed in bank or mobile transfer records.';
+    setIsProcessingPaymentAction(true);
+    const reviewerName = session?.user?.email || 'Admin';
+    const nowIso = new Date().toISOString();
+
+    try {
+      await updatePaymentVerificationInDb(rejectingPaymentOrder.id, {
+        paymentStatus: 'REJECTED',
+        rejectionReason: reason,
+        reviewedBy: reviewerName,
+        reviewedAt: nowIso,
+      });
+
+      if (selectedOrderDetails && selectedOrderDetails.id === rejectingPaymentOrder.id) {
+        setSelectedOrderDetails({
+          ...selectedOrderDetails,
+          paymentStatus: 'REJECTED',
+          rejectionReason: reason,
+          reviewedBy: reviewerName,
+          reviewedAt: nowIso,
+        });
+      }
+
+      setRejectingPaymentOrder(null);
+      setRejectionReasonInput('');
+    } catch (err: any) {
+      console.error('❌ Error rejecting payment:', err);
+      alert('Failed to reject payment: ' + (err?.message || 'Database error'));
+    } finally {
+      setIsProcessingPaymentAction(false);
     }
   };
 
@@ -846,8 +944,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setOrderNote('');
   };
 
+  const pendingPaymentsCount = orders.filter(
+    (o) => o.paymentStatus === 'UNDER_REVIEW' || o.paymentStatus === 'PAYMENT_SUBMITTED'
+  ).length;
+
   const navItems = [
     { id: 'overview', label: 'Dashboard Overview', icon: LayoutDashboard },
+    {
+      id: 'payments',
+      label: `Payment Verification (${pendingPaymentsCount})`,
+      icon: ShieldCheck,
+      badge: pendingPaymentsCount ? `${pendingPaymentsCount} Review` : null,
+    },
     { id: 'orders', label: `Orders (${orders.length})`, icon: ShoppingBag, badge: pendingOrdersCount ? `${pendingOrdersCount} new` : null },
     { id: 'packages', label: `Ready-made Packages (${packages.length})`, icon: Package },
     { id: 'customItems', label: `Single Items (${customItems.length})`, icon: Gift },
@@ -1285,6 +1393,320 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+
+          {/* TAB 2.5: PAYMENT VERIFICATION & AUDIT */}
+          {activeTab === 'payments' && (
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 text-amber-300 text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full mb-1">
+                    <ShieldCheck className="w-3 h-3 text-amber-300" />
+                    <span>Financial Review & Manual Audit</span>
+                  </div>
+                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+                    Payment Verification Dashboard
+                  </h2>
+                  <p className="text-white/60 text-xs font-inter mt-1">
+                    Cross-check incoming Telebirr and bank deposits against customer sender names and uploaded receipt screenshots.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="bg-[#2e0508] border border-amber-400/30 rounded-xl px-4 py-2 text-right shadow-lg">
+                    <span className="text-[10px] text-white/50 uppercase font-bold block">Awaiting Verification</span>
+                    <span className="font-podium text-xl text-amber-300 font-bold">
+                      {pendingPaymentsCount} order{pendingPaymentsCount !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Filters & Search */}
+              <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-lg">
+                <div className="relative w-full sm:w-80">
+                  <Search className="w-4 h-4 absolute left-3 top-3 text-white/40" />
+                  <input
+                    type="text"
+                    placeholder="Search by sender name, order ID, phone..."
+                    value={paymentSearchTerm}
+                    onChange={(e) => setPaymentSearchTerm(e.target.value)}
+                    className="w-full bg-black/40 border border-white/15 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-white/40 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+                  {[
+                    { id: 'under_review', label: `Needs Review (${pendingPaymentsCount})` },
+                    { id: 'paid', label: `Approved (${orders.filter(o => o.paymentStatus === 'PAID').length})` },
+                    { id: 'rejected', label: `Rejected (${orders.filter(o => o.paymentStatus === 'REJECTED').length})` },
+                    { id: 'all', label: `All Payments (${orders.length})` },
+                  ].map((filterTab) => (
+                    <button
+                      key={filterTab.id}
+                      onClick={() => setPaymentFilter(filterTab.id as any)}
+                      className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border transition-all cursor-pointer whitespace-nowrap ${
+                        paymentFilter === filterTab.id
+                          ? 'bg-amber-400 border-amber-400 text-[#8c1119] shadow-md'
+                          : 'bg-black/20 border-white/10 text-white/70 hover:text-white'
+                      }`}
+                    >
+                      {filterTab.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Verification List / Table */}
+              {(() => {
+                const paymentsToDisplay = orders.filter((ord) => {
+                  const matchesSearch =
+                    ord.id.toLowerCase().includes(paymentSearchTerm.toLowerCase()) ||
+                    ord.customer.fullName.toLowerCase().includes(paymentSearchTerm.toLowerCase()) ||
+                    (ord.senderName && ord.senderName.toLowerCase().includes(paymentSearchTerm.toLowerCase())) ||
+                    (ord.transactionId && ord.transactionId.toLowerCase().includes(paymentSearchTerm.toLowerCase())) ||
+                    (ord.chapaTxRef && ord.chapaTxRef.toLowerCase().includes(paymentSearchTerm.toLowerCase())) ||
+                    ord.customer.phone.includes(paymentSearchTerm);
+
+                  if (!matchesSearch) return false;
+
+                  if (paymentFilter === 'under_review') {
+                    return ord.paymentStatus === 'UNDER_REVIEW' || ord.paymentStatus === 'PAYMENT_SUBMITTED';
+                  }
+                  if (paymentFilter === 'paid') {
+                    return ord.paymentStatus === 'PAID';
+                  }
+                  if (paymentFilter === 'rejected') {
+                    return ord.paymentStatus === 'REJECTED';
+                  }
+                  return true;
+                });
+
+                if (paymentsToDisplay.length === 0) {
+                  return (
+                    <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-12 text-center text-white/40 space-y-3">
+                      <ShieldCheck className="w-12 h-12 text-white/20 mx-auto" />
+                      <div className="font-podium text-lg uppercase text-white font-bold">No payments in this queue</div>
+                      <p className="text-xs text-white/50 max-w-sm mx-auto">
+                        {paymentFilter === 'under_review'
+                          ? 'Great job! There are no manual payments currently waiting for verification.'
+                          : 'No payment records matched your selected filter or search term.'}
+                      </p>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div className="space-y-4">
+                    {paymentsToDisplay.map((ord) => {
+                      const isUnderReview = ord.paymentStatus === 'UNDER_REVIEW' || ord.paymentStatus === 'PAYMENT_SUBMITTED';
+                      const isPaid = ord.paymentStatus === 'PAID';
+                      const isRejected = ord.paymentStatus === 'REJECTED';
+                      const isUsd = ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL';
+
+                      return (
+                        <div
+                          key={ord.id}
+                          className={`bg-[#2e0508] border rounded-2xl p-5 shadow-xl transition-all ${
+                            isUnderReview
+                              ? 'border-amber-400/50 bg-gradient-to-r from-[#2e0508] to-[#3a060a]'
+                              : isRejected
+                              ? 'border-red-500/30'
+                              : 'border-white/10'
+                          }`}
+                        >
+                          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                            
+                            {/* Col 1: Order ID & Summary (3 cols) */}
+                            <div className="lg:col-span-3 space-y-2">
+                              <div className="flex items-center gap-2">
+                                <span className="font-podium text-xl text-white font-bold uppercase tracking-wide">
+                                  {ord.id}
+                                </span>
+                                {isUnderReview && (
+                                  <span className="bg-amber-400 text-[#8c1119] text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase animate-pulse">
+                                    Needs Audit
+                                  </span>
+                                )}
+                              </div>
+
+                              <div className="text-xs space-y-1">
+                                <div className="text-white font-semibold flex items-center gap-1.5">
+                                  <span>{ord.customer.fullName}</span>
+                                </div>
+                                <div className="text-amber-300/80 flex items-center gap-1 font-medium text-[11px]">
+                                  <Phone className="w-3 h-3 text-amber-300" />
+                                  <span>{ord.customer.phone || 'No phone'}</span>
+                                </div>
+                                <div className="text-white/40 text-[10px]">
+                                  {ord.customer.email}
+                                </div>
+                                <div className="text-white/40 text-[10px] pt-1">
+                                  Submitted: {ord.paymentSubmittedAt ? new Date(ord.paymentSubmittedAt).toLocaleString() : ord.createdAt}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Col 2: Sender Name & Expected Amount (4 cols) */}
+                            <div className="lg:col-span-4 space-y-3 bg-black/40 border border-white/10 rounded-xl p-3.5">
+                              {/* Prominent Sender Name Highlight */}
+                              <div>
+                                <span className="text-[10px] text-amber-300 font-bold uppercase tracking-wider block mb-0.5">
+                                  Sender Name (Cross-Check On Phone/Bank):
+                                </span>
+                                <div className="font-bold text-amber-200 text-sm bg-amber-400/10 border border-amber-400/30 px-3 py-1.5 rounded-lg inline-flex items-center gap-2">
+                                  <User className="w-4 h-4 text-amber-400" />
+                                  <span>{ord.senderName || '(Not provided / Gateway)'}</span>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-white/10">
+                                <div>
+                                  <span className="text-white/50 text-[10px] uppercase block">Expected Amount:</span>
+                                  <span className="font-podium text-base font-bold text-amber-300">
+                                    {isUsd ? `$${ord.total.toFixed(2)} USD` : `${ord.total.toLocaleString()} ETB`}
+                                  </span>
+                                </div>
+                                <div>
+                                  <span className="text-white/50 text-[10px] uppercase block">Method:</span>
+                                  <span className="font-medium text-white text-[11px] truncate block">
+                                    {ord.paymentMethod || 'Manual Transfer'}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {ord.transactionId && (
+                                <div className="text-[11px] text-white/70 bg-black/30 px-2.5 py-1 rounded border border-white/5 font-mono">
+                                  <span className="text-white/40 mr-1.5">Ref / TX:</span>
+                                  <strong className="text-white">{ord.transactionId}</strong>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Col 3: Receipt Proof Preview (2 cols) */}
+                            <div className="lg:col-span-2 space-y-2 text-center">
+                              <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider block">
+                                Uploaded Receipt Proof
+                              </span>
+                              {ord.paymentReceiptUrl && !ord.paymentReceiptUrl.includes('placeholder') ? (
+                                <div className="space-y-1.5">
+                                  <div
+                                    onClick={() => setViewingReceiptUrl(ord.paymentReceiptUrl || null)}
+                                    className="w-20 h-20 mx-auto rounded-xl overflow-hidden border-2 border-amber-400/40 hover:border-amber-400 bg-black/60 cursor-pointer shadow-lg group relative"
+                                  >
+                                    <img
+                                      src={ord.paymentReceiptUrl}
+                                      alt="Payment Receipt Proof"
+                                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                    />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-amber-300">
+                                      <Eye className="w-5 h-5" />
+                                    </div>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => setViewingReceiptUrl(ord.paymentReceiptUrl || null)}
+                                    className="text-amber-300 hover:text-amber-200 text-[11px] font-bold underline inline-flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <Eye className="w-3 h-3" /> View Full Proof
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="py-4 text-[11px] text-white/40 bg-black/20 rounded-xl border border-white/5">
+                                  No receipt file
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Col 4: Status & Admin Decision Actions (3 cols) */}
+                            <div className="lg:col-span-3 space-y-3 flex flex-col justify-between h-full">
+                              <div>
+                                <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider block mb-1">
+                                  Payment Status
+                                </span>
+                                <div className="flex items-center gap-2">
+                                  {isPaid && (
+                                    <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase flex items-center gap-1.5">
+                                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                                      <span>VERIFIED & PAID</span>
+                                    </span>
+                                  )}
+                                  {isUnderReview && (
+                                    <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold px-3 py-1 rounded-full text-xs uppercase flex items-center gap-1.5">
+                                      <Clock className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                                      <span>UNDER REVIEW</span>
+                                    </span>
+                                  )}
+                                  {isRejected && (
+                                    <span className="bg-red-500/20 text-red-300 border border-red-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase flex items-center gap-1.5">
+                                      <AlertCircle className="w-3.5 h-3.5 text-red-400" />
+                                      <span>REJECTED</span>
+                                    </span>
+                                  )}
+                                </div>
+
+                                {ord.rejectionReason && (
+                                  <div className="text-[10px] text-red-300 bg-red-950/40 p-2 rounded-lg border border-red-500/20 mt-2">
+                                    <strong>Rejection Note:</strong> "{ord.rejectionReason}"
+                                  </div>
+                                )}
+
+                                {ord.reviewedBy && (
+                                  <div className="text-[10px] text-white/40 mt-1">
+                                    Reviewed by: {ord.reviewedBy} {ord.reviewedAt ? `on ${new Date(ord.reviewedAt).toLocaleDateString()}` : ''}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Decision Action Buttons */}
+                              <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/10">
+                                {!isPaid && (
+                                  <button
+                                    type="button"
+                                    disabled={isProcessingPaymentAction}
+                                    onClick={() => handleApprovePayment(ord)}
+                                    className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                                    title="Confirm payment received and mark order as PAID"
+                                  >
+                                    <ThumbsUp className="w-3.5 h-3.5" />
+                                    <span>Approve</span>
+                                  </button>
+                                )}
+
+                                {!isRejected && (
+                                  <button
+                                    type="button"
+                                    disabled={isProcessingPaymentAction}
+                                    onClick={() => handleOpenRejectModal(ord)}
+                                    className="bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 text-red-300 font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                                    title="Reject payment proof with reason"
+                                  >
+                                    <ThumbsDown className="w-3.5 h-3.5" />
+                                    <span>Reject</span>
+                                  </button>
+                                )}
+
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedOrderDetails(ord)}
+                                  className="px-2.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white/80 text-xs font-semibold cursor-pointer"
+                                  title="View full order inspection details"
+                                >
+                                  <Eye className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                            </div>
+
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
             </div>
           )}
 
@@ -3804,7 +4226,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               {/* Payment & Market Details */}
               <div className="bg-black/40 border border-white/10 rounded-xl p-4 space-y-3">
-                <div className="text-[10px] text-amber-300 font-bold uppercase tracking-widest">Payment & Market Information</div>
+                <div className="text-[10px] text-amber-300 font-bold uppercase tracking-widest">Payment & Verification Details</div>
                 
                 <div className="flex items-center justify-between">
                   <span className="text-white/70">Buyer Market:</span>
@@ -3814,20 +4236,52 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-white/70">Payment Gateway / Method:</span>
-                  <span className="text-white font-semibold">{selectedOrderDetails.paymentMethod || 'Chapa Gateway'}</span>
+                  <span className="text-white/70">Payment Method:</span>
+                  <span className="text-white font-semibold">{selectedOrderDetails.paymentMethod || 'Manual Payment / Gateway'}</span>
                 </div>
+
+                {/* Sender Name Highlight */}
+                {selectedOrderDetails.senderName && (
+                  <div className="flex items-center justify-between bg-amber-400/10 border border-amber-400/30 p-2.5 rounded-lg">
+                    <span className="text-amber-300 font-bold text-[11px] flex items-center gap-1">
+                      <User className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Customer Sender Name:</span>
+                    </span>
+                    <span className="text-amber-200 font-bold text-xs">{selectedOrderDetails.senderName}</span>
+                  </div>
+                )}
+
+                {selectedOrderDetails.transactionId && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-white/70">Transaction ID / Ref:</span>
+                    <span className="text-white font-mono text-[11px]">{selectedOrderDetails.transactionId}</span>
+                  </div>
+                )}
 
                 {selectedOrderDetails.paymentStatus && (
                   <div className="flex items-center justify-between">
                     <span className="text-white/70">Payment Status:</span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                       selectedOrderDetails.paymentStatus === 'PAID'
                         ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                        : selectedOrderDetails.paymentStatus === 'REJECTED'
+                        ? 'bg-red-500/20 text-red-300 border border-red-500/40'
                         : 'bg-amber-400/20 text-amber-300 border border-amber-400/40'
                     }`}>
                       {selectedOrderDetails.paymentStatus}
                     </span>
+                  </div>
+                )}
+
+                {selectedOrderDetails.rejectionReason && (
+                  <div className="text-[11px] text-red-300 bg-red-950/50 p-2.5 rounded-lg border border-red-500/30">
+                    <strong>Rejection Reason:</strong> "{selectedOrderDetails.rejectionReason}"
+                  </div>
+                )}
+
+                {selectedOrderDetails.reviewedBy && (
+                  <div className="text-[10px] text-white/50 pt-1 border-t border-white/5">
+                    Reviewed by <strong>{selectedOrderDetails.reviewedBy}</strong> on {selectedOrderDetails.reviewedAt ? new Date(selectedOrderDetails.reviewedAt).toLocaleString() : 'N/A'}
                   </div>
                 )}
 
@@ -3838,31 +4292,53 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 )}
 
+                {/* Receipt Preview Thumbnail */}
                 {selectedOrderDetails.paymentReceiptUrl && !selectedOrderDetails.paymentReceiptUrl.includes('placeholder') && (
                   <div className="mt-3 pt-3 border-t border-white/10">
-                    <div className="text-white/70 text-[10px] mb-2">Payment Receipt:</div>
-                    <a 
-                      href={selectedOrderDetails.paymentReceiptUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="block"
+                    <div className="text-white/70 text-[10px] mb-2 flex items-center justify-between">
+                      <span>Submitted Receipt Proof:</span>
+                      <button
+                        type="button"
+                        onClick={() => setViewingReceiptUrl(selectedOrderDetails.paymentReceiptUrl || null)}
+                        className="text-amber-300 hover:text-amber-200 text-[11px] font-bold underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <Eye className="w-3 h-3" /> Full Screen View
+                      </button>
+                    </div>
+                    <div
+                      onClick={() => setViewingReceiptUrl(selectedOrderDetails.paymentReceiptUrl || null)}
+                      className="cursor-pointer max-w-sm mx-auto rounded-xl overflow-hidden border border-amber-400/30 hover:border-amber-400 shadow-md transition-all group"
                     >
                       <img 
                         src={selectedOrderDetails.paymentReceiptUrl} 
                         alt="Payment Receipt" 
-                        className="w-full max-w-md mx-auto rounded-lg border border-amber-400/30 hover:border-amber-400/60 transition-colors cursor-pointer"
+                        className="w-full max-h-56 object-contain bg-black/60 group-hover:scale-[1.02] transition-transform"
                       />
-                    </a>
-                    <div className="text-center mt-2">
-                      <a 
-                        href={selectedOrderDetails.paymentReceiptUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-amber-300 hover:text-amber-200 text-xs underline"
-                      >
-                        View Full Size
-                      </a>
                     </div>
+                  </div>
+                )}
+
+                {/* Direct Verification Actions inside Inspection Modal */}
+                {selectedOrderDetails.paymentStatus !== 'PAID' && (
+                  <div className="pt-3 border-t border-white/10 flex items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={isProcessingPaymentAction}
+                      onClick={() => handleApprovePayment(selectedOrderDetails)}
+                      className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      <ThumbsUp className="w-3.5 h-3.5" />
+                      <span>Approve Payment (Mark Paid)</span>
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isProcessingPaymentAction}
+                      onClick={() => handleOpenRejectModal(selectedOrderDetails)}
+                      className="bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 text-red-300 font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      <ThumbsDown className="w-3.5 h-3.5" />
+                      <span>Reject</span>
+                    </button>
                   </div>
                 )}
               </div>
@@ -3875,6 +4351,153 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </span>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODAL 7: REJECT PAYMENT MODAL (WITH PRESET REASONS)                       */}
+      {/* ========================================================================= */}
+      {rejectingPaymentOrder && (
+        <div className="fixed inset-0 z-[70] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto font-inter">
+          <div className="bg-[#2a0407] border border-red-500/50 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl animate-scale-in">
+            <button
+              onClick={() => setRejectingPaymentOrder(null)}
+              className="absolute top-4 right-4 text-white/60 hover:text-white p-1 rounded-full hover:bg-white/10 cursor-pointer"
+              title="Cancel rejection"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 border-b border-white/15 pb-4 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400">
+                <AlertCircle className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-podium text-lg uppercase font-bold text-white">
+                  Reject Payment for Order {rejectingPaymentOrder.id}
+                </h3>
+                <span className="text-xs text-white/60">
+                  Customer: {rejectingPaymentOrder.customer.fullName} • {formatPrice(rejectingPaymentOrder.total, rejectingPaymentOrder.currency || 'ETB')}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              <div>
+                <label className="font-bold text-white block mb-1">
+                  Choose a Quick Reason:
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    'Transfer amount does not match order total',
+                    'Sender name not found in bank / Telebirr statement',
+                    'Receipt image is blurry, cropped, or unreadable',
+                    'Duplicate / already processed transaction receipt',
+                    'Transaction reference could not be located',
+                  ].map((quickReason) => (
+                    <button
+                      key={quickReason}
+                      type="button"
+                      onClick={() => setRejectionReasonInput(quickReason)}
+                      className={`text-[11px] px-2.5 py-1 rounded-lg border transition-all cursor-pointer text-left ${
+                        rejectionReasonInput === quickReason
+                          ? 'bg-red-500/30 border-red-400 text-white font-semibold'
+                          : 'bg-black/30 border-white/10 text-white/70 hover:text-white'
+                      }`}
+                    >
+                      {quickReason}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-white block mb-1">
+                  Detailed Rejection Note (Will be displayed to customer):
+                </label>
+                <textarea
+                  rows={3}
+                  value={rejectionReasonInput}
+                  onChange={(e) => setRejectionReasonInput(e.target.value)}
+                  placeholder="Explain why the payment proof could not be accepted so the customer can correct it..."
+                  className="w-full bg-black/50 border border-red-500/40 focus:border-red-400 rounded-xl p-3 text-xs text-white placeholder-white/40 focus:outline-none"
+                />
+              </div>
+
+              <div className="bg-black/30 p-3 rounded-xl border border-white/10 text-[11px] text-white/60">
+                The order will be marked as <strong className="text-red-400">REJECTED</strong> and the customer will be able to review this note and upload a corrected receipt.
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setRejectingPaymentOrder(null)}
+                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={isProcessingPaymentAction}
+                  onClick={handleConfirmRejectPayment}
+                  className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg disabled:opacity-50 flex items-center gap-1.5"
+                >
+                  {isProcessingPaymentAction ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Rejecting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ThumbsDown className="w-3.5 h-3.5" />
+                      <span>Confirm Rejection</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODAL 8: RECEIPT FULLSCREEN LIGHTBOX                                      */}
+      {/* ========================================================================= */}
+      {viewingReceiptUrl && (
+        <div 
+          onClick={() => setViewingReceiptUrl(null)}
+          className="fixed inset-0 z-[80] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4 cursor-zoom-out font-inter animate-fade-in"
+        >
+          <div className="absolute top-4 right-4 flex items-center gap-3 z-10">
+            <a
+              href={viewingReceiptUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-lg"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>Open Full Size</span>
+            </a>
+            <button
+              onClick={() => setViewingReceiptUrl(null)}
+              className="p-2 rounded-full bg-black/70 hover:bg-white/20 text-white border border-white/20 cursor-pointer shadow-lg"
+              title="Close viewer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div 
+            onClick={(e) => e.stopPropagation()} 
+            className="max-w-4xl max-h-[85vh] overflow-auto rounded-2xl border border-amber-400/40 bg-black/80 p-2 shadow-2xl cursor-default"
+          >
+            <img
+              src={viewingReceiptUrl}
+              alt="Payment Receipt High Resolution"
+              className="w-full h-auto max-h-[80vh] object-contain rounded-xl mx-auto"
+            />
           </div>
         </div>
       )}
