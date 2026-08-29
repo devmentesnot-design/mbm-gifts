@@ -18,6 +18,7 @@ import {
   RefreshCw,
   Eye,
   User,
+  Sparkles,
 } from 'lucide-react';
 import { Order, OrderStatus, PaymentStatus } from '../types/cart';
 import { formatPrice } from '../utils/currency';
