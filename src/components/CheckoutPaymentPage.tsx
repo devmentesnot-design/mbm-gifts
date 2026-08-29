@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
-  CreditCard,
   ShieldCheck,
   Truck,
   AlertCircle,
-  ExternalLink,
-  Lock,
   Loader2,
   Upload,
   Check,
@@ -22,11 +19,6 @@ import {
 } from 'lucide-react';
 import { Order, PaymentStatus } from '../types/cart';
 import { formatPrice } from '../utils/currency';
-import {
-  initializeChapaTransaction,
-  verifyChapaTransaction,
-  generateTxRef,
-} from '../services/chapa';
 import { PAYMENT_CONFIG, PaymentAccountOption } from '../config/paymentConfig';
 import { uploadToCloudinary } from '../utils/cloudinary';
 import { OfficialReceiptModal } from './OfficialReceiptModal';
@@ -51,9 +43,6 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
   onBack,
   onNavigate,
 }) => {
-  // Payment Method: Manual Bank Transfer / Telebirr with Screenshot Verification
-  const selectedMethod = 'manual';
-
   // Selected Manual Account
   const [selectedAccount, setSelectedAccount] = useState<PaymentAccountOption>(
     PAYMENT_CONFIG.accounts[0] || {
@@ -65,9 +54,8 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
     }
   );
 
-  // Manual Payment Form States
+  // Manual Payment Form States (Sender Name + Receipt Screenshot Upload only)
   const [senderName, setSenderName] = useState<string>(order.senderName || order.customer?.giftSenderName || '');
-  const [transactionId, setTransactionId] = useState<string>(order.transactionId || '');
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [receiptPreview, setReceiptPreview] = useState<string | null>(order.paymentReceiptUrl || null);
   const [isSubmittingManual, setIsSubmittingManual] = useState(false);
@@ -77,12 +65,6 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
 
   // Local Order State to reflect real-time updates (e.g. UNDER_REVIEW, PAID, REJECTED)
   const [currentOrder, setCurrentOrder] = useState<Order>(order);
-
-  // Chapa Gateway States
-  const [isInitializing, setIsInitializing] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [chapaError, setChapaError] = useState<string>('');
-  const [txRef, setTxRef] = useState<string>(() => order.chapaTxRef || generateTxRef(order.id));
   const [verifiedPaidOrder, setVerifiedPaidOrder] = useState<Order | null>(
     order.paymentStatus === 'PAID' ? order : null
   );
@@ -97,18 +79,6 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
       setVerifiedPaidOrder(order);
     }
   }, [order]);
-
-  // Check URL parameters if returning from Chapa redirect
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const returnTxRef = urlParams.get('tx_ref') || urlParams.get('trx_ref');
-    const returnStatus = urlParams.get('status');
-
-    if (returnTxRef && (returnStatus === 'success' || !returnStatus)) {
-      setTxRef(returnTxRef);
-      handleVerifyReturn(returnTxRef);
-    }
-  }, []);
 
   // Copy Account Number helper
   const handleCopyAccount = (accountNumber: string, id: string) => {
@@ -189,7 +159,6 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
         paymentMethod: paymentMethodName,
         paymentStatus: 'UNDER_REVIEW',
         senderName: senderName.trim(),
-        transactionId: transactionId.trim() || undefined,
         paymentSubmittedAt: nowIso,
         rejectionReason: undefined, // Clear past rejection if any
         status: 'Pending',
@@ -204,110 +173,13 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
         paymentMethodName,
         undefined,
         'UNDER_REVIEW',
-        senderName.trim(),
-        transactionId.trim() || undefined
+        senderName.trim()
       );
     } catch (err: any) {
       console.error('❌ Manual payment submission error:', err);
       setManualError(err.message || 'Error submitting payment verification. Please try again.');
     } finally {
       setIsSubmittingManual(false);
-    }
-  };
-
-  // Chapa verification handler
-  const handleVerifyReturn = async (reference: string) => {
-    setIsVerifying(true);
-    setChapaError('');
-
-    try {
-      console.log('🔍 Verifying return transaction from Chapa:', reference);
-      const result = await verifyChapaTransaction(reference);
-
-      const method = result.data?.method || (currency === 'USD' ? 'International Card' : 'Local Payment');
-
-      const updatedOrder: Order = {
-        ...currentOrder,
-        chapaTxRef: reference,
-        paymentMethod: `Chapa (${method})`,
-        paymentStatus: 'PAID',
-        status: 'Processing',
-      };
-
-      if (result.status === 'success' && result.data?.status === 'success') {
-        console.log('✅ Chapa verification confirmed:', result.data);
-        setVerifiedPaidOrder(updatedOrder);
-        setIsVerifying(false);
-
-        onPaymentSubmitted(
-          'https://checkout.chapa.co/receipt/' + reference,
-          `Chapa (${method})`,
-          reference,
-          'PAID'
-        );
-      } else {
-        console.warn('⚠️ Verification returned non-success (allowing test mode fallback):', result);
-        if (reference.startsWith('MBM-')) {
-          setVerifiedPaidOrder(updatedOrder);
-          setIsVerifying(false);
-          onPaymentSubmitted(
-            'https://checkout.chapa.co/receipt/' + reference,
-            `Chapa (${currency === 'USD' ? 'International Card' : 'Telebirr / Local'})`,
-            reference,
-            'PAID'
-          );
-        } else {
-          setChapaError(result.message || 'Transaction could not be verified by Chapa.');
-          setIsVerifying(false);
-        }
-      }
-    } catch (err: any) {
-      console.error('❌ Verification exception:', err);
-      setChapaError('Could not verify Chapa transaction: ' + (err.message || 'Network error'));
-      setIsVerifying(false);
-    }
-  };
-
-  // Chapa payment initialization handler
-  const handlePayWithChapa = async () => {
-    setIsInitializing(true);
-    setChapaError('');
-
-    const newTxRef = generateTxRef(currentOrder.id);
-    setTxRef(newTxRef);
-
-    try {
-      const nameParts = (currentOrder.customer.fullName || 'Valued Customer').trim().split(' ');
-      const firstName = nameParts[0] || 'Valued';
-      const lastName = nameParts.slice(1).join(' ') || 'Customer';
-
-      const response = await initializeChapaTransaction({
-        amount: currentOrder.total,
-        currency: currency as 'ETB' | 'USD',
-        email: currentOrder.customer.email || 'mbmgifts.orders@gmail.com',
-        firstName: firstName,
-        lastName: lastName,
-        phone: currentOrder.customer.phone || '0911000000',
-        txRef: newTxRef,
-        customTitle: 'MBM Gifts',
-        customDescription: `Order ${currentOrder.id}`,
-        returnUrl: `${window.location.origin}/checkout/payment?tx_ref=${newTxRef}&status=success`,
-      });
-
-      if (response.status === 'success' && response.data?.checkout_url) {
-        console.log('🚀 Redirecting to Chapa Gateway:', response.data.checkout_url);
-        window.location.href = response.data.checkout_url;
-      } else {
-        setChapaError(
-          response.message ||
-            'Failed to initialize Chapa gateway. Please verify API configuration or try again.'
-        );
-        setIsInitializing(false);
-      }
-    } catch (err: any) {
-      console.error('❌ Chapa initialization error:', err);
-      setChapaError(err.message || 'Error connecting to Chapa payment server.');
-      setIsInitializing(false);
     }
   };
 
@@ -502,23 +374,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
   return (
     <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 selection:bg-[#D9A514] selection:text-[#2B0005]">
       <div className="w-full max-w-5xl luxury-satin-card border border-[#D9A514]/40 rounded-3xl shadow-2xl overflow-hidden animate-scale-in backdrop-blur-xl">
-        
-        {/* Verification Loader State for Chapa Return */}
-        {isVerifying && (
-          <div className="p-16 text-center space-y-4">
-            <Loader2 className="w-14 h-14 text-amber-300 animate-spin mx-auto" />
-            <h3 className="font-podium text-3xl uppercase text-white font-bold tracking-wide">
-              Verifying Your Payment...
-            </h3>
-            <p className="text-sm text-white/70">
-              Please wait a moment while we confirm your payment status with Chapa.
-            </p>
-          </div>
-        )}
-
-        {/* Normal Payment Flow View */}
-        {!isVerifying && (
-          <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr]">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr]">
             
             {/* Left Column: Payment Method Selection & Checkout Flow */}
             <div className="p-6 sm:p-8 lg:p-10 space-y-6">
@@ -835,7 +691,6 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
             </div>
 
           </div>
-        )}
 
       </div>
     </div>

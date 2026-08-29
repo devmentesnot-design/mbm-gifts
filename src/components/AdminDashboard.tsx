@@ -378,8 +378,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const totalOrdersCount = orders.length;
   const avgOrderValueETB = etbOrders.length > 0 ? totalRevenueETB / etbOrders.length : 0;
   const avgOrderValueUSD = usdOrders.length > 0 ? totalRevenueUSD / usdOrders.length : 0;
-  const pendingOrdersCount = orders.filter((o) => o.status === 'Pending').length;
-  const verifiedOrdersCount = orders.filter((o) => o.paymentStatus === 'PAID' || o.status === 'Processing' || o.status === 'Shipped' || o.status === 'Delivered').length;
+  const pendingOrdersCount = orders.filter((o) => o.status === 'Pending' || o.paymentStatus === 'UNDER_REVIEW' || o.paymentStatus === 'PAYMENT_SUBMITTED').length;
+  
+  // ONLY orders that have been APPROVED / PAID appear in the Orders Management dispatch queue
+  const approvedOrders = orders.filter(
+    (o) => o.paymentStatus === 'PAID' || o.status === 'Processing' || o.status === 'Shipped' || o.status === 'Delivered'
+  );
+  const verifiedOrdersCount = approvedOrders.length;
 
   // Filtered Categories by Usage
   const packageCategories = categoriesList.filter((c) => !c.type || c.type === 'package' || c.type === 'both');
@@ -440,26 +445,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   useEffect(() => { setPkgPage(1); }, [pkgCategoryFilter, pkgSearchTerm]);
   useEffect(() => { setItemPage(1); }, [itemCategoryFilter, itemSearchTerm]);
 
-  // Filtered Orders
-  const filteredOrders = orders.filter((o) => {
+  // Filtered Orders (ONLY from approvedOrders — unapproved orders stay in Payment Verification)
+  const filteredOrders = approvedOrders.filter((o) => {
     const matchesSearch =
       o.id.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
       o.customer.fullName.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
       o.customer.email.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
       o.customer.phone.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
       o.customer.address.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
-      (o.senderName && o.senderName.toLowerCase().includes(orderSearchTerm.toLowerCase())) ||
-      (o.transactionId && o.transactionId.toLowerCase().includes(orderSearchTerm.toLowerCase()));
+      (o.senderName && o.senderName.toLowerCase().includes(orderSearchTerm.toLowerCase()));
 
     const matchesStatus =
       orderStatusFilter === 'all' ||
-      (orderStatusFilter === 'verified' && (o.paymentStatus === 'PAID' || o.status === 'Processing' || o.status === 'Shipped' || o.status === 'Delivered')) ||
-      (orderStatusFilter === 'under_review' && (o.paymentStatus === 'UNDER_REVIEW' || o.paymentStatus === 'PAYMENT_SUBMITTED')) ||
       (orderStatusFilter === 'processing' && o.status === 'Processing') ||
       (orderStatusFilter === 'shipped' && o.status === 'Shipped') ||
       (orderStatusFilter === 'delivered' && o.status === 'Delivered') ||
       (orderStatusFilter === 'cancelled' && o.status === 'Cancelled') ||
-      (orderStatusFilter === 'pending' && o.status === 'Pending') ||
       o.status.toLowerCase() === orderStatusFilter.toLowerCase();
 
     return matchesSearch && matchesStatus;
@@ -972,9 +973,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     },
     { 
       id: 'orders', 
-      label: `Orders (${orders.length})`, 
+      label: `Orders (${approvedOrders.length})`, 
       icon: ShoppingBag, 
-      badge: verifiedOrdersCount ? `${verifiedOrdersCount} Verified` : (pendingOrdersCount ? `${pendingOrdersCount} new` : null),
+      badge: approvedOrders.filter(o => o.status === 'Processing').length ? `${approvedOrders.filter(o => o.status === 'Processing').length} to pack` : null,
     },
     { id: 'packages', label: `Ready-made Packages (${packages.length})`, icon: Package },
     { id: 'customItems', label: `Single Items (${customItems.length})`, icon: Gift },
@@ -1219,7 +1220,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {orders.slice(0, 5).map((ord) => (
+                      {approvedOrders.slice(0, 5).map((ord) => (
                         <tr key={ord.id} className="hover:bg-white/5 transition-colors">
                           <td className="py-3 px-3 font-bold text-amber-300">{ord.id}</td>
                           <td className="py-3 px-3">
@@ -1242,10 +1243,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <td className="py-3 px-3">
                             <span
                               className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                                ord.status === 'Pending'
-                                  ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
-                                  : ord.status === 'Delivered'
+                                ord.status === 'Delivered'
                                   ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                  : ord.status === 'Shipped'
+                                  ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
                                   : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                               }`}
                             >
@@ -1262,10 +1263,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </td>
                         </tr>
                       ))}
-                      {orders.length === 0 && (
+                      {approvedOrders.length === 0 && (
                         <tr>
                           <td colSpan={6} className="py-8 text-center text-white/40">
-                            No orders placed yet.
+                            No approved orders in dispatch yet.
                           </td>
                         </tr>
                       )}
@@ -1282,14 +1283,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <div className="inline-flex items-center gap-1.5 text-amber-300 text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full mb-1">
-                    <ShoppingBag className="w-3 h-3 text-amber-300" />
-                    <span>Order Dispatch & Delivery Fulfillment</span>
+                    <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                    <span>Verified & Paid Orders Dispatch Queue</span>
                   </div>
                   <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
-                    Orders Management ({orders.length})
+                    Orders Management ({approvedOrders.length})
                   </h2>
                   <p className="text-white/60 text-xs font-inter mt-1">
-                    Manage verified orders, inspect customer phone numbers and delivery addresses, and advance fulfillment from In Preparation to Out for Delivery and Delivered.
+                    Only verified & paid orders appear here. Unapproved submissions wait in Payment Verification. Advance packaging and delivery dispatch below.
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -1302,6 +1303,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </button>
                 </div>
               </div>
+
+              {/* Notice if there are unverified payments waiting */}
+              {pendingPaymentsCount > 0 && (
+                <div className="bg-amber-400/10 border border-amber-400/30 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-5 h-5 text-amber-400 animate-pulse flex-shrink-0" />
+                    <div>
+                      <div className="text-xs font-bold text-amber-300">
+                        {pendingPaymentsCount} unverified payment{pendingPaymentsCount > 1 ? 's' : ''} waiting in Payment Verification
+                      </div>
+                      <div className="text-[11px] text-white/60">
+                        Orders move automatically into this active fulfillment queue as soon as you approve their payment.
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('payments')}
+                    className="px-3.5 py-1.5 rounded-xl bg-amber-400 text-[#8c1119] font-bold text-xs uppercase tracking-wider hover:bg-amber-300 transition-all cursor-pointer whitespace-nowrap shadow"
+                  >
+                    Review Payments ({pendingPaymentsCount}) →
+                  </button>
+                </div>
+              )}
 
               {/* Filters */}
               <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-4 flex flex-col lg:flex-row gap-4 items-center justify-between shadow-lg">
@@ -1316,16 +1341,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   />
                 </div>
 
-                {/* Filter Pills with Verified / Paid as First-Class Filter */}
+                {/* Filter Pills for Approved Orders */}
                 <div className="flex items-center gap-1.5 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
                   {[
-                    { id: 'all', label: `All (${orders.length})` },
-                    { id: 'verified', label: `Verified & Paid (${verifiedOrdersCount})`, highlight: true },
-                    { id: 'under_review', label: `Needs Review (${pendingPaymentsCount})` },
-                    { id: 'processing', label: `In Prep (${orders.filter(o => o.status === 'Processing').length})` },
-                    { id: 'shipped', label: `Out for Delivery (${orders.filter(o => o.status === 'Shipped').length})` },
-                    { id: 'delivered', label: `Delivered (${orders.filter(o => o.status === 'Delivered').length})` },
-                    { id: 'cancelled', label: `Cancelled (${orders.filter(o => o.status === 'Cancelled').length})` },
+                    { id: 'all', label: `All Approved (${approvedOrders.length})` },
+                    { id: 'processing', label: `In Prep / Packing (${approvedOrders.filter(o => o.status === 'Processing').length})` },
+                    { id: 'shipped', label: `Out for Delivery (${approvedOrders.filter(o => o.status === 'Shipped').length})` },
+                    { id: 'delivered', label: `Delivered (${approvedOrders.filter(o => o.status === 'Delivered').length})` },
+                    { id: 'cancelled', label: `Cancelled (${approvedOrders.filter(o => o.status === 'Cancelled').length})` },
                   ].map((st) => (
                     <button
                       key={st.id}
@@ -1333,8 +1356,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border transition-all cursor-pointer whitespace-nowrap ${
                         orderStatusFilter === st.id
                           ? 'bg-amber-400 border-amber-400 text-[#8c1119] shadow-md font-extrabold'
-                          : st.highlight
-                          ? 'bg-emerald-500/20 border-emerald-400/40 text-emerald-300 hover:bg-emerald-500/30'
                           : 'bg-black/20 border-white/10 text-white/70 hover:text-white'
                       }`}
                     >

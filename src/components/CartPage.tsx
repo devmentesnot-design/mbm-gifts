@@ -776,7 +776,7 @@ export const CartPage: React.FC<CartPageProps> = ({
                   )}
                 </button>
                 <p className="text-center text-[10px] text-white/40 mt-4 uppercase tracking-widest">
-                  {session ? "100% Secure Checkout • Telebirr, Bank Transfer & Chapa" : 'Create an account to complete your purchase'}
+                  {session ? "100% Secure Checkout • Telebirr & Bank Transfer" : 'Create an account to complete your purchase'}
                 </p>
               </div>
             </div>
