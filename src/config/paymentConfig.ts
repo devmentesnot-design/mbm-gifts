@@ -45,10 +45,8 @@ export interface PaymentConfigType {
 
 export const PAYMENT_CONFIG: PaymentConfigType = {
   // Enable / disable payment methods cleanly via environment variables or defaults
-  isManualPaymentEnabled:
-    (import.meta as any).env?.VITE_ENABLE_MANUAL_PAYMENT !== 'false',
-  isChapaPaymentEnabled:
-    (import.meta as any).env?.VITE_ENABLE_CHAPA_PAYMENT !== 'false',
+  isManualPaymentEnabled: true,
+  isChapaPaymentEnabled: false,
 
   businessName:
     (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'DERARA BUSINESS',

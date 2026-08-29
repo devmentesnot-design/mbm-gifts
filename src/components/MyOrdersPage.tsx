@@ -55,42 +55,65 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
     const matchesStatus =
       statusFilter === 'all' ||
-      ord.status.toLowerCase() === statusFilter.toLowerCase() ||
-      (statusFilter === 'under_review' && (ord.paymentStatus === 'UNDER_REVIEW' || ord.paymentStatus === 'PAYMENT_SUBMITTED')) ||
+      (statusFilter === 'under_review' && (ord.paymentStatus === 'UNDER_REVIEW' || ord.paymentStatus === 'PAYMENT_SUBMITTED' || (ord.paymentStatus === 'PENDING_PAYMENT' && ord.paymentReceiptUrl))) ||
+      (statusFilter === 'paid' && ord.paymentStatus === 'PAID') ||
+      (statusFilter === 'shipped' && ord.status === 'Shipped') ||
+      (statusFilter === 'delivered' && ord.status === 'Delivered') ||
       (statusFilter === 'rejected' && ord.paymentStatus === 'REJECTED') ||
-      (statusFilter === 'paid' && ord.paymentStatus === 'PAID');
+      ord.status.toLowerCase() === statusFilter.toLowerCase();
 
     return matchesSearch && matchesStatus;
   });
 
-  const getOrderStatusBadge = (status: OrderStatus) => {
-    switch (status) {
-      case 'Pending':
+  // Calculate current stage for order progress tracker (1 to 5)
+  const getOrderProgressStage = (ord: Order): { stage: number; label: string; description: string } => {
+    if (ord.paymentStatus === 'REJECTED') {
+      return { stage: 1, label: 'Payment Rejected', description: 'Re-submit valid payment screenshot' };
+    }
+    if (ord.status === 'Delivered') {
+      return { stage: 5, label: 'Delivered', description: 'Successfully handed over to recipient' };
+    }
+    if (ord.status === 'Shipped') {
+      return { stage: 4, label: 'Out for Delivery', description: 'Driver is on the way in Ethiopia' };
+    }
+    if (ord.status === 'Processing' || ord.paymentStatus === 'PAID') {
+      return { stage: 3, label: 'Paid & In Preparation', description: 'Assembling luxury gift box & items' };
+    }
+    if (ord.paymentStatus === 'UNDER_REVIEW' || ord.paymentStatus === 'PAYMENT_SUBMITTED' || ord.paymentReceiptUrl) {
+      return { stage: 1, label: 'Payment Under Review', description: 'Verifying payment with finance team' };
+    }
+    return { stage: 1, label: 'Pending Payment', description: 'Awaiting payment verification' };
+  };
+
+  const getOrderStatusBadge = (ord: Order) => {
+    if (ord.paymentStatus === 'REJECTED') {
+      return (
+        <span className="bg-red-500/20 text-red-300 border border-red-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+          <AlertCircle className="w-3.5 h-3.5 text-red-400" />
+          Verification Unsuccessful
+        </span>
+      );
+    }
+    switch (ord.status) {
+      case 'Delivered':
         return (
-          <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5" />
-            Pending
-          </span>
-        );
-      case 'Processing':
-        return (
-          <span className="bg-blue-500/20 text-blue-300 border border-blue-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
-            <Package className="w-3.5 h-3.5" />
-            Processing / Confirmed
+          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+            <Check className="w-3.5 h-3.5 text-emerald-400" />
+            Delivered
           </span>
         );
       case 'Shipped':
         return (
-          <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
-            <Truck className="w-3.5 h-3.5" />
+          <span className="bg-indigo-500/25 text-indigo-200 border border-indigo-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+            <Truck className="w-3.5 h-3.5 text-indigo-300 animate-bounce" />
             Out for Delivery
           </span>
         );
-      case 'Delivered':
+      case 'Processing':
         return (
-          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
-            <Check className="w-3.5 h-3.5" />
-            Delivered
+          <span className="bg-blue-500/20 text-blue-300 border border-blue-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+            <Package className="w-3.5 h-3.5 text-blue-300" />
+            Paid • In Preparation
           </span>
         );
       case 'Cancelled':
@@ -101,7 +124,20 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
           </span>
         );
       default:
-        return null;
+        if (ord.paymentStatus === 'PAID') {
+          return (
+            <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              Paid • Confirmed
+            </span>
+          );
+        }
+        return (
+          <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 animate-pulse" />
+            Pending Verification
+          </span>
+        );
     }
   };
 
@@ -109,9 +145,9 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
     switch (status) {
       case 'PAID':
         return (
-          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1">
+          <span className="bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1 shadow-sm">
             <ShieldCheck className="w-3 h-3 text-emerald-400" />
-            <span>PAID</span>
+            <span>PAID & VERIFIED</span>
           </span>
         );
       case 'UNDER_REVIEW':
@@ -272,17 +308,19 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                 <Filter className="w-3 h-3" />
               </span>
               {[
-                { id: 'all', label: 'All Orders' },
-                { id: 'under_review', label: 'Under Review' },
-                { id: 'paid', label: 'Paid / Confirmed' },
-                { id: 'rejected', label: 'Needs Action' },
+                { id: 'all', label: `All (${orders.length})` },
+                { id: 'under_review', label: `Under Review (${orders.filter(o => o.paymentStatus === 'UNDER_REVIEW' || o.paymentStatus === 'PAYMENT_SUBMITTED').length})` },
+                { id: 'paid', label: `Verified & Paid (${orders.filter(o => o.paymentStatus === 'PAID').length})` },
+                { id: 'shipped', label: `Out for Delivery (${orders.filter(o => o.status === 'Shipped').length})` },
+                { id: 'delivered', label: `Delivered (${orders.filter(o => o.status === 'Delivered').length})` },
+                { id: 'rejected', label: `Needs Action (${orders.filter(o => o.paymentStatus === 'REJECTED').length})` },
               ].map((st) => (
                 <button
                   key={st.id}
                   onClick={() => setStatusFilter(st.id)}
                   className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                     statusFilter === st.id
-                      ? 'bg-amber-400 text-[#8c1119] shadow-sm'
+                      ? 'bg-amber-400 text-[#8c1119] shadow-sm font-extrabold'
                       : 'bg-black/30 text-white/60 hover:text-white border border-white/10'
                   }`}
                 >
@@ -335,6 +373,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
               const isUnderReview =
                 ord.paymentStatus === 'UNDER_REVIEW' || ord.paymentStatus === 'PAYMENT_SUBMITTED';
               const isRejected = ord.paymentStatus === 'REJECTED';
+              const progress = getOrderProgressStage(ord);
 
               return (
                 <div
@@ -379,9 +418,9 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                       </div>
                     </div>
 
-                    {/* Status Badge & Chapa/Manual Reference */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-                      <div className="inline-flex">{getOrderStatusBadge(ord.status)}</div>
+                    {/* Status Badge & Progress Stage Line */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1 pb-2">
+                      <div className="inline-flex">{getOrderStatusBadge(ord)}</div>
 
                       <div className="flex flex-wrap items-center gap-2">
                         {ord.senderName && (
@@ -391,14 +430,123 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                           </div>
                         )}
 
-                        {ord.chapaTxRef && (
+                        {ord.transactionId && (
                           <div className="flex items-center gap-1.5 text-[11px] bg-black/40 border border-white/10 px-2.5 py-1 rounded-lg">
-                            <span className="text-white/50">Chapa Ref:</span>
-                            <span className="font-mono text-amber-300 font-bold">{ord.chapaTxRef}</span>
+                            <span className="text-white/50">Ref:</span>
+                            <span className="font-mono text-amber-300 font-bold">{ord.transactionId}</span>
                           </div>
                         )}
                       </div>
                     </div>
+
+                    {/* Visual 5-Stage Step Progress Tracker */}
+                    {!isRejected && (
+                      <div className="pt-4 pb-2 border-t border-white/10">
+                        <div className="relative">
+                          {/* Background Connector Bar */}
+                          <div className="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-1 bg-black/50 rounded-full z-0" />
+                          
+                          {/* Active Progress Fill */}
+                          <div 
+                            className="absolute top-1/2 left-4 -translate-y-1/2 h-1 bg-gradient-to-r from-amber-400 via-emerald-400 to-emerald-500 rounded-full transition-all duration-500 z-0"
+                            style={{
+                              width: progress.stage === 1 ? '10%' : progress.stage === 2 ? '30%' : progress.stage === 3 ? '55%' : progress.stage === 4 ? '80%' : '94%'
+                            }}
+                          />
+
+                          {/* Milestones */}
+                          <div className="relative z-10 grid grid-cols-5 text-center">
+                            {/* Step 1: Proof Uploaded */}
+                            <div className="flex flex-col items-center">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
+                                ord.paymentReceiptUrl || isPaid || progress.stage >= 1
+                                  ? 'bg-emerald-500 text-white shadow-emerald-500/30'
+                                  : 'bg-black/60 text-white/50 border border-white/20'
+                              }`}>
+                                <Check className="w-4 h-4" />
+                              </div>
+                              <span className="text-[10px] font-bold text-white/90 mt-1.5 uppercase tracking-wider hidden sm:block">
+                                1. Proof Uploaded
+                              </span>
+                            </div>
+
+                            {/* Step 2: Payment Verified */}
+                            <div className="flex flex-col items-center">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
+                                isPaid || progress.stage >= 2
+                                  ? 'bg-emerald-500 text-white shadow-emerald-500/30'
+                                  : isUnderReview
+                                  ? 'bg-amber-400 text-[#8c1119] ring-4 ring-amber-400/30 animate-pulse'
+                                  : 'bg-black/60 text-white/50 border border-white/20'
+                              }`}>
+                                {isPaid ? <ShieldCheck className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
+                              </div>
+                              <span className={`text-[10px] font-bold mt-1.5 uppercase tracking-wider hidden sm:block ${
+                                isPaid ? 'text-emerald-300 font-extrabold' : isUnderReview ? 'text-amber-300 animate-pulse' : 'text-white/60'
+                              }`}>
+                                {isPaid ? '2. Verified (Paid)' : '2. Verifying'}
+                              </span>
+                            </div>
+
+                            {/* Step 3: Preparing Gift Box */}
+                            <div className="flex flex-col items-center">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
+                                ord.status === 'Processing'
+                                  ? 'bg-blue-500 text-white ring-4 ring-blue-500/30 animate-pulse'
+                                  : ord.status === 'Shipped' || ord.status === 'Delivered'
+                                  ? 'bg-emerald-500 text-white'
+                                  : 'bg-black/60 text-white/50 border border-white/20'
+                              }`}>
+                                <Package className="w-4 h-4" />
+                              </div>
+                              <span className={`text-[10px] font-bold mt-1.5 uppercase tracking-wider hidden sm:block ${
+                                ord.status === 'Processing' ? 'text-blue-300 font-extrabold' : ord.status === 'Shipped' || ord.status === 'Delivered' ? 'text-emerald-300' : 'text-white/60'
+                              }`}>
+                                3. Packing Box
+                              </span>
+                            </div>
+
+                            {/* Step 4: Out for Delivery */}
+                            <div className="flex flex-col items-center">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
+                                ord.status === 'Shipped'
+                                  ? 'bg-indigo-500 text-white ring-4 ring-indigo-500/30 animate-bounce'
+                                  : ord.status === 'Delivered'
+                                  ? 'bg-emerald-500 text-white'
+                                  : 'bg-black/60 text-white/50 border border-white/20'
+                              }`}>
+                                <Truck className="w-4 h-4" />
+                              </div>
+                              <span className={`text-[10px] font-bold mt-1.5 uppercase tracking-wider hidden sm:block ${
+                                ord.status === 'Shipped' ? 'text-indigo-300 font-extrabold' : ord.status === 'Delivered' ? 'text-emerald-300' : 'text-white/60'
+                              }`}>
+                                4. Out for Delivery
+                              </span>
+                            </div>
+
+                            {/* Step 5: Delivered */}
+                            <div className="flex flex-col items-center">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
+                                ord.status === 'Delivered'
+                                  ? 'bg-emerald-500 text-white ring-4 ring-emerald-500/30'
+                                  : 'bg-black/60 text-white/50 border border-white/20'
+                              }`}>
+                                <Sparkles className="w-4 h-4" />
+                              </div>
+                              <span className={`text-[10px] font-bold mt-1.5 uppercase tracking-wider hidden sm:block ${
+                                ord.status === 'Delivered' ? 'text-emerald-300 font-extrabold' : 'text-white/60'
+                              }`}>
+                                5. Delivered
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="sm:hidden text-center mt-2 text-xs font-bold text-amber-300">
+                          Current Stage: {progress.label}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Expandable Order Body */}

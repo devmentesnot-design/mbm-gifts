@@ -111,7 +111,7 @@ export const MarketSwitcher: React.FC<MarketSwitcherProps> = ({
                     {buyerMarket === 'ETHIOPIA' && <Check className="w-3.5 h-3.5 text-amber-300" />}
                   </div>
                   <p className="text-[10px] text-amber-300 font-semibold mt-0.5">Prices in ETB (ብር)</p>
-                  <p className="text-[9px] text-white/50 mt-0.5">Local Ethiopian payment methods via Chapa</p>
+                  <p className="text-[9px] text-white/50 mt-0.5">Telebirr, CBE & Ethiopian Bank Transfer</p>
                 </div>
               </button>
 
@@ -133,7 +133,7 @@ export const MarketSwitcher: React.FC<MarketSwitcherProps> = ({
                   </div>
                   <p className="text-[10px] text-amber-300 font-semibold mt-0.5">Prices in USD ($)</p>
                   <p className="text-[9px] text-emerald-400 font-semibold mt-0.5">✨ FREE Delivery inside Ethiopia</p>
-                  <p className="text-[9px] text-white/50 mt-0.5">Pay with Card / International via Chapa</p>
+                  <p className="text-[9px] text-white/50 mt-0.5">Direct Transfer & Receipt Verification</p>
                 </div>
               </button>
             </div>

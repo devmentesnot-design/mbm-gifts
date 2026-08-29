@@ -379,6 +379,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const avgOrderValueETB = etbOrders.length > 0 ? totalRevenueETB / etbOrders.length : 0;
   const avgOrderValueUSD = usdOrders.length > 0 ? totalRevenueUSD / usdOrders.length : 0;
   const pendingOrdersCount = orders.filter((o) => o.status === 'Pending').length;
+  const verifiedOrdersCount = orders.filter((o) => o.paymentStatus === 'PAID' || o.status === 'Processing' || o.status === 'Shipped' || o.status === 'Delivered').length;
 
   // Filtered Categories by Usage
   const packageCategories = categoriesList.filter((c) => !c.type || c.type === 'package' || c.type === 'both');
@@ -446,8 +447,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       o.customer.fullName.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
       o.customer.email.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
       o.customer.phone.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
-      o.customer.address.toLowerCase().includes(orderSearchTerm.toLowerCase());
-    const matchesStatus = orderStatusFilter === 'all' || o.status.toLowerCase() === orderStatusFilter.toLowerCase();
+      o.customer.address.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
+      (o.senderName && o.senderName.toLowerCase().includes(orderSearchTerm.toLowerCase())) ||
+      (o.transactionId && o.transactionId.toLowerCase().includes(orderSearchTerm.toLowerCase()));
+
+    const matchesStatus =
+      orderStatusFilter === 'all' ||
+      (orderStatusFilter === 'verified' && (o.paymentStatus === 'PAID' || o.status === 'Processing' || o.status === 'Shipped' || o.status === 'Delivered')) ||
+      (orderStatusFilter === 'under_review' && (o.paymentStatus === 'UNDER_REVIEW' || o.paymentStatus === 'PAYMENT_SUBMITTED')) ||
+      (orderStatusFilter === 'processing' && o.status === 'Processing') ||
+      (orderStatusFilter === 'shipped' && o.status === 'Shipped') ||
+      (orderStatusFilter === 'delivered' && o.status === 'Delivered') ||
+      (orderStatusFilter === 'cancelled' && o.status === 'Cancelled') ||
+      (orderStatusFilter === 'pending' && o.status === 'Pending') ||
+      o.status.toLowerCase() === orderStatusFilter.toLowerCase();
+
     return matchesSearch && matchesStatus;
   });
 
@@ -956,7 +970,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       icon: ShieldCheck,
       badge: pendingPaymentsCount ? `${pendingPaymentsCount} Review` : null,
     },
-    { id: 'orders', label: `Orders (${orders.length})`, icon: ShoppingBag, badge: pendingOrdersCount ? `${pendingOrdersCount} new` : null },
+    { 
+      id: 'orders', 
+      label: `Orders (${orders.length})`, 
+      icon: ShoppingBag, 
+      badge: verifiedOrdersCount ? `${verifiedOrdersCount} Verified` : (pendingOrdersCount ? `${pendingOrdersCount} new` : null),
+    },
     { id: 'packages', label: `Ready-made Packages (${packages.length})`, icon: Package },
     { id: 'customItems', label: `Single Items (${customItems.length})`, icon: Gift },
     { id: 'categories', label: `Categories (${categoriesList.length})`, icon: FolderTree },
@@ -1262,47 +1281,64 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
+                  <div className="inline-flex items-center gap-1.5 text-amber-300 text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full mb-1">
+                    <ShoppingBag className="w-3 h-3 text-amber-300" />
+                    <span>Order Dispatch & Delivery Fulfillment</span>
+                  </div>
                   <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
                     Orders Management ({orders.length})
                   </h2>
                   <p className="text-white/60 text-xs font-inter mt-1">
-                    Review orders, inspect customer phone numbers and delivery addresses, and update status.
+                    Manage verified orders, inspect customer phone numbers and delivery addresses, and advance fulfillment from In Preparation to Out for Delivery and Delivered.
                   </p>
                 </div>
-                <button
-                  onClick={() => setCreateOrderModalOpen(true)}
-                  className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>+ Create Manual Order</span>
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setCreateOrderModalOpen(true)}
+                    className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>+ Create Manual Order</span>
+                  </button>
+                </div>
               </div>
 
               {/* Filters */}
-              <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-lg">
-                <div className="relative w-full sm:w-80">
+              <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-4 flex flex-col lg:flex-row gap-4 items-center justify-between shadow-lg">
+                <div className="relative w-full lg:w-80">
                   <Search className="w-4 h-4 absolute left-3 top-3 text-white/40" />
                   <input
                     type="text"
-                    placeholder="Search by ID, name, phone, address..."
+                    placeholder="Search by ID, name, sender, phone, address..."
                     value={orderSearchTerm}
                     onChange={(e) => setOrderSearchTerm(e.target.value)}
                     className="w-full bg-black/40 border border-white/15 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-white/40 focus:outline-none focus:border-amber-400"
                   />
                 </div>
 
-                <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
-                  {['all', 'pending', 'delivered', 'cancelled'].map((st) => (
+                {/* Filter Pills with Verified / Paid as First-Class Filter */}
+                <div className="flex items-center gap-1.5 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
+                  {[
+                    { id: 'all', label: `All (${orders.length})` },
+                    { id: 'verified', label: `Verified & Paid (${verifiedOrdersCount})`, highlight: true },
+                    { id: 'under_review', label: `Needs Review (${pendingPaymentsCount})` },
+                    { id: 'processing', label: `In Prep (${orders.filter(o => o.status === 'Processing').length})` },
+                    { id: 'shipped', label: `Out for Delivery (${orders.filter(o => o.status === 'Shipped').length})` },
+                    { id: 'delivered', label: `Delivered (${orders.filter(o => o.status === 'Delivered').length})` },
+                    { id: 'cancelled', label: `Cancelled (${orders.filter(o => o.status === 'Cancelled').length})` },
+                  ].map((st) => (
                     <button
-                      key={st}
-                      onClick={() => setOrderStatusFilter(st)}
+                      key={st.id}
+                      onClick={() => setOrderStatusFilter(st.id)}
                       className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border transition-all cursor-pointer whitespace-nowrap ${
-                        orderStatusFilter === st
-                          ? 'bg-amber-400 border-amber-400 text-[#8c1119]'
+                        orderStatusFilter === st.id
+                          ? 'bg-amber-400 border-amber-400 text-[#8c1119] shadow-md font-extrabold'
+                          : st.highlight
+                          ? 'bg-emerald-500/20 border-emerald-400/40 text-emerald-300 hover:bg-emerald-500/30'
                           : 'bg-black/20 border-white/10 text-white/70 hover:text-white'
                       }`}
                     >
-                      {st}
+                      {st.label}
                     </button>
                   ))}
                 </div>
@@ -1314,79 +1350,187 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <thead>
                     <tr className="border-b border-white/10 text-white/50 uppercase text-[10px] tracking-wider">
                       <th className="py-3 px-3">Order ID</th>
-                      <th className="py-3 px-3">Customer & Contact</th>
-                      <th className="py-3 px-3">Delivery Location</th>
+                      <th className="py-3 px-3">Customer & Sender</th>
+                      <th className="py-3 px-3">Delivery Destination</th>
                       <th className="py-3 px-3">Items</th>
-                      <th className="py-3 px-3">Total</th>
-                      <th className="py-3 px-3">Status</th>
+                      <th className="py-3 px-3">Total Amount</th>
+                      <th className="py-3 px-3">Payment</th>
+                      <th className="py-3 px-3">Fulfillment Status</th>
                       <th className="py-3 px-3 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
-                    {filteredOrders.map((ord) => (
-                      <tr key={ord.id} className="hover:bg-white/5 transition-colors">
-                        <td className="py-4 px-3 font-bold text-amber-300">{ord.id}</td>
-                        <td className="py-4 px-3">
-                          <div className="font-bold text-white">{ord.customer.fullName}</div>
-                          <div className="text-[11px] text-amber-300/90 font-medium flex items-center gap-1.5 mt-0.5">
-                            <Phone className="w-3 h-3 text-amber-300" />
-                            <span>{ord.customer.phone || 'No phone provided'}</span>
-                          </div>
-                          <div className="text-[11px] text-white/50">{ord.customer.email}</div>
-                        </td>
-                        <td className="py-4 px-3">
-                          <div className="flex items-start gap-1.5 text-white/80 max-w-xs">
-                            <MapPin className="w-3.5 h-3.5 text-amber-300 flex-shrink-0 mt-0.5" />
-                            <div>
-                              <div className="font-semibold">{ord.customer.address}</div>
-                              <div className="text-[10px] text-white/50">{ord.customer.city}, {ord.customer.zipCode}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-4 px-3 text-white/80 font-medium">
-                          <div>{ord.items.length} item{ord.items.length !== 1 ? 's' : ''}</div>
-                          {ord.items.some((it: any) => it.customerInputText || it.customerInputImageUrl) && (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-purple-300 bg-purple-900/40 border border-purple-500/40 px-2 py-0.5 rounded-full mt-1">
-                              <Sparkles className="w-2.5 h-2.5 text-purple-400" />
-                              <span>Customized</span>
+                    {filteredOrders.map((ord) => {
+                      const isPaid = ord.paymentStatus === 'PAID';
+                      const isUnderReview = ord.paymentStatus === 'UNDER_REVIEW' || ord.paymentStatus === 'PAYMENT_SUBMITTED';
+                      const isRejected = ord.paymentStatus === 'REJECTED';
+
+                      return (
+                        <tr key={ord.id} className="hover:bg-white/5 transition-colors">
+                          <td className="py-4 px-3">
+                            <div className="font-bold text-amber-300 font-podium text-sm">{ord.id}</div>
+                            <span className="text-[10px] text-white/50 block mt-0.5">
+                              {ord.buyerMarket === 'INTERNATIONAL' ? '🌍 Diaspora' : '🇪🇹 Local'}
                             </span>
-                          )}
-                        </td>
-                        <td className="py-4 px-3">
-                          <div className="font-bold text-amber-300 text-sm">
-                            {ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL'
-                              ? `$${ord.total.toFixed(2)} USD`
-                              : `${ord.total.toLocaleString()} ብር`}
-                          </div>
-                          <span className="text-[10px] text-white/50 block">
-                            {ord.buyerMarket === 'INTERNATIONAL' ? '🌍 Diaspora' : '🇪🇹 Local'}
-                          </span>
-                        </td>
-                        <td className="py-4 px-3">
-                          <select
-                            value={ord.status}
-                            onChange={(e) => onUpdateOrderStatus(ord.id, e.target.value as OrderStatus)}
-                            className="bg-black/50 border border-white/20 rounded px-2 py-1 text-xs text-amber-300 font-bold focus:outline-none focus:border-amber-400"
-                          >
-                            <option value="Pending">Pending</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
-                          </select>
-                        </td>
-                        <td className="py-4 px-3 text-right">
-                          <button
-                            onClick={() => setSelectedOrderDetails(ord)}
-                            className="px-3.5 py-1.5 rounded-lg bg-amber-400/10 border border-amber-400/30 hover:border-amber-400 text-amber-300 font-bold text-xs"
-                          >
-                            Full Details
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                          </td>
+
+                          <td className="py-4 px-3">
+                            <div className="font-bold text-white">{ord.customer.fullName}</div>
+                            <div className="text-[11px] text-amber-300/90 font-medium flex items-center gap-1.5 mt-0.5">
+                              <Phone className="w-3 h-3 text-amber-300" />
+                              <span>{ord.customer.phone || 'No phone provided'}</span>
+                            </div>
+                            {ord.senderName && (
+                              <div className="text-[10px] text-amber-200/80 mt-0.5 flex items-center gap-1">
+                                <User className="w-2.5 h-2.5 text-amber-400" />
+                                <span>Sender: <strong>{ord.senderName}</strong></span>
+                              </div>
+                            )}
+                          </td>
+
+                          <td className="py-4 px-3">
+                            <div className="flex items-start gap-1.5 text-white/80 max-w-xs">
+                              <MapPin className="w-3.5 h-3.5 text-amber-300 flex-shrink-0 mt-0.5" />
+                              <div>
+                                <div className="font-semibold text-white">{ord.customer.address}</div>
+                                <div className="text-[10px] text-white/50">{ord.customer.city}, {ord.customer.zipCode}</div>
+                                {ord.customer.giftRecipientName && ord.customer.giftRecipientName !== ord.customer.fullName && (
+                                  <div className="text-[10px] text-amber-200/90 italic mt-0.5">
+                                    Recipient: {ord.customer.giftRecipientName}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+
+                          <td className="py-4 px-3 text-white/80 font-medium">
+                            <div>{ord.items.length} item{ord.items.length !== 1 ? 's' : ''}</div>
+                            {ord.items.some((it: any) => it.customerInputText || it.customerInputImageUrl) && (
+                              <span className="inline-flex items-center gap-1 text-[9px] font-bold text-purple-300 bg-purple-900/40 border border-purple-500/40 px-2 py-0.5 rounded-full mt-1">
+                                <Sparkles className="w-2.5 h-2.5 text-purple-400" />
+                                <span>Customized</span>
+                              </span>
+                            )}
+                          </td>
+
+                          <td className="py-4 px-3">
+                            <div className="font-bold text-amber-300 text-sm">
+                              {ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL'
+                                ? `$${ord.total.toFixed(2)} USD`
+                                : `${ord.total.toLocaleString()} ብር`}
+                            </div>
+                            <span className="text-[10px] text-white/40 block">
+                              {ord.paymentMethod?.replace('Manual Payment ', '') || 'Transfer'}
+                            </span>
+                          </td>
+
+                          {/* Payment Verification Status Badge */}
+                          <td className="py-4 px-3">
+                            {isPaid ? (
+                              <span className="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">
+                                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                                <span>PAID</span>
+                              </span>
+                            ) : isUnderReview ? (
+                              <button
+                                onClick={() => {
+                                  setActiveTab('payments');
+                                  setPaymentSearchTerm(ord.id);
+                                }}
+                                className="inline-flex items-center gap-1 bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider hover:bg-amber-400/30 cursor-pointer animate-pulse"
+                                title="Click to verify in Payment dashboard"
+                              >
+                                <Clock className="w-3 h-3" />
+                                <span>Review</span>
+                              </button>
+                            ) : isRejected ? (
+                              <span className="inline-flex items-center gap-1 bg-red-500/20 text-red-300 border border-red-500/40 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">
+                                <AlertCircle className="w-3 h-3 text-red-400" />
+                                <span>Rejected</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 bg-white/10 text-white/60 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">
+                                <span>Unpaid</span>
+                              </span>
+                            )}
+                          </td>
+
+                          {/* Fulfillment Delivery Status Dropdown */}
+                          <td className="py-4 px-3">
+                            <select
+                              value={ord.status}
+                              onChange={(e) => onUpdateOrderStatus(ord.id, e.target.value as OrderStatus)}
+                              className={`border rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none transition-all cursor-pointer ${
+                                ord.status === 'Delivered'
+                                  ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300'
+                                  : ord.status === 'Shipped'
+                                  ? 'bg-indigo-950/80 border-indigo-500/50 text-indigo-300'
+                                  : ord.status === 'Processing'
+                                  ? 'bg-blue-950/80 border-blue-500/50 text-blue-300'
+                                  : ord.status === 'Cancelled'
+                                  ? 'bg-red-950/80 border-red-500/50 text-red-300'
+                                  : 'bg-black/60 border-amber-400/40 text-amber-300'
+                              }`}
+                            >
+                              <option value="Pending">Pending (Awaiting Audit)</option>
+                              <option value="Processing">Processing (Paid & In Prep)</option>
+                              <option value="Shipped">Shipped (Out for Delivery)</option>
+                              <option value="Delivered">Delivered (Completed)</option>
+                              <option value="Cancelled">Cancelled</option>
+                            </select>
+                          </td>
+
+                          {/* Actions */}
+                          <td className="py-4 px-3 text-right space-y-1">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {ord.paymentReceiptUrl && (
+                                <button
+                                  type="button"
+                                  onClick={() => setViewingReceiptUrl(ord.paymentReceiptUrl || null)}
+                                  className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-amber-300 hover:text-white transition-colors cursor-pointer"
+                                  title="View Uploaded Payment Proof"
+                                >
+                                  <Eye className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+
+                              {ord.status === 'Processing' && (
+                                <button
+                                  type="button"
+                                  onClick={() => onUpdateOrderStatus(ord.id, 'Shipped')}
+                                  className="px-2 py-1 rounded bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/40 text-[10px] font-bold uppercase transition-all cursor-pointer whitespace-nowrap"
+                                  title="Mark Out for Delivery"
+                                >
+                                  Dispatch
+                                </button>
+                              )}
+
+                              {ord.status === 'Shipped' && (
+                                <button
+                                  type="button"
+                                  onClick={() => onUpdateOrderStatus(ord.id, 'Delivered')}
+                                  className="px-2 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold uppercase transition-all cursor-pointer whitespace-nowrap"
+                                  title="Mark as Delivered"
+                                >
+                                  Deliver
+                                </button>
+                              )}
+
+                              <button
+                                onClick={() => setSelectedOrderDetails(ord)}
+                                className="px-3 py-1.5 rounded-lg bg-amber-400/15 border border-amber-400/30 hover:border-amber-400 hover:bg-amber-400/25 text-amber-300 font-bold text-xs cursor-pointer transition-all whitespace-nowrap"
+                              >
+                                Full Details
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                     {filteredOrders.length === 0 && (
                       <tr>
-                        <td colSpan={7} className="py-12 text-center text-white/40">
-                          No orders matched your search filters.
+                        <td colSpan={8} className="py-12 text-center text-white/40">
+                          No orders matched your selected filter or search term.
                         </td>
                       </tr>
                     )}
@@ -4341,6 +4485,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </button>
                   </div>
                 )}
+                {/* Delivery & Fulfillment Status Controller inside Modal */}
+                <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="text-xs">
+                    <span className="text-white/60 block text-[10px] uppercase font-bold tracking-wider">Fulfillment Status</span>
+                    <span className="font-bold text-white">Current: {selectedOrderDetails.status}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <select
+                      value={selectedOrderDetails.status}
+                      onChange={(e) => {
+                        const newSt = e.target.value as OrderStatus;
+                        onUpdateOrderStatus(selectedOrderDetails.id, newSt);
+                        setSelectedOrderDetails({
+                          ...selectedOrderDetails,
+                          status: newSt,
+                        });
+                      }}
+                      className="flex-1 sm:flex-initial bg-black/60 border border-amber-400/40 rounded-xl px-3 py-2 text-xs font-bold text-amber-300 focus:outline-none focus:border-amber-400 cursor-pointer"
+                    >
+                      <option value="Pending">Pending (Unconfirmed)</option>
+                      <option value="Processing">Processing (Paid & In Prep)</option>
+                      <option value="Shipped">Shipped (Out for Delivery)</option>
+                      <option value="Delivered">Delivered (Completed)</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                </div>
+
               </div>
 
               {/* Summary */}

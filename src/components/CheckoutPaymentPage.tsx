@@ -51,12 +51,8 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
   onBack,
   onNavigate,
 }) => {
-  // Payment Method Selection: 'manual' | 'chapa'
-  const [selectedMethod, setSelectedMethod] = useState<'manual' | 'chapa'>(() => {
-    if (PAYMENT_CONFIG.isManualPaymentEnabled) return 'manual';
-    if (PAYMENT_CONFIG.isChapaPaymentEnabled) return 'chapa';
-    return 'manual';
-  });
+  // Payment Method: Manual Bank Transfer / Telebirr with Screenshot Verification
+  const selectedMethod = 'manual';
 
   // Selected Manual Account
   const [selectedAccount, setSelectedAccount] = useState<PaymentAccountOption>(
@@ -547,45 +543,13 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                 </button>
               </div>
 
-              {/* Payment Method Switcher Tabs (If both are enabled) */}
-              {PAYMENT_CONFIG.isManualPaymentEnabled && PAYMENT_CONFIG.isChapaPaymentEnabled && (
-                <div className="grid grid-cols-2 gap-2 bg-black/40 p-1.5 rounded-2xl border border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedMethod('manual')}
-                    className={`py-3 px-4 rounded-xl font-podium text-xs sm:text-sm uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                      selectedMethod === 'manual'
-                        ? 'bg-gradient-to-r from-amber-400 to-amber-300 text-[#8c1119] shadow-lg shadow-amber-400/20'
-                        : 'text-white/70 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    <Building2 className="w-4 h-4" />
-                    <span>Manual Transfer</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedMethod('chapa')}
-                    className={`py-3 px-4 rounded-xl font-podium text-xs sm:text-sm uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                      selectedMethod === 'chapa'
-                        ? 'bg-gradient-to-r from-amber-400 to-amber-300 text-[#8c1119] shadow-lg shadow-amber-400/20'
-                        : 'text-white/70 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    <CreditCard className="w-4 h-4" />
-                    <span>Chapa Gateway</span>
-                  </button>
-                </div>
-              )}
-
               {/* ───────────────────────────────────────────────────────────── */}
-              {/* TAB CONTENT: 1. MANUAL PAYMENT WITH RECEIPT VERIFICATION     */}
+              {/* MANUAL PAYMENT WITH RECEIPT / SCREENSHOT VERIFICATION         */}
               {/* ───────────────────────────────────────────────────────────── */}
-              {selectedMethod === 'manual' && (
-                <div className="space-y-6">
-                  
-                  {/* Account Summary & Transfer Instructions */}
-                  <div className="bg-black/30 border border-amber-400/25 rounded-2xl p-5 space-y-4">
+              <div className="space-y-6">
+                
+                {/* Account Summary & Transfer Instructions */}
+                <div className="bg-black/30 border border-amber-400/25 rounded-2xl p-5 space-y-4">
                     <div className="flex items-center justify-between pb-3 border-b border-white/10">
                       <div>
                         <span className="text-[10px] text-amber-300 uppercase tracking-widest font-bold block">
@@ -792,88 +756,6 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                     </button>
                   </form>
                 </div>
-              )}
-
-              {/* ───────────────────────────────────────────────────────────── */}
-              {/* TAB CONTENT: 2. CHAPA PAYMENT GATEWAY (PRESERVED)            */}
-              {/* ───────────────────────────────────────────────────────────── */}
-              {selectedMethod === 'chapa' && (
-                <div className="space-y-6">
-                  {/* Market Badge Banner */}
-                  <div className="bg-black/30 border border-amber-400/20 rounded-2xl p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl">{market === 'ETHIOPIA' ? '🇪🇹' : '🌍'}</span>
-                      <div>
-                        <div className="text-xs font-bold text-white uppercase tracking-wider">
-                          {market === 'ETHIOPIA' ? 'Ethiopian Market' : 'International Market'}
-                        </div>
-                        <div className="text-[11px] text-amber-300 font-semibold">
-                          Payment in <strong className="underline">{currency === 'ETB' ? 'Ethiopian Birr (ETB)' : 'US Dollars (USD)'}</strong> via Chapa
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest bg-emerald-500/15 border border-emerald-400/40 px-2.5 py-1 rounded-full flex items-center gap-1">
-                        <Truck className="w-3 h-3 text-emerald-400" />
-                        <span>Free Delivery</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Payment Methods Info Box */}
-                  <div className="bg-black/30 border border-amber-400/20 rounded-2xl p-5 space-y-3">
-                    <div className="flex items-center gap-2 text-amber-300 font-bold text-xs uppercase tracking-wider">
-                      <CreditCard className="w-4 h-4 text-amber-300" />
-                      <span>Choose Your Preferred Gateway Method</span>
-                    </div>
-                    <p className="text-xs text-white/75 leading-relaxed">
-                      {market === 'ETHIOPIA'
-                        ? 'Pay using Telebirr, CBE Birr, Commercial Bank of Ethiopia, Bank of Abyssinia, Awash, Dashen, or any supported Ethiopian bank directly on the official Chapa payment page.'
-                        : 'Pay securely with Visa, MasterCard, American Express, UnionPay, and international debit/credit cards directly on the official Chapa payment page.'}
-                    </p>
-                    <div className="flex items-center gap-2 text-[11px] text-amber-300/80 pt-2 border-t border-white/10">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                      <span>Instant official payment confirmation</span>
-                    </div>
-                  </div>
-
-                  {/* Error Box */}
-                  {chapaError && (
-                    <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 flex items-start gap-3 text-red-200 text-xs animate-shake">
-                      <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-400" />
-                      <div className="flex-1">{chapaError}</div>
-                    </div>
-                  )}
-
-                  {/* Pay with Chapa Button */}
-                  <button
-                    type="button"
-                    onClick={handlePayWithChapa}
-                    disabled={isInitializing}
-                    className="w-full bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-[#8c1119] font-podium font-bold text-lg uppercase tracking-wider py-4 px-6 rounded-2xl transition-all transform hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-amber-400/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 cursor-pointer"
-                  >
-                    {isInitializing ? (
-                      <>
-                        <Loader2 className="w-6 h-6 animate-spin text-[#8c1119]" />
-                        <span>Connecting to Chapa...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Lock className="w-5 h-5" />
-                        <span>
-                          Pay {formatPrice(currentOrder.total, currency)} with Chapa
-                        </span>
-                        <ExternalLink className="w-4 h-4 opacity-70" />
-                      </>
-                    )}
-                  </button>
-
-                  <div className="text-center text-[11px] text-white/50 flex items-center justify-center gap-1.5">
-                    <Lock className="w-3.5 h-3.5 text-amber-300/70" />
-                    <span>256-bit SSL Encrypted • Verified by Chapa</span>
-                  </div>
-                </div>
-              )}
 
             </div>
 

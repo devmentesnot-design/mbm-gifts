@@ -94,12 +94,12 @@ export const OfficialReceiptModal: React.FC<OfficialReceiptModalProps> = ({
           {/* Payment & Security Metadata Bar */}
           <div className="my-3.5 bg-slate-50 rounded-xl p-3 border border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-xs">
             <div>
-              <span className="text-slate-400 uppercase text-[9px] font-bold block">Chapa Reference</span>
-              <span className="font-mono text-slate-800 font-bold text-[11px] break-all">{order.chapaTxRef || 'CHAPA-VERIFIED'}</span>
+              <span className="text-slate-400 uppercase text-[9px] font-bold block">Verification Reference</span>
+              <span className="font-mono text-slate-800 font-bold text-[11px] break-all">{order.transactionId || order.chapaTxRef || 'MBM-VERIFIED-PAID'}</span>
             </div>
             <div>
               <span className="text-slate-400 uppercase text-[9px] font-bold block">Payment Method</span>
-              <span className="text-slate-800 font-semibold text-[11px]">{order.paymentMethod || 'Chapa Payment Gateway'}</span>
+              <span className="text-slate-800 font-semibold text-[11px]">{order.paymentMethod || 'Manual Bank Transfer (Verified)'}</span>
             </div>
             <div>
               <span className="text-slate-400 uppercase text-[9px] font-bold block">Market & Currency</span>
