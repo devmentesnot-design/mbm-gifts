@@ -718,24 +718,6 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                       </div>
                     </div>
 
-                    {/* 3. TRANSACTION ID (OPTIONAL) */}
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-white/80 uppercase tracking-wider flex items-center justify-between">
-                        <span>Transaction / Reference Number (Optional)</span>
-                        <span className="text-[10px] text-white/40">OPTIONAL</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={transactionId}
-                        onChange={(e) => setTransactionId(e.target.value)}
-                        placeholder="e.g. FT2608... or TX123... (if visible on SMS/app)"
-                        className="w-full bg-black/40 border border-white/15 focus:border-amber-400 rounded-xl px-4 py-2.5 text-xs text-white placeholder-white/40 focus:outline-none transition-all"
-                      />
-                      <p className="text-[10px] text-white/50">
-                        Optional — you do not need to enter this if not readily available on your transfer.
-                      </p>
-                    </div>
-
                     {/* Submit Button */}
                     <button
                       type="submit"
