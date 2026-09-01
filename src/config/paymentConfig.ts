@@ -51,7 +51,7 @@ export const PAYMENT_CONFIG: PaymentConfigType = {
   businessName:
     (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'BONTU ABERA',
   primaryPhone:
-    (import.meta as any).env?.VITE_PAYMENT_PHONE || '0912XXXXXX',
+    (import.meta as any).env?.VITE_PAYMENT_PHONE || '096 850 2523',
   supportEmail: 'mbmgifts.orders@gmail.com',
 
   accounts: [
@@ -59,7 +59,7 @@ export const PAYMENT_CONFIG: PaymentConfigType = {
       id: 'telebirr',
       name: 'Telebirr',
       accountType: 'Mobile Money',
-      accountNumber: (import.meta as any).env?.VITE_PAYMENT_TELEBIRR || '0912XXXXXX',
+      accountNumber: (import.meta as any).env?.VITE_PAYMENT_TELEBIRR || '096 850 2523',
       accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'BONTU ABERA',
       logo: '/telebirr-logo.jpg',
       badge: 'INSTANT / POPULAR',
@@ -69,7 +69,7 @@ export const PAYMENT_CONFIG: PaymentConfigType = {
       id: 'cbe',
       name: 'Commercial Bank of Ethiopia (CBE)',
       accountType: 'Bank Transfer',
-      accountNumber: (import.meta as any).env?.VITE_PAYMENT_CBE || '1000XXXXXXXXX',
+      accountNumber: (import.meta as any).env?.VITE_PAYMENT_CBE || '1000168621241',
       accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'BONTU ABERA',
       logo: '/cbe-logo.jpg',
       badge: 'CBE BIRR / CBE MOBILE',
