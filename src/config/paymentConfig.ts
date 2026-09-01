@@ -85,16 +85,6 @@ export const PAYMENT_CONFIG: PaymentConfigType = {
       badge: 'BOA MOBILE',
       instructions: 'Transfer via Bank of Abyssinia mobile app or branch deposit.',
     },
-    {
-      id: 'cbe_birr',
-      name: 'CBE Birr',
-      accountType: 'Mobile Money',
-      accountNumber: (import.meta as any).env?.VITE_PAYMENT_CBE_BIRR || '0912XXXXXX',
-      accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'DERARA BUSINESS',
-      logo: '/cbe-birr.png',
-      badge: 'CBE BIRR',
-      instructions: 'Send money via CBE Birr to the mobile phone number below.',
-    },
   ],
 
   instructions: {
