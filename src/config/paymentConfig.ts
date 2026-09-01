@@ -49,7 +49,7 @@ export const PAYMENT_CONFIG: PaymentConfigType = {
   isChapaPaymentEnabled: false,
 
   businessName:
-    (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'MIMI ABERA',
+    (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'BONTU ABERA',
   primaryPhone:
     (import.meta as any).env?.VITE_PAYMENT_PHONE || '0912XXXXXX',
   supportEmail: 'mbmgifts.orders@gmail.com',
@@ -60,7 +60,7 @@ export const PAYMENT_CONFIG: PaymentConfigType = {
       name: 'Telebirr',
       accountType: 'Mobile Money',
       accountNumber: (import.meta as any).env?.VITE_PAYMENT_TELEBIRR || '0912XXXXXX',
-      accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'MIMI ABERA',
+      accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'BONTU ABERA',
       logo: '/telebirr-logo.jpg',
       badge: 'INSTANT / POPULAR',
       instructions: 'Send money via Telebirr transfer to the phone number below and enter the Sender Name.',
@@ -70,7 +70,7 @@ export const PAYMENT_CONFIG: PaymentConfigType = {
       name: 'Commercial Bank of Ethiopia (CBE)',
       accountType: 'Bank Transfer',
       accountNumber: (import.meta as any).env?.VITE_PAYMENT_CBE || '1000XXXXXXXXX',
-      accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'MIMI ABERA',
+      accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'BONTU ABERA',
       logo: '/cbe-logo.jpg',
       badge: 'CBE BIRR / CBE MOBILE',
       instructions: 'Transfer via CBE Mobile Banking, CBE Birr, or counter deposit and upload receipt.',
@@ -80,7 +80,7 @@ export const PAYMENT_CONFIG: PaymentConfigType = {
       name: 'Bank of Abyssinia (BOA)',
       accountType: 'Bank Transfer',
       accountNumber: (import.meta as any).env?.VITE_PAYMENT_ABYSSINIA || 'XXXXXXXX',
-      accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'MIMI ABERA',
+      accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'BONTU ABERA',
       logo: '/abissinya.png',
       badge: 'BOA MOBILE',
       instructions: 'Transfer via Bank of Abyssinia mobile app or branch deposit.',
