@@ -9,22 +9,22 @@ interface MarketContextType {
   buyerMarket: BuyerMarket;
   currency: MarketCurrency;
   isDetecting: boolean;
-  buyerCountry: string | null;       // ISO-3166-1 alpha-2 code (e.g. "ET", "US")
-  buyerCountryName: string | null;   // Human-readable country name (e.g. "Ethiopia", "United States")
-  showWelcomeModal: boolean;         // true only on first visit, before user confirms
-  hasConfirmed: boolean;             // becomes true after user clicks "Continue Shopping"
-  confirmMarket: () => void;         // called by the welcome modal button
+  buyerCountry: string | null;
+  buyerCountryName: string | null;
+  showWelcomeModal: boolean;
+  hasConfirmed: boolean;
+  confirmMarket: () => void;
   requestMarketChange: (newMarket: BuyerMarket) => Promise<{ success: boolean; reason?: string }>;
 }
 
 const MarketContext = createContext<MarketContextType>({
   buyerMarket: 'ETHIOPIA',
   currency: 'ETB',
-  isDetecting: true,
-  buyerCountry: null,
-  buyerCountryName: null,
+  isDetecting: false,
+  buyerCountry: 'ET',
+  buyerCountryName: 'Ethiopia',
   showWelcomeModal: false,
-  hasConfirmed: false,
+  hasConfirmed: true,
   confirmMarket: () => {},
   requestMarketChange: async () => ({ success: false }),
 });
@@ -34,7 +34,6 @@ const COOKIE_NAME = 'mbm_market_v2';
 const COOKIE_MAX_AGE = 365 * 24 * 60 * 60; // 1 year in seconds
 
 function setCookie(name: string, value: string, maxAge: number): void {
-  // SameSite=Strict + no Secure flag since Vite dev runs on http
   document.cookie = `${name}=${encodeURIComponent(value)}; max-age=${maxAge}; path=/; SameSite=Strict`;
 }
 
@@ -60,191 +59,95 @@ interface StoredMarket {
   currency: MarketCurrency;
   countryCode: string;
   countryName: string;
-  confirmedAt: string; // ISO timestamp
+  confirmedAt: string;
 }
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
+// NOTE: Operating locally (Ethiopia only). IP detection and international market
+// are disabled. All users default to Ethiopia / ETB with no welcome modal.
 export const MarketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [buyerMarket, setBuyerMarket] = useState<BuyerMarket>('ETHIOPIA');
-  const [currency, setCurrency] = useState<MarketCurrency>('ETB');
+  // Market is permanently Ethiopia/ETB — no setter needed
+  const [buyerMarket] = useState<BuyerMarket>('ETHIOPIA');
+  const [currency] = useState<MarketCurrency>('ETB');
   const [isDetecting, setIsDetecting] = useState(true);
-  const [buyerCountry, setBuyerCountry] = useState<string | null>(null);
-  const [buyerCountryName, setBuyerCountryName] = useState<string | null>(null);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [buyerCountry] = useState<string>('ET');
+  const [buyerCountryName] = useState<string>('Ethiopia');
+  // Welcome modal permanently disabled
+  const [showWelcomeModal] = useState(false);
   const [hasConfirmed, setHasConfirmed] = useState(false);
 
-  // ── Apply market state ────────────────────────────────────────────────────
-  const applyMarket = useCallback((market: BuyerMarket, countryCode: string, countryName: string) => {
-    const cur: MarketCurrency = market === 'ETHIOPIA' ? 'ETB' : 'USD';
-    setBuyerMarket(market);
-    setCurrency(cur);
-    setBuyerCountry(countryCode);
-    setBuyerCountryName(countryName);
+  // ── Persist confirmed market to cookie + Supabase profile ─────────────────
+  const persistMarket = useCallback(async () => {
+    const stored: StoredMarket = {
+      market: 'ETHIOPIA',
+      currency: 'ETB',
+      countryCode: 'ET',
+      countryName: 'Ethiopia',
+      confirmedAt: new Date().toISOString(),
+    };
+    setCookie(COOKIE_NAME, JSON.stringify(stored), COOKIE_MAX_AGE);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        await supabase
+          .from('profiles')
+          .update({
+            market: 'ETHIOPIA',
+            currency: 'ETB',
+            country_code: 'ET',
+            country_name: 'Ethiopia',
+          })
+          .eq('id', session.user.id);
+      }
+    } catch {
+      // Non-blocking
+    }
   }, []);
 
-  // ── Persist confirmed market to cookie + Supabase profile ─────────────────
-  const persistMarket = useCallback(
-    async (market: BuyerMarket, countryCode: string, countryName: string) => {
-      const cur: MarketCurrency = market === 'ETHIOPIA' ? 'ETB' : 'USD';
-      const stored: StoredMarket = {
-        market,
-        currency: cur,
-        countryCode,
-        countryName,
-        confirmedAt: new Date().toISOString(),
-      };
-      setCookie(COOKIE_NAME, JSON.stringify(stored), COOKIE_MAX_AGE);
-
-      // Also persist to Supabase profile if user is logged in
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user?.id) {
-          await supabase
-            .from('profiles')
-            .update({
-              market,
-              currency: cur,
-              country_code: countryCode,
-              country_name: countryName,
-            })
-            .eq('id', session.user.id);
-        }
-      } catch {
-        // Non-blocking — cookie is the source of truth for the frontend
-      }
-    },
-    []
-  );
-
-  // ── Initial detection on first load ──────────────────────────────────────
+  // ── Initial load — always Ethiopia, no IP detection ────────────────────────
   useEffect(() => {
     const init = async () => {
-      // 1. Check for existing confirmed cookie
+      // Check for existing Ethiopia cookie
       const raw = getCookie(COOKIE_NAME);
       if (raw) {
         try {
           const stored: StoredMarket = JSON.parse(raw);
-          if (stored.market === 'ETHIOPIA' || stored.market === 'INTERNATIONAL') {
-            applyMarket(stored.market, stored.countryCode, stored.countryName);
+          if (stored.market === 'ETHIOPIA') {
             setHasConfirmed(true);
             setIsDetecting(false);
             return;
           }
         } catch {
-          // Corrupt cookie — re-detect
-          deleteCookie(COOKIE_NAME);
+          // Corrupt or stale cookie — clear it
         }
+        // Clear any non-Ethiopia or corrupt cookie
+        deleteCookie(COOKIE_NAME);
       }
 
-      // 2. Migrate legacy localStorage value if any
-      const legacy = localStorage.getItem('mbm_buyer_market');
-      if (legacy === 'LOCAL' || legacy === 'ETHIOPIA') {
-        applyMarket('ETHIOPIA', 'ET', 'Ethiopia');
-        setHasConfirmed(true);
-        setIsDetecting(false);
-        persistMarket('ETHIOPIA', 'ET', 'Ethiopia');
-        localStorage.removeItem('mbm_buyer_market');
-        return;
-      }
-      if (legacy === 'INTERNATIONAL') {
-        applyMarket('INTERNATIONAL', 'INT', 'International');
-        setHasConfirmed(true);
-        setIsDetecting(false);
-        persistMarket('INTERNATIONAL', 'INT', 'International');
-        localStorage.removeItem('mbm_buyer_market');
-        return;
-      }
+      // Clear legacy localStorage entries
+      localStorage.removeItem('mbm_buyer_market');
 
-      // 3. No stored preference — detect via IP
-      await detectLocation();
+      // Persist Ethiopia as default and mark as confirmed
+      await persistMarket();
+      setHasConfirmed(true);
+      setIsDetecting(false);
     };
 
     init();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── IP-based detection ────────────────────────────────────────────────────
-  const detectLocation = async () => {
-    setIsDetecting(true);
-    try {
-      const res = await fetch('https://ipapi.co/json/', {
-        signal: AbortSignal.timeout(6000),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const code: string = data?.country_code || 'ET';
-        const name: string = data?.country_name || 'Ethiopia';
-        const detected: BuyerMarket = code === 'ET' ? 'ETHIOPIA' : 'INTERNATIONAL';
-        applyMarket(detected, code, name);
-        // Show welcome modal — user must confirm before proceeding
-        setShowWelcomeModal(true);
-      } else {
-        // Default to Ethiopia on API error
-        applyMarket('ETHIOPIA', 'ET', 'Ethiopia');
-        setShowWelcomeModal(true);
-      }
-    } catch {
-      // Timeout or network error → default to Ethiopia
-      applyMarket('ETHIOPIA', 'ET', 'Ethiopia');
-      setShowWelcomeModal(true);
-    } finally {
-      setIsDetecting(false);
-    }
-  };
-
-  // ── User confirms their market (Welcome Modal CTA) ─────────────────────────
+  // ── confirmMarket is a no-op (modal never shows) ──────────────────────────
   const confirmMarket = useCallback(() => {
-    setShowWelcomeModal(false);
-    setHasConfirmed(true);
-    persistMarket(buyerMarket, buyerCountry || 'ET', buyerCountryName || 'Ethiopia');
-  }, [buyerMarket, buyerCountry, buyerCountryName, persistMarket]);
+    // No-op — welcome modal is disabled
+  }, []);
 
-  // ── Controlled market change from footer ──────────────────────────────────
-  // Re-runs IP detection; if detected country matches requested market → allow.
-  // If ambiguous (detection failure) → also allow (VPN/traveler case).
-  // If detected country clearly contradicts → deny.
+  // ── Market change disabled (local-only operation) ─────────────────────────
   const requestMarketChange = useCallback(
-    async (newMarket: BuyerMarket): Promise<{ success: boolean; reason?: string }> => {
-      if (newMarket === buyerMarket) {
-        return { success: false, reason: 'You are already on this market.' };
-      }
-
-      try {
-        const res = await fetch('https://ipapi.co/json/', {
-          signal: AbortSignal.timeout(6000),
-        });
-
-        if (!res.ok) {
-          // Detection failed → allow change (ambiguous case)
-          applyMarket(newMarket, buyerCountry || 'ET', buyerCountryName || 'Ethiopia');
-          await persistMarket(newMarket, buyerCountry || 'ET', buyerCountryName || 'Ethiopia');
-          return { success: true };
-        }
-
-        const data = await res.json();
-        const code: string = data?.country_code || '';
-        const name: string = data?.country_name || '';
-        const detectedMarket: BuyerMarket = code === 'ET' ? 'ETHIOPIA' : 'INTERNATIONAL';
-
-        if (detectedMarket === newMarket) {
-          // IP matches requested market — allow
-          applyMarket(newMarket, code, name);
-          await persistMarket(newMarket, code, name);
-          return { success: true };
-        } else {
-          // IP contradicts request — deny
-          return {
-            success: false,
-            reason: `Your current location (${name}) does not match the requested market. If you are using a VPN or traveling, please contact support to update your region.`,
-          };
-        }
-      } catch {
-        // Detection failed → allow change (ambiguous/VPN case)
-        applyMarket(newMarket, buyerCountry || 'ET', buyerCountryName || 'Ethiopia');
-        await persistMarket(newMarket, buyerCountry || 'ET', buyerCountryName || 'Ethiopia');
-        return { success: true };
-      }
+    async (_newMarket: BuyerMarket): Promise<{ success: boolean; reason?: string }> => {
+      return { success: false, reason: 'Market change is not available at this time.' };
     },
-    [buyerMarket, buyerCountry, buyerCountryName, applyMarket, persistMarket]
+    []
   );
 
   return (

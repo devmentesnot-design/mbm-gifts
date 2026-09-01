@@ -15,7 +15,8 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, onNavigateToLogin, onNavigate }) => {
   const { lang, setLang, t } = useLanguage();
-  const { currency } = useMarket();
+  useMarket(); // keep context connection; currency badge removed (local-only ETB)
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -137,14 +138,6 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
 
         {/* Right Actions */}
         <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
-          {/* Read-only currency badge — not a switcher */}
-          <div
-            title={`You are shopping in ${currency}`}
-            className="flex items-center gap-1.5 bg-black/30 border border-white/15 text-white/70 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase select-none"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            {currency}
-          </div>
 
           {/* Language Switcher Button */}
           <button
@@ -244,13 +237,6 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
 
         {/* Mobile Header Controls */}
         <div className="flex md:hidden items-center space-x-1.5">
-          {/* Read-only currency badge (mobile) */}
-          <div
-            className="flex items-center gap-1 bg-black/30 border border-white/15 text-white/60 px-2 py-1 rounded-full text-[9px] font-bold tracking-widest uppercase select-none"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            {currency}
-          </div>
 
           {/* Language Toggle Mobile */}
           <button
