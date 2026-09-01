@@ -446,10 +446,27 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                                   : 'bg-black/40 border-white/10 text-white/70 hover:border-white/20'
                               }`}
                             >
-                              <div className="flex items-center justify-between mb-1.5">
-                                <span className="font-bold text-xs text-white truncate">{acc.name}</span>
+                              <div className="flex items-center justify-between mb-1.5 gap-2">
+                                {acc.logo ? (
+                                  <img
+                                    src={acc.logo}
+                                    alt={acc.name}
+                                    className="h-6 w-auto max-w-[90px] object-contain rounded"
+                                    onError={(e) => {
+                                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                      const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
+                                      if (fallback) fallback.style.display = 'block';
+                                    }}
+                                  />
+                                ) : null}
+                                <span
+                                  className="font-bold text-xs text-white truncate"
+                                  style={{ display: acc.logo ? 'none' : 'block' }}
+                                >
+                                  {acc.name}
+                                </span>
                                 {acc.badge && (
-                                  <span className="text-[9px] bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded font-bold">
+                                  <span className="text-[9px] bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">
                                     {acc.badge}
                                   </span>
                                 )}
