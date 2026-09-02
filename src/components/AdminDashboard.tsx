@@ -253,6 +253,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
   };
 
+  // Helper to match item/package categories against admin filter (parent or compound)
+  const matchesAdminCategory = (itemCat: string | undefined, filter: string): boolean => {
+    if (!filter || filter === 'all') return true;
+    if (!itemCat) return false;
+    const filterLower = filter.toLowerCase().trim();
+    const isCompound = filterLower.includes(' > ');
+    const cats = itemCat.split(',').map((c) => c.trim().toLowerCase()).filter(Boolean);
+    for (const c of cats) {
+      if (isCompound) {
+        if (c === filterLower) return true;
+      } else {
+        if (c === filterLower || c.startsWith(filterLower + ' > ')) return true;
+      }
+    }
+    return false;
+  };
+
   // Order Search & Filter State
   const [orderSearchTerm, setOrderSearchTerm] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
@@ -1948,9 +1965,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {packageCategories.map((cat) => {
             const hasSubs = cat.subcategories && cat.subcategories.length > 0;
             const isExpanded = expandedPkgCategories.has(cat.id);
-            const count = packages.filter((p) =>
-              p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
-            ).length;
+            const count = packages.filter((p) => matchesAdminCategory(p.category, cat.name)).length;
             const isActive = pkgCategoryFilter.toLowerCase() === cat.name.toLowerCase();
             return (
               <div key={cat.id}>
@@ -1986,9 +2001,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <div className="ml-3 mt-1.5 flex flex-col gap-1 border-l-2 border-[#F5C542]/30 pl-2.5">
                     {cat.subcategories!.map((sub) => {
                       const subKey = `${cat.name} > ${sub}`;
-                      const subCount = packages.filter((p) =>
-                        p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(subKey.toLowerCase())
-                      ).length;
+                      const subCount = packages.filter((p) => matchesAdminCategory(p.category, subKey)).length;
                       const isSubActive = pkgCategoryFilter.toLowerCase() === subKey.toLowerCase();
                       return (
                         <button
@@ -2027,9 +2040,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           if (isAllMode) {
             const usedIds = new Set<string>();
             for (const cat of packageCategories) {
-              const matching = packages.filter((p) =>
-                p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
-              );
+              const matching = packages.filter((p) => matchesAdminCategory(p.category, cat.name));
               if (matching.length === 0) continue;
               const pick = matching.find((p) => !usedIds.has(p.id));
               if (pick) {
@@ -2040,9 +2051,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           } else {
             displayList = packages
               .filter((pkg) => {
-                const matchesCategory =
-                  pkgCategoryFilter === 'all' ||
-                  pkg.category?.split(',').map((c) => c.trim().toLowerCase()).includes(pkgCategoryFilter.toLowerCase());
+                const matchesCategory = matchesAdminCategory(pkg.category, pkgCategoryFilter);
                 const matchesSearch =
                   !pkgSearchTerm ||
                   pkg.name.toLowerCase().includes(pkgSearchTerm.toLowerCase()) ||
@@ -2242,9 +2251,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {packageCategories.map((cat) => {
             const hasSubs = cat.subcategories && cat.subcategories.length > 0;
             const isExpanded = expandedPkgCategories.has(cat.id);
-            const count = packages.filter((p) =>
-              p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
-            ).length;
+            const count = packages.filter((p) => matchesAdminCategory(p.category, cat.name)).length;
             const isActive = pkgCategoryFilter.toLowerCase() === cat.name.toLowerCase();
             return (
               <div key={cat.id}>
@@ -2280,9 +2287,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <div className="ml-3 mt-1 flex flex-col gap-1 border-l border-[#F5C542]/20 pl-2">
                   {cat.subcategories!.map((sub) => {
                       const subKey = `${cat.name} > ${sub}`;
-                      const subCount = packages.filter((p) =>
-                        p.category?.split(',').map((c) => c.trim().toLowerCase()).includes(subKey.toLowerCase())
-                      ).length;
+                      const subCount = packages.filter((p) => matchesAdminCategory(p.category, subKey)).length;
                       const isSubActive = pkgCategoryFilter.toLowerCase() === subKey.toLowerCase();
                       return (
                         <button
@@ -2385,9 +2390,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {customItemCategories.map((cat) => {
                       const hasSubs = cat.subcategories && cat.subcategories.length > 0;
                       const isExpanded = expandedItemCategories.has(cat.id);
-                      const count = customItems.filter((i) =>
-                        i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
-                      ).length;
+                      const count = customItems.filter((i) => matchesAdminCategory(i.category, cat.name)).length;
                       const isActive = itemCategoryFilter.toLowerCase() === cat.name.toLowerCase();
                       return (
                         <div key={cat.id}>
@@ -2423,9 +2426,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <div className="ml-3 mt-1.5 flex flex-col gap-1 border-l-2 border-[#F5C542]/30 pl-2.5">
                               {cat.subcategories!.map((sub) => {
                                 const subKey = `${cat.name} > ${sub}`;
-                                const subCount = customItems.filter((i) =>
-                                  i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(subKey.toLowerCase())
-                                ).length;
+                                const subCount = customItems.filter((i) => matchesAdminCategory(i.category, subKey)).length;
                                 const isSubActive = itemCategoryFilter.toLowerCase() === subKey.toLowerCase();
                                 return (
                                   <button
@@ -2464,9 +2465,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     if (isAllMode) {
                       const usedIds = new Set<string>();
                       for (const cat of customItemCategories) {
-                        const matching = customItems.filter((i) =>
-                          i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
-                        );
+                        const matching = customItems.filter((i) => matchesAdminCategory(i.category, cat.name));
                         if (matching.length === 0) continue;
                         const pick = matching.find((i) => !usedIds.has(i.id));
                         if (pick) {
@@ -2477,9 +2476,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     } else {
                       displayList = customItems
                         .filter((item) => {
-                          const matchesCategory =
-                            itemCategoryFilter === 'all' ||
-                            item.category?.split(',').map((c) => c.trim().toLowerCase()).includes(itemCategoryFilter.toLowerCase());
+                          const matchesCategory = matchesAdminCategory(item.category, itemCategoryFilter);
                           const matchesSearch =
                             !itemSearchTerm ||
                             item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
@@ -2669,9 +2666,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {customItemCategories.map((cat) => {
                       const hasSubs = cat.subcategories && cat.subcategories.length > 0;
                       const isExpanded = expandedItemCategories.has(cat.id);
-                      const count = customItems.filter((i) =>
-                        i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(cat.name.toLowerCase())
-                      ).length;
+                      const count = customItems.filter((i) => matchesAdminCategory(i.category, cat.name)).length;
                       const isActive = itemCategoryFilter.toLowerCase() === cat.name.toLowerCase();
                       return (
                         <div key={cat.id}>
@@ -2707,9 +2702,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <div className="ml-3 mt-1 flex flex-col gap-1 border-l border-[#F5C542]/20 pl-2">
                               {cat.subcategories!.map((sub) => {
                                 const subKey = `${cat.name} > ${sub}`;
-                                const subCount = customItems.filter((i) =>
-                                  i.category?.split(',').map((c) => c.trim().toLowerCase()).includes(subKey.toLowerCase())
-                                ).length;
+                                const subCount = customItems.filter((i) => matchesAdminCategory(i.category, subKey)).length;
                                 const isSubActive = itemCategoryFilter.toLowerCase() === subKey.toLowerCase();
                                 return (
                                   <button

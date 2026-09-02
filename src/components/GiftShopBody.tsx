@@ -189,32 +189,49 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   // Reset to page 1 whenever filter/search/mode changes
   useEffect(() => { setPkgPage(1); setBuildPage(1); }, [activeCategory, searchTerm, mode]);
 
-  // Smart helper to match item categories (including multiple comma-separated categories) against category names and slugs
-  const isCategoryMatch = (itemCat: string, activeCat: string) => {
+  // Precise category matcher — no fuzzy/substring logic to avoid cross-category contamination.
+  // Items store their category as either:
+  //   • "Men's Gifts"             (parent only)
+  //   • "Men's Gifts > Wallets"   (compound parent > subcategory)
+  //   • "Men's Gifts, Women's Gifts" (comma-separated multi-category)
+  //
+  // activeCat is either:
+  //   • "All"                      → show everything
+  //   • "Men's Gifts"              → show all men's items (parent-only OR compound starting with "Men's Gifts > ")
+  //   • "Men's Gifts > Wallets"    → show only items whose compound category exactly matches
+  const isCategoryMatch = (itemCat: string, activeCat: string): boolean => {
     if (!activeCat || activeCat === 'All') return true;
     if (!itemCat) return false;
+
     const activeLower = activeCat.toLowerCase().trim();
+    const isCompoundFilter = activeLower.includes(' > ');
 
-    // Support comma-separated multiple categories on a single item or ready-made package
-    const itemCategories = itemCat.split(',').map(c => c.toLowerCase().trim()).filter(Boolean);
+    // Each item can have comma-separated categories
+    const itemCats = itemCat.split(',').map(c => c.toLowerCase().trim()).filter(Boolean);
 
-    for (const singleItemCat of itemCategories) {
-      if (singleItemCat === activeLower) return true;
+    for (const singleItemCat of itemCats) {
+      if (isCompoundFilter) {
+        // Compound filter "Men's Gifts > Wallets" — item must match exactly
+        if (singleItemCat === activeLower) return true;
+      } else {
+        // Parent-only filter "Men's Gifts" — match exact OR compound items under this parent
+        if (singleItemCat === activeLower) return true;
+        // Match compound stored items: "men's gifts > wallets" when filtering by "men's gifts"
+        if (singleItemCat.startsWith(activeLower + ' > ')) return true;
 
-      if (categories && categories.length > 0) {
-        const catObj = categories.find(
-          c => c.name.toLowerCase().trim() === activeLower || c.slug.toLowerCase().trim() === activeLower
-        );
-        if (catObj) {
-          const slugLower = catObj.slug.toLowerCase().trim();
-          const nameLower = catObj.name.toLowerCase().trim();
-          if (singleItemCat === slugLower || singleItemCat === nameLower) return true;
-          if (nameLower.includes(singleItemCat) || singleItemCat.includes(nameLower)) return true;
-          if (slugLower.includes(singleItemCat) || singleItemCat.includes(slugLower)) return true;
+        // Also resolve via slug (e.g. slug "mens-gifts" vs name "Men's Gifts")
+        if (categories && categories.length > 0) {
+          const catObj = categories.find(
+            c => c.name.toLowerCase().trim() === activeLower || c.slug.toLowerCase().trim() === activeLower
+          );
+          if (catObj) {
+            const slugLower = catObj.slug.toLowerCase().trim();
+            const nameLower = catObj.name.toLowerCase().trim();
+            if (singleItemCat === slugLower || singleItemCat === nameLower) return true;
+            if (singleItemCat.startsWith(nameLower + ' > ') || singleItemCat.startsWith(slugLower + ' > ')) return true;
+          }
         }
       }
-
-      if (activeLower.includes(singleItemCat) || singleItemCat.includes(activeLower)) return true;
     }
 
     return false;
@@ -884,11 +901,12 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     {hasSubs && isExpanded && (
                       <div className="ml-3 mt-1.5 flex flex-col gap-1 border-l-2 border-[#F5C542]/30 pl-2.5">
                         {catObj!.subcategories!.map((sub) => {
-                          const isSubActive = activeCategory === sub || activeCategory === `${cat} > ${sub}`;
+                          const compoundKey = `${cat} > ${sub}`;
+                          const isSubActive = activeCategory === compoundKey;
                           return (
                             <button
                               key={sub}
-                              onClick={() => setActiveCategory(sub)}
+                              onClick={() => setActiveCategory(compoundKey)}
                               className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${
                                 isSubActive
                                   ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
@@ -976,19 +994,22 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     {/* Indented Subcategory Buttons */}
                     {hasSubs && isExpanded && (
                       <div className="ml-2 mt-0.5 flex flex-col gap-0.5 border-l border-[#F5C542]/20 pl-2">
-                        {catObj!.subcategories!.map(sub => (
-                          <button
-                            key={sub}
-                            onClick={() => setActiveCategory(sub)}
-                            className={`w-full text-left px-2.5 py-1.5 text-[9px] font-bold font-inter uppercase tracking-wider rounded-md border transition-all cursor-pointer truncate ${
-                              activeCategory === sub
-                              ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
-                              : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
-                            }`}
-                          >
-                            {sub}
-                          </button>
-                        ))}
+                        {catObj!.subcategories!.map(sub => {
+                          const compoundKey = `${cat} > ${sub}`;
+                          return (
+                            <button
+                              key={sub}
+                              onClick={() => setActiveCategory(compoundKey)}
+                              className={`w-full text-left px-2.5 py-1.5 text-[9px] font-bold font-inter uppercase tracking-wider rounded-md border transition-all cursor-pointer truncate ${
+                                activeCategory === compoundKey
+                                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
+                                : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
+                              }`}
+                            >
+                              {sub}
+                            </button>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
