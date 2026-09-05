@@ -1573,13 +1573,13 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                         <div>
                           <label className="block text-xs uppercase tracking-wider text-amber-300 font-bold mb-1.5 flex items-center gap-1.5">
                             <PenTool className="w-3.5 h-3.5" />
-                            <span>{selectedCustomItemModal.customInputLabel || 'Your Custom Name / Text'} <span className="text-red-400">*</span></span>
+                            <span>Custom Text / Message <span className="text-red-400">*</span></span>
                           </label>
                           <input
                             type="text"
                             value={clientCustomText}
                             onChange={(e) => setClientCustomText(e.target.value)}
-                            placeholder={selectedCustomItemModal.customInputLabel || 'e.g. Happy Birthday Sarah, To My Love'}
+                            placeholder="Enter the name, date, or message to be custom printed/engraved..."
                             className="w-full bg-black/60 border border-white/20 rounded-xl p-3 text-xs text-white placeholder:text-white/40 focus:border-amber-400 focus:outline-none transition-colors"
                           />
                         </div>
