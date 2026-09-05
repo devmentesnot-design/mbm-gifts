@@ -295,6 +295,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     requiresCustomInput: false,
     customInputType: 'text' as 'text' | 'image' | 'both',
     customInputLabel: '',
+    hasCustomUnit: false,
+    customUnitName: 'kg',
+    customUnitMin: '2',
+    customUnitStep: '1',
+    customUnitMax: '10',
+    customUnitPricePerUnit: '',
+    customUnitPricePerUnitUsd: '',
   });
   // Sub-items inside the package detailed form
   const [pkgSubItems, setPkgSubItems] = useState<PackageItemDetail[]>([]);
@@ -317,6 +324,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     requiresCustomInput: false,
     customInputType: 'text' as 'text' | 'image' | 'both',
     customInputLabel: '',
+    hasCustomUnit: false,
+    customUnitName: 'kg',
+    customUnitMin: '2',
+    customUnitStep: '1',
+    customUnitMax: '10',
+    customUnitPricePerUnit: '',
+    customUnitPricePerUnitUsd: '',
   });
 
   // Category Modal & Sub-navbar Filter State
@@ -679,7 +693,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setEditingPkg(pkg);
       setPkgForm({
         name: pkg.name,
-      category: normalizeCategoryString(pkg.category),
+        category: normalizeCategoryString(pkg.category),
         price: pkg.price.toString(),
         price_usd: pkg.price_usd != null ? pkg.price_usd.toString() : '',
         shortDesc: pkg.shortDesc,
@@ -689,6 +703,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: pkg.requiresCustomInput || false,
         customInputType: (pkg.customInputType as 'text' | 'image' | 'both') || 'text',
         customInputLabel: pkg.customInputLabel || '',
+        hasCustomUnit: pkg.hasCustomUnit || false,
+        customUnitName: pkg.customUnitName || 'kg',
+        customUnitMin: pkg.customUnitMin != null ? pkg.customUnitMin.toString() : '2',
+        customUnitStep: pkg.customUnitStep != null ? pkg.customUnitStep.toString() : '1',
+        customUnitMax: pkg.customUnitMax != null ? pkg.customUnitMax.toString() : '10',
+        customUnitPricePerUnit: pkg.customUnitPricePerUnit != null ? pkg.customUnitPricePerUnit.toString() : '',
+        customUnitPricePerUnitUsd: pkg.customUnitPricePerUnitUsd != null ? pkg.customUnitPricePerUnitUsd.toString() : '',
       });
 
       // Load existing detailed items if available, or convert string array
@@ -717,6 +738,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: false,
         customInputType: 'text',
         customInputLabel: '',
+        hasCustomUnit: false,
+        customUnitName: 'kg',
+        customUnitMin: '2',
+        customUnitStep: '1',
+        customUnitMax: '10',
+        customUnitPricePerUnit: '',
+        customUnitPricePerUnitUsd: '',
       });
       setPkgSubItems([]);
     }
@@ -783,6 +811,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               requiresCustomInput: pkgForm.requiresCustomInput,
               customInputType: pkgForm.customInputType,
               customInputLabel: pkgForm.customInputLabel,
+              hasCustomUnit: pkgForm.hasCustomUnit,
+              customUnitName: pkgForm.hasCustomUnit ? (pkgForm.customUnitName || 'kg') : undefined,
+              customUnitMin: pkgForm.hasCustomUnit && pkgForm.customUnitMin ? parseFloat(pkgForm.customUnitMin) : undefined,
+              customUnitStep: pkgForm.hasCustomUnit && pkgForm.customUnitStep ? parseFloat(pkgForm.customUnitStep) : undefined,
+              customUnitMax: pkgForm.hasCustomUnit && pkgForm.customUnitMax ? parseFloat(pkgForm.customUnitMax) : undefined,
+              customUnitPricePerUnit: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnit ? parseFloat(pkgForm.customUnitPricePerUnit) : undefined,
+              customUnitPricePerUnitUsd: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnitUsd ? parseFloat(pkgForm.customUnitPricePerUnitUsd) : undefined,
             }
           : p
       );
@@ -805,6 +840,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: pkgForm.requiresCustomInput,
         customInputType: pkgForm.customInputType,
         customInputLabel: pkgForm.customInputLabel,
+        hasCustomUnit: pkgForm.hasCustomUnit,
+        customUnitName: pkgForm.hasCustomUnit ? (pkgForm.customUnitName || 'kg') : undefined,
+        customUnitMin: pkgForm.hasCustomUnit && pkgForm.customUnitMin ? parseFloat(pkgForm.customUnitMin) : undefined,
+        customUnitStep: pkgForm.hasCustomUnit && pkgForm.customUnitStep ? parseFloat(pkgForm.customUnitStep) : undefined,
+        customUnitMax: pkgForm.hasCustomUnit && pkgForm.customUnitMax ? parseFloat(pkgForm.customUnitMax) : undefined,
+        customUnitPricePerUnit: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnit ? parseFloat(pkgForm.customUnitPricePerUnit) : undefined,
+        customUnitPricePerUnitUsd: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnitUsd ? parseFloat(pkgForm.customUnitPricePerUnitUsd) : undefined,
       };
       onSavePackages([newPkg, ...packages]);
     }
@@ -836,6 +878,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: item.requiresCustomInput || false,
         customInputType: (item.customInputType as 'text' | 'image' | 'both') || 'text',
         customInputLabel: item.customInputLabel || '',
+        hasCustomUnit: item.hasCustomUnit || false,
+        customUnitName: item.customUnitName || 'kg',
+        customUnitMin: item.customUnitMin != null ? item.customUnitMin.toString() : '2',
+        customUnitStep: item.customUnitStep != null ? item.customUnitStep.toString() : '1',
+        customUnitMax: item.customUnitMax != null ? item.customUnitMax.toString() : '10',
+        customUnitPricePerUnit: item.customUnitPricePerUnit != null ? item.customUnitPricePerUnit.toString() : '',
+        customUnitPricePerUnitUsd: item.customUnitPricePerUnitUsd != null ? item.customUnitPricePerUnitUsd.toString() : '',
       });
     } else {
       setEditingItem(null);
@@ -850,6 +899,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: false,
         customInputType: 'text',
         customInputLabel: '',
+        hasCustomUnit: false,
+        customUnitName: 'kg',
+        customUnitMin: '2',
+        customUnitStep: '1',
+        customUnitMax: '10',
+        customUnitPricePerUnit: '',
+        customUnitPricePerUnitUsd: '',
       });
     }
     setItemModalOpen(true);
@@ -873,6 +929,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               requiresCustomInput: itemForm.requiresCustomInput,
               customInputType: itemForm.customInputType,
               customInputLabel: itemForm.customInputLabel,
+              hasCustomUnit: itemForm.hasCustomUnit,
+              customUnitName: itemForm.hasCustomUnit ? (itemForm.customUnitName || 'kg') : undefined,
+              customUnitMin: itemForm.hasCustomUnit && itemForm.customUnitMin ? parseFloat(itemForm.customUnitMin) : undefined,
+              customUnitStep: itemForm.hasCustomUnit && itemForm.customUnitStep ? parseFloat(itemForm.customUnitStep) : undefined,
+              customUnitMax: itemForm.hasCustomUnit && itemForm.customUnitMax ? parseFloat(itemForm.customUnitMax) : undefined,
+              customUnitPricePerUnit: itemForm.hasCustomUnit && itemForm.customUnitPricePerUnit ? parseFloat(itemForm.customUnitPricePerUnit) : undefined,
+              customUnitPricePerUnitUsd: itemForm.hasCustomUnit && itemForm.customUnitPricePerUnitUsd ? parseFloat(itemForm.customUnitPricePerUnitUsd) : undefined,
             }
           : i
       );
@@ -889,6 +952,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: itemForm.requiresCustomInput,
         customInputType: itemForm.customInputType,
         customInputLabel: itemForm.customInputLabel,
+        hasCustomUnit: itemForm.hasCustomUnit,
+        customUnitName: itemForm.hasCustomUnit ? (itemForm.customUnitName || 'kg') : undefined,
+        customUnitMin: itemForm.hasCustomUnit && itemForm.customUnitMin ? parseFloat(itemForm.customUnitMin) : undefined,
+        customUnitStep: itemForm.hasCustomUnit && itemForm.customUnitStep ? parseFloat(itemForm.customUnitStep) : undefined,
+        customUnitMax: itemForm.hasCustomUnit && itemForm.customUnitMax ? parseFloat(itemForm.customUnitMax) : undefined,
+        customUnitPricePerUnit: itemForm.hasCustomUnit && itemForm.customUnitPricePerUnit ? parseFloat(itemForm.customUnitPricePerUnit) : undefined,
+        customUnitPricePerUnitUsd: itemForm.hasCustomUnit && itemForm.customUnitPricePerUnitUsd ? parseFloat(itemForm.customUnitPricePerUnitUsd) : undefined,
       };
       onSaveCustomItems([...customItems, newItem]);
     }
@@ -3491,6 +3561,118 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
                   )}
                 </div>
+
+                {/* Scalable Unit Controls (e.g. Cakes by Kg, Flowers by Stems) */}
+                <div className="mt-4 pt-4 border-t border-white/10 bg-[#3a060b]/60 rounded-xl p-4 border border-amber-400/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="flex items-center gap-2.5 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={pkgForm.hasCustomUnit}
+                          onChange={(e) => setPkgForm({ ...pkgForm, hasCustomUnit: e.target.checked })}
+                          className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-black/40 cursor-pointer"
+                        />
+                        <span className="font-bold text-xs uppercase tracking-wider text-amber-300">
+                          Enable Scalable Portion / Size (Kg, Stems, Pieces, etc.)
+                        </span>
+                      </label>
+                      <p className="text-[11px] text-white/60 ml-6.5 mt-0.5">
+                        Ideal for gifts like cakes (e.g., min 2 kg), flower bouquets (by stems), or chocolates (by pieces) where price scales with quantity.
+                      </p>
+                    </div>
+                  </div>
+
+                  {pkgForm.hasCustomUnit && (
+                    <div className="mt-4 pt-3 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pl-6.5">
+                      <div>
+                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                          Unit Name (e.g., kg, stems, pieces)
+                        </label>
+                        <input
+                          type="text"
+                          value={pkgForm.customUnitName}
+                          onChange={(e) => setPkgForm({ ...pkgForm, customUnitName: e.target.value })}
+                          placeholder="e.g. kg, stems, pieces"
+                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                          Minimum Quantity / Starting Size
+                        </label>
+                        <input
+                          type="number"
+                          step="any"
+                          min="0.1"
+                          value={pkgForm.customUnitMin}
+                          onChange={(e) => setPkgForm({ ...pkgForm, customUnitMin: e.target.value })}
+                          placeholder="e.g. 2"
+                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        />
+                        <span className="text-[10px] text-white/40 block mt-0.5">Base price applies to this starting amount</span>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                          Step Increment (+ / -)
+                        </label>
+                        <input
+                          type="number"
+                          step="any"
+                          min="0.1"
+                          value={pkgForm.customUnitStep}
+                          onChange={(e) => setPkgForm({ ...pkgForm, customUnitStep: e.target.value })}
+                          placeholder="e.g. 1"
+                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                          Maximum Quantity (Optional)
+                        </label>
+                        <input
+                          type="number"
+                          step="any"
+                          value={pkgForm.customUnitMax}
+                          onChange={(e) => setPkgForm({ ...pkgForm, customUnitMax: e.target.value })}
+                          placeholder="e.g. 10"
+                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                          Price per Unit ETB (Optional)
+                        </label>
+                        <input
+                          type="number"
+                          step="any"
+                          value={pkgForm.customUnitPricePerUnit}
+                          onChange={(e) => setPkgForm({ ...pkgForm, customUnitPricePerUnit: e.target.value })}
+                          placeholder="Defaults to Base / Min"
+                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                          Price per Unit USD (Optional)
+                        </label>
+                        <input
+                          type="number"
+                          step="any"
+                          value={pkgForm.customUnitPricePerUnitUsd}
+                          onChange={(e) => setPkgForm({ ...pkgForm, customUnitPricePerUnitUsd: e.target.value })}
+                          placeholder="Defaults to Base USD / Min"
+                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* SECTION 2: Detailed Sub-Items Manager (Individual Images & Descriptions) */}
@@ -3918,6 +4100,116 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 )}
               </div>
 
+              {/* Scalable Unit Controls (e.g. Cakes by Kg, Flowers by Stems, Chocolates by Piece) */}
+              <div className="pt-3 border-t border-white/10 bg-[#3a060b]/60 rounded-xl p-3.5 border border-amber-400/20 space-y-3">
+                <div>
+                  <label className="flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={itemForm.hasCustomUnit}
+                      onChange={(e) => setItemForm({ ...itemForm, hasCustomUnit: e.target.checked })}
+                      className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-black/40 cursor-pointer"
+                    />
+                    <span className="font-bold text-xs uppercase tracking-wider text-amber-300">
+                      Enable Scalable Portion / Size (Kg, Stems, Pieces, etc.)
+                    </span>
+                  </label>
+                  <p className="text-[11px] text-white/60 ml-6.5 mt-0.5">
+                    Ideal for single items like cakes (e.g., starting at 2 kg), flowers (by stem), or chocolates (by piece).
+                  </p>
+                </div>
+
+                {itemForm.hasCustomUnit && (
+                  <div className="pt-2 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pl-6.5">
+                    <div>
+                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        Unit Name (e.g., kg, stems, pieces)
+                      </label>
+                      <input
+                        type="text"
+                        value={itemForm.customUnitName}
+                        onChange={(e) => setItemForm({ ...itemForm, customUnitName: e.target.value })}
+                        placeholder="e.g. kg, stems, pieces"
+                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        Minimum Quantity / Starting Size
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        min="0.1"
+                        value={itemForm.customUnitMin}
+                        onChange={(e) => setItemForm({ ...itemForm, customUnitMin: e.target.value })}
+                        placeholder="e.g. 2"
+                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                      />
+                      <span className="text-[10px] text-white/40 block mt-0.5">Base price applies to this starting amount</span>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        Step Increment (+ / -)
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        min="0.1"
+                        value={itemForm.customUnitStep}
+                        onChange={(e) => setItemForm({ ...itemForm, customUnitStep: e.target.value })}
+                        placeholder="e.g. 1"
+                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        Maximum Quantity (Optional)
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        value={itemForm.customUnitMax}
+                        onChange={(e) => setItemForm({ ...itemForm, customUnitMax: e.target.value })}
+                        placeholder="e.g. 10"
+                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        Price per Unit ETB (Optional)
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        value={itemForm.customUnitPricePerUnit}
+                        onChange={(e) => setItemForm({ ...itemForm, customUnitPricePerUnit: e.target.value })}
+                        placeholder="Defaults to Base / Min"
+                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        Price per Unit USD (Optional)
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        value={itemForm.customUnitPricePerUnitUsd}
+                        onChange={(e) => setItemForm({ ...itemForm, customUnitPricePerUnitUsd: e.target.value })}
+                        placeholder="Defaults to Base USD / Min"
+                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div className="pt-4 border-t border-white/10 flex justify-end gap-2">
                 <button
                   type="button"
@@ -4314,7 +4606,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     const isPkg = !!it.package;
                     const singleObj = ('item' in it && it.item) ? it.item : ('selectedItems' in it ? it.selectedItems?.[0] : null);
                     const title = isPkg ? it.package.name : (singleObj?.name || 'Single Item');
-                    if (isPkg) {
+                    if (it.unitCalculatedPrice != null) {
+                      itemPrice = it.unitCalculatedPrice;
+                    } else if (isPkg) {
                       itemPrice = isUsd && it.package.price_usd != null && it.package.price_usd > 0
                         ? it.package.price_usd
                         : (isUsd ? Math.round((it.package.price / 120) * 100) / 100 : it.package.price);
@@ -4330,8 +4624,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     return (
                       <div key={idx} className="py-3 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
-                          <div className="font-bold text-white text-sm">
-                            {title}
+                          <div className="font-bold text-white text-sm flex items-center flex-wrap gap-2">
+                            <span>{title}</span>
+                            {it.customUnitValue != null && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                                Size / Portion: {it.customUnitValue} {it.customUnitName || 'kg'}
+                              </span>
+                            )}
                           </div>
                           <div className="text-[11px] text-white/60">Qty: {it.quantity} • {isPkg ? 'Ready-Made Package' : (singleObj?.category || 'Single Item')}</div>
 

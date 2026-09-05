@@ -406,7 +406,10 @@ export default function App() {
     pkg: PreparedPackage,
     customNote?: string,
     customerInputText?: string,
-    customerInputImageUrl?: string
+    customerInputImageUrl?: string,
+    customUnitValue?: number,
+    customUnitName?: string,
+    unitCalculatedPrice?: number
   ) => {
     const existingIndex = cartItems.findIndex(
       (item) =>
@@ -414,7 +417,8 @@ export default function App() {
         item.package.id === pkg.id &&
         item.customNote === customNote &&
         item.customerInputText === customerInputText &&
-        item.customerInputImageUrl === customerInputImageUrl
+        item.customerInputImageUrl === customerInputImageUrl &&
+        item.customUnitValue === customUnitValue
     );
 
     if (existingIndex > -1) {
@@ -430,6 +434,9 @@ export default function App() {
         customNote,
         customerInputText,
         customerInputImageUrl,
+        customUnitValue,
+        customUnitName,
+        unitCalculatedPrice,
       };
       setCartItems([...cartItems, newItem]);
     }
@@ -448,6 +455,9 @@ export default function App() {
     totalPrice?: number;
     customerInputText?: string;
     customerInputImageUrl?: string;
+    customUnitValue?: number;
+    customUnitName?: string;
+    unitCalculatedPrice?: number;
   }) => {
     if (!customBox.selectedItems || customBox.selectedItems.length === 0) return;
 
@@ -465,14 +475,15 @@ export default function App() {
     let currentList = [...cartItems];
 
     itemCounts.forEach(({ item, qty }) => {
-      // Check if this single item already exists in cart with same customization
+      // Check if this single item already exists in cart with same customization & unit value
       const existingIdx = currentList.findIndex(
         (ci) =>
           ci.type !== 'package' &&
           (('item' in ci && ci.item?.id === item.id) ||
            ('selectedItems' in ci && ci.selectedItems?.length === 1 && ci.selectedItems[0]?.id === item.id)) &&
           ci.customerInputText === customBox.customerInputText &&
-          ci.customerInputImageUrl === customBox.customerInputImageUrl
+          ci.customerInputImageUrl === customBox.customerInputImageUrl &&
+          ci.customUnitValue === customBox.customUnitValue
       );
 
       if (existingIdx > -1) {
@@ -489,6 +500,9 @@ export default function App() {
           customNote: customBox.cardMessage,
           customerInputText: customBox.customerInputText,
           customerInputImageUrl: customBox.customerInputImageUrl,
+          customUnitValue: customBox.customUnitValue,
+          customUnitName: customBox.customUnitName,
+          unitCalculatedPrice: customBox.unitCalculatedPrice,
         };
         currentList.push(newItem);
       }

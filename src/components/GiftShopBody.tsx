@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, CUSTOM_ITEMS, PREPARED_PACKAGES } from '../data/giftsData';
+import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, CUSTOM_ITEMS, PREPARED_PACKAGES, calculateCustomUnitPrice } from '../data/giftsData';
 import {
   ShoppingBag,
   Star,
@@ -36,7 +36,10 @@ interface GiftShopBodyProps {
     pkg: PreparedPackage,
     note?: string,
     customerInputText?: string,
-    customerInputImageUrl?: string
+    customerInputImageUrl?: string,
+    customUnitValue?: number,
+    customUnitName?: string,
+    unitCalculatedPrice?: number
   ) => void;
   onAddToCartCustom: (customBox: {
     boxStyle?: CustomBoxOption;
@@ -46,6 +49,9 @@ interface GiftShopBodyProps {
     totalPrice?: number;
     customerInputText?: string;
     customerInputImageUrl?: string;
+    customUnitValue?: number;
+    customUnitName?: string;
+    unitCalculatedPrice?: number;
   }) => void;
   onViewPackageDetail?: (pkgId: string) => void;
 }
@@ -95,6 +101,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   // Prepared Packages State
   const [selectedModalPkg, setSelectedModalPkg] = useState<PreparedPackage | null>(null);
   const [selectedCustomItemModal, setSelectedCustomItemModal] = useState<CustomBoxOption | null>(null);
+  const [modalUnitValue, setModalUnitValue] = useState<number>(1);
   const [giftNote, setGiftNote] = useState<string>('');
 
   // Customer Customization State (for modals & direct add prompts)
@@ -373,7 +380,19 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           return;
         }
       }
-      onAddToCartPrepared(selectedModalPkg, giftNote, clientCustomText, clientCustomImageUrl);
+      const unitCalculatedPrice = selectedModalPkg.hasCustomUnit
+        ? calculateCustomUnitPrice(selectedModalPkg, modalUnitValue, currency)
+        : undefined;
+
+      onAddToCartPrepared(
+        selectedModalPkg,
+        giftNote,
+        clientCustomText,
+        clientCustomImageUrl,
+        selectedModalPkg.hasCustomUnit ? modalUnitValue : undefined,
+        selectedModalPkg.hasCustomUnit ? (selectedModalPkg.customUnitName || 'kg') : undefined,
+        unitCalculatedPrice
+      );
       setSelectedModalPkg(null);
       setGiftNote('');
       setClientCustomText('');
@@ -453,6 +472,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
       onViewPackageDetail(pkg.id);
     } else {
       setSelectedModalPkg(pkg);
+      setModalUnitValue(pkg.hasCustomUnit ? (pkg.customUnitMin || 1) : 1);
     }
   };
 
@@ -481,10 +501,14 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 {pkg.badge}
               </span>
             )}
-            {pkg.requiresCustomInput && (
-              <span className={`absolute ${pkg.badge ? 'top-6 sm:top-8.5' : 'top-1.5 sm:top-2.5'} left-1.5 sm:left-2.5 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[7px] sm:text-[9px] font-bold uppercase px-1.5 sm:px-2 py-0.5 rounded-full shadow backdrop-blur-sm z-10 flex items-center gap-1`}>
-                {pkg.customInputType === 'image' ? <Camera className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" /> : pkg.customInputType === 'both' ? <Sparkles className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" /> : <FileText className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" />}
-                <span>Customized</span>
+            {pkg.hasCustomUnit && (
+              <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-amber-300 text-[8px] sm:text-[9px] font-inter font-bold px-1.5 py-0.5 rounded border border-amber-400/30 z-10">
+                From {pkg.customUnitMin || 1} {pkg.customUnitName || 'kg'}
+              </span>
+            )}
+            {pkg.requiresCustomInput && !pkg.hasCustomUnit && (
+              <span className="absolute bottom-1.5 right-1.5 bg-purple-900/80 text-purple-200 text-[8px] sm:text-[9px] font-inter font-semibold px-1.5 py-0.5 rounded border border-purple-400/30 z-10">
+                Customizable
               </span>
             )}
           </div>
@@ -519,10 +543,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (pkg.requiresCustomInput) {
-                    setClientCustomText('');
-                    setClientCustomImageUrl('');
-                    setCustomPromptTarget({ pkg });
+                  if (pkg.hasCustomUnit || pkg.requiresCustomInput) {
+                    handlePackageClick(pkg);
                   } else {
                     onAddToCartPrepared(pkg);
                   }
@@ -623,35 +645,49 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     );
   };
 
-
+  const openCustomItemModal = (item: CustomBoxOption) => {
+    setSelectedCustomItemModal(item);
+    setModalUnitValue(item.hasCustomUnit ? (item.customUnitMin || 1) : 1);
+  };
 
   // Helper: renders a single custom item card
-  const renderCustomItemCard = (item: CustomBoxOption, assignedCategory?: string) => {
+  const renderCustomItemCard = (item: CustomBoxOption, targetCategory?: string) => {
     const qty = customCart[item.id] || 0;
-    const cats = item.category?.split(',').map(c => c.trim()).filter(Boolean) || [];
-    const primaryCategory = assignedCategory || cats[0] || (item.category ?? '');
-    const routeCategory = assignedCategory || (cats.length > 1 ? cats[Math.floor(Math.random() * cats.length)] : primaryCategory);
+    const primaryCategory = targetCategory || item.category || 'Component';
+    const routeCategory = targetCategory || primaryCategory;
     return (
-      <div key={item.id} className="group luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl p-2 sm:p-3.5 flex flex-col justify-between w-full shadow-lg">
+      <div
+        key={item.id}
+        className="group relative luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 flex flex-col justify-between w-full shadow-lg"
+      >
         <div
-          onClick={() => setSelectedCustomItemModal(item)}
           className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
+          onClick={() => openCustomItemModal(item)}
         >
-          <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-contain p-1.5 sm:p-2.5 group-hover:scale-105 transition-transform duration-500" />
-          {item.requiresCustomInput && (
-            <span className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[7px] sm:text-[9px] font-bold uppercase px-1.5 sm:px-2 py-0.5 rounded-full shadow backdrop-blur-sm z-10 flex items-center gap-1">
-              {item.customInputType === 'image' ? <Camera className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" /> : item.customInputType === 'both' ? <Sparkles className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" /> : <FileText className="w-2 sm:w-2.5 h-2 sm:h-2.5 text-purple-300" />}
-              <span>Customized</span>
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+          />
+          {item.hasCustomUnit && (
+            <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-amber-300 text-[8px] sm:text-[9px] font-inter font-bold px-1.5 py-0.5 rounded border border-amber-400/30 z-10">
+              From {item.customUnitMin || 1} {item.customUnitName || 'kg'}
             </span>
           )}
-          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          {item.requiresCustomInput && !item.hasCustomUnit && (
+            <span className="absolute bottom-1.5 right-1.5 bg-purple-900/80 text-purple-200 text-[8px] sm:text-[9px] font-inter font-semibold px-1.5 py-0.5 rounded border border-purple-400/30 z-10">
+              Customizable
+            </span>
+          )}
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <span className="bg-[#230005]/90 text-[#F5C542] border border-[#D9A514]/50 text-[9px] sm:text-[11px] font-bold uppercase tracking-wider px-2 sm:px-3 py-1 sm:py-1.5 rounded-full flex items-center gap-1 shadow-lg backdrop-blur-sm">
               <Eye className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#F5C542]" />
               <span className="hidden sm:inline">View Details</span>
             </span>
           </div>
         </div>
-        <div className="mt-2 sm:mt-3 cursor-pointer flex-1 flex flex-col" onClick={() => setSelectedCustomItemModal(item)}>
+        <div className="mt-2 sm:mt-3 cursor-pointer flex-1 flex flex-col" onClick={() => openCustomItemModal(item)}>
           <div className="text-[9px] sm:text-[10px] text-amber-300/90 font-bold uppercase tracking-wider truncate mb-0.5">
             {primaryCategory}
           </div>
@@ -663,10 +699,15 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             <span className="font-inter font-bold text-xs sm:text-lg text-amber-300">
               {formatPrice(getItemPrice(item), currency)}
             </span>
+            {item.hasCustomUnit && (
+              <span className="text-[9px] text-amber-200/70 font-normal">
+                ({item.customUnitMin || 1} {item.customUnitName || 'kg'})
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
             <button
-              onClick={() => setSelectedCustomItemModal(item)}
+              onClick={() => openCustomItemModal(item)}
               className="flex-1 bg-black/40 hover:bg-black/70 text-amber-300 border border-amber-400/30 hover:border-amber-400 px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap shadow-sm"
               title="View Item Details"
             >
@@ -680,7 +721,9 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               <span className="w-5 sm:w-7 text-center text-xs sm:text-sm font-bold text-white font-inter">{qty}</span>
               <button
                 onClick={() => {
-                  if (item.requiresCustomInput && (!customCart[item.id] || customCart[item.id] === 0)) {
+                  if (item.hasCustomUnit) {
+                    openCustomItemModal(item);
+                  } else if (item.requiresCustomInput && (!customCart[item.id] || customCart[item.id] === 0)) {
                     setClientCustomText('');
                     setClientCustomImageUrl('');
                     setCustomPromptTarget({ item });
@@ -1119,8 +1162,18 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
                   <div className="flex items-baseline gap-3 mb-4">
                     <span className="text-3xl font-bold font-inter text-amber-300">
-                      {formatPrice(getPkgPrice(selectedModalPkg), currency)}
+                      {formatPrice(
+                        selectedModalPkg.hasCustomUnit
+                          ? calculateCustomUnitPrice(selectedModalPkg, modalUnitValue, currency)
+                          : getPkgPrice(selectedModalPkg),
+                        currency
+                      )}
                     </span>
+                    {selectedModalPkg.hasCustomUnit && (
+                      <span className="text-xs text-amber-200/80 font-inter font-semibold">
+                        ({modalUnitValue} {selectedModalPkg.customUnitName || 'kg'})
+                      </span>
+                    )}
                     <span className="text-xs text-white/60 font-inter uppercase tracking-wider">
                       {buyerMarket === 'INTERNATIONAL' ? '✨ Free Delivery in Ethiopia' : 'Premium Packaging Included'}
                     </span>
@@ -1129,6 +1182,58 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   <p className="text-white/85 text-xs sm:text-sm font-inter leading-relaxed mb-6">
                     {selectedModalPkg.shortDesc}
                   </p>
+
+                  {/* Scalable Unit Stepper if product has scalable size */}
+                  {selectedModalPkg.hasCustomUnit && (
+                    <div className="mb-5 bg-[#3a060b]/70 border border-amber-400/30 rounded-2xl p-4 shadow-lg space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-amber-300 font-bold uppercase text-xs tracking-wider">
+                          <Sparkles className="w-4 h-4 text-amber-400" />
+                          <span>Select {selectedModalPkg.customUnitName?.toUpperCase() || 'SIZE / WEIGHT'}</span>
+                        </div>
+                        <span className="text-[11px] text-amber-200/80 bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 rounded-full font-medium">
+                          Min: {selectedModalPkg.customUnitMin || 1} {selectedModalPkg.customUnitName || 'kg'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between bg-black/40 border border-amber-400/25 rounded-xl p-3">
+                        <div>
+                          <div className="text-white font-bold text-sm">
+                            {modalUnitValue} {selectedModalPkg.customUnitName || 'kg'}
+                          </div>
+                          <div className="text-[10px] text-white/50">
+                            In {selectedModalPkg.customUnitStep || 1} {selectedModalPkg.customUnitName || 'kg'} increments
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2.5">
+                          <button
+                            type="button"
+                            disabled={modalUnitValue <= (selectedModalPkg.customUnitMin || 1)}
+                            onClick={() => setModalUnitValue(prev => Number((Math.max(selectedModalPkg.customUnitMin || 1, prev - (selectedModalPkg.customUnitStep || 1))).toFixed(2)))}
+                            className="w-8 h-8 rounded-lg bg-black/60 border border-white/20 text-white font-bold flex items-center justify-center hover:border-amber-400 hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                            title="Decrease size"
+                          >
+                            <Minus className="w-3.5 h-3.5" />
+                          </button>
+
+                          <span className="font-podium text-base font-bold text-amber-300 min-w-[3rem] text-center">
+                            {modalUnitValue} <span className="text-[10px] text-white/70">{selectedModalPkg.customUnitName || 'kg'}</span>
+                          </span>
+
+                          <button
+                            type="button"
+                            disabled={modalUnitValue >= (selectedModalPkg.customUnitMax || 50)}
+                            onClick={() => setModalUnitValue(prev => Number((Math.min(selectedModalPkg.customUnitMax || 50, prev + (selectedModalPkg.customUnitStep || 1))).toFixed(2)))}
+                            className="w-8 h-8 rounded-lg bg-black/60 border border-white/20 text-white font-bold flex items-center justify-center hover:border-amber-400 hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                            title="Increase size"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Client Customization Requirement Section */}
                   {selectedModalPkg.requiresCustomInput && (
@@ -1230,7 +1335,15 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   className="w-full bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold py-4 text-xs sm:text-sm tracking-widest uppercase rounded-xl flex items-center justify-center gap-2.5 transition-all font-inter shadow-xl shadow-amber-400/20 cursor-pointer"
                 >
                   <ShoppingBag className="w-5 h-5" />
-                  <span>ADD PACKAGE TO CART — {formatPrice(getPkgPrice(selectedModalPkg), currency)}</span>
+                  <span>
+                    ADD PACKAGE TO CART — {formatPrice(
+                      selectedModalPkg.hasCustomUnit
+                        ? calculateCustomUnitPrice(selectedModalPkg, modalUnitValue, currency)
+                        : getPkgPrice(selectedModalPkg),
+                      currency
+                    )}
+                    {selectedModalPkg.hasCustomUnit ? ` (${modalUnitValue} ${selectedModalPkg.customUnitName || 'kg'})` : ''}
+                  </span>
                 </button>
               </div>
             </div>
@@ -1319,13 +1432,78 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   <h3 className="font-podium text-2xl uppercase text-white font-bold mb-2">
                     {selectedCustomItemModal.name}
                   </h3>
-                  <div className="text-2xl font-bold font-inter text-amber-300 mb-3">
-                    {formatPrice(getItemPrice(selectedCustomItemModal), currency)}
+
+                  <div className="flex items-baseline gap-2 mb-3">
+                    <span className="text-2xl font-bold font-inter text-amber-300">
+                      {formatPrice(
+                        selectedCustomItemModal.hasCustomUnit
+                          ? calculateCustomUnitPrice(selectedCustomItemModal, modalUnitValue, currency)
+                          : getItemPrice(selectedCustomItemModal),
+                        currency
+                      )}
+                    </span>
+                    {selectedCustomItemModal.hasCustomUnit && (
+                      <span className="text-xs text-amber-200/80 font-inter font-semibold">
+                        ({modalUnitValue} {selectedCustomItemModal.customUnitName || 'kg'})
+                      </span>
+                    )}
                   </div>
 
                   <p className="text-white/85 text-xs sm:text-sm font-inter leading-relaxed mb-4">
                     {selectedCustomItemModal.description}
                   </p>
+
+                  {/* Scalable Unit Stepper if item has scalable size */}
+                  {selectedCustomItemModal.hasCustomUnit && (
+                    <div className="mb-4 bg-[#3a060b]/70 border border-amber-400/30 rounded-2xl p-4 shadow-lg space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-amber-300 font-bold uppercase text-xs tracking-wider">
+                          <Sparkles className="w-4 h-4 text-amber-400" />
+                          <span>Select {selectedCustomItemModal.customUnitName?.toUpperCase() || 'SIZE / WEIGHT'}</span>
+                        </div>
+                        <span className="text-[11px] text-amber-200/80 bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 rounded-full font-medium">
+                          Min: {selectedCustomItemModal.customUnitMin || 1} {selectedCustomItemModal.customUnitName || 'kg'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between bg-black/40 border border-amber-400/25 rounded-xl p-3">
+                        <div>
+                          <div className="text-white font-bold text-sm">
+                            {modalUnitValue} {selectedCustomItemModal.customUnitName || 'kg'}
+                          </div>
+                          <div className="text-[10px] text-white/50">
+                            In {selectedCustomItemModal.customUnitStep || 1} {selectedCustomItemModal.customUnitName || 'kg'} increments
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2.5">
+                          <button
+                            type="button"
+                            disabled={modalUnitValue <= (selectedCustomItemModal.customUnitMin || 1)}
+                            onClick={() => setModalUnitValue(prev => Number((Math.max(selectedCustomItemModal.customUnitMin || 1, prev - (selectedCustomItemModal.customUnitStep || 1))).toFixed(2)))}
+                            className="w-8 h-8 rounded-lg bg-black/60 border border-white/20 text-white font-bold flex items-center justify-center hover:border-amber-400 hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                            title="Decrease size"
+                          >
+                            <Minus className="w-3.5 h-3.5" />
+                          </button>
+
+                          <span className="font-podium text-base font-bold text-amber-300 min-w-[3rem] text-center">
+                            {modalUnitValue} <span className="text-[10px] text-white/70">{selectedCustomItemModal.customUnitName || 'kg'}</span>
+                          </span>
+
+                          <button
+                            type="button"
+                            disabled={modalUnitValue >= (selectedCustomItemModal.customUnitMax || 50)}
+                            onClick={() => setModalUnitValue(prev => Number((Math.min(selectedCustomItemModal.customUnitMax || 50, prev + (selectedCustomItemModal.customUnitStep || 1))).toFixed(2)))}
+                            className="w-8 h-8 rounded-lg bg-black/60 border border-white/20 text-white font-bold flex items-center justify-center hover:border-amber-400 hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                            title="Increase size"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Client Customization Section if item requires custom input */}
                   {selectedCustomItemModal.requiresCustomInput && (
@@ -1368,7 +1546,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                             <label className="flex flex-col items-center justify-center border-2 border-dashed border-amber-400/40 hover:border-amber-400 rounded-xl p-3.5 cursor-pointer bg-black/40 hover:bg-black/60 transition-all text-center">
                               {isUploadingClientPhoto ? (
                                 <div className="flex items-center gap-2 text-amber-300 text-xs font-bold py-1.5">
-                                  <Loader2 className="w-5 h-5 animate-spin" />
+                                  <Loader2 className="w-4 h-4 animate-spin" />
                                   <span>Uploading photo...</span>
                                 </div>
                               ) : (
@@ -1409,7 +1587,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     </div>
                   )}
 
-                  {!selectedCustomItemModal.requiresCustomInput && (
+                  {!selectedCustomItemModal.requiresCustomInput && !selectedCustomItemModal.hasCustomUnit && (
                     <div className="bg-black/30 border border-white/10 rounded-xl p-3 mb-6 text-xs text-white/80 font-inter space-y-1">
                       <div className="flex items-center gap-2 text-amber-300 font-bold uppercase text-[11px] tracking-wider">
                         <Sparkles className="w-4 h-4 text-amber-300" />
@@ -1424,31 +1602,40 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
                 {/* Add to Cart Controls */}
                 <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
-                  {selectedCustomItemModal.requiresCustomInput ? (
+                  {(selectedCustomItemModal.requiresCustomInput || selectedCustomItemModal.hasCustomUnit) ? (
                     <button
                       onClick={() => {
-                        if (
-                          (selectedCustomItemModal.customInputType === 'text' || selectedCustomItemModal.customInputType === 'both') &&
-                          !clientCustomText.trim()
-                        ) {
-                          alert(`Please fill in required custom text: ${selectedCustomItemModal.customInputLabel || 'Custom text'}`);
-                          return;
+                        if (selectedCustomItemModal.requiresCustomInput) {
+                          if (
+                            (selectedCustomItemModal.customInputType === 'text' || selectedCustomItemModal.customInputType === 'both') &&
+                            !clientCustomText.trim()
+                          ) {
+                            alert(`Please fill in required custom text: ${selectedCustomItemModal.customInputLabel || 'Custom text'}`);
+                            return;
+                          }
+                          if (
+                            (selectedCustomItemModal.customInputType === 'image' || selectedCustomItemModal.customInputType === 'both') &&
+                            !clientCustomImageUrl
+                          ) {
+                            alert('Please upload your photo before adding to cart.');
+                            return;
+                          }
                         }
-                        if (
-                          (selectedCustomItemModal.customInputType === 'image' || selectedCustomItemModal.customInputType === 'both') &&
-                          !clientCustomImageUrl
-                        ) {
-                          alert('Please upload your photo before adding to cart.');
-                          return;
-                        }
+
+                        const calculatedItemTotal = selectedCustomItemModal.hasCustomUnit
+                          ? calculateCustomUnitPrice(selectedCustomItemModal, modalUnitValue, currency)
+                          : getItemPrice(selectedCustomItemModal);
 
                         onAddToCartCustom({
                           selectedItems: [selectedCustomItemModal],
                           cardMessage: '',
                           ribbonColor: 'Gold Satin Ribbon',
-                          totalPrice: getItemPrice(selectedCustomItemModal),
+                          totalPrice: calculatedItemTotal,
                           customerInputText: clientCustomText,
                           customerInputImageUrl: clientCustomImageUrl,
+                          customUnitValue: selectedCustomItemModal.hasCustomUnit ? modalUnitValue : undefined,
+                          customUnitName: selectedCustomItemModal.hasCustomUnit ? (selectedCustomItemModal.customUnitName || 'kg') : undefined,
+                          unitCalculatedPrice: selectedCustomItemModal.hasCustomUnit ? calculatedItemTotal : undefined,
                         });
 
                         setSelectedCustomItemModal(null);
@@ -1458,7 +1645,15 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                       className="w-full bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg flex items-center justify-center gap-2"
                     >
                       <ShoppingBag className="w-4 h-4" />
-                      <span>Add Item to Cart — {formatPrice(getItemPrice(selectedCustomItemModal), currency)}</span>
+                      <span>
+                        Add Item to Cart — {formatPrice(
+                          selectedCustomItemModal.hasCustomUnit
+                            ? calculateCustomUnitPrice(selectedCustomItemModal, modalUnitValue, currency)
+                            : getItemPrice(selectedCustomItemModal),
+                          currency
+                        )}
+                        {selectedCustomItemModal.hasCustomUnit ? ` (${modalUnitValue} ${selectedCustomItemModal.customUnitName || 'kg'})` : ''}
+                      </span>
                     </button>
                   ) : (
                     <>

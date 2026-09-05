@@ -49,6 +49,14 @@ export interface PreparedPackage {
   requiresCustomInput?: boolean;            // If true, customer must provide input when ordering
   customInputType?: 'text' | 'image' | 'both'; // What kind of input is needed
   customInputLabel?: string;                // Prompt shown to customer (e.g. "Enter name to print")
+  // Scalable unit / measurement fields (e.g. Cake by KG, Flowers by Stems, Chocolates by Pcs)
+  hasCustomUnit?: boolean;
+  customUnitName?: string;                  // e.g. 'kg', 'stems', 'pieces', 'servings', 'g'
+  customUnitMin?: number;                   // Minimum value (e.g. 2 for cake)
+  customUnitStep?: number;                  // Step increment (e.g. 1 or 0.5)
+  customUnitMax?: number;                   // Maximum value (e.g. 10 or 50)
+  customUnitPricePerUnit?: number;          // Explicit price per unit in ETB (optional)
+  customUnitPricePerUnitUsd?: number;       // Explicit price per unit in USD (optional)
 }
 
 export interface CustomBoxOption {
@@ -63,6 +71,14 @@ export interface CustomBoxOption {
   requiresCustomInput?: boolean;
   customInputType?: 'text' | 'image' | 'both';
   customInputLabel?: string;
+  // Scalable unit / measurement fields (e.g. Cake by KG, Flowers by Stems, Chocolates by Pcs)
+  hasCustomUnit?: boolean;
+  customUnitName?: string;
+  customUnitMin?: number;
+  customUnitStep?: number;
+  customUnitMax?: number;
+  customUnitPricePerUnit?: number;
+  customUnitPricePerUnitUsd?: number;
 }
 
 // Fallback initial data in case DB is empty or fails
@@ -107,7 +123,14 @@ export const getStoredPackages = async (): Promise<PreparedPackage[]> => {
       popularFor: item.popular_for || 'Gifting',
       requiresCustomInput: item.requires_custom_input || false,
       customInputType: item.custom_input_type || 'text',
-      customInputLabel: item.custom_input_label || ''
+      customInputLabel: item.custom_input_label || '',
+      hasCustomUnit: item.has_custom_unit || false,
+      customUnitName: item.custom_unit_name || 'kg',
+      customUnitMin: item.custom_unit_min != null ? Number(item.custom_unit_min) : 1,
+      customUnitStep: item.custom_unit_step != null ? Number(item.custom_unit_step) : 1,
+      customUnitMax: item.custom_unit_max != null ? Number(item.custom_unit_max) : 50,
+      customUnitPricePerUnit: item.custom_unit_price_per_unit != null ? Number(item.custom_unit_price_per_unit) : undefined,
+      customUnitPricePerUnitUsd: item.custom_unit_price_per_unit_usd != null ? Number(item.custom_unit_price_per_unit_usd) : undefined
     }));
     
     console.log('✅ Loaded', mapped.length, 'packages from Supabase');
@@ -140,7 +163,17 @@ export const saveStoredPackages = async (packages: PreparedPackage[]) => {
       image: p.image,
       items_included: p.itemsIncluded,
       items_included_detailed: p.itemsIncludedDetailed,
-      popular_for: p.popularFor
+      popular_for: p.popularFor,
+      requires_custom_input: p.requiresCustomInput || false,
+      custom_input_type: p.customInputType || 'text',
+      custom_input_label: p.customInputLabel || '',
+      has_custom_unit: p.hasCustomUnit || false,
+      custom_unit_name: p.customUnitName || 'kg',
+      custom_unit_min: p.customUnitMin ?? 1,
+      custom_unit_step: p.customUnitStep ?? 1,
+      custom_unit_max: p.customUnitMax ?? 50,
+      custom_unit_price_per_unit: p.customUnitPricePerUnit ?? null,
+      custom_unit_price_per_unit_usd: p.customUnitPricePerUnitUsd ?? null
     }));
     
     const { error } = await supabase.from('prepared_packages').upsert(formatted, { onConflict: 'id' });
@@ -177,7 +210,14 @@ export const saveSinglePackage = async (p: PreparedPackage) => {
       popular_for: p.popularFor,
       requires_custom_input: p.requiresCustomInput || false,
       custom_input_type: p.customInputType || 'text',
-      custom_input_label: p.customInputLabel || ''
+      custom_input_label: p.customInputLabel || '',
+      has_custom_unit: p.hasCustomUnit || false,
+      custom_unit_name: p.customUnitName || 'kg',
+      custom_unit_min: p.customUnitMin ?? 1,
+      custom_unit_step: p.customUnitStep ?? 1,
+      custom_unit_max: p.customUnitMax ?? 50,
+      custom_unit_price_per_unit: p.customUnitPricePerUnit ?? null,
+      custom_unit_price_per_unit_usd: p.customUnitPricePerUnitUsd ?? null
     };
     const { error } = await supabase.from('prepared_packages').upsert([formatted], { onConflict: 'id' });
     if (error) {
@@ -220,7 +260,14 @@ export const getStoredCustomItems = async (): Promise<CustomBoxOption[]> => {
       description: item.description || item.name,
       requiresCustomInput: item.requires_custom_input || false,
       customInputType: item.custom_input_type || 'text',
-      customInputLabel: item.custom_input_label || ''
+      customInputLabel: item.custom_input_label || '',
+      hasCustomUnit: item.has_custom_unit || false,
+      customUnitName: item.custom_unit_name || 'kg',
+      customUnitMin: item.custom_unit_min != null ? Number(item.custom_unit_min) : 1,
+      customUnitStep: item.custom_unit_step != null ? Number(item.custom_unit_step) : 1,
+      customUnitMax: item.custom_unit_max != null ? Number(item.custom_unit_max) : 50,
+      customUnitPricePerUnit: item.custom_unit_price_per_unit != null ? Number(item.custom_unit_price_per_unit) : undefined,
+      customUnitPricePerUnitUsd: item.custom_unit_price_per_unit_usd != null ? Number(item.custom_unit_price_per_unit_usd) : undefined
     }));
     
     console.log('✅ Loaded', mapped.length, 'custom items from Supabase');
@@ -250,7 +297,14 @@ export const saveStoredCustomItems = async (items: CustomBoxOption[]) => {
       description: item.description,
       requires_custom_input: item.requiresCustomInput || false,
       custom_input_type: item.customInputType || 'text',
-      custom_input_label: item.customInputLabel || ''
+      custom_input_label: item.customInputLabel || '',
+      has_custom_unit: item.hasCustomUnit || false,
+      custom_unit_name: item.customUnitName || 'kg',
+      custom_unit_min: item.customUnitMin ?? 1,
+      custom_unit_step: item.customUnitStep ?? 1,
+      custom_unit_max: item.customUnitMax ?? 50,
+      custom_unit_price_per_unit: item.customUnitPricePerUnit ?? null,
+      custom_unit_price_per_unit_usd: item.customUnitPricePerUnitUsd ?? null
     }));
     
     const { error } = await supabase.from('custom_box_options').upsert(formatted, { onConflict: 'id' });
@@ -281,7 +335,14 @@ export const saveSingleCustomItem = async (item: CustomBoxOption) => {
       description: item.description,
       requires_custom_input: item.requiresCustomInput || false,
       custom_input_type: item.customInputType || 'text',
-      custom_input_label: item.customInputLabel || ''
+      custom_input_label: item.customInputLabel || '',
+      has_custom_unit: item.hasCustomUnit || false,
+      custom_unit_name: item.customUnitName || 'kg',
+      custom_unit_min: item.customUnitMin ?? 1,
+      custom_unit_step: item.customUnitStep ?? 1,
+      custom_unit_max: item.customUnitMax ?? 50,
+      custom_unit_price_per_unit: item.customUnitPricePerUnit ?? null,
+      custom_unit_price_per_unit_usd: item.customUnitPricePerUnitUsd ?? null
     };
     const { error } = await supabase.from('custom_box_options').upsert([formatted], { onConflict: 'id' });
     if (error) {
@@ -293,6 +354,41 @@ export const saveSingleCustomItem = async (item: CustomBoxOption) => {
     console.error('❌ Failed to save single custom item to Supabase:', err);
     throw err;
   }
+};
+
+/**
+ * Helper to calculate the single-item price when a scalable unit is selected.
+ * (e.g. 3 kg of a cake with min 2 kg and base price 2400 ETB -> 3600 ETB)
+ */
+export const calculateCustomUnitPrice = (
+  item: PreparedPackage | CustomBoxOption,
+  unitValue: number,
+  currencyOrMarket: string = 'ETB'
+): number => {
+  const isUsd = currencyOrMarket === 'USD' || currencyOrMarket === 'INTERNATIONAL';
+  const basePrice = isUsd
+    ? (item.price_usd != null && item.price_usd > 0 ? item.price_usd : Math.round((item.price / 120) * 100) / 100)
+    : item.price;
+
+  if (!item.hasCustomUnit) {
+    return basePrice;
+  }
+
+  const minUnit = item.customUnitMin && item.customUnitMin > 0 ? item.customUnitMin : 1;
+  const effectiveUnit = Math.max(minUnit, unitValue);
+
+  // If explicit price per unit is configured
+  if (isUsd && item.customUnitPricePerUnitUsd != null && item.customUnitPricePerUnitUsd > 0) {
+    return Math.round(item.customUnitPricePerUnitUsd * effectiveUnit * 100) / 100;
+  }
+  if (!isUsd && item.customUnitPricePerUnit != null && item.customUnitPricePerUnit > 0) {
+    return Math.round(item.customUnitPricePerUnit * effectiveUnit);
+  }
+
+  // Otherwise, default price per unit = basePrice / minUnit
+  const pricePerUnit = basePrice / minUnit;
+  const calculated = pricePerUnit * effectiveUnit;
+  return isUsd ? Math.round(calculated * 100) / 100 : Math.round(calculated);
 };
 
 export const getStoredOrders = async (): Promise<any[]> => {

@@ -2,6 +2,7 @@ import React from 'react';
 import { ShieldCheck, Printer, ArrowLeft, PackageCheck, ShoppingBag, MapPin, Phone, Mail, CheckCircle2, Calendar } from 'lucide-react';
 import { Order } from '../types/cart';
 import { formatPrice } from '../utils/currency';
+import { calculateCustomUnitPrice } from '../data/giftsData';
 
 interface OfficialReceiptModalProps {
   order: Order;
@@ -164,7 +165,14 @@ export const OfficialReceiptModal: React.FC<OfficialReceiptModalProps> = ({
                   const itemTypeLabel = isPkg ? 'Package' : 'Single Item';
                   
                   let unitPrice = 0;
-                  if (currency === 'USD') {
+                  if (it.unitCalculatedPrice != null) {
+                    unitPrice = it.unitCalculatedPrice;
+                  } else if (it.customUnitValue != null) {
+                    const targetObj = isPkg ? it.package : singleObj;
+                    if (targetObj) {
+                      unitPrice = calculateCustomUnitPrice(targetObj, it.customUnitValue, currency);
+                    }
+                  } else if (currency === 'USD') {
                     if (isPkg) {
                       unitPrice = it.package?.price_usd != null && it.package?.price_usd > 0
                         ? it.package?.price_usd
@@ -185,7 +193,14 @@ export const OfficialReceiptModal: React.FC<OfficialReceiptModalProps> = ({
                   return (
                     <tr key={idx} className="py-1.5">
                       <td className="py-2 px-2">
-                        <div className="font-bold text-slate-800 text-xs">{title}</div>
+                        <div className="font-bold text-slate-800 text-xs">
+                          {title}
+                          {it.customUnitValue != null && (
+                            <span className="ml-1.5 inline-block px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-semibold text-[10px]">
+                              {it.customUnitValue} {it.customUnitName || 'kg'}
+                            </span>
+                          )}
+                        </div>
                         <div className="text-[9px] text-slate-400">
                           {categoryOrDesc}
                         </div>

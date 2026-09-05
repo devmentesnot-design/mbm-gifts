@@ -3,7 +3,7 @@ import { CartItem, Order } from '../types/cart';
 import { Package, Truck, ArrowLeft, Image as ImageIcon, PhoneCall, UploadCloud, Check, Sparkles, Box, Headset, Clock, Calendar } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useMarket } from '../context/MarketContext';
-import { GiftBoxStyle, getStoredGiftBoxes } from '../data/giftsData';
+import { GiftBoxStyle, getStoredGiftBoxes, calculateCustomUnitPrice } from '../data/giftsData';
 import { formatPrice } from '../utils/currency';
 import { GiftNotePreview } from './GiftNotePreview';
 import { supabase } from '../lib/supabase';
@@ -145,6 +145,12 @@ export const CartPage: React.FC<CartPageProps> = ({
   // Cart Calculations
   const calculateItemPrice = (item: CartItem): number => {
     if (item.type === 'package') {
+      if (item.customUnitValue != null && item.package) {
+        return calculateCustomUnitPrice(item.package, item.customUnitValue, buyerMarket) * item.quantity;
+      }
+      if (item.unitCalculatedPrice != null) {
+        return item.unitCalculatedPrice * item.quantity;
+      }
       const price = buyerMarket === 'INTERNATIONAL'
         ? (item.package.price_usd != null && item.package.price_usd > 0 ? item.package.price_usd : Math.round((item.package.price / 120) * 100) / 100)
         : item.package.price;
@@ -152,10 +158,19 @@ export const CartPage: React.FC<CartPageProps> = ({
     } else {
       const single = ('item' in item && item.item) ? item.item : ('selectedItems' in item ? item.selectedItems?.[0] : null);
       if (single) {
+        if (item.customUnitValue != null) {
+          return calculateCustomUnitPrice(single, item.customUnitValue, buyerMarket) * item.quantity;
+        }
+        if (item.unitCalculatedPrice != null) {
+          return item.unitCalculatedPrice * item.quantity;
+        }
         const price = buyerMarket === 'INTERNATIONAL'
           ? (single.price_usd != null && single.price_usd > 0 ? single.price_usd : Math.round((single.price / 120) * 100) / 100)
           : single.price;
         return price * item.quantity;
+      }
+      if (item.unitCalculatedPrice != null) {
+        return item.unitCalculatedPrice * item.quantity;
       }
       return (item.totalPrice || 0) * item.quantity;
     }
@@ -378,6 +393,12 @@ export const CartPage: React.FC<CartPageProps> = ({
                               <div className="text-xs text-white/50 mt-1">
                                 {itemSubtitle}
                               </div>
+                              {item.customUnitValue != null && (
+                                <div className="inline-flex items-center gap-1.5 mt-1.5 px-2.5 py-0.5 rounded-md bg-amber-400/15 border border-amber-400/30 text-amber-300 text-[11px] font-semibold">
+                                  <span>Selected Portion / Size:</span>
+                                  <span className="font-bold text-white">{item.customUnitValue} {item.customUnitName || 'kg'}</span>
+                                </div>
+                              )}
                             </div>
                             <div className="font-bold text-amber-300">
                               {formatPrice(calculateItemPrice(item), currency)}

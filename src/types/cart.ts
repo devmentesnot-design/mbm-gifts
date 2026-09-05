@@ -13,6 +13,9 @@ export interface CartItemPrepared {
   customNote?: string;
   customerInputText?: string;     // Customer-provided text (e.g. name to print)
   customerInputImageUrl?: string; // Cloudinary URL of customer-uploaded image
+  customUnitValue?: number;       // Selected unit value (e.g. 2.5, 3 kg)
+  customUnitName?: string;        // Unit label (e.g. 'kg', 'stems', 'pieces')
+  unitCalculatedPrice?: number;   // Unit price calculated from customUnitValue
 }
 
 export interface CartItemSingle {
@@ -24,6 +27,9 @@ export interface CartItemSingle {
   customNote?: string;
   customerInputText?: string;     // Customer-provided text (e.g. name to print)
   customerInputImageUrl?: string; // Cloudinary URL of customer-uploaded image
+  customUnitValue?: number;       // Selected unit value (e.g. 2.5, 3 kg)
+  customUnitName?: string;        // Unit label (e.g. 'kg', 'stems', 'pieces')
+  unitCalculatedPrice?: number;   // Unit price calculated from customUnitValue
 }
 
 export interface CartItemCustom {
@@ -39,6 +45,9 @@ export interface CartItemCustom {
   customNote?: string;
   customerInputText?: string;     // Customer-provided text per item
   customerInputImageUrl?: string; // Cloudinary URL of customer-uploaded image
+  customUnitValue?: number;       // Selected unit value (e.g. 2.5, 3 kg)
+  customUnitName?: string;        // Unit label (e.g. 'kg', 'stems', 'pieces')
+  unitCalculatedPrice?: number;   // Unit price calculated from customUnitValue
 }
 
 export type CartItem = CartItemPrepared | CartItemCustom | CartItemSingle;

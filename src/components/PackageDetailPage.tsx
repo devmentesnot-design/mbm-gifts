@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PreparedPackage, CustomBoxOption, CUSTOM_ITEMS } from '../data/giftsData';
+import { PreparedPackage, CustomBoxOption, CUSTOM_ITEMS, calculateCustomUnitPrice } from '../data/giftsData';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { CartItem } from '../types/cart';
@@ -23,7 +23,9 @@ import {
   FileText,
   Upload,
   Loader2,
-  X
+  X,
+  Minus,
+  Plus
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -40,7 +42,10 @@ interface PackageDetailPageProps {
     pkg: PreparedPackage,
     customNote?: string,
     customerInputText?: string,
-    customerInputImageUrl?: string
+    customerInputImageUrl?: string,
+    customUnitValue?: number,
+    customUnitName?: string,
+    unitCalculatedPrice?: number
   ) => void;
 }
 
@@ -62,6 +67,10 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   const [clientCustomText, setClientCustomText] = useState('');
   const [clientCustomImageUrl, setClientCustomImageUrl] = useState('');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  // Scalable unit state (e.g. 2 kg minimum, stepper)
+  const initialUnitVal = packageData.hasCustomUnit ? (packageData.customUnitMin || 1) : 1;
+  const [selectedUnitValue, setSelectedUnitValue] = useState<number>(initialUnitVal);
 
   const getPkgPrice = (pkg: PreparedPackage): number => {
     if (buyerMarket === 'INTERNATIONAL') {
@@ -97,6 +106,10 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   const itemsDetailed = getItemDetails(packageData);
   const relatedPackages = allPackages.filter((p) => p.id !== packageData.id).slice(0, 3);
 
+  const currentCalculatedPrice = packageData.hasCustomUnit
+    ? calculateCustomUnitPrice(packageData, selectedUnitValue, currency)
+    : getPkgPrice(packageData);
+
   const handleAddToCart = () => {
     if (packageData.requiresCustomInput) {
       if (
@@ -115,7 +128,15 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
       }
     }
 
-    onAddToCartPrepared(packageData, giftNote, clientCustomText, clientCustomImageUrl);
+    onAddToCartPrepared(
+      packageData,
+      giftNote,
+      clientCustomText,
+      clientCustomImageUrl,
+      packageData.hasCustomUnit ? selectedUnitValue : undefined,
+      packageData.hasCustomUnit ? (packageData.customUnitName || 'kg') : undefined,
+      packageData.hasCustomUnit ? currentCalculatedPrice : undefined
+    );
     setAddedToast(true);
     setTimeout(() => setAddedToast(false), 3000);
   };
@@ -220,8 +241,13 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
 
                   <div className="flex flex-wrap items-baseline gap-3 mb-6 pb-6 border-b border-white/15">
                     <span className="text-3xl sm:text-4xl font-extrabold font-inter text-amber-300">
-                      {formatPrice(getPkgPrice(packageData), currency)}
+                      {formatPrice(currentCalculatedPrice, currency)}
                     </span>
+                    {packageData.hasCustomUnit && (
+                      <span className="text-xs text-amber-200/80 font-inter font-semibold">
+                        ({selectedUnitValue} {packageData.customUnitName || 'kg'})
+                      </span>
+                    )}
                     <span className="text-xs text-emerald-300 uppercase tracking-wider font-semibold bg-emerald-500/20 border border-emerald-500/40 px-3 py-1 rounded-full flex items-center gap-1.5">
                       <Truck className="w-3.5 h-3.5 text-emerald-400" />
                       {buyerMarket === 'INTERNATIONAL' ? 'Free Delivery in Ethiopia' : 'Free Express Delivery Included'}
@@ -258,6 +284,58 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                       </div>
                     </div>
                   </div>
+
+                  {/* Scalable Unit / Measurement Selector (e.g. Cake by KG, Flowers by Stems) */}
+                  {packageData.hasCustomUnit && (
+                    <div className="mb-6 bg-[#3a060b]/70 border border-amber-400/30 rounded-2xl p-5 shadow-lg space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-amber-300 font-bold uppercase text-xs tracking-wider">
+                          <Sparkles className="w-4 h-4 text-amber-400" />
+                          <span>Select {packageData.customUnitName?.toUpperCase() || 'SIZE / WEIGHT'}</span>
+                        </div>
+                        <span className="text-[11px] text-amber-200/80 bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 rounded-full font-medium">
+                          Min: {packageData.customUnitMin || 1} {packageData.customUnitName || 'kg'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between bg-black/40 border border-amber-400/25 rounded-xl p-3.5">
+                        <div>
+                          <div className="text-white font-bold text-sm">
+                            {selectedUnitValue} {packageData.customUnitName || 'kg'}
+                          </div>
+                          <div className="text-[11px] text-white/50">
+                            Adjust size in {packageData.customUnitStep || 1} {packageData.customUnitName || 'kg'} increments
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            disabled={selectedUnitValue <= (packageData.customUnitMin || 1)}
+                            onClick={() => setSelectedUnitValue(prev => Number((Math.max(packageData.customUnitMin || 1, prev - (packageData.customUnitStep || 1))).toFixed(2)))}
+                            className="w-10 h-10 rounded-lg bg-black/60 border border-white/20 text-white font-bold flex items-center justify-center hover:border-amber-400 hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                            title="Decrease size"
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+
+                          <span className="font-podium text-lg font-bold text-amber-300 min-w-[3.5rem] text-center">
+                            {selectedUnitValue} <span className="text-xs font-normal text-white/80">{packageData.customUnitName || 'kg'}</span>
+                          </span>
+
+                          <button
+                            type="button"
+                            disabled={selectedUnitValue >= (packageData.customUnitMax || 50)}
+                            onClick={() => setSelectedUnitValue(prev => Number((Math.min(packageData.customUnitMax || 50, prev + (packageData.customUnitStep || 1))).toFixed(2)))}
+                            className="w-10 h-10 rounded-lg bg-black/60 border border-white/20 text-white font-bold flex items-center justify-center hover:border-amber-400 hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                            title="Increase size"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Client Customization Requirement Section */}
                   {packageData.requiresCustomInput && (
@@ -362,7 +440,10 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                     className="w-full sm:flex-1 bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-extrabold py-4 px-8 text-sm sm:text-base tracking-widest uppercase rounded-2xl flex items-center justify-center gap-3 transition-all font-inter shadow-2xl shadow-amber-400/20 cursor-pointer transform hover:-translate-y-0.5"
                   >
                     <ShoppingBag className="w-5 h-5 stroke-[2.5]" />
-                    <span>ADD PACKAGE TO CART — {formatPrice(getPkgPrice(packageData), currency)}</span>
+                    <span>
+                      ADD PACKAGE TO CART — {formatPrice(currentCalculatedPrice, currency)}
+                      {packageData.hasCustomUnit ? ` (${selectedUnitValue} ${packageData.customUnitName || 'kg'})` : ''}
+                    </span>
                   </button>
                 </div>
               </div>

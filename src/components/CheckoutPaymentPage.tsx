@@ -636,9 +636,14 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                       const singleObj = ('item' in it && it.item) ? it.item : ('selectedItems' in it ? it.selectedItems?.[0] : null);
                       const title = isPkg ? (it.package?.name || 'Gift Package') : (singleObj?.name || 'Single Item');
                       
-                      const unitPrice = isPkg
-                        ? (currency === 'USD' ? (it.package?.price_usd || Math.round((it.package?.price / 120) * 100) / 100) : it.package?.price)
-                        : (singleObj ? (currency === 'USD' ? (singleObj.price_usd || Math.round((singleObj.price / 120) * 100) / 100) : singleObj.price) : (it.totalPrice || 0));
+                      let unitPrice = 0;
+                      if (it.unitCalculatedPrice != null) {
+                        unitPrice = it.unitCalculatedPrice;
+                      } else if (isPkg) {
+                        unitPrice = currency === 'USD' ? (it.package?.price_usd || Math.round((it.package?.price / 120) * 100) / 100) : it.package?.price;
+                      } else {
+                        unitPrice = singleObj ? (currency === 'USD' ? (singleObj.price_usd || Math.round((singleObj.price / 120) * 100) / 100) : singleObj.price) : (it.totalPrice || 0);
+                      }
                       const itemTotal = (unitPrice || 0) * it.quantity;
 
                       return (
@@ -647,8 +652,13 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                           className="bg-black/30 border border-white/5 rounded-lg p-2.5 flex items-center justify-between text-xs"
                         >
                           <div className="truncate pr-2">
-                            <div className="font-bold text-white truncate">
-                              {it.quantity}x {title}
+                            <div className="font-bold text-white truncate flex items-center gap-1.5 flex-wrap">
+                              <span>{it.quantity}x {title}</span>
+                              {it.customUnitValue != null && (
+                                <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-400/20 text-amber-300">
+                                  ({it.customUnitValue} {it.customUnitName || 'kg'})
+                                </span>
+                              )}
                             </div>
                           </div>
                           <span className="text-amber-300 font-bold flex-shrink-0">
