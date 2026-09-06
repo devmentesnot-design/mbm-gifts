@@ -2154,8 +2154,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       key={pkg.id}
                       className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
                     >
-                      <div className="relative h-44 bg-black/40 overflow-hidden">
-                        <img src={pkg.image} alt={pkg.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="relative h-48 bg-black/60 overflow-hidden flex items-center justify-center">
+                        <img src={pkg.image} alt={pkg.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                         {pkg.badge && (
                           <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full shadow">
                             {pkg.badge}
@@ -2579,8 +2579,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 key={item.id}
                                 className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
                               >
-                                <div className="relative h-40 bg-black/40 overflow-hidden">
-                                  <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                <div className="relative h-44 bg-black/60 overflow-hidden flex items-center justify-center">
+                                  <img src={item.image} alt={item.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                                   {item.requiresCustomInput && (
                                     <span className="absolute top-3 left-3 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full shadow backdrop-blur-sm flex items-center gap-1">
                                       {item.customInputType === 'image' ? <Camera className="w-2.5 h-2.5 text-purple-300" /> : item.customInputType === 'both' ? <Sparkles className="w-2.5 h-2.5 text-purple-300" /> : <FileText className="w-2.5 h-2.5 text-purple-300" />}
@@ -2964,8 +2964,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden p-5 flex flex-col justify-between shadow-xl"
                   >
                     <div>
-                      <div className="h-40 rounded-xl overflow-hidden bg-black/40 mb-4 border border-white/10">
-                        <img src={box.image} alt={box.name} className="w-full h-full object-cover" />
+                      <div className="h-44 rounded-xl overflow-hidden bg-black/60 mb-4 border border-white/10 flex items-center justify-center">
+                        <img src={box.image} alt={box.name} className="w-full h-full object-contain" />
                       </div>
                       <h3 className="font-podium text-lg uppercase font-bold text-white">{box.name}</h3>
                       <div className="text-xs text-amber-300 font-bold mt-1">
