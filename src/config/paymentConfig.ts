@@ -79,7 +79,7 @@ export const PAYMENT_CONFIG: PaymentConfigType = {
       id: 'abyssinia',
       name: 'Bank of Abyssinia (BOA)',
       accountType: 'Bank Transfer',
-      accountNumber: (import.meta as any).env?.VITE_PAYMENT_ABYSSINIA || 'XXXXXXXX',
+      accountNumber: (import.meta as any).env?.VITE_PAYMENT_ABYSSINIA || '230381477',
       accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'BONTU ABERA',
       logo: '/abissinya.png',
       badge: 'BOA MOBILE',
