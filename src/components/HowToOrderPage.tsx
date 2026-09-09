@@ -16,7 +16,10 @@ import {
   Package,
   Clock,
   Heart,
-  FileText
+  FileText,
+  Play,
+  Video,
+  ExternalLink
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -113,6 +116,91 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
               >
                 2. Build Your Own Box
               </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Video Tutorial Section */}
+        <section className="py-12 sm:py-16 px-4 sm:px-8 lg:px-12 bg-black/40 border-b border-white/10 relative">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-3 shadow">
+                <Video className="w-4 h-4 text-amber-300" />
+                <span>Video Walkthrough</span>
+              </div>
+              <h2 className="font-podium text-2xl sm:text-4xl uppercase font-bold text-white mb-2">
+                {activeTab === 'prepared' ? 'Ready-Made Package Video Guide' : 'Build Your Own Box Video Guide'}
+              </h2>
+              <p className="text-white/75 text-xs sm:text-sm font-inter max-w-xl mx-auto">
+                {activeTab === 'prepared'
+                  ? 'Watch our quick video on how to select, customize, and order ready-made luxury gift packages.'
+                  : 'Watch our step-by-step video on how to handpick individual items and build a custom gift box.'}
+              </p>
+            </div>
+
+            {/* Video Player Box */}
+            <div className="luxury-satin-card rounded-2xl sm:rounded-3xl p-3 sm:p-6 border border-amber-400/30 shadow-2xl bg-black/60 max-w-4xl mx-auto">
+              <div className="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden bg-black border border-white/15 shadow-inner">
+                <iframe
+                  key={activeTab}
+                  className="w-full h-full"
+                  src={
+                    activeTab === 'prepared'
+                      ? 'https://www.youtube.com/embed/B8A1WE0SEKw?rel=0'
+                      : 'https://www.youtube.com/embed/fYNhoOMyRl8?rel=0'
+                  }
+                  title={activeTab === 'prepared' ? 'How to Order Ready-Made Package' : 'How to Build Your Own Gift Box'}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+
+              {/* Video Quick Switcher & YouTube Link */}
+              <div className="mt-4 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-xs text-white/70 font-inter">
+                  <Play className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                  <span>
+                    Watching:{' '}
+                    <strong className="text-amber-300">
+                      {activeTab === 'prepared' ? 'Ready-Made Packages Guide' : 'Build Your Own Box Guide'}
+                    </strong>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setActiveTab('prepared')}
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                      activeTab === 'prepared'
+                        ? 'bg-amber-400 text-[#8c1119] shadow'
+                        : 'bg-white/10 text-white/70 hover:text-white hover:bg-white/20'
+                    }`}
+                  >
+                    <Gift className="w-3.5 h-3.5" />
+                    <span>Ready-Made Video</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('custom')}
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                      activeTab === 'custom'
+                        ? 'bg-amber-400 text-[#8c1119] shadow'
+                        : 'bg-white/10 text-white/70 hover:text-white hover:bg-white/20'
+                    }`}
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Build Your Own Video</span>
+                  </button>
+                  <a
+                    href={activeTab === 'prepared' ? 'https://youtu.be/B8A1WE0SEKw' : 'https://youtu.be/fYNhoOMyRl8'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/60 hover:text-white transition-all text-xs"
+                    title="Open on YouTube"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </section>
