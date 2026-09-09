@@ -418,19 +418,6 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                     </div>
                   )}
 
-                  {/* Gift Note Input */}
-                  <div className="mb-6 bg-black/30 border border-white/15 rounded-xl p-4">
-                    <label className="block text-xs uppercase tracking-wider text-amber-300 font-inter mb-2 font-bold flex items-center justify-between">
-                      <span>Personalized Gift Note (Optional)</span>
-                      <span className="text-[10px] text-white/50 font-normal">Wax-sealed handwritten card</span>
-                    </label>
-                    <textarea
-                      value={giftNote}
-                      onChange={(e) => setGiftNote(e.target.value)}
-                      placeholder="Write a personalized note to accompany this gift box..."
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-3 text-xs text-white placeholder-white/40 focus:outline-none focus:border-amber-400 h-16 resize-none font-inter"
-                    />
-                  </div>
                 </div>
 
                 {/* Primary CTA Add To Cart Button */}
