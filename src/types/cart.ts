@@ -64,8 +64,10 @@ export interface OrderCustomerInfo {
   zipCode: string;
   deliveryDate?: string;
   giftRecipientName?: string;
+  giftRecipientPhone?: string;
   giftSenderName?: string;
   giftMessage?: string;
+  shipMode?: 'recipient' | 'me';
 }
 
 export type PaymentStatus = 

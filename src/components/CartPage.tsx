@@ -21,6 +21,7 @@ interface CartPageProps {
 
 interface CartFormDraft {
   phone?: string;
+  recipientPhone?: string;
   address?: string;
   city?: string;
   deliveryDate?: string;
@@ -87,6 +88,7 @@ export const CartPage: React.FC<CartPageProps> = ({
   const [shipMode, setShipMode] = useState<'recipient' | 'me'>(draft.shipMode || 'recipient');
 
   const [phone, setPhone] = useState(draft.phone || '');
+  const [recipientPhone, setRecipientPhone] = useState(draft.recipientPhone || '');
   const [address, setAddress] = useState(draft.address || '');
   const [city, setCity] = useState(draft.city || '');
   const [deliveryDate, setDeliveryDate] = useState(draft.deliveryDate || '');
@@ -103,6 +105,7 @@ export const CartPage: React.FC<CartPageProps> = ({
         'mbm_cart_form_draft',
         JSON.stringify({
           phone,
+          recipientPhone,
           address,
           city,
           deliveryDate,
@@ -114,7 +117,7 @@ export const CartPage: React.FC<CartPageProps> = ({
         })
       );
     } catch {}
-  }, [phone, address, city, deliveryDate, recipientName, senderName, giftMessage, selectedBoxId, shipMode]);
+  }, [phone, recipientPhone, address, city, deliveryDate, recipientName, senderName, giftMessage, selectedBoxId, shipMode]);
 
   // Cart Helpers
   const getItemName = (item: CartItem): string => {
@@ -199,6 +202,11 @@ export const CartPage: React.FC<CartPageProps> = ({
       return;
     }
 
+    if (shipMode === 'recipient' && !recipientPhone.trim()) {
+      setValidationError("Please provide the recipient's phone number so our team can reach them at delivery.");
+      return;
+    }
+
     if (!address.trim()) {
       setValidationError('Please provide your delivery address or location.');
       return;
@@ -271,8 +279,10 @@ export const CartPage: React.FC<CartPageProps> = ({
         zipCode: '1000',
         deliveryDate: deliveryDate || undefined,
         giftRecipientName: recipientName.trim(),
+        giftRecipientPhone: shipMode === 'recipient' ? recipientPhone.trim() : '',
         giftSenderName: senderName.trim(),
         giftMessage: giftMessage.trim(),
+        shipMode: shipMode,
       },
       items: [...items],
       subtotal: subtotal,
@@ -671,8 +681,8 @@ export const CartPage: React.FC<CartPageProps> = ({
 
                     <div>
                       <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center justify-between">
-                        <span>Phone Number <span className="text-red-400">*</span></span>
-                        <span className="text-amber-400/80 text-[9px] font-normal">For delivery confirmation</span>
+                        <span>{shipMode === 'recipient' ? 'Your Phone Number (Sender)' : 'Your Phone Number'} <span className="text-red-400">*</span></span>
+                        <span className="text-amber-400/80 text-[9px] font-normal">For order confirmation</span>
                       </label>
                       <input
                         type="tel"
@@ -683,6 +693,24 @@ export const CartPage: React.FC<CartPageProps> = ({
                         className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
                       />
                     </div>
+
+                    {/* Recipient phone — only shown when shipping to someone else */}
+                    {shipMode === 'recipient' && (
+                      <div>
+                        <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center justify-between">
+                          <span>Recipient's Phone Number <span className="text-red-400">*</span></span>
+                          <span className="text-amber-400/80 text-[9px] font-normal">So we can reach them at delivery</span>
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          value={recipientPhone}
+                          onChange={(e) => setRecipientPhone(e.target.value)}
+                          placeholder="e.g. +251 922 345 678"
+                          className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
+                        />
+                      </div>
+                    )}
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="md:col-span-2">

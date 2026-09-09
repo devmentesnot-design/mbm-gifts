@@ -305,6 +305,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   });
   // Sub-items inside the package detailed form
   const [pkgSubItems, setPkgSubItems] = useState<PackageItemDetail[]>([]);
+  const [pkgSubItemSearch, setPkgSubItemSearch] = useState('');
 
   // Single Custom Item Search & Modal State
   const [itemSearchTerm, setItemSearchTerm] = useState('');
@@ -748,6 +749,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       });
       setPkgSubItems([]);
     }
+    setPkgSubItemSearch('');
     setPkgModalOpen(true);
   };
 
@@ -1502,9 +1504,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               <div>
                                 <div className="font-semibold text-white">{ord.customer.address}</div>
                                 <div className="text-[10px] text-white/50">{ord.customer.city}, {ord.customer.zipCode}</div>
+                                {/* Ship mode badge */}
+                                {ord.customer.shipMode && (
+                                  <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${
+                                    ord.customer.shipMode === 'recipient'
+                                      ? 'bg-amber-400/15 text-amber-300 border border-amber-400/30'
+                                      : 'bg-white/10 text-white/60 border border-white/20'
+                                  }`}>
+                                    {ord.customer.shipMode === 'recipient' ? '📦 Ship to Recipient' : '🏠 Ship to Me'}
+                                  </span>
+                                )}
                                 {ord.customer.giftRecipientName && ord.customer.giftRecipientName !== ord.customer.fullName && (
                                   <div className="text-[10px] text-amber-200/90 italic mt-0.5">
-                                    Recipient: {ord.customer.giftRecipientName}
+                                    Recipient: <strong>{ord.customer.giftRecipientName}</strong>
+                                  </div>
+                                )}
+                                {ord.customer.giftRecipientPhone && (
+                                  <div className="text-[10px] text-amber-300/80 flex items-center gap-1 mt-0.5">
+                                    <Phone className="w-2.5 h-2.5 text-amber-400" />
+                                    <span>Recipient Ph: <strong>{ord.customer.giftRecipientPhone}</strong></span>
                                   </div>
                                 )}
                               </div>
@@ -3677,23 +3695,120 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               {/* SECTION 2: Detailed Sub-Items Manager (Individual Images & Descriptions) */}
               <div className="bg-black/30 border border-white/10 rounded-xl p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-2 gap-2">
                   <div>
                     <h4 className="text-xs uppercase tracking-widest text-amber-300 font-bold flex items-center gap-2">
                       <Layers className="w-4 h-4" /> 2. Items Included Inside ({pkgSubItems.length} Sub-Items)
                     </h4>
                     <p className="text-[11px] text-white/50">
-                      Upload individual photos and enter detailed descriptions for each item inside this package.
+                      Search inventory to quickly add items, or upload photos & descriptions for custom components.
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={handleAddSubItemToPackage}
-                    className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer"
+                    className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer self-start sm:self-auto shadow"
                   >
                     <Plus className="w-4 h-4" />
-                    <span>Add Item</span>
+                    <span>Add Blank Item</span>
                   </button>
+                </div>
+
+                {/* Quick Search & Add from Inventory Bar */}
+                <div className="bg-black/40 border border-amber-400/30 rounded-xl p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Search className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                    <input
+                      type="text"
+                      value={pkgSubItemSearch}
+                      onChange={(e) => setPkgSubItemSearch(e.target.value)}
+                      placeholder="Search single items to quickly add to this package (e.g. cake, chocolate, mug, perfume)..."
+                      className="flex-1 bg-black/60 border border-white/20 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-white/40 focus:border-amber-400 focus:outline-none"
+                    />
+                    {pkgSubItemSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setPkgSubItemSearch('')}
+                        className="text-xs text-white/50 hover:text-white px-2 py-1 cursor-pointer"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Search Results */}
+                  {pkgSubItemSearch.trim() && (
+                    <div className="max-h-56 overflow-y-auto space-y-1.5 pt-2 border-t border-white/10">
+                      {(() => {
+                        const query = pkgSubItemSearch.toLowerCase().trim();
+                        const matches = customItems.filter(
+                          (item) =>
+                            item.name.toLowerCase().includes(query) ||
+                            item.category.toLowerCase().includes(query) ||
+                            (item.description && item.description.toLowerCase().includes(query))
+                        );
+
+                        if (matches.length === 0) {
+                          return (
+                            <p className="text-xs text-white/40 italic py-2 text-center">
+                              No matching items found for "{pkgSubItemSearch}". You can click "+ Add Blank Item" to add a custom item.
+                            </p>
+                          );
+                        }
+
+                        return (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {matches.map((item) => {
+                              const isAlreadyAdded = pkgSubItems.some(
+                                (sub) => sub.name.toLowerCase() === item.name.toLowerCase()
+                              );
+                              return (
+                                <div
+                                  key={item.id}
+                                  className="flex items-center justify-between p-2 rounded-lg bg-black/60 border border-white/10 hover:border-amber-400/50 transition-all gap-2"
+                                >
+                                  <div className="flex items-center gap-2 overflow-hidden min-w-0">
+                                    {item.image ? (
+                                      <img
+                                        src={item.image}
+                                        alt={item.name}
+                                        className="w-9 h-9 rounded object-cover flex-shrink-0 border border-white/10"
+                                      />
+                                    ) : (
+                                      <div className="w-9 h-9 rounded bg-white/10 flex items-center justify-center text-[10px] text-white/40 flex-shrink-0">
+                                        No img
+                                      </div>
+                                    )}
+                                    <div className="truncate text-left">
+                                      <p className="text-xs font-semibold text-white truncate">{item.name}</p>
+                                      <p className="text-[10px] text-amber-300/80 truncate">{item.category}</p>
+                                    </div>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setPkgSubItems((prev) => [
+                                        ...prev,
+                                        {
+                                          name: item.name,
+                                          image: item.image || '',
+                                          description: item.description || '',
+                                        },
+                                      ]);
+                                    }}
+                                    className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-2.5 py-1 rounded text-[11px] font-bold flex items-center gap-1 flex-shrink-0 cursor-pointer shadow transition-all"
+                                  >
+                                    <Plus className="w-3 h-3" />
+                                    <span>{isAlreadyAdded ? 'Add Again' : 'Add'}</span>
+                                  </button>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-4">
