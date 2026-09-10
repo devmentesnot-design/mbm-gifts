@@ -785,6 +785,8 @@ export default function App() {
         {/* Hero Section */}
         <Hero
           onExplorePackages={handleExplorePackages}
+          packages={packages}
+          onViewPackageDetail={(id) => navigateTo(`/package/${id}`)}
         />
 
         {/* Unified Gift Shop Body Section (Packages & Custom Builder) */}

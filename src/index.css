@@ -127,6 +127,100 @@ h1, h2, h3, h4, h5, h6, .font-podium, .font-serif, .font-classy, .font-oswald {
     animation: fade-in 0.8s ease-out 0.3s forwards;
     opacity: 0;
   }
+
+  /* Luxury Hero Showcase Animations */
+  @keyframes luxury-float {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(0.6deg);
+    }
+  }
+
+  @keyframes luxury-shadow-breathe {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.75;
+    }
+    50% {
+      transform: scale(0.86);
+      opacity: 0.45;
+    }
+  }
+
+  @keyframes luxury-glow-pulse {
+    0%, 100% {
+      opacity: 0.8;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+  }
+
+  @keyframes luxury-particle-float {
+    0% {
+      transform: translateY(0px) translateX(0px) scale(0.8);
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.9;
+    }
+    80% {
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(-50px) translateX(12px) scale(1.1);
+      opacity: 0;
+    }
+  }
+
+  @keyframes luxury-ribbon-drift {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-8px) rotate(-1.5deg);
+    }
+  }
+
+  @keyframes luxury-shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .animate-luxury-float {
+    animation: luxury-float 4.2s ease-in-out infinite;
+  }
+
+  .animate-luxury-shadow {
+    animation: luxury-shadow-breathe 4.2s ease-in-out infinite;
+  }
+
+  .animate-luxury-glow {
+    animation: luxury-glow-pulse 5s ease-in-out infinite;
+  }
+
+  .animate-luxury-ribbon {
+    animation: luxury-ribbon-drift 6s ease-in-out infinite;
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-luxury-float,
+    .animate-luxury-shadow,
+    .animate-luxury-glow,
+    .animate-luxury-ribbon {
+      animation: none !important;
+      transform: none !important;
+    }
+  }
 }
 
 /* ========================================================================= */
