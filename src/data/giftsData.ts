@@ -413,31 +413,53 @@ export const getStoredOrders = async (): Promise<any[]> => {
       return [];
     }
 
-    const mapped = data.map(o => ({
-      id: o.id,
-      createdAt: o.created_at ? new Date(o.created_at).toLocaleString() : new Date().toLocaleString(),
-      status: o.status,
-      customer: o.customer_info,
-      items: o.items,
-      subtotal: o.subtotal,
-      shipping: o.shipping,
-      total: o.total,
-      paymentMethod: o.payment_method,
-      paymentReceiptUrl: o.payment_receipt_url,
-      giftBoxStyle: o.gift_box_style,
-      giftBoxPrice: o.gift_box_price,
-      buyerMarket: o.buyer_market || 'ETHIOPIA',
-      currency: o.currency || 'ETB',
-      deliveryFee: o.delivery_fee || 0,
-      chapaTxRef: o.chapa_tx_ref || null,
-      paymentStatus: o.payment_status || (o.payment_receipt_url ? (o.payment_method?.includes('Manual') ? 'UNDER_REVIEW' : 'PAID') : 'PENDING_PAYMENT'),
-      senderName: o.sender_name || null,
-      transactionId: o.transaction_id || null,
-      rejectionReason: o.rejection_reason || null,
-      paymentSubmittedAt: o.payment_submitted_at || null,
-      reviewedAt: o.reviewed_at || null,
-      reviewedBy: o.reviewed_by || null,
-    }));
+    const mapped = data.map(o => {
+      const custInfo = o.customer_info || {};
+      const deliveryDate = custInfo.deliveryDate || custInfo.delivery_date || o.delivery_date || undefined;
+      const deliveryTime = custInfo.deliveryTime || custInfo.delivery_time || o.delivery_time || undefined;
+      let deliveryScheduleStatus = custInfo.deliveryScheduleStatus || custInfo.delivery_schedule_status || o.delivery_schedule_status;
+      if (!deliveryScheduleStatus) {
+        if (deliveryDate) {
+          deliveryScheduleStatus = 'Scheduled';
+        } else {
+          deliveryScheduleStatus = 'Not Recorded';
+        }
+      }
+
+      return {
+        id: o.id,
+        createdAt: o.created_at ? new Date(o.created_at).toLocaleString() : new Date().toLocaleString(),
+        status: o.status,
+        customer: {
+          ...custInfo,
+          deliveryDate,
+          deliveryTime,
+          deliveryScheduleStatus,
+        },
+        deliveryDate,
+        deliveryTime,
+        deliveryScheduleStatus,
+        items: o.items,
+        subtotal: o.subtotal,
+        shipping: o.shipping,
+        total: o.total,
+        paymentMethod: o.payment_method,
+        paymentReceiptUrl: o.payment_receipt_url,
+        giftBoxStyle: o.gift_box_style,
+        giftBoxPrice: o.gift_box_price,
+        buyerMarket: o.buyer_market || 'ETHIOPIA',
+        currency: o.currency || 'ETB',
+        deliveryFee: o.delivery_fee || 0,
+        chapaTxRef: o.chapa_tx_ref || null,
+        paymentStatus: o.payment_status || (o.payment_receipt_url ? (o.payment_method?.includes('Manual') ? 'UNDER_REVIEW' : 'PAID') : 'PENDING_PAYMENT'),
+        senderName: o.sender_name || null,
+        transactionId: o.transaction_id || null,
+        rejectionReason: o.rejection_reason || null,
+        paymentSubmittedAt: o.payment_submitted_at || null,
+        reviewedAt: o.reviewed_at || null,
+        reviewedBy: o.reviewed_by || null,
+      };
+    });
     
     console.log('✅ Loaded', mapped.length, 'orders from Supabase');
     return mapped;
@@ -459,11 +481,20 @@ export const saveSingleOrder = async (order: any) => {
     const { data: { session } } = await supabase.auth.getSession();
     console.log('👤 Order creator user ID:', session?.user?.id || 'GUEST / ANONYMOUS');
     
+    const chosenDate = order.customer?.deliveryDate || order.deliveryDate || null;
+    const chosenTime = order.customer?.deliveryTime || order.deliveryTime || null;
+    const scheduleStatus = order.customer?.deliveryScheduleStatus || order.deliveryScheduleStatus || (chosenDate ? 'Scheduled' : 'Not Recorded');
+
     const formattedOrder = {
       id: order.id,
       user_id: session?.user?.id || order.userId || null,
       status: order.status || 'Pending',
-      customer_info: order.customer,
+      customer_info: {
+        ...(order.customer || {}),
+        deliveryDate: chosenDate,
+        deliveryTime: chosenTime,
+        deliveryScheduleStatus: scheduleStatus,
+      },
       items: order.items,
       subtotal: order.subtotal,
       shipping: order.shipping || 0,

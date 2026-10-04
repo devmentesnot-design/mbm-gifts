@@ -48,6 +48,7 @@ import {
   ExternalLink,
   User,
   RefreshCw,
+  Calendar,
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -4672,6 +4673,78 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
+              {/* ─── DELIVERY SCHEDULE SECTION ─── */}
+              {(() => {
+                const od = selectedOrderDetails;
+                const rawDate = od.customer?.deliveryDate || od.deliveryDate;
+                const rawTime = od.customer?.deliveryTime || od.deliveryTime;
+                const schedStatus = od.customer?.deliveryScheduleStatus || od.deliveryScheduleStatus ||
+                  (rawDate ? 'Scheduled' : 'Not Recorded');
+
+                const statusColor =
+                  schedStatus === 'Scheduled'
+                    ? 'text-emerald-300 bg-emerald-500/15 border-emerald-500/40'
+                    : schedStatus === 'Awaiting Customer Confirmation'
+                    ? 'text-amber-300 bg-amber-400/15 border-amber-400/40'
+                    : 'text-white/50 bg-white/5 border-white/15';
+
+                const statusDot =
+                  schedStatus === 'Scheduled' ? '🟢' :
+                  schedStatus === 'Awaiting Customer Confirmation' ? '🟡' : '⚫';
+
+                return (
+                  <div className="bg-gradient-to-br from-[#1a0f1e] to-[#18060a] border border-blue-400/20 rounded-xl p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="text-[10px] text-blue-300 font-bold uppercase tracking-widest flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5" />
+                        Delivery Schedule
+                      </div>
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${statusColor}`}>
+                        {statusDot} {schedStatus}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                      {/* Order Placed */}
+                      <div className="bg-black/30 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-white/40 uppercase tracking-widest font-bold">Order Placed</div>
+                        <div className="text-white font-semibold text-xs font-mono">{od.createdAt}</div>
+                      </div>
+
+                      {/* Requested Delivery Date */}
+                      <div className="bg-black/30 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-white/40 uppercase tracking-widest font-bold">Requested Delivery Date</div>
+                        <div className={`font-semibold text-xs ${rawDate ? 'text-emerald-300' : 'text-white/30 italic'}`}>
+                          {rawDate
+                            ? (() => {
+                                try {
+                                  return new Date(rawDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                                } catch { return rawDate; }
+                              })()
+                            : 'Not Recorded'}
+                        </div>
+                      </div>
+
+                      {/* Preferred Delivery Time */}
+                      <div className="bg-black/30 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-white/40 uppercase tracking-widest font-bold">Preferred Delivery Time</div>
+                        <div className={`font-semibold text-xs flex items-center gap-1.5 ${rawTime ? 'text-blue-300' : 'text-white/30 italic'}`}>
+                          {rawTime ? <><Clock className="w-3 h-3" />{rawTime}</> : 'Not Recorded'}
+                        </div>
+                      </div>
+
+                      {/* Delivery Schedule Status */}
+                      <div className="bg-black/30 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-white/40 uppercase tracking-widest font-bold">Delivery Schedule Status</div>
+                        <div className={`font-bold text-xs ${statusColor.split(' ')[0]}`}>
+                          {statusDot} {schedStatus}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* Gift Note Section - if any gift fields present */}
               {(selectedOrderDetails.customer.giftRecipientName || selectedOrderDetails.customer.giftSenderName || selectedOrderDetails.customer.giftMessage) && (
                 <div className="bg-amber-400/5 border border-amber-400/30 rounded-xl p-4 space-y-2">
@@ -4737,60 +4810,84 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       }
                     }
                     return (
-                      <div key={idx} className="py-3 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                        <div className="flex-1 min-w-0">
-                          <div className="font-bold text-white text-sm flex items-center flex-wrap gap-2">
-                            <span>{title}</span>
-                            {it.customUnitValue != null && (
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
-                                Size / Portion: {it.customUnitValue} {it.customUnitName || 'kg'}
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-[11px] text-white/60">Qty: {it.quantity} • {isPkg ? 'Ready-Made Package' : (singleObj?.category || 'Single Item')}</div>
+                         <div key={idx} className="py-3 flex items-start gap-3">
+                         {/* Product Thumbnail */}
+                         {(() => {
+                           const imgSrc = isPkg
+                             ? (it.package?.image || it.package?.imageUrl)
+                             : (singleObj?.image || singleObj?.imageUrl);
+                           return imgSrc ? (
+                             <div className="w-16 h-16 rounded-lg overflow-hidden border border-white/15 bg-black/40 flex-shrink-0">
+                               <img
+                                 src={imgSrc}
+                                 alt={title}
+                                 className="w-full h-full object-cover"
+                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                               />
+                             </div>
+                           ) : (
+                             <div className="w-16 h-16 rounded-lg border border-white/10 bg-white/5 flex-shrink-0 flex items-center justify-center">
+                               <Gift className="w-6 h-6 text-white/20" />
+                             </div>
+                           );
+                         })()}
 
-                          {/* Customer Customization Details (Text & Photo) */}
-                          {(it.customerInputText || it.customerInputImageUrl) && (
-                            <div className="mt-2 bg-[#3a060b]/70 border border-purple-400/30 rounded-lg p-2.5 space-y-1.5 max-w-md">
-                              <div className="text-[10px] text-purple-300 font-bold uppercase tracking-wider flex items-center gap-1">
-                                <Sparkles className="w-3 h-3 text-purple-400" />
-                                <span>Client Customization Details</span>
-                              </div>
-                              {it.customerInputText && (
-                                <div className="text-white text-xs bg-black/40 rounded p-1.5 border border-white/10">
-                                  <span className="text-white/60 font-semibold">Custom Text: </span>
-                                  <span className="text-amber-200 font-medium font-mono">"{it.customerInputText}"</span>
-                                </div>
-                              )}
-                              {it.customerInputImageUrl && (
-                                <div className="pt-1 flex items-center gap-2">
-                                  <div className="w-14 h-14 rounded-lg overflow-hidden border border-purple-400/40 bg-black/60 flex-shrink-0">
-                                    <img
-                                      src={it.customerInputImageUrl}
-                                      alt="Client Custom Photo"
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="text-[10px] text-white/70 block">Client Uploaded Photo</span>
-                                    <a
-                                      href={it.customerInputImageUrl}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      className="text-amber-300 hover:underline text-[11px] font-bold inline-flex items-center gap-1 mt-0.5"
-                                    >
-                                      <Eye className="w-3 h-3" /> View Full Image
-                                    </a>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                        <div className="font-bold text-amber-300 text-sm whitespace-nowrap">
-                          {isUsd ? `$${(itemPrice * it.quantity).toFixed(2)} USD` : `${(itemPrice * it.quantity).toLocaleString()} ብር`}
-                        </div>
-                      </div>
+                         <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                           <div className="flex-1 min-w-0">
+                             <div className="font-bold text-white text-sm flex items-center flex-wrap gap-2">
+                               <span>{title}</span>
+                               {it.customUnitValue != null && (
+                                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                                   Size / Portion: {it.customUnitValue} {it.customUnitName || 'kg'}
+                                 </span>
+                               )}
+                             </div>
+                             <div className="text-[11px] text-white/60">Qty: {it.quantity} • {isPkg ? 'Ready-Made Package' : (singleObj?.category || 'Single Item')}</div>
+
+                             {/* Customer Customization Details (Text & Photo) */}
+                             {(it.customerInputText || it.customerInputImageUrl) && (
+                               <div className="mt-2 bg-[#3a060b]/70 border border-purple-400/30 rounded-lg p-2.5 space-y-1.5 max-w-md">
+                                 <div className="text-[10px] text-purple-300 font-bold uppercase tracking-wider flex items-center gap-1">
+                                   <Sparkles className="w-3 h-3 text-purple-400" />
+                                   <span>Client Customization Details</span>
+                                 </div>
+                                 {it.customerInputText && (
+                                   <div className="text-white text-xs bg-black/40 rounded p-1.5 border border-white/10">
+                                     <span className="text-white/60 font-semibold">Custom Text: </span>
+                                     <span className="text-amber-200 font-medium font-mono">"{it.customerInputText}"</span>
+                                   </div>
+                                 )}
+                                 {it.customerInputImageUrl && (
+                                   <div className="pt-1 flex items-center gap-2">
+                                     <div className="w-14 h-14 rounded-lg overflow-hidden border border-purple-400/40 bg-black/60 flex-shrink-0">
+                                       <img
+                                         src={it.customerInputImageUrl}
+                                         alt="Client Custom Photo"
+                                         className="w-full h-full object-cover"
+                                       />
+                                     </div>
+                                     <div>
+                                       <span className="text-[10px] text-white/70 block">Client Uploaded Photo</span>
+                                       <a
+                                         href={it.customerInputImageUrl}
+                                         target="_blank"
+                                         rel="noreferrer"
+                                         className="text-amber-300 hover:underline text-[11px] font-bold inline-flex items-center gap-1 mt-0.5"
+                                       >
+                                         <Eye className="w-3 h-3" /> View Full Image
+                                       </a>
+                                     </div>
+                                   </div>
+                                 )}
+                               </div>
+                             )}
+                           </div>
+                           <div className="font-bold text-amber-300 text-sm whitespace-nowrap">
+                             {isUsd ? `$${(itemPrice * it.quantity).toFixed(2)} USD` : `${(itemPrice * it.quantity).toLocaleString()} ብር`}
+                           </div>
+                         </div>
+                       </div>
+
                     );
                   })}
                 </div>

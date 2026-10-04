@@ -25,6 +25,7 @@ interface CartFormDraft {
   address?: string;
   city?: string;
   deliveryDate?: string;
+  deliveryTime?: string;
   recipientName?: string;
   senderName?: string;
   giftMessage?: string;
@@ -92,6 +93,7 @@ export const CartPage: React.FC<CartPageProps> = ({
   const [address, setAddress] = useState(draft.address || '');
   const [city, setCity] = useState(draft.city || '');
   const [deliveryDate, setDeliveryDate] = useState(draft.deliveryDate || '');
+  const [deliveryTime, setDeliveryTime] = useState(draft.deliveryTime || '');
   const [recipientName, setRecipientName] = useState(draft.recipientName || '');
   const [senderName, setSenderName] = useState(draft.senderName || '');
   const [giftMessage, setGiftMessage] = useState(draft.giftMessage || '');
@@ -109,6 +111,7 @@ export const CartPage: React.FC<CartPageProps> = ({
           address,
           city,
           deliveryDate,
+          deliveryTime,
           recipientName,
           senderName,
           giftMessage,
@@ -117,7 +120,7 @@ export const CartPage: React.FC<CartPageProps> = ({
         })
       );
     } catch {}
-  }, [phone, recipientPhone, address, city, deliveryDate, recipientName, senderName, giftMessage, selectedBoxId, shipMode]);
+  }, [phone, recipientPhone, address, city, deliveryDate, deliveryTime, recipientName, senderName, giftMessage, selectedBoxId, shipMode]);
 
   // Cart Helpers
   const getItemName = (item: CartItem): string => {
@@ -266,6 +269,11 @@ export const CartPage: React.FC<CartPageProps> = ({
     }
     // ─────────────────────────────────────────────────────────────────────────
 
+    const chosenDate = deliveryDate ? deliveryDate.trim() : '';
+    const chosenTime = deliveryTime ? deliveryTime.trim() : '';
+    const scheduleStatus: 'Scheduled' | 'Not Recorded' | 'Awaiting Customer Confirmation' = 
+      chosenDate ? 'Scheduled' : (chosenTime ? 'Awaiting Customer Confirmation' : 'Not Recorded');
+
     const newOrder: Order = {
       id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
       createdAt: new Date().toISOString().slice(0, 16).replace('T', ' '),
@@ -277,13 +285,18 @@ export const CartPage: React.FC<CartPageProps> = ({
         address: address.trim(),
         city: city.trim() || 'Addis Ababa',
         zipCode: '1000',
-        deliveryDate: deliveryDate || undefined,
+        deliveryDate: chosenDate || undefined,
+        deliveryTime: chosenTime || undefined,
+        deliveryScheduleStatus: scheduleStatus,
         giftRecipientName: recipientName.trim(),
         giftRecipientPhone: shipMode === 'recipient' ? recipientPhone.trim() : '',
         giftSenderName: senderName.trim(),
         giftMessage: giftMessage.trim(),
         shipMode: shipMode,
       },
+      deliveryDate: chosenDate || undefined,
+      deliveryTime: chosenTime || undefined,
+      deliveryScheduleStatus: scheduleStatus,
       items: [...items],
       subtotal: subtotal,
       shipping: 0,
@@ -742,25 +755,49 @@ export const CartPage: React.FC<CartPageProps> = ({
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center gap-2">
-                        <Calendar className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Preferred Delivery Date</span>
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="date"
-                          value={deliveryDate}
-                          onChange={(e) => setDeliveryDate(e.target.value)}
-                          min={new Date().toISOString().split('T')[0]}
-                          className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400 cursor-pointer"
-                          style={{
-                            colorScheme: 'dark',
-                          }}
-                        />
-                        <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-300/50 pointer-events-none" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center gap-2">
+                          <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Preferred Delivery Date</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="date"
+                            value={deliveryDate}
+                            onChange={(e) => setDeliveryDate(e.target.value)}
+                            min={new Date().toISOString().split('T')[0]}
+                            className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400 cursor-pointer"
+                            style={{
+                              colorScheme: 'dark',
+                            }}
+                          />
+                          <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-300/50 pointer-events-none" />
+                        </div>
+                        <p className="text-[10px] text-white/50 mt-1.5">Leave blank for earliest available delivery</p>
                       </div>
-                      <p className="text-[10px] text-white/50 mt-1.5">Leave blank for earliest available delivery</p>
+
+                      <div>
+                        <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center gap-2">
+                          <Clock className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Preferred Delivery Time</span>
+                        </label>
+                        <div className="relative">
+                          <select
+                            value={deliveryTime}
+                            onChange={(e) => setDeliveryTime(e.target.value)}
+                            className="w-full bg-[#1e0204] border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400 cursor-pointer appearance-none"
+                          >
+                            <option value="">Select delivery time window (Optional)</option>
+                            <option value="Morning (9:00 AM – 12:00 PM)">Morning (9:00 AM – 12:00 PM)</option>
+                            <option value="Afternoon (1:00 PM – 5:00 PM)">Afternoon (1:00 PM – 5:00 PM)</option>
+                            <option value="Evening (5:00 PM – 8:00 PM)">Evening (5:00 PM – 8:00 PM)</option>
+                            <option value="Flexible / Anytime">Flexible / Anytime (Business Hours)</option>
+                          </select>
+                          <Clock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-300/50 pointer-events-none" />
+                        </div>
+                        <p className="text-[10px] text-white/50 mt-1.5">Recipient will be contacted before delivery</p>
+                      </div>
                     </div>
                   </div>
                 </div>

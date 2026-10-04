@@ -63,6 +63,8 @@ export interface OrderCustomerInfo {
   city: string;
   zipCode: string;
   deliveryDate?: string;
+  deliveryTime?: string;
+  deliveryScheduleStatus?: 'Scheduled' | 'Not Recorded' | 'Awaiting Customer Confirmation';
   giftRecipientName?: string;
   giftRecipientPhone?: string;
   giftSenderName?: string;
@@ -99,6 +101,10 @@ export interface Order {
   deliveryFee?: number;       // 0 for both markets currently
   chapaTxRef?: string;        // Chapa transaction reference ID
   paymentStatus?: PaymentStatus;
+  // Delivery schedule fields (top-level mirrors customer_info for easy access)
+  deliveryDate?: string;
+  deliveryTime?: string;
+  deliveryScheduleStatus?: 'Scheduled' | 'Not Recorded' | 'Awaiting Customer Confirmation';
   // Manual payment verification fields
   senderName?: string;        // Name used by customer to send manual payment
   transactionId?: string;     // Optional transaction/reference ID
