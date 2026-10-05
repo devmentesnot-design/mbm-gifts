@@ -71,6 +71,10 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
   // Market Price Helpers
   const getPkgPrice = (pkg: PreparedPackage): number => {
+    if (pkg.hasCustomUnit) {
+      // Use the same formula as the modal so card price === modal opening price
+      return calculateCustomUnitPrice(pkg, pkg.customUnitMin && pkg.customUnitMin > 0 ? pkg.customUnitMin : 1, buyerMarket === 'INTERNATIONAL' ? 'INTERNATIONAL' : 'ETB');
+    }
     if (buyerMarket === 'INTERNATIONAL') {
       if (pkg.price_usd != null && pkg.price_usd > 0) return pkg.price_usd;
       return Math.round((pkg.price / 120) * 100) / 100;
@@ -79,6 +83,9 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   };
 
   const getItemPrice = (item: CustomBoxOption): number => {
+    if (item.hasCustomUnit) {
+      return calculateCustomUnitPrice(item, item.customUnitMin && item.customUnitMin > 0 ? item.customUnitMin : 1, buyerMarket === 'INTERNATIONAL' ? 'INTERNATIONAL' : 'ETB');
+    }
     if (buyerMarket === 'INTERNATIONAL') {
       if (item.price_usd != null && item.price_usd > 0) return item.price_usd;
       return Math.round((item.price / 120) * 100) / 100;

@@ -377,19 +377,16 @@ export const calculateCustomUnitPrice = (
   const minUnit = item.customUnitMin && item.customUnitMin > 0 ? item.customUnitMin : 1;
   const effectiveUnit = Math.max(minUnit, unitValue);
 
-  // If explicit price per unit is configured
-  if (isUsd && item.customUnitPricePerUnitUsd != null && item.customUnitPricePerUnitUsd > 0) {
-    return Math.round(item.customUnitPricePerUnitUsd * effectiveUnit * 100) / 100;
-  }
-  if (!isUsd && item.customUnitPricePerUnit != null && item.customUnitPricePerUnit > 0) {
-    return Math.round(item.customUnitPricePerUnit * effectiveUnit);
-  }
-
-  // Otherwise, default price per unit = basePrice / minUnit
+  // ── Source-of-truth: `price` is the total at the minimum unit.
+  // We derive pricePerUnit from it so the modal ALWAYS matches the card.
+  // NOTE: customUnitPricePerUnit is intentionally ignored here because it can
+  // be stale/mismatched with the `price` field, which is what the admin sets
+  // and what the shop card displays.
   const pricePerUnit = basePrice / minUnit;
   const calculated = pricePerUnit * effectiveUnit;
   return isUsd ? Math.round(calculated * 100) / 100 : Math.round(calculated);
 };
+
 
 export const getStoredOrders = async (): Promise<any[]> => {
   if (!isSupabaseConfigured) {
