@@ -25,7 +25,7 @@ export const OfficialReceiptModal: React.FC<OfficialReceiptModalProps> = ({
   };
 
   return (
-    <div className={`receipt-container font-inter ${isStandalonePage ? 'min-h-screen bg-[#1f0305] text-white p-3 sm:p-6 flex flex-col items-center justify-center' : 'fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto'}`}>
+    <div className={`receipt-container font-inter ${isStandalonePage ? 'min-h-screen bg-[#FBF8F2] text-[#241A15] p-3 sm:p-6 flex flex-col items-center justify-center' : 'fixed inset-0 z-50 bg-[#241A15]/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto'}`}>
       
       <div className="w-full max-w-3xl flex flex-col my-auto">
         {/* Top Action Bar (Hidden in Print) */}
@@ -33,24 +33,24 @@ export const OfficialReceiptModal: React.FC<OfficialReceiptModalProps> = ({
           {onClose ? (
             <button
               onClick={onClose}
-              className="flex items-center gap-2 text-white/80 hover:text-white text-xs uppercase tracking-wider font-bold cursor-pointer transition-colors bg-white/10 hover:bg-white/20 px-3.5 py-1.5 rounded-lg"
+              className="flex items-center gap-2 text-[#FBF8F2] hover:text-[#E6D5B8] text-xs uppercase tracking-wider font-bold cursor-pointer transition-colors bg-white/10 hover:bg-white/20 px-3.5 py-1.5 rounded-lg"
             >
-              <ArrowLeft className="w-4 h-4 text-amber-300" />
+              <ArrowLeft className="w-4 h-4 text-[#E6D5B8]" />
               <span>Back to Orders</span>
             </button>
           ) : onNavigate ? (
             <button
               onClick={() => onNavigate('/my-orders')}
-              className="flex items-center gap-2 text-white/80 hover:text-white text-xs uppercase tracking-wider font-bold cursor-pointer transition-colors bg-white/10 hover:bg-white/20 px-3.5 py-1.5 rounded-lg"
+              className="flex items-center gap-2 text-[#FBF8F2] hover:text-[#E6D5B8] text-xs uppercase tracking-wider font-bold cursor-pointer transition-colors bg-white/10 hover:bg-white/20 px-3.5 py-1.5 rounded-lg"
             >
-              <ArrowLeft className="w-4 h-4 text-amber-300" />
+              <ArrowLeft className="w-4 h-4 text-[#E6D5B8]" />
               <span>Go to My Orders</span>
             </button>
           ) : <div />}
 
           <button
             onClick={handlePrint}
-            className="px-4 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-amber-400/20 cursor-pointer transition-all"
+            className="px-4 py-1.5 rounded-lg bg-[#E6D5B8] hover:bg-[#DCC39A] text-[#241A15] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md cursor-pointer transition-all"
           >
             <Printer className="w-4 h-4" />
             <span>Print / Save PDF</span>
@@ -63,18 +63,18 @@ export const OfficialReceiptModal: React.FC<OfficialReceiptModalProps> = ({
           {/* Document Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-slate-100">
             <div className="flex items-center gap-3.5">
-              {/* Logo with high-contrast luxury crimson container so white/gold logo is crystal clear */}
-              <div className="bg-[#3b060a] p-2 rounded-xl border border-[#8c1119]/30 shadow-md flex items-center justify-center flex-shrink-0">
+              {/* Logo with high-contrast luxury container so white/gold logo is crystal clear */}
+              <div className="bg-[#241A15] p-2 rounded-xl border border-[#D8C6A8]/40 shadow-md flex items-center justify-center flex-shrink-0">
                 <img 
-                  src="/logo.png" 
+                  src="/golden_logo.png" 
                   alt="MBM Gifts Logo" 
-                  className="h-11 sm:h-13 w-auto object-contain"
+                  className="h-11 sm:h-13 w-auto object-contain brightness-200"
                 />
               </div>
               <div>
-                <h1 className="font-podium text-xl sm:text-2xl font-bold tracking-wide text-[#8c1119] uppercase leading-tight">MBM Luxury Gifts</h1>
+                <h1 className="font-podium text-xl sm:text-2xl font-bold tracking-wide text-[#241A15] uppercase leading-tight">MBM Luxury Gifts</h1>
                 <p className="text-[11px] text-slate-500 font-medium">Premium Gift Boxes & Curated Hampers</p>
-                <p className="text-[10px] text-slate-400">Addis Ababa, Ethiopia • support@mbmgifts.com</p>
+                <p className="text-[10px] text-slate-400">Addis Ababa, Ethiopia • info@mbmgifts.app</p>
               </div>
             </div>
 

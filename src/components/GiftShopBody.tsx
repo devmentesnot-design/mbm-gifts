@@ -491,11 +491,11 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     return (
       <div
         key={pkg.id}
-        className="group relative luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl overflow-hidden flex flex-col justify-between w-full shadow-lg"
+        className="group relative luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl overflow-hidden flex flex-col justify-between w-full shadow-sm hover:shadow-md"
       >
         <div className="p-1.5 sm:p-2.5">
           <div
-            className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
+            className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-[#F5EFE6]/60 border border-[#D8C6A8]/40 cursor-pointer group-hover:border-[#B8944A]/60 transition-all flex items-center justify-center"
             onClick={() => handlePackageClick(pkg)}
           >
             <img
@@ -504,17 +504,17 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               className="absolute inset-0 w-full h-full object-contain p-1.5 sm:p-2.5 group-hover:scale-105 transition-transform duration-700"
             />
             {pkg.badge && (
-              <span className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] text-[8px] sm:text-[10px] font-black tracking-wider sm:tracking-widest px-1.5 sm:px-2.5 py-0.5 sm:py-1 uppercase rounded-full shadow-md z-10">
+              <span className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 bg-gradient-to-r from-[#E6D5B8] to-[#DCC39A] text-[#241A15] border border-[#D8C6A8] text-[8px] sm:text-[10px] font-bold tracking-wider sm:tracking-widest px-1.5 sm:px-2.5 py-0.5 sm:py-1 uppercase rounded-full shadow-sm z-10">
                 {pkg.badge}
               </span>
             )}
             {pkg.hasCustomUnit && (
-              <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-amber-300 text-[8px] sm:text-[9px] font-inter font-bold px-1.5 py-0.5 rounded border border-amber-400/30 z-10">
+              <span className="absolute bottom-1.5 right-1.5 bg-[#FBF8F2]/90 text-[#3A2A20] text-[8px] sm:text-[9px] font-inter font-bold px-1.5 py-0.5 rounded border border-[#D8C6A8] z-10 shadow-sm">
                 From {pkg.customUnitMin || 1} {pkg.customUnitName || 'kg'}
               </span>
             )}
             {pkg.requiresCustomInput && !pkg.hasCustomUnit && (
-              <span className="absolute bottom-1.5 right-1.5 bg-purple-900/80 text-purple-200 text-[8px] sm:text-[9px] font-inter font-semibold px-1.5 py-0.5 rounded border border-purple-400/30 z-10">
+              <span className="absolute bottom-1.5 right-1.5 bg-[#E6D5B8]/90 text-[#3A2A20] text-[8px] sm:text-[9px] font-inter font-semibold px-1.5 py-0.5 rounded border border-[#D8C6A8] z-10 shadow-sm">
                 Customizable
               </span>
             )}
@@ -522,29 +522,29 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
         </div>
         <div className="p-2 sm:p-4 pt-0 flex-1 flex flex-col justify-between">
           <div className="cursor-pointer" onClick={() => handlePackageClick(pkg)}>
-            <div className="text-[9px] sm:text-[10px] text-amber-300/90 font-bold uppercase tracking-wider truncate mb-0.5">
+            <div className="text-[9px] sm:text-[10px] text-[#8E6E2F] font-bold uppercase tracking-wider truncate mb-0.5">
               {primaryCategory}
             </div>
-            <h3 className="font-podium text-xs sm:text-lg uppercase font-bold text-white tracking-wide mb-1 group-hover:text-amber-300 transition-colors line-clamp-1">
+            <h3 className="font-podium text-xs sm:text-lg uppercase font-bold text-[#241A15] tracking-wide mb-1 group-hover:text-[#B8944A] transition-colors line-clamp-1">
               {pkg.name}
             </h3>
-            <p className="text-white/60 text-[10px] sm:text-[12px] font-inter line-clamp-2 leading-tight sm:leading-relaxed mb-2 sm:mb-3">
+            <p className="text-[#756457] text-[10px] sm:text-[12px] font-inter line-clamp-2 leading-tight sm:leading-relaxed mb-2 sm:mb-3">
               {pkg.shortDesc}
             </p>
           </div>
-          <div className="pt-2 sm:pt-3 mt-auto border-t border-white/10 z-20">
+          <div className="pt-2 sm:pt-3 mt-auto border-t border-[#D8C6A8]/40 z-20">
             <div className="flex items-center justify-between gap-1 mb-1.5 sm:mb-2.5">
-              <span className="text-xs sm:text-xl font-bold font-inter text-amber-300">
+              <span className="text-sm sm:text-2xl font-extrabold font-inter text-[#7A5C1E] tracking-tight">
                 {formatPrice(getPkgPrice(pkg), currency)}
               </span>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch gap-1 sm:gap-2">
               <button
                 onClick={(e) => { e.stopPropagation(); handlePackageClick(pkg); }}
-                className="flex-1 bg-black/50 hover:bg-black/80 text-amber-300 border border-amber-400/40 hover:border-amber-400 px-1.5 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer shadow-sm"
+                className="flex-1 bg-[#E6D5B8]/40 hover:bg-[#E6D5B8]/80 text-[#3A2A20] border border-[#D8C6A8] hover:border-[#B8944A] px-1.5 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer shadow-sm"
                 title="View Package Details"
               >
-                <Eye className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                <Eye className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0 text-[#B8944A]" />
                 <span>Details</span>
               </button>
               <button
@@ -556,10 +556,10 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     onAddToCartPrepared(pkg);
                   }
                 }}
-                className="flex-1 bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-1.5 sm:px-3 py-1 sm:py-2 text-[9px] sm:text-xs font-inter uppercase tracking-wider rounded-md sm:rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer shadow-md shadow-amber-400/20"
+                className="flex-1 bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] border border-[#241A15] font-bold px-1.5 sm:px-3 py-1 sm:py-2 text-[9px] sm:text-xs font-inter uppercase tracking-wider rounded-md sm:rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer shadow-sm hover:shadow-md"
                 title="Add to Cart"
               >
-                <ShoppingBag className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                <ShoppingBag className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0 text-[#E6D5B8]" />
                 <span>Add</span>
               </button>
             </div>
@@ -567,10 +567,10 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             {activeCategory === 'All' && routeCategory && (
               <button
                 onClick={(e) => { e.stopPropagation(); setActiveCategory(routeCategory); }}
-                className="group/sa mt-2 w-full flex items-center justify-center gap-1.5 py-1 text-[10px] sm:text-xs text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-md transition-all cursor-pointer bg-black/20 hover:bg-black/40"
+                className="group/sa mt-2 w-full flex items-center justify-center gap-1.5 py-1 text-[10px] sm:text-xs text-[#8E6E2F] hover:text-[#241A15] font-inter font-bold uppercase tracking-wider border border-[#D8C6A8]/50 hover:border-[#B8944A] rounded-md transition-all cursor-pointer bg-[#E6D5B8]/30 hover:bg-[#E6D5B8]/60"
               >
                 <span>See all {routeCategory}</span>
-                <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
+                <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform text-[#B8944A]" />
               </button>
             )}
           </div>
@@ -595,12 +595,12 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
         <div className={`grid gap-2 sm:gap-3.5 md:gap-4 grid-cols-2 ${isSidebarOpen ? 'md:grid-cols-3 lg:grid-cols-4' : 'md:grid-cols-4 lg:grid-cols-5'}`}>
           {itemsToRender}
           {allItems.length === 0 && (
-            <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
-              <p className="text-sm font-medium mb-2">No gift packages matched your search criteria.</p>
+            <div className="col-span-full py-16 text-center text-[#756457] border border-dashed border-[#D8C6A8] rounded-2xl p-6 bg-[#FBF8F2]/60">
+              <p className="text-sm font-medium mb-2 text-[#3A2A20]">No gift packages matched your search criteria.</p>
               {searchTerm && (
                 <button
                   onClick={() => { setSearchTerm(''); setActiveCategory('All'); }}
-                  className="text-xs text-amber-300 hover:text-amber-200 underline font-bold uppercase tracking-wider cursor-pointer"
+                  className="text-xs text-[#B8944A] hover:text-[#8E6E2F] underline font-bold uppercase tracking-wider cursor-pointer"
                 >
                   Clear filters and search
                 </button>
@@ -613,7 +613,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             <button
               onClick={() => { setPkgPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               disabled={safePage === 1}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-[#FBF8F2] border-[#D8C6A8] text-[#3A2A20] hover:border-[#B8944A] hover:text-[#B8944A]"
             >
               <span>‹</span> Prev
             </button>
@@ -622,14 +622,14 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 const isActive = p === safePage;
                 const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
                 if (!show) {
-                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-white/30 text-xs px-1">…</span>;
+                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#756457] text-xs px-1">…</span>;
                   return null;
                 }
                 return (
                   <button
                     key={p}
                     onClick={() => { setPkgPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-black/40 border-white/15 text-white/60 hover:border-amber-400/50 hover:text-amber-300'}`}
+                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-[#241A15] text-[#FBF8F2] border-[#241A15] shadow-sm' : 'bg-[#FBF8F2] border-[#D8C6A8] text-[#756457] hover:border-[#B8944A] hover:text-[#241A15]'}`}
                   >{p}</button>
                 );
               })}
@@ -637,14 +637,14 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             <button
               onClick={() => { setPkgPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               disabled={safePage === totalPages}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-[#FBF8F2] border-[#D8C6A8] text-[#3A2A20] hover:border-[#B8944A] hover:text-[#B8944A]"
             >
               Next <span>›</span>
             </button>
           </div>
         )}
         {totalPages > 1 && (
-          <p className="text-center text-[11px] text-white/40 mt-2 font-inter">
+          <p className="text-center text-[11px] text-[#756457] mt-2 font-inter">
             Showing {(safePage - 1) * SHOP_PAGE_SIZE + 1}–{Math.min(safePage * SHOP_PAGE_SIZE, allItems.length)} of {allItems.length} packages · Page {safePage} of {totalPages}
           </p>
         )}
@@ -665,10 +665,10 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     return (
       <div
         key={item.id}
-        className="group relative luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 flex flex-col justify-between w-full shadow-lg"
+        className="group relative luxury-satin-card luxury-satin-card-hover rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 flex flex-col justify-between w-full shadow-sm hover:shadow-md"
       >
         <div
-          className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-black/40 border border-white/10 cursor-pointer group-hover:border-[#D9A514]/40 transition-all flex items-center justify-center"
+          className="relative w-full aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-[#F5EFE6]/60 border border-[#D8C6A8]/40 cursor-pointer group-hover:border-[#B8944A]/60 transition-all flex items-center justify-center"
           onClick={() => openCustomItemModal(item)}
         >
           <img
@@ -678,36 +678,36 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             loading="lazy"
           />
           {item.hasCustomUnit && (
-            <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-amber-300 text-[8px] sm:text-[9px] font-inter font-bold px-1.5 py-0.5 rounded border border-amber-400/30 z-10">
+            <span className="absolute bottom-1.5 right-1.5 bg-[#FBF8F2]/90 text-[#3A2A20] text-[8px] sm:text-[9px] font-inter font-bold px-1.5 py-0.5 rounded border border-[#D8C6A8] z-10 shadow-sm">
               From {item.customUnitMin || 1} {item.customUnitName || 'kg'}
             </span>
           )}
           {item.requiresCustomInput && !item.hasCustomUnit && (
-            <span className="absolute bottom-1.5 right-1.5 bg-purple-900/80 text-purple-200 text-[8px] sm:text-[9px] font-inter font-semibold px-1.5 py-0.5 rounded border border-purple-400/30 z-10">
+            <span className="absolute bottom-1.5 right-1.5 bg-[#E6D5B8]/90 text-[#3A2A20] text-[8px] sm:text-[9px] font-inter font-semibold px-1.5 py-0.5 rounded border border-[#D8C6A8] z-10 shadow-sm">
               Customizable
             </span>
           )}
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <span className="bg-[#230005]/90 text-[#F5C542] border border-[#D9A514]/50 text-[9px] sm:text-[11px] font-bold uppercase tracking-wider px-2 sm:px-3 py-1 sm:py-1.5 rounded-full flex items-center gap-1 shadow-lg backdrop-blur-sm">
-              <Eye className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#F5C542]" />
+          <div className="absolute inset-0 bg-[#241A15]/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <span className="bg-[#FBF8F2]/95 text-[#241A15] border border-[#D8C6A8] text-[9px] sm:text-[11px] font-bold uppercase tracking-wider px-2 sm:px-3 py-1 sm:py-1.5 rounded-full flex items-center gap-1 shadow-md backdrop-blur-sm">
+              <Eye className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#B8944A]" />
               <span className="hidden sm:inline">View Details</span>
             </span>
           </div>
         </div>
         <div className="mt-2 sm:mt-3 cursor-pointer flex-1 flex flex-col" onClick={() => openCustomItemModal(item)}>
-          <div className="text-[9px] sm:text-[10px] text-amber-300/90 font-bold uppercase tracking-wider truncate mb-0.5">
+          <div className="text-[9px] sm:text-[10px] text-[#8E6E2F] font-bold uppercase tracking-wider truncate mb-0.5">
             {primaryCategory}
           </div>
-          <div className="font-podium font-bold text-xs sm:text-base text-white uppercase line-clamp-1 group-hover:text-amber-300 transition-colors">{item.name}</div>
-          <p className="text-white/60 text-[10px] sm:text-xs font-inter line-clamp-2 mt-0.5 sm:mt-1 leading-tight sm:leading-snug">{item.description}</p>
+          <div className="font-podium font-bold text-xs sm:text-base text-[#241A15] uppercase line-clamp-1 group-hover:text-[#B8944A] transition-colors">{item.name}</div>
+          <p className="text-[#756457] text-[10px] sm:text-xs font-inter line-clamp-2 mt-0.5 sm:mt-1 leading-tight sm:leading-snug">{item.description}</p>
         </div>
-        <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-white/10">
+        <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-[#D8C6A8]/40">
           <div className="flex items-center justify-between gap-1 mb-1.5 sm:mb-2.5">
-            <span className="font-inter font-bold text-xs sm:text-lg text-amber-300">
+            <span className="font-inter font-extrabold text-sm sm:text-xl text-[#7A5C1E] tracking-tight">
               {formatPrice(getItemPrice(item), currency)}
             </span>
             {item.hasCustomUnit && (
-              <span className="text-[9px] text-amber-200/70 font-normal">
+              <span className="text-[9px] text-[#756457] font-normal">
                 ({item.customUnitMin || 1} {item.customUnitName || 'kg'})
               </span>
             )}
@@ -715,17 +715,17 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={() => openCustomItemModal(item)}
-              className="flex-1 bg-black/40 hover:bg-black/70 text-amber-300 border border-amber-400/30 hover:border-amber-400 px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap shadow-sm"
+              className="flex-1 bg-[#E6D5B8]/40 hover:bg-[#E6D5B8]/80 text-[#3A2A20] border border-[#D8C6A8] hover:border-[#B8944A] px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap shadow-sm"
               title="View Item Details"
             >
-              <Eye className="w-3 sm:w-4 h-3 sm:h-4 text-amber-300" />
+              <Eye className="w-3 sm:w-4 h-3 sm:h-4 text-[#B8944A]" />
               <span className="hidden sm:inline">Details</span>
             </button>
-            <div className="flex items-center border border-white/20 rounded-md sm:rounded-lg overflow-hidden bg-black/40">
-              <button onClick={() => handleCustomQtyChange(item.id, -1)} className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer" title="Decrease quantity">
+            <div className="flex items-center border border-[#D8C6A8] rounded-md sm:rounded-lg overflow-hidden bg-[#FBF8F2]">
+              <button onClick={() => handleCustomQtyChange(item.id, -1)} className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-[#3A2A20] hover:bg-[#E6D5B8]/50 transition-colors cursor-pointer" title="Decrease quantity">
                 <Minus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
               </button>
-              <span className="w-5 sm:w-7 text-center text-xs sm:text-sm font-bold text-white font-inter">{qty}</span>
+              <span className="w-5 sm:w-7 text-center text-xs sm:text-sm font-bold text-[#241A15] font-inter">{qty}</span>
               <button
                 onClick={() => {
                   if (item.hasCustomUnit) {
@@ -738,7 +738,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     handleCustomQtyChange(item.id, 1);
                   }
                 }}
-                className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
+                className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-[#3A2A20] hover:bg-[#E6D5B8]/50 transition-colors cursor-pointer"
                 title="Increase quantity"
               >
                 <Plus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
@@ -749,10 +749,10 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           {activeCategory === 'All' && routeCategory && (
             <button
               onClick={(e) => { e.stopPropagation(); setActiveCategory(routeCategory); }}
-              className="group/sa mt-2 w-full flex items-center justify-center gap-1.5 py-1 text-[10px] sm:text-xs text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-md transition-all cursor-pointer bg-black/20 hover:bg-black/40"
+              className="group/sa mt-2 w-full flex items-center justify-center gap-1.5 py-1 text-[10px] sm:text-xs text-[#8E6E2F] hover:text-[#241A15] font-inter font-bold uppercase tracking-wider border border-[#D8C6A8]/50 hover:border-[#B8944A] rounded-md transition-all cursor-pointer bg-[#E6D5B8]/30 hover:bg-[#E6D5B8]/60"
             >
               <span>See all {routeCategory}</span>
-              <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
+              <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform text-[#B8944A]" />
             </button>
           )}
         </div>
@@ -776,12 +776,12 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
         <div className={`grid gap-2 sm:gap-3.5 grid-cols-2 ${isSidebarOpen ? 'md:grid-cols-3 xl:grid-cols-4' : 'md:grid-cols-4 xl:grid-cols-5'}`}>
           {itemsToRender}
           {allItems.length === 0 && (
-            <div className="col-span-full py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
-              <p className="text-sm font-medium mb-2">No custom items matched your search criteria.</p>
+            <div className="col-span-full py-16 text-center text-[#756457] border border-dashed border-[#D8C6A8] rounded-2xl p-6 bg-[#FBF8F2]/60">
+              <p className="text-sm font-medium mb-2 text-[#3A2A20]">No custom items matched your search criteria.</p>
               {searchTerm && (
                 <button
                   onClick={() => { setSearchTerm(''); setActiveCategory('All'); }}
-                  className="text-xs text-amber-300 hover:text-amber-200 underline font-bold uppercase tracking-wider cursor-pointer"
+                  className="text-xs text-[#B8944A] hover:text-[#8E6E2F] underline font-bold uppercase tracking-wider cursor-pointer"
                 >
                   Clear filters and search
                 </button>
@@ -794,7 +794,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             <button
               onClick={() => { setBuildPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               disabled={safePage === 1}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-[#FBF8F2] border-[#D8C6A8] text-[#3A2A20] hover:border-[#B8944A] hover:text-[#B8944A]"
             >
               <span>‹</span> Prev
             </button>
@@ -803,14 +803,14 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 const isActive = p === safePage;
                 const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
                 if (!show) {
-                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-white/30 text-xs px-1">…</span>;
+                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#756457] text-xs px-1">…</span>;
                   return null;
                 }
                 return (
                   <button
                     key={p}
                     onClick={() => { setBuildPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-black/40 border-white/15 text-white/60 hover:border-amber-400/50 hover:text-amber-300'}`}
+                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-[#241A15] text-[#FBF8F2] border-[#241A15] shadow-sm' : 'bg-[#FBF8F2] border-[#D8C6A8] text-[#756457] hover:border-[#B8944A] hover:text-[#241A15]'}`}
                   >{p}</button>
                 );
               })}
@@ -818,14 +818,14 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             <button
               onClick={() => { setBuildPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               disabled={safePage === totalPages}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-[#FBF8F2] border-[#D8C6A8] text-[#3A2A20] hover:border-[#B8944A] hover:text-[#B8944A]"
             >
               Next <span>›</span>
             </button>
           </div>
         )}
         {totalPages > 1 && (
-          <p className="text-center text-[11px] text-white/40 mt-2 mb-4 font-inter">
+          <p className="text-center text-[11px] text-[#756457] mt-2 mb-4 font-inter">
             Showing {(safePage - 1) * SHOP_PAGE_SIZE + 1}–{Math.min(safePage * SHOP_PAGE_SIZE, allItems.length)} of {allItems.length} items · Page {safePage} of {totalPages}
           </p>
         )}
@@ -834,19 +834,19 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   };
 
   return (
-    <section id="packages" className="w-full px-2 sm:px-6 md:px-10 lg:px-16 py-10 sm:py-16 lg:py-24 bg-[#2B0005]/40 border-t border-b border-[#D9A514]/15 relative">
+    <section id="packages" className="w-full px-2 sm:px-6 md:px-10 lg:px-16 py-10 sm:py-16 lg:py-24 bg-transparent border-t border-b border-[#D8C6A8]/40 relative">
       <div className="max-w-[1400px] mx-auto">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div>
-            <span className="text-[#F5C542] text-xs font-inter tracking-[0.25em] uppercase font-bold mb-2 block">
+            <span className="text-[#8E6E2F] text-xs font-inter tracking-[0.25em] uppercase font-bold mb-2 block">
               Gifting, made simple
             </span>
-            <h2 className="font-podium text-2xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-[#FFF8ED]">
+            <h2 className="font-podium text-2xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-[#241A15]">
               Find the right gift
             </h2>
-            <p className="text-[#FFF8ED]/75 text-xs sm:text-sm max-w-md mt-2 sm:mt-3 font-inter">
+            <p className="text-[#756457] text-xs sm:text-sm max-w-md mt-2 sm:mt-3 font-inter">
               Pick a ready-made package, or build your own box item by item.
             </p>
           </div>
@@ -855,16 +855,16 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
         {/* Mode Toggle & Search Toolbar */}
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
           {/* Mode Toggle */}
-          <div className="inline-flex bg-[#230005]/80 border border-[#D9A514]/25 rounded-full p-1 gap-1 shadow-inner backdrop-blur-sm w-fit self-start">
+          <div className="inline-flex bg-[#FBF8F2] border border-[#D8C6A8] rounded-full p-1 gap-1 shadow-sm backdrop-blur-sm w-fit self-start">
             <button 
               onClick={() => { setMode('pkg'); setActiveCategory('All'); }}
-              className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-extrabold font-inter uppercase tracking-wider transition-all cursor-pointer ${mode === 'pkg' ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] shadow-lg' : 'text-[#FFF8ED]/70 hover:text-[#FFF8ED]'}`}
+              className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-extrabold font-inter uppercase tracking-wider transition-all cursor-pointer ${mode === 'pkg' ? 'bg-[#241A15] text-[#FBF8F2] shadow-sm' : 'text-[#756457] hover:text-[#241A15]'}`}
             >
               Ready-made packages
             </button>
             <button 
               onClick={() => { setMode('build'); setActiveCategory('All'); }}
-              className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-extrabold font-inter uppercase tracking-wider transition-all cursor-pointer ${mode === 'build' ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] text-[#2B0005] shadow-lg' : 'text-[#FFF8ED]/70 hover:text-[#FFF8ED]'}`}
+              className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-extrabold font-inter uppercase tracking-wider transition-all cursor-pointer ${mode === 'build' ? 'bg-[#241A15] text-[#FBF8F2] shadow-sm' : 'text-[#756457] hover:text-[#241A15]'}`}
             >
               Build your own
             </button>
@@ -872,18 +872,18 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
           {/* Search Input */}
           <div className="relative w-full lg:max-w-md">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#F5C542]/70" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#B8944A]" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder={`Search ${mode === 'pkg' ? 'packages, occasions, items...' : 'items, chocolates, accessories...'}`}
-              className="w-full bg-[#1e0004]/90 border border-[#D9A514]/30 rounded-full pl-9 pr-9 py-2.5 text-xs text-[#FFF8ED] placeholder:text-white/40 focus:outline-none focus:border-[#F5C542] focus:ring-1 focus:ring-[#F5C542]/40 transition-all shadow-inner font-inter"
+              className="w-full bg-[#FBF8F2] border border-[#D8C6A8] rounded-full pl-9 pr-9 py-2.5 text-xs text-[#241A15] placeholder:text-[#756457]/60 focus:outline-none focus:border-[#B8944A] focus:ring-1 focus:ring-[#B8944A]/40 transition-all shadow-sm font-inter"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-0.5 rounded-full"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#756457] hover:text-[#241A15] p-0.5 rounded-full"
                 title="Clear search"
               >
                 <X className="w-3.5 h-3.5" />
@@ -893,21 +893,21 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
         </div>
 
         {/* Mobile: Vertical Category Menu (Matches PC Sidebar) */}
-        <div className="md:hidden mb-5 bg-[#230005]/80 border border-[#D9A514]/25 rounded-2xl p-3 shadow-lg backdrop-blur-sm font-inter">
+        <div className="md:hidden mb-5 bg-[#FBF8F2]/95 border border-[#D8C6A8] rounded-2xl p-3 shadow-md backdrop-blur-sm font-inter">
           {/* Header / Toggle Button */}
           <button
             onClick={() => setIsMobileCategoryOpen(!isMobileCategoryOpen)}
             className="w-full flex items-center justify-between py-1 text-left cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542]">
+              <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#8E6E2F]">
                 Categories
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/40 text-amber-300 font-bold border border-amber-400/30">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E6D5B8]/50 text-[#241A15] font-bold border border-[#D8C6A8]">
                 {activeCategory}
               </span>
             </div>
-            <div className="flex items-center gap-1 text-xs font-bold text-amber-300">
+            <div className="flex items-center gap-1 text-xs font-bold text-[#8E6E2F]">
               <span>{isMobileCategoryOpen ? 'Hide Menu' : 'Browse Categories'}</span>
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobileCategoryOpen ? 'rotate-180' : ''}`} />
             </div>
@@ -915,7 +915,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
           {/* Vertical Category Tree List */}
           {isMobileCategoryOpen && (
-            <div className="mt-3 pt-3 border-t border-white/10 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto pr-1">
+            <div className="mt-3 pt-3 border-t border-[#D8C6A8]/40 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto pr-1">
               {dynamicCategories.map((cat) => {
                 const catObj = dynamicCategoryObjects.find((c) => c.name === cat);
                 const hasSubs = catObj && catObj.subcategories && catObj.subcategories.length > 0;
@@ -937,8 +937,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                       }}
                       className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                         isCatActive
-                          ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                          : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                          ? 'bg-[#241A15] border-[#241A15] text-[#FBF8F2] font-black shadow-sm'
+                          : 'bg-[#F7F1E7]/80 border-[#D8C6A8]/40 text-[#3A2A20] hover:border-[#B8944A]/50 hover:bg-[#E6D5B8]/40'
                       }`}
                     >
                       <span className="truncate flex-1">{cat}</span>
@@ -949,7 +949,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
                     {/* Subcategories Vertical List */}
                     {hasSubs && isExpanded && (
-                      <div className="ml-3 mt-1.5 flex flex-col gap-1 border-l-2 border-[#F5C542]/30 pl-2.5">
+                      <div className="ml-3 mt-1.5 flex flex-col gap-1 border-l-2 border-[#D8C6A8] pl-2.5">
                         {catObj!.subcategories!.map((sub) => {
                           const compoundKey = `${cat} > ${sub}`;
                           const isSubActive = activeCategory === compoundKey;
@@ -959,11 +959,11 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                               onClick={() => setActiveCategory(compoundKey)}
                               className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${
                                 isSubActive
-                                  ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
-                                  : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/70 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
+                                  ? 'bg-[#E6D5B8] border-[#D8C6A8] text-[#241A15] font-black shadow-sm'
+                                  : 'bg-[#FBF8F2] border-[#D8C6A8]/30 text-[#756457] hover:text-[#241A15] hover:bg-[#E6D5B8]/20'
                               }`}
                             >
-                              <span className="text-[#F5C542]/70 font-normal">↳</span>
+                              <span className="text-[#8E6E2F] font-normal">↳</span>
                               <span className="truncate">{sub}</span>
                             </button>
                           );
@@ -988,14 +988,14 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             {/* Sidebar header: label + toggle */}
             <div className={`flex items-center mb-3 gap-2 ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
               {isSidebarOpen && (
-                <span className="text-[9px] font-black font-inter uppercase tracking-[0.22em] text-[#F5C542]/60 whitespace-nowrap pl-1">
+                <span className="text-[9px] font-black font-inter uppercase tracking-[0.22em] text-[#8E6E2F] whitespace-nowrap pl-1">
                   Categories
                 </span>
               )}
               <button
                 onClick={() => setIsSidebarOpen(prev => !prev)}
                 title={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-[#230005]/80 border border-[#D9A514]/25 hover:border-[#F5C542]/60 text-[#FFF8ED]/70 hover:text-[#F5C542] transition-all cursor-pointer flex-shrink-0"
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-[#FBF8F2] border border-[#D8C6A8] hover:border-[#B8944A] text-[#3A2A20] hover:text-[#B8944A] transition-all cursor-pointer flex-shrink-0 shadow-sm"
               >
                 {isSidebarOpen
                   ? <ChevronLeft className="w-4 h-4" />
@@ -1032,8 +1032,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                       }}
                       className={`w-full text-left px-3 py-2 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1 ${
                         activeCategory === cat
-                        ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                        : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                        ? 'bg-[#241A15] border-[#241A15] text-[#FBF8F2] font-black shadow-sm'
+                        : 'bg-[#F7F1E7]/80 border-[#D8C6A8]/40 text-[#3A2A20] hover:border-[#B8944A]/50 hover:bg-[#E6D5B8]/40'
                       }`}
                     >
                       <span className="truncate flex-1">{cat}</span>
@@ -1043,7 +1043,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     </button>
                     {/* Indented Subcategory Buttons */}
                     {hasSubs && isExpanded && (
-                      <div className="ml-2 mt-0.5 flex flex-col gap-0.5 border-l border-[#F5C542]/20 pl-2">
+                      <div className="ml-2 mt-0.5 flex flex-col gap-0.5 border-l border-[#D8C6A8] pl-2">
                         {catObj!.subcategories!.map(sub => {
                           const compoundKey = `${cat} > ${sub}`;
                           return (
@@ -1052,8 +1052,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                               onClick={() => setActiveCategory(compoundKey)}
                               className={`w-full text-left px-2.5 py-1.5 text-[9px] font-bold font-inter uppercase tracking-wider rounded-md border transition-all cursor-pointer truncate ${
                                 activeCategory === compoundKey
-                                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
-                                : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
+                                ? 'bg-[#E6D5B8] border-[#D8C6A8] text-[#241A15] font-black shadow-sm'
+                                : 'bg-[#FBF8F2] border-[#D8C6A8]/30 text-[#756457] hover:text-[#241A15] hover:bg-[#E6D5B8]/20'
                               }`}
                             >
                               {sub}
@@ -1072,8 +1072,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           <div className="flex-1 min-w-0">
 
             {/* Sort & Results Bar */}
-            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-5">
-              <span className="text-[11px] text-white/40 font-inter hidden md:block">
+            <div className="flex items-center justify-between border-b border-[#D8C6A8]/40 pb-3 mb-5">
+              <span className="text-[11px] text-[#756457] font-inter hidden md:block">
                 {(mode === 'pkg' ? filteredPackages.length : filteredCustomItems.length)}{' '}
                 result{(mode === 'pkg' ? filteredPackages.length : filteredCustomItems.length) !== 1 ? 's' : ''}
               </span>
@@ -1082,14 +1082,14 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               <div className="relative shrink-0 z-30 ml-auto" ref={sortMenuRef}>
                 <button
                   onClick={() => setIsSortOpen(!isSortOpen)}
-                  className="flex items-center gap-1.5 sm:gap-2 bg-[#230005]/70 border border-[#D9A514]/25 hover:border-[#F5C542]/60 text-[#FFF8ED] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-[11px] font-bold font-inter uppercase tracking-wider transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 sm:gap-2 bg-[#FBF8F2] border border-[#D8C6A8] hover:border-[#B8944A] text-[#241A15] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-[11px] font-bold font-inter uppercase tracking-wider transition-colors cursor-pointer shadow-sm"
                 >
                   <span>Sort</span>
-                  <ChevronDown className={`w-3.5 h-3.5 text-[#F5C542] transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-3.5 h-3.5 text-[#B8944A] transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {isSortOpen && (
-                  <div className="absolute right-0 top-[calc(100%+8px)] w-48 bg-[#230005]/95 border border-[#D9A514]/30 rounded-2xl shadow-[0_16px_36px_rgba(0,0,0,0.7)] overflow-hidden font-inter text-sm backdrop-blur-xl z-40">
+                  <div className="absolute right-0 top-[calc(100%+8px)] w-48 bg-[#FBF8F2] border border-[#D8C6A8] rounded-2xl shadow-xl overflow-hidden font-inter text-sm backdrop-blur-xl z-40">
                     {[
                       { id: 'popular', label: 'Popular' },
                       { id: 'price-asc', label: 'Price: low to high' },
@@ -1099,7 +1099,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                       <button
                         key={opt.id}
                         onClick={() => { setSortBy(opt.id); setIsSortOpen(false); }}
-                        className={`w-full text-left px-4 py-3 hover:bg-[#D9A514]/15 transition-colors cursor-pointer ${sortBy === opt.id ? 'text-[#F5C542] font-bold' : 'text-[#FFF8ED]/80'}`}
+                        className={`w-full text-left px-4 py-3 hover:bg-[#E6D5B8]/30 transition-colors cursor-pointer ${sortBy === opt.id ? 'text-[#B8944A] font-bold bg-[#E6D5B8]/20' : 'text-[#3A2A20]'}`}
                       >
                         {opt.label}
                       </button>
@@ -1119,41 +1119,41 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
       {/* Package Detail Modal (re-used from PreparedPackages) */}
       {selectedModalPkg && (
-        <div className="fixed inset-0 z-[60] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-          <div className="bg-[#230005]/95 border border-[#D9A514]/40 rounded-3xl max-w-5xl w-full p-6 sm:p-8 lg:p-10 relative shadow-2xl backdrop-blur-xl animate-scale-in my-auto max-h-[92vh] overflow-y-auto font-inter">
+        <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+          <div className="bg-[#FBF8F2] border border-[#D8C6A8] rounded-3xl max-w-5xl w-full p-6 sm:p-8 lg:p-10 relative shadow-2xl backdrop-blur-xl animate-scale-in my-auto max-h-[92vh] overflow-y-auto font-inter text-[#241A15]">
             {/* Close Button */}
             <button
               onClick={() => setSelectedModalPkg(null)}
-              className="absolute top-4 right-4 text-white/60 hover:text-white p-2 rounded-full bg-black/40 hover:bg-white/10 transition-all cursor-pointer z-20"
+              className="absolute top-4 right-4 text-[#756457] hover:text-[#241A15] p-2 rounded-full bg-[#E6D5B8]/40 hover:bg-[#E6D5B8]/80 transition-all cursor-pointer z-20"
               aria-label="Close modal"
             >
               <X className="w-6 h-6" />
             </button>
 
             {/* Top Package Overview Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-8 pb-8 border-b border-white/15">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-8 pb-8 border-b border-[#D8C6A8]/50">
               {/* Left Column: Image & Stats (5 cols) */}
               <div className="lg:col-span-5 relative">
-                <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-white/15 bg-black/40 shadow-xl group">
+                <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-[#D8C6A8]/50 bg-[#FAF6EE] shadow-md group">
                   <img
                     src={selectedModalPkg.image}
                     alt={selectedModalPkg.name}
                     className="absolute inset-0 w-full h-full object-contain p-4"
                   />
                   {selectedModalPkg.badge && (
-                    <span className="absolute top-4 left-4 bg-amber-400 text-[#8c1119] text-xs font-bold tracking-widest px-3 py-1 uppercase rounded-full shadow-lg z-10">
+                    <span className="absolute top-4 left-4 bg-[#E6D5B8] text-[#241A15] border border-[#D8C6A8] text-xs font-bold tracking-widest px-3 py-1 uppercase rounded-full shadow-sm z-10">
                       {selectedModalPkg.badge}
                     </span>
                   )}
                 </div>
-                <div className="mt-3 flex items-center justify-between text-xs text-white/70 font-inter px-1">
+                <div className="mt-3 flex items-center justify-between text-xs text-[#756457] font-inter px-1">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-amber-300 font-bold">★ {selectedModalPkg.rating}</span>
-                    <span className="text-white/30">•</span>
+                    <span className="text-[#B8944A] font-bold">★ {selectedModalPkg.rating}</span>
+                    <span className="text-[#D8C6A8]">•</span>
                     <span>{selectedModalPkg.reviewsCount} customer reviews</span>
                   </div>
                   {selectedModalPkg.popularFor && (
-                    <span className="text-amber-200/90 font-medium text-[11px] truncate max-w-[180px]">
+                    <span className="text-[#8E6E2F] font-medium text-[11px] truncate max-w-[180px]">
                       {selectedModalPkg.popularFor}
                     </span>
                   )}
@@ -1163,12 +1163,12 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               {/* Right Column: Title, Price & Order Action (7 cols) */}
               <div className="lg:col-span-7 flex flex-col justify-between h-full">
                 <div>
-                  <h2 className="font-podium text-2xl sm:text-4xl uppercase text-white font-bold tracking-tight mb-2">
+                  <h2 className="font-podium text-2xl sm:text-4xl uppercase text-[#241A15] font-bold tracking-tight mb-2">
                     {selectedModalPkg.name}
                   </h2>
 
                   <div className="flex items-baseline gap-3 mb-4">
-                    <span className="text-3xl font-bold font-inter text-amber-300">
+                    <span className="text-3xl font-bold font-inter text-[#B8944A]">
                       {formatPrice(
                         selectedModalPkg.hasCustomUnit
                           ? calculateCustomUnitPrice(selectedModalPkg, modalUnitValue, currency)
@@ -1177,38 +1177,38 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                       )}
                     </span>
                     {selectedModalPkg.hasCustomUnit && (
-                      <span className="text-xs text-amber-200/80 font-inter font-semibold">
+                      <span className="text-xs text-[#756457] font-inter font-semibold">
                         ({modalUnitValue} {selectedModalPkg.customUnitName || 'kg'})
                       </span>
                     )}
-                    <span className="text-xs text-white/60 font-inter uppercase tracking-wider">
+                    <span className="text-xs text-[#756457] font-inter uppercase tracking-wider">
                       {buyerMarket === 'INTERNATIONAL' ? '✨ Free Delivery in Ethiopia' : 'Premium Packaging Included'}
                     </span>
                   </div>
 
-                  <p className="text-white/85 text-xs sm:text-sm font-inter leading-relaxed mb-6">
+                  <p className="text-[#3A2A20]/85 text-xs sm:text-sm font-inter leading-relaxed mb-6">
                     {selectedModalPkg.shortDesc}
                   </p>
 
                   {/* Scalable Unit Stepper if product has scalable size */}
                   {selectedModalPkg.hasCustomUnit && (
-                    <div className="mb-5 bg-[#3a060b]/70 border border-amber-400/30 rounded-2xl p-4 shadow-lg space-y-3">
+                    <div className="mb-5 bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 shadow-sm space-y-3">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-amber-300 font-bold uppercase text-xs tracking-wider">
-                          <Sparkles className="w-4 h-4 text-amber-400" />
+                        <div className="flex items-center gap-2 text-[#8E6E2F] font-bold uppercase text-xs tracking-wider">
+                          <Sparkles className="w-4 h-4 text-[#B8944A]" />
                           <span>Select {selectedModalPkg.customUnitName?.toUpperCase() || 'SIZE / WEIGHT'}</span>
                         </div>
-                        <span className="text-[11px] text-amber-200/80 bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 rounded-full font-medium">
+                        <span className="text-[11px] text-[#241A15] bg-[#E6D5B8]/40 border border-[#D8C6A8] px-2.5 py-0.5 rounded-full font-medium">
                           Min: {selectedModalPkg.customUnitMin || 1} {selectedModalPkg.customUnitName || 'kg'}
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between bg-black/40 border border-amber-400/25 rounded-xl p-3">
+                      <div className="flex items-center justify-between bg-white border border-[#D8C6A8]/60 rounded-xl p-3">
                         <div>
-                          <div className="text-white font-bold text-sm">
+                          <div className="text-[#241A15] font-bold text-sm">
                             {modalUnitValue} {selectedModalPkg.customUnitName || 'kg'}
                           </div>
-                          <div className="text-[10px] text-white/50">
+                          <div className="text-[10px] text-[#756457]">
                             In {selectedModalPkg.customUnitStep || 1} {selectedModalPkg.customUnitName || 'kg'} increments
                           </div>
                         </div>
@@ -1218,21 +1218,21 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                             type="button"
                             disabled={modalUnitValue <= (selectedModalPkg.customUnitMin || 1)}
                             onClick={() => setModalUnitValue(prev => Number((Math.max(selectedModalPkg.customUnitMin || 1, prev - (selectedModalPkg.customUnitStep || 1))).toFixed(2)))}
-                            className="w-8 h-8 rounded-lg bg-black/60 border border-white/20 text-white font-bold flex items-center justify-center hover:border-amber-400 hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                            className="w-8 h-8 rounded-lg bg-[#FAF6EE] border border-[#D8C6A8] text-[#241A15] font-bold flex items-center justify-center hover:border-[#B8944A] hover:bg-[#E6D5B8]/50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
                             title="Decrease size"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
 
-                          <span className="font-podium text-base font-bold text-amber-300 min-w-[3rem] text-center">
-                            {modalUnitValue} <span className="text-[10px] text-white/70">{selectedModalPkg.customUnitName || 'kg'}</span>
+                          <span className="font-podium text-base font-bold text-[#B8944A] min-w-[3rem] text-center">
+                            {modalUnitValue} <span className="text-[10px] text-[#756457]">{selectedModalPkg.customUnitName || 'kg'}</span>
                           </span>
 
                           <button
                             type="button"
                             disabled={modalUnitValue >= (selectedModalPkg.customUnitMax || 50)}
                             onClick={() => setModalUnitValue(prev => Number((Math.min(selectedModalPkg.customUnitMax || 50, prev + (selectedModalPkg.customUnitStep || 1))).toFixed(2)))}
-                            className="w-8 h-8 rounded-lg bg-black/60 border border-white/20 text-white font-bold flex items-center justify-center hover:border-amber-400 hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                            className="w-8 h-8 rounded-lg bg-[#FAF6EE] border border-[#D8C6A8] text-[#241A15] font-bold flex items-center justify-center hover:border-[#B8944A] hover:bg-[#E6D5B8]/50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
                             title="Increase size"
                           >
                             <Plus className="w-3.5 h-3.5" />
@@ -1244,52 +1244,52 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
                   {/* Client Customization Requirement Section */}
                   {selectedModalPkg.requiresCustomInput && (
-                    <div className="mb-6 bg-[#3a060b]/70 border border-amber-400/30 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
-                      <div className="flex items-center gap-2 text-amber-300 font-bold uppercase text-xs tracking-wider border-b border-white/10 pb-2">
-                        <Sparkles className="w-4 h-4 text-amber-400" />
+                    <div className="mb-6 bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+                      <div className="flex items-center gap-2 text-[#8E6E2F] font-bold uppercase text-xs tracking-wider border-b border-[#D8C6A8]/40 pb-2">
+                        <Sparkles className="w-4 h-4 text-[#B8944A]" />
                         <span>{selectedModalPkg.customInputLabel || 'Required Customization Details'}</span>
                       </div>
 
                       {/* Photo Upload */}
                       {(selectedModalPkg.customInputType === 'image' || selectedModalPkg.customInputType === 'both') && (
                         <div>
-                          <label className="block text-xs uppercase tracking-wider text-amber-200 font-bold mb-2 flex items-center justify-between">
+                          <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-2 flex items-center justify-between">
                             <span className="flex items-center gap-1.5">
-                              <Camera className="w-3.5 h-3.5 text-amber-300" />
-                              <span>Upload Your Custom Photo <span className="text-red-400">*</span></span>
+                              <Camera className="w-3.5 h-3.5 text-[#B8944A]" />
+                              <span>Upload Your Custom Photo <span className="text-red-500">*</span></span>
                             </span>
-                            <span className="text-[10px] text-white/50 font-normal">PNG, JPG up to 10MB</span>
+                            <span className="text-[10px] text-[#756457] font-normal">PNG, JPG up to 10MB</span>
                           </label>
 
                           {clientCustomImageUrl ? (
-                            <div className="flex items-center gap-3 bg-black/40 border border-emerald-500/40 rounded-xl p-3">
-                              <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-black/60 flex-shrink-0">
+                            <div className="flex items-center gap-3 bg-white border border-emerald-500/40 rounded-xl p-3">
+                              <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-[#FAF6EE] flex-shrink-0">
                                 <img src={clientCustomImageUrl} alt="Uploaded preview" className="w-full h-full object-cover" />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <span className="text-emerald-300 text-xs font-bold flex items-center gap-1">
+                                <span className="text-emerald-700 text-xs font-bold flex items-center gap-1">
                                   <Check className="w-3.5 h-3.5" /> Photo Attached
                                 </span>
                                 <button
                                   type="button"
                                   onClick={() => setClientCustomImageUrl('')}
-                                  className="text-red-400 hover:text-red-300 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
+                                  className="text-red-600 hover:text-red-700 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
                                 >
                                   <X className="w-3 h-3" /> Remove & Change
                                 </button>
                               </div>
                             </div>
                           ) : (
-                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-amber-400/40 hover:border-amber-400 rounded-xl p-3.5 cursor-pointer bg-black/30 hover:bg-black/50 transition-all text-center">
+                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#D8C6A8] hover:border-[#B8944A] rounded-xl p-3.5 cursor-pointer bg-white/80 hover:bg-white transition-all text-center">
                               {isUploadingClientPhoto ? (
-                                <div className="flex items-center gap-2 text-amber-300 text-xs font-bold py-1.5">
+                                <div className="flex items-center gap-2 text-[#8E6E2F] text-xs font-bold py-1.5">
                                   <Loader2 className="w-4 h-4 animate-spin" />
                                   <span>Uploading photo...</span>
                                 </div>
                               ) : (
                                 <>
-                                  <Upload className="w-5 h-5 text-amber-300 mb-1" />
-                                  <span className="text-xs font-bold text-white">Click to Upload Photo</span>
+                                  <Upload className="w-5 h-5 text-[#B8944A] mb-1" />
+                                  <span className="text-xs font-bold text-[#241A15]">Click to Upload Photo</span>
                                 </>
                               )}
                               <input
@@ -1307,15 +1307,15 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                       {/* Custom Text */}
                       {(selectedModalPkg.customInputType === 'text' || selectedModalPkg.customInputType === 'both') && (
                         <div>
-                          <label className="block text-xs uppercase tracking-wider text-amber-200 font-bold mb-1.5 flex items-center gap-1.5">
-                            <FileText className="w-3.5 h-3.5 text-amber-300" />
-                            <span>Custom Text / Message <span className="text-red-400">*</span></span>
+                          <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center gap-1.5">
+                            <FileText className="w-3.5 h-3.5 text-[#B8944A]" />
+                            <span>Custom Text / Message <span className="text-red-500">*</span></span>
                           </label>
                           <textarea
                             value={clientCustomText}
                             onChange={(e) => setClientCustomText(e.target.value)}
                             placeholder="Enter the custom name, date, or message to print/engrave..."
-                            className="w-full bg-black/50 border border-white/20 rounded-xl p-2.5 text-xs text-white placeholder-white/40 focus:outline-none focus:border-amber-400 h-16 resize-none font-inter"
+                            className="w-full bg-white border border-[#D8C6A8] rounded-xl p-2.5 text-xs text-[#241A15] placeholder:text-[#756457]/50 focus:outline-none focus:border-[#B8944A] h-16 resize-none font-inter"
                           />
                         </div>
                       )}
@@ -1326,9 +1326,9 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
                 <button
                   onClick={handleModalAdd}
-                  className="w-full bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold py-4 text-xs sm:text-sm tracking-widest uppercase rounded-xl flex items-center justify-center gap-2.5 transition-all font-inter shadow-xl shadow-amber-400/20 cursor-pointer"
+                  className="w-full bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] border border-[#241A15] font-bold py-4 text-xs sm:text-sm tracking-widest uppercase rounded-xl flex items-center justify-center gap-2.5 transition-all font-inter shadow-md hover:shadow-lg cursor-pointer"
                 >
-                  <ShoppingBag className="w-5 h-5" />
+                  <ShoppingBag className="w-5 h-5 text-[#E6D5B8]" />
                   <span>
                     ADD PACKAGE TO CART — {formatPrice(
                       selectedModalPkg.hasCustomUnit
@@ -1345,11 +1345,11 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             {/* Included Items Section - Rich Detailed Grid */}
             <div>
               <div className="flex items-center justify-between mb-5">
-                <h3 className="font-podium text-xl sm:text-2xl uppercase font-bold text-white flex items-center gap-2.5">
-                  <PackageCheck className="w-6 h-6 text-amber-300" />
+                <h3 className="font-podium text-xl sm:text-2xl uppercase font-bold text-[#241A15] flex items-center gap-2.5">
+                  <PackageCheck className="w-6 h-6 text-[#B8944A]" />
                   <span>Items Included Inside ({getItemDetails(selectedModalPkg).length} Items)</span>
                 </h3>
-                <span className="text-xs text-amber-300 font-inter font-semibold uppercase tracking-wider hidden sm:inline">
+                <span className="text-xs text-[#8E6E2F] font-inter font-semibold uppercase tracking-wider hidden sm:inline">
                   ★ Handcrafted & Curated
                 </span>
               </div>
@@ -1358,29 +1358,29 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 {getItemDetails(selectedModalPkg).map((item, idx) => (
                   <div
                     key={idx}
-                    className="bg-black/40 border border-white/15 rounded-xl p-4 flex gap-4 items-center hover:border-amber-400/50 transition-all duration-300 group"
+                    className="bg-[#FAF6EE] border border-[#D8C6A8]/50 rounded-xl p-4 flex gap-4 items-center hover:border-[#B8944A] transition-all duration-300 group shadow-sm"
                   >
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border border-white/15 bg-black/50 flex-shrink-0 relative">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border border-[#D8C6A8]/40 bg-white flex-shrink-0 relative">
                       <img
                         src={item.image}
                         alt={item.name}
                         className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
                       />
-                      <span className="absolute bottom-1 right-1 bg-amber-400 text-[#8c1119] p-1 rounded-full shadow-sm">
+                      <span className="absolute bottom-1 right-1 bg-[#241A15] text-[#E6D5B8] p-1 rounded-full shadow-sm">
                         <Check className="w-3.5 h-3.5 stroke-[3]" />
                       </span>
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-amber-300 font-bold uppercase tracking-widest bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">
+                        <span className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-widest bg-[#E6D5B8]/40 px-2 py-0.5 rounded border border-[#D8C6A8]/40">
                           Item #{idx + 1}
                         </span>
                       </div>
-                      <h4 className="font-podium text-base font-bold text-white uppercase mt-1 line-clamp-1 group-hover:text-amber-300 transition-colors">
+                      <h4 className="font-podium text-base font-bold text-[#241A15] uppercase mt-1 line-clamp-1 group-hover:text-[#B8944A] transition-colors">
                         {item.name}
                       </h4>
-                      <p className="text-white/70 text-xs font-inter mt-1 line-clamp-2 leading-relaxed">
+                      <p className="text-[#756457] text-xs font-inter mt-1 line-clamp-2 leading-relaxed">
                         {item.description}
                       </p>
                     </div>
@@ -1394,12 +1394,12 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
       {/* Single Custom Item Detail Modal */}
       {selectedCustomItemModal && (
-        <div className="fixed inset-0 z-[65] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto font-inter">
-          <div className="bg-[#230005]/95 border border-[#D9A514]/40 rounded-3xl max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl backdrop-blur-xl animate-scale-in my-auto max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-[65] bg-black/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto font-inter">
+          <div className="bg-[#FBF8F2] border border-[#D8C6A8] rounded-3xl max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl backdrop-blur-xl animate-scale-in my-auto max-h-[90vh] overflow-y-auto text-[#241A15]">
             {/* Close Button */}
             <button
               onClick={() => setSelectedCustomItemModal(null)}
-              className="absolute top-4 right-4 text-white/60 hover:text-white p-2 rounded-full bg-black/40 hover:bg-white/10 transition-all cursor-pointer z-20"
+              className="absolute top-4 right-4 text-[#756457] hover:text-[#241A15] p-2 rounded-full bg-[#E6D5B8]/40 hover:bg-[#E6D5B8]/80 transition-all cursor-pointer z-20"
               aria-label="Close modal"
             >
               <X className="w-6 h-6" />
@@ -1408,7 +1408,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             <div className="flex flex-col sm:flex-row gap-6 items-start">
               {/* Left: Image Container */}
               <div className="w-full sm:w-1/2">
-                <div className="relative rounded-xl overflow-hidden border border-white/15 bg-black/40 shadow-lg">
+                <div className="relative rounded-xl overflow-hidden border border-[#D8C6A8]/50 bg-[#FAF6EE] shadow-md">
                   <img
                     src={selectedCustomItemModal.image}
                     alt={selectedCustomItemModal.name}
@@ -1420,15 +1420,15 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               {/* Right: Item Info & Box Control */}
               <div className="flex-1 flex flex-col justify-between w-full">
                 <div>
-                  <div className="text-amber-300 text-xs font-bold uppercase tracking-widest mb-1">
+                  <div className="text-[#8E6E2F] text-xs font-bold uppercase tracking-widest mb-1">
                     Custom Box Gift Component
                   </div>
-                  <h3 className="font-podium text-2xl uppercase text-white font-bold mb-2">
+                  <h3 className="font-podium text-2xl uppercase text-[#241A15] font-bold mb-2">
                     {selectedCustomItemModal.name}
                   </h3>
 
                   <div className="flex items-baseline gap-2 mb-3">
-                    <span className="text-2xl font-bold font-inter text-amber-300">
+                    <span className="text-2xl font-bold font-inter text-[#B8944A]">
                       {formatPrice(
                         selectedCustomItemModal.hasCustomUnit
                           ? calculateCustomUnitPrice(selectedCustomItemModal, modalUnitValue, currency)
@@ -1437,35 +1437,35 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                       )}
                     </span>
                     {selectedCustomItemModal.hasCustomUnit && (
-                      <span className="text-xs text-amber-200/80 font-inter font-semibold">
+                      <span className="text-xs text-[#756457] font-inter font-semibold">
                         ({modalUnitValue} {selectedCustomItemModal.customUnitName || 'kg'})
                       </span>
                     )}
                   </div>
 
-                  <p className="text-white/85 text-xs sm:text-sm font-inter leading-relaxed mb-4">
+                  <p className="text-[#3A2A20]/85 text-xs sm:text-sm font-inter leading-relaxed mb-4">
                     {selectedCustomItemModal.description}
                   </p>
 
                   {/* Scalable Unit Stepper if item has scalable size */}
                   {selectedCustomItemModal.hasCustomUnit && (
-                    <div className="mb-4 bg-[#3a060b]/70 border border-amber-400/30 rounded-2xl p-4 shadow-lg space-y-3">
+                    <div className="mb-4 bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 shadow-sm space-y-3">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-amber-300 font-bold uppercase text-xs tracking-wider">
-                          <Sparkles className="w-4 h-4 text-amber-400" />
+                        <div className="flex items-center gap-2 text-[#8E6E2F] font-bold uppercase text-xs tracking-wider">
+                          <Sparkles className="w-4 h-4 text-[#B8944A]" />
                           <span>Select {selectedCustomItemModal.customUnitName?.toUpperCase() || 'SIZE / WEIGHT'}</span>
                         </div>
-                        <span className="text-[11px] text-amber-200/80 bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 rounded-full font-medium">
+                        <span className="text-[11px] text-[#241A15] bg-[#E6D5B8]/40 border border-[#D8C6A8] px-2.5 py-0.5 rounded-full font-medium">
                           Min: {selectedCustomItemModal.customUnitMin || 1} {selectedCustomItemModal.customUnitName || 'kg'}
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between bg-black/40 border border-amber-400/25 rounded-xl p-3">
+                      <div className="flex items-center justify-between bg-white border border-[#D8C6A8]/60 rounded-xl p-3">
                         <div>
-                          <div className="text-white font-bold text-sm">
+                          <div className="text-[#241A15] font-bold text-sm">
                             {modalUnitValue} {selectedCustomItemModal.customUnitName || 'kg'}
                           </div>
-                          <div className="text-[10px] text-white/50">
+                          <div className="text-[10px] text-[#756457]">
                             In {selectedCustomItemModal.customUnitStep || 1} {selectedCustomItemModal.customUnitName || 'kg'} increments
                           </div>
                         </div>
@@ -1475,21 +1475,21 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                             type="button"
                             disabled={modalUnitValue <= (selectedCustomItemModal.customUnitMin || 1)}
                             onClick={() => setModalUnitValue(prev => Number((Math.max(selectedCustomItemModal.customUnitMin || 1, prev - (selectedCustomItemModal.customUnitStep || 1))).toFixed(2)))}
-                            className="w-8 h-8 rounded-lg bg-black/60 border border-white/20 text-white font-bold flex items-center justify-center hover:border-amber-400 hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                            className="w-8 h-8 rounded-lg bg-[#FAF6EE] border border-[#D8C6A8] text-[#241A15] font-bold flex items-center justify-center hover:border-[#B8944A] hover:bg-[#E6D5B8]/50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
                             title="Decrease size"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
 
-                          <span className="font-podium text-base font-bold text-amber-300 min-w-[3rem] text-center">
-                            {modalUnitValue} <span className="text-[10px] text-white/70">{selectedCustomItemModal.customUnitName || 'kg'}</span>
+                          <span className="font-podium text-base font-bold text-[#B8944A] min-w-[3rem] text-center">
+                            {modalUnitValue} <span className="text-[10px] text-[#756457]">{selectedCustomItemModal.customUnitName || 'kg'}</span>
                           </span>
 
                           <button
                             type="button"
                             disabled={modalUnitValue >= (selectedCustomItemModal.customUnitMax || 50)}
                             onClick={() => setModalUnitValue(prev => Number((Math.min(selectedCustomItemModal.customUnitMax || 50, prev + (selectedCustomItemModal.customUnitStep || 1))).toFixed(2)))}
-                            className="w-8 h-8 rounded-lg bg-black/60 border border-white/20 text-white font-bold flex items-center justify-center hover:border-amber-400 hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                            className="w-8 h-8 rounded-lg bg-[#FAF6EE] border border-[#D8C6A8] text-[#241A15] font-bold flex items-center justify-center hover:border-[#B8944A] hover:bg-[#E6D5B8]/50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
                             title="Increase size"
                           >
                             <Plus className="w-3.5 h-3.5" />
@@ -1501,53 +1501,53 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
                   {/* Client Customization Section if item requires custom input */}
                   {selectedCustomItemModal.requiresCustomInput && (
-                    <div className="bg-[#3a060b]/90 border border-amber-400/40 rounded-2xl p-4 sm:p-5 mb-5 space-y-4 shadow-lg">
-                      <div className="flex items-center gap-1.5 text-amber-300 text-xs font-bold uppercase tracking-wider">
-                        <Sparkles className="w-4 h-4 text-amber-400" />
+                    <div className="bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 sm:p-5 mb-5 space-y-4 shadow-sm">
+                      <div className="flex items-center gap-1.5 text-[#8E6E2F] text-xs font-bold uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-[#B8944A]" />
                         <span>{selectedCustomItemModal.customInputLabel || 'Required Customization Details'}</span>
                       </div>
 
                       {/* Photo Upload */}
                       {(selectedCustomItemModal.customInputType === 'image' || selectedCustomItemModal.customInputType === 'both') && (
                         <div>
-                          <label className="block text-xs uppercase tracking-wider text-amber-300 font-bold mb-2 flex items-center justify-between">
+                          <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-2 flex items-center justify-between">
                             <span className="flex items-center gap-1.5">
-                              <Camera className="w-3.5 h-3.5" />
-                              <span>Upload Your Custom Photo <span className="text-red-400">*</span></span>
+                              <Camera className="w-3.5 h-3.5 text-[#B8944A]" />
+                              <span>Upload Your Custom Photo <span className="text-red-500">*</span></span>
                             </span>
-                            <span className="text-[10px] text-white/50 font-normal">PNG, JPG up to 10MB</span>
+                            <span className="text-[10px] text-[#756457] font-normal">PNG, JPG up to 10MB</span>
                           </label>
 
                           {clientCustomImageUrl ? (
-                            <div className="flex items-center gap-3 bg-black/50 border border-emerald-500/40 rounded-xl p-3">
-                              <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-black/60 flex-shrink-0">
+                            <div className="flex items-center gap-3 bg-white border border-emerald-500/40 rounded-xl p-3">
+                              <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-[#FAF6EE] flex-shrink-0">
                                 <img src={clientCustomImageUrl} alt="Uploaded preview" className="w-full h-full object-cover" />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <span className="text-emerald-300 text-xs font-bold flex items-center gap-1">
+                                <span className="text-emerald-700 text-xs font-bold flex items-center gap-1">
                                   <Check className="w-3.5 h-3.5" /> Photo Attached
                                 </span>
                                 <button
                                   type="button"
                                   onClick={() => setClientCustomImageUrl('')}
-                                  className="text-red-400 hover:text-red-300 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
+                                  className="text-red-600 hover:text-red-700 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
                                 >
                                   <X className="w-3 h-3" /> Remove & Change
                                 </button>
                               </div>
                             </div>
                           ) : (
-                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-amber-400/40 hover:border-amber-400 rounded-xl p-3.5 cursor-pointer bg-black/40 hover:bg-black/60 transition-all text-center">
+                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#D8C6A8] hover:border-[#B8944A] rounded-xl p-3.5 cursor-pointer bg-white/80 hover:bg-white transition-all text-center">
                               {isUploadingClientPhoto ? (
-                                <div className="flex items-center gap-2 text-amber-300 text-xs font-bold py-1.5">
+                                <div className="flex items-center gap-2 text-[#8E6E2F] text-xs font-bold py-1.5">
                                   <Loader2 className="w-4 h-4 animate-spin" />
                                   <span>Uploading photo...</span>
                                 </div>
                               ) : (
                                 <>
-                                  <Upload className="w-5 h-5 text-amber-300 mb-1" />
-                                  <span className="text-xs font-bold text-white">Click to Choose Photo</span>
-                                  <span className="text-[10px] text-white/50 mt-0.5">High resolution recommended</span>
+                                  <Upload className="w-5 h-5 text-[#B8944A] mb-1" />
+                                  <span className="text-xs font-bold text-[#241A15]">Click to Choose Photo</span>
+                                  <span className="text-[10px] text-[#756457] mt-0.5">High resolution recommended</span>
                                 </>
                               )}
                               <input
@@ -1565,16 +1565,16 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                       {/* Text Input */}
                       {(selectedCustomItemModal.customInputType === 'text' || selectedCustomItemModal.customInputType === 'both') && (
                         <div>
-                          <label className="block text-xs uppercase tracking-wider text-amber-300 font-bold mb-1.5 flex items-center gap-1.5">
-                            <PenTool className="w-3.5 h-3.5" />
-                            <span>Custom Text / Message <span className="text-red-400">*</span></span>
+                          <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center gap-1.5">
+                            <PenTool className="w-3.5 h-3.5 text-[#B8944A]" />
+                            <span>Custom Text / Message <span className="text-red-500">*</span></span>
                           </label>
                           <input
                             type="text"
                             value={clientCustomText}
                             onChange={(e) => setClientCustomText(e.target.value)}
                             placeholder="Enter the name, date, or message to be custom printed/engraved..."
-                            className="w-full bg-black/60 border border-white/20 rounded-xl p-3 text-xs text-white placeholder:text-white/40 focus:border-amber-400 focus:outline-none transition-colors"
+                            className="w-full bg-white border border-[#D8C6A8] rounded-xl p-3 text-xs text-[#241A15] placeholder:text-[#756457]/50 focus:border-[#B8944A] focus:outline-none transition-colors"
                           />
                         </div>
                       )}
@@ -1582,20 +1582,20 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   )}
 
                   {!selectedCustomItemModal.requiresCustomInput && !selectedCustomItemModal.hasCustomUnit && (
-                    <div className="bg-black/30 border border-white/10 rounded-xl p-3 mb-6 text-xs text-white/80 font-inter space-y-1">
-                      <div className="flex items-center gap-2 text-amber-300 font-bold uppercase text-[11px] tracking-wider">
-                        <Sparkles className="w-4 h-4 text-amber-300" />
+                    <div className="bg-[#FAF6EE] border border-[#D8C6A8]/50 rounded-xl p-3 mb-6 text-xs text-[#3A2A20] font-inter space-y-1">
+                      <div className="flex items-center gap-2 text-[#8E6E2F] font-bold uppercase text-[11px] tracking-wider">
+                        <Sparkles className="w-4 h-4 text-[#B8944A]" />
                         <span>Signature Quality</span>
                       </div>
-                      <p className="text-white/70 text-[11px]">
-                        Hand-packed in your custom luxury box with gold foil wrapping.
+                      <p className="text-[#756457] text-[11px]">
+                        Hand-packed in your custom luxury box with elegant wrapping.
                       </p>
                     </div>
                   )}
                 </div>
 
                 {/* Add to Cart Controls */}
-                <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
+                <div className="pt-4 border-t border-[#D8C6A8]/40 flex items-center justify-between gap-3">
                   {(selectedCustomItemModal.requiresCustomInput || selectedCustomItemModal.hasCustomUnit) ? (
                     <button
                       onClick={() => {
@@ -1636,9 +1636,9 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                         setClientCustomText('');
                         setClientCustomImageUrl('');
                       }}
-                      className="w-full bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg flex items-center justify-center gap-2"
+                      className="w-full bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center justify-center gap-2"
                     >
-                      <ShoppingBag className="w-4 h-4" />
+                      <ShoppingBag className="w-4 h-4 text-[#E6D5B8]" />
                       <span>
                         Add Item to Cart — {formatPrice(
                           selectedCustomItemModal.hasCustomUnit
@@ -1651,22 +1651,22 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     </button>
                   ) : (
                     <>
-                      <span className="text-xs text-white/70 font-bold uppercase tracking-wider">Quantity:</span>
+                      <span className="text-xs text-[#756457] font-bold uppercase tracking-wider">Quantity:</span>
                       <div className="flex items-center gap-3">
-                        <div className="flex items-center border border-white/20 rounded-full overflow-hidden bg-black/40 h-10">
+                        <div className="flex items-center border border-[#D8C6A8] rounded-full overflow-hidden bg-[#FAF6EE] h-10">
                           <button
                             onClick={() => handleCustomQtyChange(selectedCustomItemModal.id, -1)}
-                            className="w-10 h-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/15 transition-colors cursor-pointer"
+                            className="w-10 h-full flex items-center justify-center text-[#3A2A20] hover:bg-[#E6D5B8]/50 transition-colors cursor-pointer"
                             title="Decrease quantity"
                           >
                             <Minus className="w-4 h-4" />
                           </button>
-                          <span className="w-10 text-center text-sm font-bold text-white font-inter">
+                          <span className="w-10 text-center text-sm font-bold text-[#241A15] font-inter">
                             {customCart[selectedCustomItemModal.id] || 0}
                           </span>
                           <button
                             onClick={() => handleCustomQtyChange(selectedCustomItemModal.id, 1)}
-                            className="w-10 h-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/15 transition-colors cursor-pointer"
+                            className="w-10 h-full flex items-center justify-center text-[#3A2A20] hover:bg-[#E6D5B8]/50 transition-colors cursor-pointer"
                             title="Increase quantity"
                           >
                             <Plus className="w-4 h-4" />
@@ -1680,7 +1680,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                             }
                             setSelectedCustomItemModal(null);
                           }}
-                          className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md"
+                          className="bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] font-bold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all cursor-pointer shadow-sm"
                         >
                           Done
                         </button>
@@ -1698,8 +1698,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
       {/* MODAL: CLIENT CUSTOMIZATION PROMPT MODAL (for quick-add on cards) */}
       {/* ========================================================================= */}
       {customPromptTarget && (
-        <div className="fixed inset-0 z-[70] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-inter">
-          <div className="bg-[#230005]/95 border border-[#D9A514]/40 rounded-3xl max-w-lg w-full p-5 sm:p-7 relative shadow-2xl backdrop-blur-xl animate-scale-in my-auto max-h-[92vh] overflow-y-auto">
+        <div className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-inter">
+          <div className="bg-[#FBF8F2] border border-[#D8C6A8] rounded-3xl max-w-lg w-full p-5 sm:p-7 relative shadow-2xl backdrop-blur-xl animate-scale-in my-auto max-h-[92vh] overflow-y-auto text-[#241A15]">
             {/* Close button */}
             <button
               onClick={() => {
@@ -1707,15 +1707,15 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 setClientCustomText('');
                 setClientCustomImageUrl('');
               }}
-              className="absolute top-4 right-4 text-white/60 hover:text-white p-2 rounded-full bg-black/40 hover:bg-white/10 transition-all cursor-pointer z-20"
+              className="absolute top-4 right-4 text-[#756457] hover:text-[#241A15] p-2 rounded-full bg-[#E6D5B8]/40 hover:bg-[#E6D5B8]/80 transition-all cursor-pointer z-20"
               title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Target Header */}
-            <div className="flex items-center gap-3.5 mb-5 pb-4 border-b border-white/10">
-              <div className="w-14 h-14 rounded-xl overflow-hidden bg-black/50 border border-white/15 flex-shrink-0">
+            <div className="flex items-center gap-3.5 mb-5 pb-4 border-b border-[#D8C6A8]/40">
+              <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#FAF6EE] border border-[#D8C6A8]/50 flex-shrink-0">
                 <img
                   src={customPromptTarget.pkg?.image || customPromptTarget.item?.image}
                   alt={customPromptTarget.pkg?.name || customPromptTarget.item?.name}
@@ -1723,14 +1723,14 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-[10px] text-amber-300 font-bold uppercase tracking-wider flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-amber-400" />
+                <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-[#B8944A]" />
                   <span>Customization Required</span>
                 </div>
-                <h3 className="font-podium text-lg sm:text-xl uppercase text-white font-bold truncate mt-0.5">
+                <h3 className="font-podium text-lg sm:text-xl uppercase text-[#241A15] font-bold truncate mt-0.5">
                   {customPromptTarget.pkg?.name || customPromptTarget.item?.name}
                 </h3>
-                <span className="text-xs font-bold text-amber-300 font-inter">
+                <span className="text-xs font-bold text-[#B8944A] font-inter">
                   {customPromptTarget.pkg
                     ? formatPrice(getPkgPrice(customPromptTarget.pkg), currency)
                     : formatPrice(getItemPrice(customPromptTarget.item!), currency)}
@@ -1739,8 +1739,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             </div>
 
             {/* Prompt Instruction Label */}
-            <div className="bg-[#3a060b]/80 border border-amber-400/30 rounded-2xl p-4 sm:p-5 space-y-4 mb-5 shadow-inner">
-              <p className="text-amber-200 text-xs font-semibold leading-relaxed">
+            <div className="bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 sm:p-5 space-y-4 mb-5 shadow-sm">
+              <p className="text-[#3A2A20] text-xs font-semibold leading-relaxed">
                 {customPromptTarget.pkg?.customInputLabel ||
                   customPromptTarget.item?.customInputLabel ||
                   'Please provide your custom photo or text to customize this gift.'}
@@ -1750,44 +1750,44 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               {((customPromptTarget.pkg?.customInputType === 'image' || customPromptTarget.pkg?.customInputType === 'both') ||
                 (customPromptTarget.item?.customInputType === 'image' || customPromptTarget.item?.customInputType === 'both')) && (
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-amber-300 font-bold mb-2 flex items-center justify-between">
+                  <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-2 flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
-                      <Camera className="w-3.5 h-3.5" />
-                      <span>Upload Your Photo <span className="text-red-400">*</span></span>
+                      <Camera className="w-3.5 h-3.5 text-[#B8944A]" />
+                      <span>Upload Your Photo <span className="text-red-500">*</span></span>
                     </span>
-                    <span className="text-[10px] text-white/50 font-normal">PNG, JPG up to 10MB</span>
+                    <span className="text-[10px] text-[#756457] font-normal">PNG, JPG up to 10MB</span>
                   </label>
 
                   {clientCustomImageUrl ? (
-                    <div className="flex items-center gap-3 bg-black/50 border border-emerald-500/40 rounded-xl p-3">
-                      <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-black/60 flex-shrink-0">
+                    <div className="flex items-center gap-3 bg-white border border-emerald-500/40 rounded-xl p-3">
+                      <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-[#FAF6EE] flex-shrink-0">
                         <img src={clientCustomImageUrl} alt="Uploaded preview" className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <span className="text-emerald-300 text-xs font-bold flex items-center gap-1">
+                        <span className="text-emerald-700 text-xs font-bold flex items-center gap-1">
                           <Check className="w-3.5 h-3.5" /> Photo Uploaded
                         </span>
                         <button
                           type="button"
                           onClick={() => setClientCustomImageUrl('')}
-                          className="text-red-400 hover:text-red-300 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
+                          className="text-red-600 hover:text-red-700 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
                         >
                           <X className="w-3 h-3" /> Remove & Re-upload
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <label className="flex flex-col items-center justify-center border-2 border-dashed border-amber-400/40 hover:border-amber-400 rounded-xl p-4 cursor-pointer bg-black/40 hover:bg-black/60 transition-all text-center">
+                    <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#D8C6A8] hover:border-[#B8944A] rounded-xl p-4 cursor-pointer bg-white/80 hover:bg-white transition-all text-center">
                       {isUploadingClientPhoto ? (
-                        <div className="flex items-center gap-2 text-amber-300 text-xs font-bold py-1.5">
-                          <Loader2 className="w-5 h-5 animate-spin" />
+                        <div className="flex items-center gap-2 text-[#8E6E2F] text-xs font-bold py-1.5">
+                          <Loader2 className="w-4 h-4 animate-spin" />
                           <span>Uploading your photo...</span>
                         </div>
                       ) : (
                         <>
-                          <Upload className="w-6 h-6 text-amber-300 mb-1" />
-                          <span className="text-xs font-bold text-white">Click to Choose Photo</span>
-                          <span className="text-[10px] text-white/50 mt-0.5">High quality recommended</span>
+                          <Upload className="w-6 h-6 text-[#B8944A] mb-1" />
+                          <span className="text-xs font-bold text-[#241A15]">Click to Choose Photo</span>
+                          <span className="text-[10px] text-[#756457] mt-0.5">High quality recommended</span>
                         </>
                       )}
                       <input
@@ -1806,15 +1806,15 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               {((customPromptTarget.pkg?.customInputType === 'text' || customPromptTarget.pkg?.customInputType === 'both') ||
                 (customPromptTarget.item?.customInputType === 'text' || customPromptTarget.item?.customInputType === 'both')) && (
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-amber-300 font-bold mb-1.5 flex items-center gap-1.5">
-                    <FileText className="w-3.5 h-3.5" />
-                    <span>Custom Text / Message <span className="text-red-400">*</span></span>
+                  <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-[#B8944A]" />
+                    <span>Custom Text / Message <span className="text-red-500">*</span></span>
                   </label>
                   <textarea
                     value={clientCustomText}
                     onChange={(e) => setClientCustomText(e.target.value)}
                     placeholder="Type the exact name, date, or inscription..."
-                    className="w-full bg-black/50 border border-white/20 rounded-xl p-3 text-xs text-white placeholder-white/40 focus:outline-none focus:border-amber-400 h-20 resize-none font-inter"
+                    className="w-full bg-white border border-[#D8C6A8] rounded-xl p-3 text-xs text-[#241A15] placeholder:text-[#756457]/50 focus:outline-none focus:border-[#B8944A] h-20 resize-none font-inter"
                   />
                 </div>
               )}
@@ -1829,7 +1829,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   setClientCustomText('');
                   setClientCustomImageUrl('');
                 }}
-                className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                className="flex-1 py-3 rounded-xl bg-[#FAF6EE] hover:bg-[#E6D5B8]/50 border border-[#D8C6A8] text-[#3A2A20] font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -1866,9 +1866,9 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   setClientCustomText('');
                   setClientCustomImageUrl('');
                 }}
-                className="flex-[2] py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-amber-400/20 transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="flex-[2] py-3 rounded-xl bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] border border-[#241A15] font-extrabold text-xs uppercase tracking-wider shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                <Check className="w-4 h-4 stroke-[3]" />
+                <Check className="w-4 h-4 stroke-[3] text-[#E6D5B8]" />
                 <span>Confirm & Add To Cart</span>
               </button>
             </div>
@@ -1886,25 +1886,25 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             : 'translate-y-full opacity-0 pointer-events-none'
         } bottom-4 left-3 right-3 sm:left-auto sm:right-6 sm:bottom-6 sm:w-72`}
       >
-        <div className="relative bg-[#EFE3C8] border border-[#D8C58E] rounded-2xl sm:rounded-tl-xl sm:rounded-tr-xl sm:rounded-bl-xl sm:rounded-br-[26px] p-4 sm:p-5 shadow-[0_16px_40px_rgba(0,0,0,0.6)] font-inter sm:rotate-[-2deg] hover:rotate-0 transition-transform">
+        <div className="relative bg-[#FBF8F2] border border-[#D8C6A8] rounded-2xl sm:rounded-tl-xl sm:rounded-tr-xl sm:rounded-bl-xl sm:rounded-br-[26px] p-4 sm:p-5 shadow-xl font-inter sm:rotate-[-1deg] hover:rotate-0 transition-transform">
           {/* Decorative Tag Hole */}
-          <div className="hidden sm:block absolute left-4 top-4 w-3.5 h-3.5 rounded-full bg-black/90 border-2 border-[#B79D5D] shadow-inner z-10" />
-          <div className="hidden sm:block absolute left-[-6px] top-[14px] w-5 h-0.5 bg-gradient-to-r from-[#8c1119] via-[#8c1119] to-transparent rotate-[35deg]" />
+          <div className="hidden sm:block absolute left-4 top-4 w-3.5 h-3.5 rounded-full bg-[#FAF6EE] border-2 border-[#D8C6A8] shadow-inner z-10" />
+          <div className="hidden sm:block absolute left-[-6px] top-[14px] w-5 h-0.5 bg-[#B8944A] rotate-[35deg]" />
 
           <div className="sm:pl-6 relative z-10 flex flex-col max-h-[50vh]">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-[10px] uppercase tracking-widest text-[#6E5B2B] font-bold">Selected Items</div>
-                <div className="text-xs text-[#5A4C22] font-medium">{customCartSummary.count} item{customCartSummary.count !== 1 ? 's' : ''}</div>
+                <div className="text-[10px] uppercase tracking-widest text-[#8E6E2F] font-bold">Selected Items</div>
+                <div className="text-xs text-[#756457] font-medium">{customCartSummary.count} item{customCartSummary.count !== 1 ? 's' : ''}</div>
               </div>
-              <div className="font-podium font-bold text-xl sm:text-2xl text-[#163830] leading-none">
+              <div className="font-podium font-bold text-xl sm:text-2xl text-[#241A15] leading-none">
                 {formatPrice(customCartSummary.total, currency)}
               </div>
             </div>
 
             {/* List of items if any */}
             {customCartSummary.count > 0 && (
-              <div className="overflow-y-auto pr-1 my-2.5 max-h-24 space-y-1 scrollbar-hide text-[11px] text-[#5A4C22] font-medium leading-tight border-t border-b border-[#D8C58E]/60 py-1.5">
+              <div className="overflow-y-auto pr-1 my-2.5 max-h-24 space-y-1 scrollbar-hide text-[11px] text-[#3A2A20] font-medium leading-tight border-t border-b border-[#D8C6A8]/60 py-1.5">
                 {Object.entries(customCart).map(([id, qty]) => {
                   const item = customItems.find(i => i.id === id);
                   if (!item) return null;
@@ -1918,11 +1918,11 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             )}
 
             {customCartSummary.count === 0 ? (
-              <div className="text-[11px] text-[#7A6A38] font-medium pt-2 text-center">Select items below to add to cart</div>
+              <div className="text-[11px] text-[#756457] font-medium pt-2 text-center">Select items below to add to cart</div>
             ) : (
               <button 
                 onClick={handleAddCustomBoxToCart}
-                className="w-full bg-[#8c1119] hover:bg-[#6e0d13] text-white font-bold text-[13px] uppercase tracking-wider py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg mt-2 transform hover:-translate-y-0.5"
+                className="w-full bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] border border-[#241A15] font-bold text-[13px] uppercase tracking-wider py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md mt-2 transform hover:-translate-y-0.5"
               >
                 Add to Cart
               </button>

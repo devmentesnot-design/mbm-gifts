@@ -23,7 +23,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
 
   const handleNavLinkClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
-    
+
     // Special handling for packages link - scroll to packages section
     if (path === '/#packages') {
       if (onNavigate) {
@@ -41,7 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
       }, 100);
       return;
     }
-    
+
     if (onNavigate) {
       onNavigate(path);
     } else {
@@ -78,7 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
 
     const fullName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || '';
     const avatarUrl = session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || null;
-    
+
     if (fullName.trim()) {
       const parts = fullName.trim().split(' ');
       const firstName = parts[0];
@@ -107,20 +107,29 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
 
   return (
     <>
-      <header className="sticky top-0 w-full px-4 sm:px-8 lg:px-12 py-2 h-16 sm:h-20 flex items-center justify-between z-30 bg-[#2B0005]/80 backdrop-blur-md border-b border-[#D9A514]/20 transition-all duration-300">
-        {/* Brand Logo */}
-        <a
-          href="/"
-          onClick={(e) => handleNavLinkClick(e, '/')}
-          className="flex items-center transition-transform hover:scale-105 py-0.5"
-        >
-          <img
-            src="/logo.png"
-            alt="MBM Gifts"
-            referrerPolicy="no-referrer"
-            className="h-14 sm:h-16 lg:h-18 w-auto object-contain scale-[2.5] origin-left drop-shadow-md"
+      <header className="sticky top-0 w-full px-4 sm:px-8 lg:px-12 py-2 h-16 sm:h-20 flex items-center justify-between z-30 transition-all duration-300" style={{background: 'linear-gradient(to bottom, rgba(255,252,246,0.98) 0%, rgba(250,244,232,0.93) 55%, rgba(245,236,220,0.60) 85%, rgba(245,236,220,0) 100%)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)'}}>
+        {/* Brand Logo with bright faded backdrop aura */}
+        <div className="relative flex items-center">
+          {/* Soft bright faded backdrop spotlight for crisp logo contrast */}
+          <div 
+            className="absolute -inset-x-8 -inset-y-3 pointer-events-none rounded-full blur-[10px]"
+            style={{
+              background: 'radial-gradient(ellipse at 45% 50%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.75) 45%, rgba(255, 255, 255, 0) 75%)',
+            }}
           />
-        </a>
+          <a
+            href="/"
+            onClick={(e) => handleNavLinkClick(e, '/')}
+            className="relative z-10 flex items-center transition-transform hover:scale-105 py-0.5"
+          >
+            <img
+              src="/golden_logo.png"
+              alt="MBM Gifts"
+              referrerPolicy="no-referrer"
+              className="h-12 sm:h-16 lg:h-20 w-auto object-contain drop-shadow-[0_1px_3px_rgba(36,26,21,0.2)] transform origin-left"
+            />
+          </a>
+        </div>
 
         {/* Center Nav Links (Desktop) */}
         <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
@@ -129,7 +138,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
               key={link.label}
               href={link.path}
               onClick={(e) => handleNavLinkClick(e, link.path)}
-              className="font-inter text-xs sm:text-sm font-medium text-white/90 tracking-widest uppercase hover:text-amber-300 transition-colors duration-200"
+              className="font-inter text-xs sm:text-sm font-semibold text-[#3A2A20] tracking-widest uppercase hover:text-[#B8944A] transition-colors duration-200"
             >
               {link.label}
             </a>
@@ -142,23 +151,23 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
           {/* Language Switcher Button */}
           <button
             onClick={() => setLang(lang === 'en' ? 'am' : 'en')}
-            className="flex items-center gap-1.5 bg-black/30 hover:bg-black/50 text-amber-300 border border-amber-400/30 px-3 py-1.5 rounded-full text-xs font-bold tracking-wider transition-all duration-200 cursor-pointer"
+            className="flex items-center gap-1.5 bg-[#E6D5B8]/40 hover:bg-[#E6D5B8]/80 text-[#3A2A20] border border-[#D8C6A8] px-3 py-1.5 rounded-full text-xs font-bold tracking-wider transition-all duration-200 cursor-pointer"
             title="Switch Language / ቋንቋ ይቀይሩ"
           >
-            <Globe className="w-3.5 h-3.5 text-amber-300" />
+            <Globe className="w-3.5 h-3.5 text-[#B8944A]" />
             <span className="uppercase">{lang === 'en' ? 'EN' : 'አማርኛ'}</span>
           </button>
 
           {/* Cart Icon */}
           <button
             onClick={onOpenCart}
-            className="relative p-2 text-white hover:text-amber-300 transition-colors focus:outline-none flex items-center gap-2 cursor-pointer"
+            className="relative p-2 text-[#241A15] hover:text-[#B8944A] transition-colors focus:outline-none flex items-center gap-2 cursor-pointer"
             aria-label="View Shopping Cart"
           >
-            <ShoppingBag className="w-5 h-5 text-amber-300" />
-            <span className="text-xs font-inter uppercase tracking-wider text-white/80 hidden lg:inline">{t('nav.cart')}</span>
+            <ShoppingBag className="w-5 h-5 text-[#B8944A]" />
+            <span className="text-xs font-inter uppercase tracking-wider text-[#3A2A20] font-semibold hidden lg:inline">{t('nav.cart')}</span>
             {totalCartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-amber-400 text-[#8c1119] text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-scale-in">
+              <span className="absolute -top-1 -right-1 bg-[#B8944A] text-black text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-scale-in shadow-sm">
                 {totalCartCount}
               </span>
             )}
@@ -169,34 +178,34 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                className="flex items-center gap-2.5 bg-black/40 hover:bg-black/60 border border-amber-400/40 rounded-full pl-1.5 pr-3 py-1 text-xs text-white transition-all duration-200 cursor-pointer"
+                className="flex items-center gap-2.5 bg-[#E6D5B8]/50 hover:bg-[#E6D5B8]/80 border border-[#D8C6A8] rounded-full pl-1.5 pr-3 py-1 text-xs text-[#241A15] transition-all duration-200 cursor-pointer shadow-sm"
               >
                 {/* Avatar Image or Initial Fallback */}
                 {avatar ? (
-                  <img 
-                    src={avatar} 
+                  <img
+                    src={avatar}
                     alt={firstName}
-                    className="w-7 h-7 rounded-full object-cover border-2 border-amber-400/50"
+                    className="w-7 h-7 rounded-full object-cover border-2 border-[#B8944A]"
                     referrerPolicy="no-referrer"
                   />
                 ) : (
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 to-amber-200 text-[#8c1119] font-extrabold flex items-center justify-center text-xs shadow-inner">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#DCC39A] to-[#E6D5B8] text-[#241A15] font-extrabold flex items-center justify-center text-xs shadow-inner">
                     {firstName.charAt(0).toUpperCase()}
                   </div>
                 )}
                 {/* First Name Only */}
-                <span className="font-semibold tracking-wide text-amber-200 max-w-[100px] truncate">
+                <span className="font-semibold tracking-wide text-[#241A15] max-w-[100px] truncate">
                   {firstName}
                 </span>
-                <ChevronDown className={`w-3.5 h-3.5 text-amber-300/80 transition-transform ${profileDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 text-[#756457] transition-transform ${profileDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Profile Dropdown Menu */}
               {profileDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-[#230005]/95 border border-[#D9A514]/40 rounded-xl shadow-2xl p-2 z-50 animate-scale-in backdrop-blur-md">
-                  <div className="px-3 py-2 border-b border-white/10 mb-1">
-                    <p className="text-xs text-amber-300 font-bold truncate">{firstName}</p>
-                    <p className="text-[11px] text-white/50 truncate">{session.user?.email}</p>
+                <div className="absolute right-0 mt-2 w-56 bg-[#FBF8F2] border border-[#D8C6A8] rounded-xl shadow-xl p-2 z-50 animate-scale-in backdrop-blur-md">
+                  <div className="px-3 py-2 border-b border-[#D8C6A8]/40 mb-1">
+                    <p className="text-xs text-[#B8944A] font-bold truncate">{firstName}</p>
+                    <p className="text-[11px] text-[#756457] truncate">{session.user?.email}</p>
                   </div>
 
                   <a
@@ -205,9 +214,9 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
                       setProfileDropdownOpen(false);
                       handleNavLinkClick(e, '/my-orders');
                     }}
-                    className="flex items-center gap-2 px-3 py-2 text-xs text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer font-medium"
+                    className="flex items-center gap-2 px-3 py-2 text-xs text-[#3A2A20] hover:text-[#241A15] hover:bg-[#E6D5B8]/40 rounded-lg transition-colors cursor-pointer font-medium"
                   >
-                    <Package className="w-3.5 h-3.5 text-amber-300" />
+                    <Package className="w-3.5 h-3.5 text-[#B8944A]" />
                     <span>My Orders</span>
                   </a>
 
@@ -216,7 +225,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
                       setProfileDropdownOpen(false);
                       supabase.auth.signOut();
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-300 hover:text-red-200 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer mt-1 border-t border-white/5"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer mt-1 border-t border-[#D8C6A8]/30"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                     <span>{t('nav.logout')}</span>
@@ -227,9 +236,9 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
           ) : (
             <button
               onClick={handleLoginClick}
-              className="group inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-4 py-2 text-xs tracking-widest uppercase font-inter font-bold rounded-full transition-all duration-300 cursor-pointer shadow-md shadow-amber-400/20"
+              className="group inline-flex items-center gap-2 bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] border border-[#241A15] px-4 py-2 text-xs tracking-widest uppercase font-inter font-bold rounded-full transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
             >
-              <LogIn className="w-3.5 h-3.5" />
+              <LogIn className="w-3.5 h-3.5 text-[#E6D5B8]" />
               <span>{t('nav.login')}</span>
             </button>
           )}
@@ -241,22 +250,22 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
           {/* Language Toggle Mobile */}
           <button
             onClick={() => setLang(lang === 'en' ? 'am' : 'en')}
-            className="flex items-center gap-1 bg-black/30 text-amber-300 border border-amber-400/30 px-2 py-1 rounded-full text-[10px] font-bold tracking-wider"
+            className="flex items-center gap-1 bg-[#E6D5B8]/40 text-[#241A15] border border-[#D8C6A8] px-2 py-1 rounded-full text-[10px] font-bold tracking-wider"
             title="Switch Language"
           >
-            <Globe className="w-3 h-3 text-amber-300" />
+            <Globe className="w-3 h-3 text-[#B8944A]" />
             <span>{lang === 'en' ? 'EN' : 'አማ'}</span>
           </button>
 
           {/* Mobile Cart Icon */}
           <button
             onClick={onOpenCart}
-            className="relative p-1.5 text-white hover:text-amber-300 transition-colors focus:outline-none"
+            className="relative p-1.5 text-[#241A15] hover:text-[#B8944A] transition-colors focus:outline-none"
             aria-label="View Shopping Cart"
           >
-            <ShoppingBag className="w-5 h-5 text-amber-300" />
+            <ShoppingBag className="w-5 h-5 text-[#B8944A]" />
             {totalCartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-amber-400 text-[#8c1119] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-scale-in">
+              <span className="absolute -top-1 -right-1 bg-[#B8944A] text-black text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-scale-in shadow-sm">
                 {totalCartCount}
               </span>
             )}
@@ -268,28 +277,28 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
             className="flex flex-col items-end space-y-1 p-2 focus:outline-none"
             aria-label="Open menu"
           >
-            <span className="w-5 h-0.5 bg-white" />
-            <span className="w-5 h-0.5 bg-white" />
-            <span className="w-3 h-0.5 bg-white" />
+            <span className="w-5 h-0.5 bg-[#241A15]" />
+            <span className="w-5 h-0.5 bg-[#241A15]" />
+            <span className="w-3 h-0.5 bg-[#241A15]" />
           </button>
         </div>
       </header>
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 z-50 bg-black/95 backdrop-blur-md md:hidden flex flex-col justify-between transition-all duration-500 ${menuOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
+        className={`fixed inset-0 z-50 bg-[#241A15]/98 backdrop-blur-lg md:hidden flex flex-col justify-between transition-all duration-500 ${menuOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
           }`}
       >
-        <div className="px-6 py-5 flex items-center justify-between border-b border-white/10">
+        <div className="px-6 py-5 flex items-center justify-between border-b border-[#D8C6A8]/20">
           <img
-            src="/logo.png"
+            src="/brand_logo_alt.png"
             alt="MBM Gifts"
             referrerPolicy="no-referrer"
-            className="h-12 sm:h-14 w-auto object-contain scale-[1.3] origin-left drop-shadow-md"
+            className="h-12 sm:h-14 w-auto object-contain drop-shadow-md"
           />
           <button
             onClick={() => setMenuOpen(false)}
-            className="p-2 text-white hover:text-white/70 transition-colors focus:outline-none"
+            className="p-2 text-[#E6D5B8] hover:text-white transition-colors focus:outline-none"
             aria-label="Close menu"
           >
             <X className="w-7 h-7" />
@@ -300,28 +309,28 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
           {session && (
             <div className="flex flex-col items-center mb-2">
               {avatar ? (
-                <img 
-                  src={avatar} 
+                <img
+                  src={avatar}
                   alt={firstName}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-amber-400 shadow-lg mb-2"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-[#B8944A] shadow-lg mb-2"
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-amber-400 text-[#8c1119] font-bold font-podium text-xl flex items-center justify-center mb-2 shadow-lg">
+                <div className="w-12 h-12 rounded-full bg-[#E6D5B8] text-[#241A15] font-bold font-podium text-xl flex items-center justify-center mb-2 shadow-lg">
                   {firstName.charAt(0).toUpperCase()}
                 </div>
               )}
-              <p className="text-amber-300 font-bold text-sm">{firstName}</p>
-              <p className="text-white/50 text-xs mb-3">{session.user?.email}</p>
+              <p className="text-[#E6D5B8] font-bold text-sm">{firstName}</p>
+              <p className="text-[#F7F1E7]/60 text-xs mb-3">{session.user?.email}</p>
               <a
                 href="/my-orders"
                 onClick={(e) => {
                   setMenuOpen(false);
                   handleNavLinkClick(e, '/my-orders');
                 }}
-                className="inline-flex items-center gap-2 border border-amber-400/50 bg-amber-400/10 text-amber-300 font-bold px-5 py-2 text-xs font-inter tracking-widest uppercase rounded-full hover:bg-amber-400/20 transition-all"
+                className="inline-flex items-center gap-2 border border-[#D8C6A8]/50 bg-[#E6D5B8]/20 text-[#E6D5B8] font-bold px-5 py-2 text-xs font-inter tracking-widest uppercase rounded-full hover:bg-[#E6D5B8]/30 transition-all"
               >
-                <Package className="w-4 h-4 text-amber-300" />
+                <Package className="w-4 h-4 text-[#B8944A]" />
                 <span>My Orders</span>
               </a>
             </div>
@@ -335,7 +344,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
                 setMenuOpen(false);
                 handleNavLinkClick(e, link.path);
               }}
-              className="font-podium text-2xl text-white uppercase tracking-wider hover:text-amber-300 transition-colors"
+              className="font-podium text-2xl text-[#F7F1E7] uppercase tracking-wider hover:text-[#E6D5B8] transition-colors"
             >
               {link.label}
             </a>
@@ -347,9 +356,9 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
                 supabase.auth.signOut();
                 setMenuOpen(false);
               }}
-              className="inline-flex items-center gap-2 border border-white/30 bg-white/10 px-6 py-3 text-xs font-inter tracking-widest uppercase text-white rounded-full"
+              className="inline-flex items-center gap-2 border border-[#D8C6A8]/40 bg-white/5 px-6 py-3 text-xs font-inter tracking-widest uppercase text-[#F7F1E7] rounded-full hover:bg-white/10"
             >
-              <LogOut className="w-4 h-4 text-amber-300" />
+              <LogOut className="w-4 h-4 text-[#B8944A]" />
               <span>{t('nav.logout')}</span>
             </button>
           ) : (
@@ -358,7 +367,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
                 setMenuOpen(false);
                 handleLoginClick();
               }}
-              className="inline-flex items-center gap-2 border border-amber-400/60 bg-amber-400 text-[#8c1119] font-bold px-6 py-3 text-xs font-inter tracking-widest uppercase rounded-full"
+              className="inline-flex items-center gap-2 border border-[#E6D5B8] bg-[#E6D5B8] text-[#241A15] font-bold px-6 py-3 text-xs font-inter tracking-widest uppercase rounded-full hover:bg-[#DCC39A]"
             >
               <LogIn className="w-4 h-4" />
               <span>{t('nav.login')}</span>
@@ -366,14 +375,14 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
           )}
         </div>
 
-        <div className="py-6 border-t border-white/10 flex flex-col items-center gap-4 text-xs text-white/40">
+        <div className="py-6 border-t border-[#D8C6A8]/20 flex flex-col items-center gap-4 text-xs text-[#F7F1E7]/50">
           <div className="flex items-center gap-3">
             <a
               href="https://www.instagram.com/mbmgifts"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] transition-all"
+              className="w-9 h-9 rounded-full bg-white/5 border border-[#D8C6A8]/20 flex items-center justify-center text-[#F7F1E7]/70 hover:text-white hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] transition-all"
             >
               <Instagram className="w-4 h-4" />
             </a>
@@ -382,7 +391,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-[#1877F2] transition-all"
+              className="w-9 h-9 rounded-full bg-white/5 border border-[#D8C6A8]/20 flex items-center justify-center text-[#F7F1E7]/70 hover:text-white hover:bg-[#1877F2] transition-all"
             >
               <Facebook className="w-4 h-4" />
             </a>
@@ -391,10 +400,10 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
               target="_blank"
               rel="noopener noreferrer"
               aria-label="TikTok"
-              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-black hover:border-white/30 transition-all"
+              className="w-9 h-9 rounded-full bg-white/5 border border-[#D8C6A8]/20 flex items-center justify-center text-[#F7F1E7]/70 hover:text-white hover:bg-black hover:border-white/30 transition-all"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.48 6.34 6.34 0 0 0 1.97-4.48V8.75a8.28 8.28 0 0 0 4.8 1.51V6.8a4.85 4.85 0 0 1-1-.11z"/>
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.48 6.34 6.34 0 0 0 1.97-4.48V8.75a8.28 8.28 0 0 0 4.8 1.51V6.8a4.85 4.85 0 0 1-1-.11z" />
               </svg>
             </a>
             <a
@@ -402,10 +411,10 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Telegram"
-              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-[#229ED9] transition-all"
+              className="w-9 h-9 rounded-full bg-white/5 border border-[#D8C6A8]/20 flex items-center justify-center text-[#F7F1E7]/70 hover:text-white hover:bg-[#229ED9] transition-all"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.12-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.15 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06-.01.24-.03.38z"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.12-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.15 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06-.01.24-.03.38z" />
               </svg>
             </a>
           </div>

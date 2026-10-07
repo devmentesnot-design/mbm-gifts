@@ -67,7 +67,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
   ];
 
   return (
-    <div className="min-h-screen w-full bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005] flex flex-col justify-between">
+    <div className="min-h-screen w-full bg-transparent text-[#241A15] font-inter selection:bg-[#E6D5B8] selection:text-[#241A15] flex flex-col justify-between">
       {/* Top Navbar */}
       <Navbar
         session={session}
@@ -79,29 +79,29 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
 
       <main className="flex-1">
         {/* Page Hero Header */}
-        <section className="relative pt-12 pb-20 px-4 sm:px-8 lg:px-12 bg-[#2B0005]/40 backdrop-blur-[2px] border-b border-[#D9A514]/15 overflow-hidden">
+        <section className="relative pt-12 pb-16 px-4 sm:px-8 lg:px-12 bg-transparent overflow-hidden">
           <div className="max-w-6xl mx-auto text-center relative z-10">
-            <div className="inline-flex items-center gap-2 bg-[#D9A514]/15 border border-[#D9A514]/30 text-[#F5C542] text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4 shadow-lg">
-              <CheckCircle2 className="w-4 h-4 text-[#F5C542]" />
-              <span>Simple & Seamless Gifting</span>
+            <div className="inline-flex items-center gap-2 bg-[#E6D5B8]/70 border border-[#D8C6A8] text-[#8E6E2F] text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4 shadow-sm">
+              <CheckCircle2 className="w-4 h-4 text-[#B8944A]" />
+              <span>Simple &amp; Seamless Gifting</span>
             </div>
 
-            <h1 className="font-podium text-4xl sm:text-6xl font-extrabold uppercase tracking-tight text-white mb-6 leading-tight">
+            <h1 className="font-podium text-4xl sm:text-6xl font-extrabold uppercase tracking-tight text-[#241A15] mb-6 leading-tight">
               How To Order Your Luxury MBM Gift Box
             </h1>
 
-            <p className="text-white/85 text-base sm:text-lg max-w-3xl mx-auto font-inter leading-relaxed mb-8">
+            <p className="text-[#3A2A20] text-base sm:text-lg max-w-3xl mx-auto font-inter leading-relaxed mb-8">
               Whether you choose one of our expert-curated ready-made hampers or craft your own personalized box item-by-item, our ordering process is fast, flexible, and effortless.
             </p>
 
             {/* Mode Selector Tabs */}
-            <div className="inline-flex p-1.5 bg-black/40 border border-white/20 rounded-full mb-6">
+            <div className="inline-flex p-1.5 luxury-satin-card rounded-full mb-2 shadow-sm border border-[#D8C6A8]">
               <button
                 onClick={() => setActiveTab('prepared')}
                 className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                   activeTab === 'prepared'
-                    ? 'bg-amber-400 text-[#8c1119] shadow-lg font-extrabold'
-                    : 'text-white/80 hover:text-white'
+                    ? 'bg-[#241A15] text-[#FBF8F2] shadow-md font-extrabold'
+                    : 'text-[#756457] hover:text-[#241A15]'
                 }`}
               >
                 1. Ready-Made Packages
@@ -110,8 +110,8 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                 onClick={() => setActiveTab('custom')}
                 className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                   activeTab === 'custom'
-                    ? 'bg-amber-400 text-[#8c1119] shadow-lg font-extrabold'
-                    : 'text-white/80 hover:text-white'
+                    ? 'bg-[#241A15] text-[#FBF8F2] shadow-md font-extrabold'
+                    : 'text-[#756457] hover:text-[#241A15]'
                 }`}
               >
                 2. Build Your Own Box
@@ -121,17 +121,17 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
         </section>
 
         {/* Video Tutorial Section */}
-        <section className="py-12 sm:py-16 px-4 sm:px-8 lg:px-12 bg-black/40 border-b border-white/10 relative">
+        <section className="py-12 sm:py-16 px-4 sm:px-8 lg:px-12 bg-transparent relative">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center gap-2 bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-3 shadow">
-                <Video className="w-4 h-4 text-amber-300" />
+              <div className="inline-flex items-center gap-2 bg-[#E6D5B8]/70 border border-[#D8C6A8] text-[#8E6E2F] text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-3 shadow-sm">
+                <Video className="w-4 h-4 text-[#8E6E2F]" />
                 <span>Video Walkthrough</span>
               </div>
-              <h2 className="font-podium text-2xl sm:text-4xl uppercase font-bold text-white mb-2">
+              <h2 className="font-podium text-2xl sm:text-4xl uppercase font-bold text-[#241A15] mb-2">
                 {activeTab === 'prepared' ? 'Ready-Made Package Video Guide' : 'Build Your Own Box Video Guide'}
               </h2>
-              <p className="text-white/75 text-xs sm:text-sm font-inter max-w-xl mx-auto">
+              <p className="text-[#756457] text-xs sm:text-sm font-inter max-w-xl mx-auto">
                 {activeTab === 'prepared'
                   ? 'Watch our quick video on how to select, customize, and order ready-made luxury gift packages.'
                   : 'Watch our step-by-step video on how to handpick individual items and build a custom gift box.'}
@@ -139,8 +139,8 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
             </div>
 
             {/* Video Player Box */}
-            <div className="luxury-satin-card rounded-2xl sm:rounded-3xl p-3 sm:p-6 border border-amber-400/30 shadow-2xl bg-black/60 max-w-4xl mx-auto">
-              <div className="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden bg-black border border-white/15 shadow-inner">
+            <div className="luxury-satin-card rounded-2xl sm:rounded-3xl p-3 sm:p-6 border border-[#D8C6A8] shadow-xl max-w-4xl mx-auto">
+              <div className="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden bg-black border border-[#D8C6A8]/60 shadow-inner">
                 <iframe
                   key={activeTab}
                   className="w-full h-full"
@@ -156,12 +156,12 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
               </div>
 
               {/* Video Quick Switcher & YouTube Link */}
-              <div className="mt-4 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="flex items-center gap-2 text-xs text-white/70 font-inter">
-                  <Play className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+              <div className="mt-4 pt-4 border-t border-[#D8C6A8]/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-xs text-[#756457] font-inter">
+                  <Play className="w-3.5 h-3.5 text-[#8E6E2F] fill-[#8E6E2F]" />
                   <span>
                     Watching:{' '}
-                    <strong className="text-amber-300">
+                    <strong className="text-[#241A15]">
                       {activeTab === 'prepared' ? 'Ready-Made Packages Guide' : 'Build Your Own Box Guide'}
                     </strong>
                   </span>
@@ -172,8 +172,8 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                     onClick={() => setActiveTab('prepared')}
                     className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                       activeTab === 'prepared'
-                        ? 'bg-amber-400 text-[#8c1119] shadow'
-                        : 'bg-white/10 text-white/70 hover:text-white hover:bg-white/20'
+                        ? 'bg-[#241A15] text-[#FBF8F2] shadow-sm'
+                        : 'bg-white/80 text-[#756457] hover:text-[#241A15] hover:bg-white border border-[#D8C6A8]'
                     }`}
                   >
                     <Gift className="w-3.5 h-3.5" />
@@ -183,8 +183,8 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                     onClick={() => setActiveTab('custom')}
                     className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                       activeTab === 'custom'
-                        ? 'bg-amber-400 text-[#8c1119] shadow'
-                        : 'bg-white/10 text-white/70 hover:text-white hover:bg-white/20'
+                        ? 'bg-[#241A15] text-[#FBF8F2] shadow-sm'
+                        : 'bg-white/80 text-[#756457] hover:text-[#241A15] hover:bg-white border border-[#D8C6A8]'
                     }`}
                   >
                     <Sparkles className="w-3.5 h-3.5" />
@@ -194,7 +194,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                     href={activeTab === 'prepared' ? 'https://youtu.be/B8A1WE0SEKw' : 'https://youtu.be/fYNhoOMyRl8'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/60 hover:text-white transition-all text-xs"
+                    className="p-1.5 rounded-lg bg-white/80 hover:bg-white border border-[#D8C6A8] text-[#756457] hover:text-[#241A15] transition-all text-xs"
                     title="Open on YouTube"
                   >
                     <ExternalLink className="w-4 h-4" />
@@ -206,13 +206,13 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
         </section>
 
         {/* 3-Step Detailed Visual Process */}
-        <section className="py-16 sm:py-24 px-4 sm:px-8 lg:px-12 border-t border-white/10 relative">
+        <section className="py-16 sm:py-24 px-4 sm:px-8 lg:px-12 bg-transparent relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="font-podium text-3xl sm:text-5xl uppercase font-bold text-white mb-4">
+              <h2 className="font-podium text-3xl sm:text-5xl uppercase font-bold text-[#241A15] mb-4">
                 {activeTab === 'prepared' ? 'Ready-Made Package Ordering' : 'Custom Box Curation Steps'}
               </h2>
-              <p className="text-white/80 text-sm sm:text-base font-inter">
+              <p className="text-[#756457] text-sm sm:text-base font-inter">
                 {activeTab === 'prepared'
                   ? 'Follow these 3 easy steps to order pre-curated hampers.'
                   : 'Follow these steps to handpick individual luxury gifts.'}
@@ -222,85 +222,85 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
             {/* Step Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Step 1 */}
-              <div className="luxury-satin-card luxury-satin-card-hover rounded-3xl p-8 relative flex flex-col justify-between shadow-xl group">
+              <div className="luxury-satin-card luxury-satin-card-hover border border-[#D8C6A8] hover:border-[#B8944A] rounded-3xl p-8 relative flex flex-col justify-between shadow-md hover:shadow-xl transition-all group">
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-amber-400/15 border border-amber-400/30 text-amber-300 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-2xl bg-[#E6D5B8] border border-[#D8C6A8] text-[#8E6E2F] flex items-center justify-center">
                       <ShoppingBag className="w-7 h-7" />
                     </div>
-                    <span className="font-podium text-4xl font-extrabold text-amber-300/30 group-hover:text-amber-300 transition-colors">
+                    <span className="font-podium text-4xl font-extrabold text-[#D8C6A8] group-hover:text-[#8E6E2F] transition-colors">
                       01
                     </span>
                   </div>
 
-                  <h3 className="font-podium text-2xl font-bold uppercase text-white mb-3 group-hover:text-amber-300 transition-colors">
+                  <h3 className="font-podium text-2xl font-bold uppercase text-[#241A15] mb-3 group-hover:text-[#8E6E2F] transition-colors">
                     {activeTab === 'prepared' ? 'Select Prepared Package' : 'Pick Your Items'}
                   </h3>
 
-                  <p className="text-white/75 text-xs sm:text-sm font-inter leading-relaxed mb-4">
+                  <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed mb-4">
                     {activeTab === 'prepared'
                       ? 'Browse our curated collections (Romantic, Birthday, Executive, Self-Care). Click "View Details" to see every item included.'
                       : 'Switch to the "Build Your Own" tab in our shop. Browse chocolates, candles, crystal glasses, and leather goods and set quantities.'}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-white/10 text-xs text-amber-300 font-bold uppercase tracking-wider flex items-center gap-2">
+                <div className="pt-4 border-t border-[#D8C6A8]/40 text-xs text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Instant Live Price Calculation</span>
                 </div>
               </div>
 
               {/* Step 2 */}
-              <div className="luxury-satin-card luxury-satin-card-hover rounded-3xl p-8 relative flex flex-col justify-between shadow-xl group">
+              <div className="luxury-satin-card luxury-satin-card-hover border border-[#D8C6A8] hover:border-[#B8944A] rounded-3xl p-8 relative flex flex-col justify-between shadow-md hover:shadow-xl transition-all group">
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-amber-400/15 border border-amber-400/30 text-amber-300 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-2xl bg-[#E6D5B8] border border-[#D8C6A8] text-[#8E6E2F] flex items-center justify-center">
                       <PenTool className="w-7 h-7" />
                     </div>
-                    <span className="font-podium text-4xl font-extrabold text-amber-300/30 group-hover:text-amber-300 transition-colors">
+                    <span className="font-podium text-4xl font-extrabold text-[#D8C6A8] group-hover:text-[#8E6E2F] transition-colors">
                       02
                     </span>
                   </div>
 
-                  <h3 className="font-podium text-2xl font-bold uppercase text-white mb-3 group-hover:text-amber-300 transition-colors">
-                    Personal Note & Wrap
+                  <h3 className="font-podium text-2xl font-bold uppercase text-[#241A15] mb-3 group-hover:text-[#8E6E2F] transition-colors">
+                    Personal Note &amp; Wrap
                   </h3>
 
-                  <p className="text-white/75 text-xs sm:text-sm font-inter leading-relaxed mb-4">
+                  <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed mb-4">
                     Type your personal message for the recipient. We handwrite your note on heavy parchment paper and seal it with authentic red wax!
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-white/10 text-xs text-amber-300 font-bold uppercase tracking-wider flex items-center gap-2">
+                <div className="pt-4 border-t border-[#D8C6A8]/40 text-xs text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Wax Sealed Parchment Included</span>
                 </div>
               </div>
 
               {/* Step 3 */}
-              <div className="luxury-satin-card luxury-satin-card-hover rounded-3xl p-8 relative flex flex-col justify-between shadow-xl group">
+              <div className="luxury-satin-card luxury-satin-card-hover border border-[#D8C6A8] hover:border-[#B8944A] rounded-3xl p-8 relative flex flex-col justify-between shadow-md hover:shadow-xl transition-all group">
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-amber-400/15 border border-amber-400/30 text-amber-300 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-2xl bg-[#E6D5B8] border border-[#D8C6A8] text-[#8E6E2F] flex items-center justify-center">
                       <Truck className="w-7 h-7" />
                     </div>
-                    <span className="font-podium text-4xl font-extrabold text-amber-300/30 group-hover:text-amber-300 transition-colors">
+                    <span className="font-podium text-4xl font-extrabold text-[#D8C6A8] group-hover:text-[#8E6E2F] transition-colors">
                       03
                     </span>
                   </div>
 
-                  <h3 className="font-podium text-2xl font-bold uppercase text-white mb-3 group-hover:text-amber-300 transition-colors">
+                  <h3 className="font-podium text-2xl font-bold uppercase text-[#241A15] mb-3 group-hover:text-[#8E6E2F] transition-colors">
                     Express Tracked Shipping
                   </h3>
 
-                  <p className="text-white/75 text-xs sm:text-sm font-inter leading-relaxed mb-4">
-                    Enter recipient address, pick your delivery date, and complete checkout. Receive SMS & email updates as your box is dispatched.
+                  <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed mb-4">
+                    Enter recipient address, pick your delivery date, and complete checkout. Receive SMS &amp; email updates as your box is dispatched.
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-white/10 text-xs text-amber-300 font-bold uppercase tracking-wider flex items-center gap-2">
+                <div className="pt-4 border-t border-[#D8C6A8]/40 text-xs text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Doorstep Delivery & Tracking</span>
+                  <span>Doorstep Delivery &amp; Tracking</span>
                 </div>
               </div>
             </div>
@@ -308,25 +308,25 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
         </section>
 
         {/* Section: Live Calligraphy Card Note Interactive Previewer */}
-        <section className="py-16 sm:py-24 px-4 sm:px-8 lg:px-12 bg-[#2e0508] border-t border-white/10 relative">
+        <section className="py-16 sm:py-24 px-4 sm:px-8 lg:px-12 bg-transparent relative">
           <div className="max-w-5xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-12">
-              <div className="inline-flex items-center gap-2 bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-3">
-                <FileText className="w-4 h-4" />
+              <div className="inline-flex items-center gap-2 bg-[#E6D5B8]/70 border border-[#D8C6A8] text-[#8E6E2F] text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-3 shadow-sm">
+                <FileText className="w-4 h-4 text-[#8E6E2F]" />
                 <span>Wax Sealed Note Customizer</span>
               </div>
-              <h2 className="font-podium text-3xl sm:text-5xl uppercase font-bold text-white mb-3">
+              <h2 className="font-podium text-3xl sm:text-5xl uppercase font-bold text-[#241A15] mb-3">
                 Preview Your Handwritten Card
               </h2>
-              <p className="text-white/75 text-sm sm:text-base font-inter">
+              <p className="text-[#756457] text-sm sm:text-base font-inter">
                 Test how your custom note will look when hand-transcribed onto parchment paper by our studio calligraphers.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-black/40 border border-white/15 rounded-3xl p-6 sm:p-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center luxury-satin-card border border-[#D8C6A8] rounded-3xl p-6 sm:p-10 shadow-xl">
               {/* Input Form */}
               <div>
-                <label className="block text-xs uppercase font-bold tracking-wider text-amber-300 mb-2">
+                <label className="block text-xs uppercase font-bold tracking-wider text-[#8E6E2F] mb-2">
                   Type Your Message Below:
                 </label>
                 <textarea
@@ -334,30 +334,30 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                   onChange={(e) => setPreviewNote(e.target.value)}
                   maxLength={180}
                   placeholder="Enter custom gift note message..."
-                  className="w-full bg-black/50 border border-white/20 rounded-2xl p-4 text-sm text-white focus:outline-none focus:border-amber-400 h-36 resize-none font-inter mb-3"
+                  className="w-full bg-white/80 border border-[#D8C6A8] rounded-2xl p-4 text-sm text-[#241A15] focus:outline-none focus:border-[#B8944A] h-36 resize-none font-inter mb-3 shadow-inner"
                 />
-                <div className="flex items-center justify-between text-xs text-white/50">
+                <div className="flex items-center justify-between text-xs text-[#756457]">
                   <span>Max 180 characters</span>
                   <span>{previewNote.length}/180</span>
                 </div>
               </div>
 
               {/* Real-time Card Preview Box */}
-              <div className="bg-[#fdfbf7] text-[#2c1810] rounded-2xl p-6 sm:p-8 relative shadow-2xl border-4 border-amber-900/20 transform rotate-1">
+              <div className="bg-[#FCF9F2] text-[#241A15] rounded-2xl p-6 sm:p-8 relative shadow-xl border-2 border-[#D8C6A8] transform rotate-1">
                 {/* Wax Seal Badge */}
-                <div className="absolute -top-4 -right-4 w-12 h-12 bg-red-700 rounded-full border-2 border-amber-300 shadow-lg flex items-center justify-center text-amber-200 font-bold font-podium text-xs uppercase">
+                <div className="absolute -top-4 -right-4 w-12 h-12 bg-red-800 rounded-full border-2 border-[#E6D5B8] shadow-md flex items-center justify-center text-[#E6D5B8] font-bold font-podium text-xs uppercase">
                   MBM
                 </div>
 
-                <div className="text-[11px] font-bold text-amber-900/60 uppercase tracking-widest mb-4 font-inter">
+                <div className="text-[11px] font-bold text-[#8E6E2F] uppercase tracking-widest mb-4 font-inter">
                   — Handwritten Calligraphy Card —
                 </div>
 
-                <p className="font-serif italic text-base sm:text-lg leading-relaxed mb-6 text-[#2c1810]">
+                <p className="font-serif italic text-base sm:text-lg leading-relaxed mb-6 text-[#241A15]">
                   "{previewNote || 'Your note message here...'}"
                 </p>
 
-                <div className="pt-4 border-t border-amber-900/10 flex items-center justify-between text-[11px] font-inter text-amber-900/70 font-bold uppercase">
+                <div className="pt-4 border-t border-[#D8C6A8]/40 flex items-center justify-between text-[11px] font-inter text-[#8E6E2F] font-bold uppercase">
                   <span>MBM Luxury Studio</span>
                   <span>Authentic Red Wax Seal</span>
                 </div>
@@ -367,17 +367,17 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
         </section>
 
         {/* Section: Frequently Asked Questions */}
-        <section className="py-16 sm:py-24 px-4 sm:px-8 lg:px-12 border-t border-white/10 relative">
+        <section className="py-16 sm:py-24 px-4 sm:px-8 lg:px-12 bg-transparent relative">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-14">
-              <div className="inline-flex items-center gap-2 text-amber-300 text-xs font-bold uppercase tracking-widest mb-2">
-                <HelpCircle className="w-4 h-4 text-amber-400" />
+              <div className="inline-flex items-center gap-2 text-[#8E6E2F] text-xs font-bold uppercase tracking-widest mb-2">
+                <HelpCircle className="w-4 h-4 text-[#8E6E2F]" />
                 <span>Got Questions?</span>
               </div>
-              <h2 className="font-podium text-3xl sm:text-5xl uppercase font-bold text-white mb-3">
+              <h2 className="font-podium text-3xl sm:text-5xl uppercase font-bold text-[#241A15] mb-3">
                 Frequently Asked Questions
               </h2>
-              <p className="text-white/75 text-sm sm:text-base font-inter">
+              <p className="text-[#756457] text-sm sm:text-base font-inter">
                 Everything you need to know about placing your gift order.
               </p>
             </div>
@@ -386,24 +386,24 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
               {faqs.map((faq, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#4a070c]/80 border border-white/15 rounded-2xl overflow-hidden transition-colors"
+                  className="luxury-satin-card border border-[#D8C6A8] rounded-2xl overflow-hidden shadow-sm transition-colors"
                 >
                   <button
                     onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
                     className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
                   >
-                    <span className="font-podium text-lg font-bold text-white uppercase">
+                    <span className="font-podium text-lg font-bold text-[#241A15] uppercase">
                       {faq.q}
                     </span>
                     <ChevronDown
-                      className={`w-5 h-5 text-amber-300 transition-transform duration-300 flex-shrink-0 ${
+                      className={`w-5 h-5 text-[#8E6E2F] transition-transform duration-300 flex-shrink-0 ${
                         activeFaq === idx ? 'rotate-180' : ''
                       }`}
                     />
                   </button>
 
                   {activeFaq === idx && (
-                    <div className="px-5 sm:px-6 pb-6 text-xs sm:text-sm text-white/80 font-inter leading-relaxed border-t border-white/10 pt-4">
+                    <div className="px-5 sm:px-6 pb-6 text-xs sm:text-sm text-[#3A2A20] font-inter leading-relaxed border-t border-[#D8C6A8]/40 pt-4">
                       {faq.a}
                     </div>
                   )}
@@ -414,17 +414,17 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
         </section>
 
         {/* Call-to-action */}
-        <section className="py-16 px-4 sm:px-8 lg:px-12 bg-gradient-to-r from-[#8c1119] via-[#4a070c] to-[#8c1119] border-t border-white/10 text-center">
+        <section className="py-16 px-4 sm:px-8 lg:px-12 bg-gradient-to-r from-[#241A15] via-[#3A2A20] to-[#241A15] border-t border-[#D8C6A8]/30 text-center text-[#FBF8F2]">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-podium text-3xl sm:text-5xl font-extrabold uppercase text-white mb-4">
+            <h2 className="font-podium text-3xl sm:text-5xl font-extrabold uppercase text-[#FBF8F2] mb-4">
               Ready to Place Your Order?
             </h2>
-            <p className="text-white/80 text-sm sm:text-base font-inter max-w-xl mx-auto mb-8">
+            <p className="text-[#F7F1E7]/80 text-sm sm:text-base font-inter max-w-xl mx-auto mb-8">
               Choose your favorite gift box or customize item-by-item today!
             </p>
             <button
               onClick={() => onNavigate('/')}
-              className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-extrabold px-10 py-4 rounded-full text-sm uppercase tracking-widest transition-all cursor-pointer shadow-2xl shadow-amber-400/20 inline-flex items-center gap-2 transform hover:-translate-y-0.5"
+              className="bg-[#E6D5B8] hover:bg-[#DCC39A] text-[#241A15] font-extrabold px-10 py-4 rounded-full text-sm uppercase tracking-widest transition-all cursor-pointer shadow-lg inline-flex items-center gap-2 transform hover:-translate-y-0.5"
             >
               <span>Go to Gift Shop</span>
               <ArrowRight className="w-4 h-4" />

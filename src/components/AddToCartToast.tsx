@@ -19,16 +19,16 @@ export const AddToCartToast: React.FC<AddToCartToastProps> = ({ itemName, onView
   }, [onClose]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 animate-bounce-in max-w-sm w-full bg-[#380509] border border-amber-400/50 rounded-2xl p-4 shadow-2xl backdrop-blur-md flex items-center gap-3">
-      <div className="bg-amber-400 text-[#8c1119] rounded-xl p-2.5 flex-shrink-0 font-bold">
-        <Check className="w-5 h-5 stroke-[3]" />
+    <div className="fixed bottom-6 right-6 z-50 animate-bounce-in max-w-sm w-full bg-[#FBF8F2]/95 border border-[#D8C6A8] rounded-2xl p-4 shadow-[0_12px_36px_rgba(58,42,32,0.18)] backdrop-blur-md flex items-center gap-3">
+      <div className="bg-[#E6D5B8] text-[#241A15] rounded-xl p-2.5 flex-shrink-0 font-bold shadow-sm">
+        <Check className="w-5 h-5 stroke-[3] text-[#8E6E2F]" />
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="text-amber-300 font-bold text-xs uppercase tracking-wider">
+        <p className="text-[#8E6E2F] font-bold text-xs uppercase tracking-wider">
           {t('shop.added')}
         </p>
-        <p className="text-white text-xs font-medium truncate mt-0.5">
+        <p className="text-[#241A15] text-xs font-semibold truncate mt-0.5">
           {itemName}
         </p>
       </div>
@@ -39,15 +39,15 @@ export const AddToCartToast: React.FC<AddToCartToastProps> = ({ itemName, onView
             onViewCart();
             onClose();
           }}
-          className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] text-[11px] font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer whitespace-nowrap"
+          className="bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] text-[11px] font-bold px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer whitespace-nowrap shadow-sm"
         >
           <span>{t('cart.viewCart')}</span>
-          <ArrowRight className="w-3 h-3" />
+          <ArrowRight className="w-3 h-3 text-[#E6D5B8]" />
         </button>
 
         <button
           onClick={onClose}
-          className="text-white/40 hover:text-white p-1 rounded transition-colors cursor-pointer"
+          className="text-[#756457] hover:text-[#241A15] p-1 rounded transition-colors cursor-pointer"
         >
           <X className="w-4 h-4" />
         </button>

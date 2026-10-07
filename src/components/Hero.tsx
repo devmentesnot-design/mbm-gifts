@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight, Award, Crown, Sparkles, PackageCheck, Globe, Truck } from 'lucide-react';
+import { ArrowUpRight, Award, Sparkles, PackageCheck, Truck } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useMarket } from '../context/MarketContext';
 import { HeroPackageShowcase } from './HeroPackageShowcase';
@@ -21,104 +21,118 @@ export const Hero: React.FC<HeroProps> = ({
   const { buyerMarket } = useMarket();
 
   return (
-    <section className="relative min-h-[calc(100vh-76px)] w-full overflow-hidden flex flex-col justify-between select-none">
-      {/* Subtle Vignette for dramatic depth */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_35%,_rgba(43,0,5,0.75)_100%)] -z-25 pointer-events-none" />
+    <section 
+      className="relative w-full lg:aspect-[2089/753] min-h-0 lg:max-h-[640px] overflow-hidden flex flex-col justify-between select-none bg-transparent"
+    >
+      {/* Desktop Real Hero Background (Panoramic header image fitted cleanly) */}
+      <img
+        src="/elegant-thank-you.png"
+        alt="MBM Luxury Gift Arrangement"
+        className="hidden lg:block absolute inset-0 w-full h-full object-cover object-center pointer-events-none z-0"
+        loading="eager"
+      />
 
-      {/* Soft spotlight highlight over satin fabric */}
-      <div className="animate-fade-in-delay absolute inset-0 bg-[radial-gradient(circle_at_70%_45%,_rgba(245,197,66,0.12)_0%,_rgba(255,255,255,0.08)_25%,_transparent_65%)] -z-20 pointer-events-none" />
+      {/* Mobile Folded Satin Background (Matches other pages and sections) */}
+      <div 
+        className="lg:hidden absolute inset-0 bg-cover bg-center pointer-events-none -z-10"
+        style={{ backgroundImage: "url('/global-satin-bg.png')" }}
+      />
 
-      {/* Main Hero Container: Two-Column Responsive Layout */}
-      <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16 flex-1 flex flex-col lg:flex-row items-center justify-between z-10 py-6 sm:py-8 lg:py-10 gap-8 lg:gap-12 xl:gap-16">
+      {/* Main Hero Container: Left Content & Right Promo Popup */}
+      <div className="w-full h-full px-5 sm:px-8 md:px-10 lg:px-14 xl:px-18 flex-1 flex flex-col lg:flex-row items-center justify-between z-10 py-5 lg:py-8 gap-4 lg:gap-6">
         
         {/* ========================================================================= */}
-        {/* LEFT COLUMN: HERO HEADLINE, CTAS, STATS                                   */}
+        {/* LEFT COLUMN: HERO HEADLINE, CTAS, STATS (Strictly confined to left silk)   */}
         {/* ========================================================================= */}
-        <div className="w-full lg:max-w-2xl xl:max-w-3xl flex flex-col justify-center">
+        <div className="w-full lg:w-[33%] xl:w-[29%] lg:max-w-[350px] xl:max-w-[410px] flex flex-col justify-center">
           {/* Market-aware Badges */}
-          <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
-            <div className="inline-flex items-center gap-2 bg-[#D9A514]/15 border border-[#D9A514]/40 text-[#F5C542] text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest px-2.5 sm:px-3 py-1 rounded-full shadow-md">
-              <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#F5C542]" />
+          <div className="flex flex-wrap items-center gap-2 mb-2.5 sm:mb-3.5">
+            <div className="inline-flex items-center gap-1.5 bg-[#E6D5B8]/85 border border-[#D8C6A8] text-[#8E6E2F] text-[10px] sm:text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-[#B8944A]" />
               <span>{t('hero.badge')}</span>
             </div>
 
             {buyerMarket === 'INTERNATIONAL' && (
-              <div className="inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-400/50 text-emerald-300 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full animate-fade-in shadow-md">
-                <Truck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Pay USD • Free Delivery in Ethiopia</span>
+              <div className="inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full animate-fade-in shadow-sm">
+                <Truck className="w-3.5 h-3.5 text-emerald-600" />
+                <span>USD • Free Delivery</span>
               </div>
             )}
           </div>
 
           {/* Main Heading */}
-          <h1 className="animate-fade-up-delay-1 font-podium font-black text-[#FFF8ED] uppercase tracking-tight text-[2.2rem] sm:text-[2.8rem] md:text-[3.2rem] lg:text-[3.6rem] xl:text-[4.2rem] leading-[1.08] drop-shadow-xl mt-2">
-            <span className="block text-[#F5C542] font-black">BESPOKE GIFTS</span>
-            <span className="block text-[#FFF8ED] mt-1">FOR EVERY</span>
-            <span className="block text-[#FFF8ED]">MILESTONE</span>
+          <h1 className="animate-fade-up-delay-1 font-podium font-black uppercase tracking-tight text-[2.1rem] sm:text-[2.6rem] lg:text-[2.4rem] xl:text-[2.95rem] leading-[1.05]">
+            <span className="block font-black" style={{color: '#7A5C1E', textShadow: '0 1px 8px rgba(255,255,255,0.7)'}}>BESPOKE GIFTS</span>
+            <span className="block mt-0.5" style={{color: '#1A1008', textShadow: '0 1px 6px rgba(255,255,255,0.5)'}}>FOR EVERY</span>
+            <span className="block" style={{color: '#1A1008', textShadow: '0 1px 6px rgba(255,255,255,0.5)'}}>MILESTONE</span>
           </h1>
 
           {/* Subtext */}
-          <p className="animate-fade-up-delay-2 mt-4 sm:mt-6 lg:mt-7 text-[#FFF8ED]/85 text-xs sm:text-sm md:text-base font-inter leading-relaxed max-w-full sm:max-w-lg">
+          <p className="animate-fade-up-delay-2 mt-3 sm:mt-3.5 text-[#3A2A20]/90 text-[13px] sm:text-[14px] lg:text-[13px] xl:text-[14.5px] font-inter leading-relaxed max-w-[340px] xl:max-w-[380px]">
             {buyerMarket === 'INTERNATIONAL'
-              ? 'Ordering from abroad? Send luxury gift packages directly to loved ones, partners, and family in Ethiopia with complimentary hand-delivery.'
+              ? 'Ordering from abroad? Send luxury gift packages directly to loved ones in Ethiopia with complimentary VIP delivery.'
               : t('hero.subtitle')}
           </p>
 
           {/* CTA Row */}
-          <div className="animate-fade-up-delay-3 mt-6 sm:mt-8 lg:mt-9 flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6">
+          <div className="animate-fade-up-delay-3 mt-4 sm:mt-5 flex items-center gap-3.5">
             <button
               onClick={onExplorePackages}
-              className="group bg-gradient-to-r from-[#F5C542] to-[#D9A514] hover:from-[#F5C542] hover:to-[#e6b015] text-[#2B0005] px-6 sm:px-8 py-3.5 sm:py-4 text-[10px] sm:text-[11px] md:text-xs tracking-widest uppercase flex items-center gap-2 font-inter font-extrabold transition-all duration-300 cursor-pointer rounded-full shadow-xl shadow-[#D9A514]/25 hover:shadow-[#D9A514]/40 transform hover:-translate-y-0.5"
+              className="group bg-gradient-to-r from-[#E6D5B8] via-[#F7F1E7] to-[#E6D5B8] hover:from-[#ecdcc2] hover:to-[#dfcaa8] text-[#241A15] border border-[#D8C6A8] px-6 sm:px-7 py-3 sm:py-3.5 text-[11px] sm:text-xs tracking-wider uppercase flex items-center gap-2 font-inter font-extrabold transition-all duration-300 cursor-pointer rounded-full shadow-md shadow-[#B8944A]/10 hover:shadow-lg transform hover:-translate-y-0.5"
             >
               <span>{t('hero.exploreBtn')}</span>
-              <ArrowUpRight className="w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-[#B8944A]" />
             </button>
 
-            <div className="hidden sm:flex items-center gap-3 border-l border-white/15 pl-4 sm:pl-6">
-              <Award className="w-7 sm:w-8 h-7 sm:h-8 text-[#F5C542] flex-shrink-0" />
-              <div className="text-[#FFF8ED]/80 text-[10px] sm:text-xs tracking-wider uppercase font-inter leading-tight">
-                <div>Top-Rated</div>
-                <div>Gift Studio</div>
+            <div className="flex items-center gap-2 border-l border-[#D8C6A8]/60 pl-3.5">
+              <Award className="w-6 h-6 text-[#B8944A] flex-shrink-0" />
+              <div className="text-[#756457] text-[10px] tracking-wider uppercase font-inter leading-tight">
+                <div className="font-semibold text-[#241A15]">Top-Rated</div>
+                <div>Studio</div>
               </div>
             </div>
           </div>
 
-          {/* Stats Row */}
-          <div className="animate-fade-up-delay-4 mt-6 sm:mt-8 md:mt-10 lg:mt-12 flex flex-wrap gap-5 sm:gap-7 md:gap-8 lg:gap-10 xl:gap-14">
+          {/* Compact Stats Bar (Confined strictly under button on left) */}
+          <div className="animate-fade-up-delay-4 mt-4.5 lg:mt-5 flex items-center gap-3.5 sm:gap-5 pt-3.5 border-t border-[#D8C6A8]/50 max-w-[330px]">
             <div>
-              <div className="font-inter text-white text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
+              <div className="font-inter text-[#1A1008] text-[15px] lg:text-[17px] font-bold tracking-tight">
                 12,500+
               </div>
-              <div className="text-white/60 text-[8px] sm:text-[9px] md:text-xs tracking-widest uppercase mt-0.5 sm:mt-1">
+              <div className="text-[#5A4030] text-[9px] tracking-wider uppercase font-medium">
                 {t('hero.stat1')}
               </div>
             </div>
 
+            <div className="h-6 w-[1px] bg-[#D8C6A8]/60" />
+
             <div>
-              <div className="font-inter text-white text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
+              <div className="font-inter text-[#1A1008] text-[15px] lg:text-[17px] font-bold tracking-tight">
                 99.2%
               </div>
-              <div className="text-white/60 text-[8px] sm:text-[9px] md:text-xs tracking-widest uppercase mt-0.5 sm:mt-1">
+              <div className="text-[#5A4030] text-[9px] tracking-wider uppercase font-medium">
                 {t('hero.stat2')}
               </div>
             </div>
 
+            <div className="h-6 w-[1px] bg-[#D8C6A8]/60" />
+
             <div>
-              <div className="font-inter text-white text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
-                100%
+              <div className="font-inter text-[#1A1008] text-[15px] lg:text-[17px] font-bold tracking-tight flex items-center gap-0.5">
+                <PackageCheck className="w-3.5 h-3.5 text-[#8E6E2F]" />
+                <span>100%</span>
               </div>
-              <div className="text-white/60 text-[8px] sm:text-[9px] md:text-xs tracking-widest uppercase mt-0.5 sm:mt-1 flex items-center gap-1">
-                <PackageCheck className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-amber-300" />
-                <span>{t('hero.stat3')}</span>
+              <div className="text-[#5A4030] text-[9px] tracking-wider uppercase font-medium">
+                {t('hero.stat3')}
               </div>
             </div>
           </div>
         </div>
 
         {/* ========================================================================= */}
-        {/* RIGHT COLUMN: FLOATING READY-MADE PACKAGE SHOWCASE ON LUXURY PEDESTAL     */}
+        {/* RIGHT COLUMN: PC-ONLY 3-SECOND PROMO POPUP CARD (On right silk space)     */}
         {/* ========================================================================= */}
-        <div className="w-full lg:w-auto flex-1 flex items-center justify-center lg:justify-end mt-4 lg:mt-0">
+        <div className="hidden lg:flex items-center justify-end z-20 self-center">
           <HeroPackageShowcase
             packages={packages}
             onSelectPackage={onViewPackageDetail}
@@ -127,12 +141,11 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
       </div>
 
-      {/* Hero Bottom Bar */}
-      <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16 py-2.5 sm:py-3 lg:py-5 z-10 flex items-center justify-between text-[8px] sm:text-[9px] md:text-[10px] text-white/40 font-inter tracking-widest uppercase border-t border-white/10">
+      {/* Hero Bottom Bar — desktop only on mobile to avoid gap */}
+      <div className="hidden lg:flex w-full px-5 sm:px-8 lg:px-14 py-2 z-10 items-center justify-between text-[8px] sm:text-[9px] text-[#756457]/80 font-inter tracking-widest uppercase border-t border-[#D8C6A8]/40 bg-white/30 backdrop-blur-[2px]">
         <div>© MBM GIFTS</div>
-        <div className="hidden sm:block">LUXURY COLLECTION</div>
+        <div>LUXURY COLLECTION</div>
       </div>
     </section>
   );
 };
-

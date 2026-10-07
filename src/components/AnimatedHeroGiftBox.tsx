@@ -142,15 +142,15 @@ export const AnimatedHeroGiftBox: React.FC = () => {
         ref={wineRef}
         className="absolute bottom-28 z-10 opacity-0 transform-gpu flex flex-col items-center"
       >
-        <div className="relative drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
+        <div className="relative drop-shadow-[0_15px_25px_rgba(0,0,0,0.4)]">
           <svg className="w-24 h-52 sm:w-28 sm:h-60" viewBox="0 0 100 220" fill="none">
-            <path d="M36 85 L36 195 Q36 205 45 205 L55 205 Q64 205 64 195 L64 85 Q64 65 54 45 L54 18 L46 18 L46 45 Q36 65 36 85 Z" fill="#4a070c" stroke="#e5c158" strokeWidth="1.5" />
-            <path d="M45 18 L55 18 L55 40 L45 40 Z" fill="#8c1119" stroke="#e5c158" strokeWidth="1" />
-            <rect x="39" y="105" width="22" height="50" rx="2" fill="#111" stroke="#e5c158" strokeWidth="1" />
-            <text x="50" y="130" textAnchor="middle" fill="#e5c158" fontSize="6" fontWeight="bold">VINTAGE</text>
+            <path d="M36 85 L36 195 Q36 205 45 205 L55 205 Q64 205 64 195 L64 85 Q64 65 54 45 L54 18 L46 18 L46 45 Q36 65 36 85 Z" fill="#241A15" stroke="#B8944A" strokeWidth="1.5" />
+            <path d="M45 18 L55 18 L55 40 L45 40 Z" fill="#8E6E2F" stroke="#E6D5B8" strokeWidth="1" />
+            <rect x="39" y="105" width="22" height="50" rx="2" fill="#FAF6EE" stroke="#D8C6A8" strokeWidth="1" />
+            <text x="50" y="130" textAnchor="middle" fill="#8E6E2F" fontSize="6" fontWeight="bold">VINTAGE</text>
           </svg>
-          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-md text-amber-300 text-[10px] font-bold px-2.5 py-0.5 rounded border border-amber-400/40 tracking-widest uppercase whitespace-nowrap">
-            Vintage Bordeaux
+          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-[#241A15]/90 backdrop-blur-md text-[#E6D5B8] text-[10px] font-bold px-2.5 py-0.5 rounded border border-[#D8C6A8] tracking-widest uppercase whitespace-nowrap shadow-md">
+            Vintage Reserve
           </span>
         </div>
       </div>
@@ -160,19 +160,19 @@ export const AnimatedHeroGiftBox: React.FC = () => {
         ref={chocolateRef}
         className="absolute bottom-28 z-10 opacity-0 transform-gpu flex flex-col items-center"
       >
-        <div className="relative drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
+        <div className="relative drop-shadow-[0_15px_25px_rgba(0,0,0,0.4)]">
           <svg className="w-32 h-32 sm:w-36 sm:h-36" viewBox="0 0 120 120" fill="none">
-            <rect x="15" y="25" width="90" height="70" rx="8" fill="#2b1704" stroke="#e5c158" strokeWidth="2" />
-            <rect x="20" y="30" width="80" height="60" rx="5" fill="#3d230a" />
+            <rect x="15" y="25" width="90" height="70" rx="8" fill="#3A2A20" stroke="#B8944A" strokeWidth="2" />
+            <rect x="20" y="30" width="80" height="60" rx="5" fill="#241A15" />
             {/* Truffles grid */}
-            <circle cx="40" cy="50" r="8" fill="#d4af37" />
-            <circle cx="60" cy="50" r="8" fill="#6e0d13" />
-            <circle cx="80" cy="50" r="8" fill="#d4af37" />
-            <circle cx="40" cy="70" r="8" fill="#6e0d13" />
-            <circle cx="60" cy="70" r="8" fill="#d4af37" />
-            <circle cx="80" cy="70" r="8" fill="#6e0d13" />
+            <circle cx="40" cy="50" r="8" fill="#E6D5B8" />
+            <circle cx="60" cy="50" r="8" fill="#B8944A" />
+            <circle cx="80" cy="50" r="8" fill="#E6D5B8" />
+            <circle cx="40" cy="70" r="8" fill="#B8944A" />
+            <circle cx="60" cy="70" r="8" fill="#E6D5B8" />
+            <circle cx="80" cy="70" r="8" fill="#B8944A" />
           </svg>
-          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-md text-amber-300 text-[10px] font-bold px-2.5 py-0.5 rounded border border-amber-400/40 tracking-widest uppercase whitespace-nowrap">
+          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-[#241A15]/90 backdrop-blur-md text-[#E6D5B8] text-[10px] font-bold px-2.5 py-0.5 rounded border border-[#D8C6A8] tracking-widest uppercase whitespace-nowrap shadow-md">
             Swiss Truffles
           </span>
         </div>
@@ -183,16 +183,16 @@ export const AnimatedHeroGiftBox: React.FC = () => {
         ref={candleRef}
         className="absolute bottom-28 z-10 opacity-0 transform-gpu flex flex-col items-center"
       >
-        <div className="relative drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
+        <div className="relative drop-shadow-[0_15px_25px_rgba(0,0,0,0.4)]">
           <svg className="w-28 h-36 sm:w-32 sm:h-40" viewBox="0 0 100 130" fill="none">
             {/* Flame */}
-            <path d="M50 10 Q55 25 50 35 Q45 25 50 10 Z" fill="#ffb703" className="animate-pulse" />
+            <path d="M50 10 Q55 25 50 35 Q45 25 50 10 Z" fill="#B8944A" className="animate-pulse" />
             {/* Candle Body */}
-            <rect x="25" y="35" width="50" height="75" rx="6" fill="#8c1119" stroke="#e5c158" strokeWidth="2" />
-            <rect x="30" y="40" width="40" height="65" rx="4" fill="#6e0d13" />
-            <text x="50" y="75" textAnchor="middle" fill="#e5c158" fontSize="7" fontWeight="bold">VELVET ROSE</text>
+            <rect x="25" y="35" width="50" height="75" rx="6" fill="#FAF6EE" stroke="#B8944A" strokeWidth="2" />
+            <rect x="30" y="40" width="40" height="65" rx="4" fill="#FBF8F2" />
+            <text x="50" y="75" textAnchor="middle" fill="#8E6E2F" fontSize="7" fontWeight="bold">CHAMPAGNE</text>
           </svg>
-          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-md text-amber-300 text-[10px] font-bold px-2.5 py-0.5 rounded border border-amber-400/40 tracking-widest uppercase whitespace-nowrap">
+          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-[#241A15]/90 backdrop-blur-md text-[#E6D5B8] text-[10px] font-bold px-2.5 py-0.5 rounded border border-[#D8C6A8] tracking-widest uppercase whitespace-nowrap shadow-md">
             Velvet Soy Candle
           </span>
         </div>
@@ -203,15 +203,15 @@ export const AnimatedHeroGiftBox: React.FC = () => {
         ref={giftBagRef}
         className="absolute bottom-28 z-10 opacity-0 transform-gpu flex flex-col items-center"
       >
-        <div className="relative drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
+        <div className="relative drop-shadow-[0_15px_25px_rgba(0,0,0,0.4)]">
           <svg className="w-32 h-40 sm:w-36 sm:h-44" viewBox="0 0 120 140" fill="none">
             {/* Handles */}
-            <path d="M45 40 Q45 15 60 15 Q75 15 75 40" fill="none" stroke="#e5c158" strokeWidth="3" />
+            <path d="M45 40 Q45 15 60 15 Q75 15 75 40" fill="none" stroke="#B8944A" strokeWidth="3" />
             {/* Bag */}
-            <path d="M20 40 L100 40 L108 125 L12 125 Z" fill="#000" stroke="#e5c158" strokeWidth="2" />
-            <text x="60" y="85" textAnchor="middle" fill="#e5c158" fontSize="10" fontWeight="bold">MBM</text>
+            <path d="M20 40 L100 40 L108 125 L12 125 Z" fill="#241A15" stroke="#B8944A" strokeWidth="2" />
+            <text x="60" y="85" textAnchor="middle" fill="#E6D5B8" fontSize="10" fontWeight="bold">MBM</text>
           </svg>
-          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-md text-amber-300 text-[10px] font-bold px-2.5 py-0.5 rounded border border-amber-400/40 tracking-widest uppercase whitespace-nowrap">
+          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-[#241A15]/90 backdrop-blur-md text-[#E6D5B8] text-[10px] font-bold px-2.5 py-0.5 rounded border border-[#D8C6A8] tracking-widest uppercase whitespace-nowrap shadow-md">
             MBM Boutique Bag
           </span>
         </div>
@@ -222,14 +222,14 @@ export const AnimatedHeroGiftBox: React.FC = () => {
         ref={glassesRef}
         className="absolute bottom-28 z-10 opacity-0 transform-gpu flex flex-col items-center"
       >
-        <div className="relative drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
+        <div className="relative drop-shadow-[0_15px_25px_rgba(0,0,0,0.4)]">
           <svg className="w-32 h-40 sm:w-36 sm:h-44" viewBox="0 0 120 140" fill="none">
             {/* Glass 1 */}
-            <path d="M30 30 L45 70 L45 110 L30 110 L60 110 L45 110 L45 70 L60 30 Z" fill="rgba(255,255,255,0.2)" stroke="#e5c158" strokeWidth="1.5" />
+            <path d="M30 30 L45 70 L45 110 L30 110 L60 110 L45 110 L45 70 L60 30 Z" fill="rgba(230,213,184,0.3)" stroke="#B8944A" strokeWidth="1.5" />
             {/* Glass 2 */}
-            <path d="M60 30 L75 70 L75 110 L60 110 L90 110 L75 110 L75 70 L90 30 Z" fill="rgba(255,255,255,0.2)" stroke="#e5c158" strokeWidth="1.5" />
+            <path d="M60 30 L75 70 L75 110 L60 110 L90 110 L75 110 L75 70 L90 30 Z" fill="rgba(230,213,184,0.3)" stroke="#B8944A" strokeWidth="1.5" />
           </svg>
-          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-md text-amber-300 text-[10px] font-bold px-2.5 py-0.5 rounded border border-amber-400/40 tracking-widest uppercase whitespace-nowrap">
+          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-[#241A15]/90 backdrop-blur-md text-[#E6D5B8] text-[10px] font-bold px-2.5 py-0.5 rounded border border-[#D8C6A8] tracking-widest uppercase whitespace-nowrap shadow-md">
             Crystal Flutes
           </span>
         </div>
@@ -242,24 +242,24 @@ export const AnimatedHeroGiftBox: React.FC = () => {
         {/* Animated Box Lid */}
         <div
           ref={lidRef}
-          className="relative w-72 sm:w-80 h-16 sm:h-20 bg-gradient-to-r from-[#8c1119] via-[#bd1722] to-[#8c1119] border-2 border-amber-400/80 rounded-t-md shadow-xl flex items-center justify-center transform-gpu"
+          className="relative w-72 sm:w-80 h-16 sm:h-20 bg-gradient-to-r from-[#241A15] via-[#3A2A20] to-[#241A15] border-2 border-[#D8C6A8] rounded-t-md shadow-xl flex items-center justify-center transform-gpu"
         >
           {/* Gold Lid Ribbon Accent */}
-          <div className="w-10 h-full bg-gradient-to-b from-amber-300 via-amber-400 to-amber-500 shadow-md flex items-center justify-center">
+          <div className="w-10 h-full bg-gradient-to-b from-[#E6D5B8] via-[#B8944A] to-[#8E6E2F] shadow-md flex items-center justify-center">
             {/* Ribbon Bow */}
-            <div className="w-12 h-6 bg-amber-400 rounded-full border border-amber-200 -mt-6 shadow-md" />
+            <div className="w-12 h-6 bg-[#E6D5B8] rounded-full border border-[#D8C6A8] -mt-6 shadow-md" />
           </div>
         </div>
 
         {/* Box Base Front Panel */}
-        <div className="relative w-68 sm:w-76 h-48 sm:h-56 bg-gradient-to-b from-[#6e0d13] via-[#8c1119] to-[#380509] border-2 border-t-0 border-amber-400/80 rounded-b-md shadow-2xl flex flex-col items-center justify-center overflow-hidden">
+        <div className="relative w-68 sm:w-76 h-48 sm:h-56 bg-gradient-to-b from-[#241A15] via-[#2D211A] to-[#1C1410] border-2 border-t-0 border-[#D8C6A8] rounded-b-md shadow-2xl flex flex-col items-center justify-center overflow-hidden">
           {/* Vertical Ribbon */}
-          <div className="absolute inset-y-0 w-10 bg-gradient-to-b from-amber-300 via-amber-400 to-amber-500 shadow-lg" />
+          <div className="absolute inset-y-0 w-10 bg-gradient-to-b from-[#E6D5B8] via-[#B8944A] to-[#8E6E2F] shadow-lg" />
           
           {/* MBM Gold Seal Emblem */}
-          <div className="relative z-10 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-amber-500 via-amber-300 to-amber-100 border-2 border-amber-200 shadow-xl flex flex-col items-center justify-center text-[#8c1119] font-podium font-bold text-xs uppercase tracking-wider">
+          <div className="relative z-10 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-[#E6D5B8] via-[#FAF6EE] to-[#E6D5B8] border-2 border-[#D8C6A8] shadow-xl flex flex-col items-center justify-center text-[#241A15] font-podium font-bold text-xs uppercase tracking-wider">
             <span>MBM</span>
-            <span className="text-[7px] tracking-widest font-inter">GIFTS</span>
+            <span className="text-[7px] tracking-widest font-inter text-[#8E6E2F]">GIFTS</span>
           </div>
         </div>
       </div>

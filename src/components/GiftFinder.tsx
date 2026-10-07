@@ -66,18 +66,18 @@ export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart })
   }, [packages, occasion, budget, buyerMarket]);
 
   return (
-    <section id="finder" className="w-full px-4 sm:px-8 lg:px-12 py-12 sm:py-16 text-[#FFF8ED] relative">
-      <div className="max-w-4xl mx-auto luxury-satin-card rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+    <section id="finder" className="w-full px-4 sm:px-8 lg:px-12 py-12 sm:py-16 text-[#241A15] relative">
+      <div className="max-w-4xl mx-auto bg-[#FBF8F2] border border-[#D8C6A8] rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden">
         {/* Subtle decorative top gold bar */}
-        <div className="absolute top-0 left-12 right-12 h-[2px] bg-gradient-to-r from-transparent via-[#D9A514]/50 to-transparent" />
+        <div className="absolute top-0 left-12 right-12 h-[2px] bg-gradient-to-r from-transparent via-[#B8944A]/50 to-transparent" />
 
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-1.5 text-[#F5C542] text-xs font-inter tracking-[0.2em] uppercase font-bold mb-2">
-            <Sparkles className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-1.5 text-[#8E6E2F] text-xs font-inter tracking-[0.2em] uppercase font-bold mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-[#B8944A]" />
             <span>Smart Gift Assistant</span>
           </div>
-          <h2 className="font-podium text-2xl sm:text-4xl font-extrabold text-[#FFF8ED] uppercase">
+          <h2 className="font-podium text-2xl sm:text-4xl font-extrabold text-[#241A15] uppercase">
             Find The Perfect Gift
           </h2>
         </div>
@@ -85,11 +85,11 @@ export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart })
         {/* 3 Dropdowns */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 font-inter">
           <div>
-            <label className="block text-[10px] uppercase tracking-wider text-[#F5C542] font-bold mb-1.5">Who is this gift for?</label>
+            <label className="block text-[10px] uppercase tracking-wider text-[#8E6E2F] font-bold mb-1.5">Who is this gift for?</label>
             <select
               value={recipient}
               onChange={(e) => setRecipient(e.target.value)}
-              className="w-full bg-[#1a0004]/80 border border-[#D9A514]/25 rounded-xl p-3 text-sm text-[#FFF8ED] focus:outline-none focus:border-[#F5C542] cursor-pointer"
+              className="w-full bg-[#FAF6EE] border border-[#D8C6A8] rounded-xl p-3 text-sm text-[#241A15] focus:outline-none focus:border-[#B8944A] cursor-pointer"
             >
               <option value="">Anyone</option>
               <option value="Partner">Life Partner / Spouse</option>
@@ -100,11 +100,11 @@ export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart })
           </div>
 
           <div>
-            <label className="block text-[10px] uppercase tracking-wider text-[#F5C542] font-bold mb-1.5">What is the occasion?</label>
+            <label className="block text-[10px] uppercase tracking-wider text-[#8E6E2F] font-bold mb-1.5">What is the occasion?</label>
             <select
               value={occasion}
               onChange={(e) => setOccasion(e.target.value)}
-              className="w-full bg-[#1a0004]/80 border border-[#D9A514]/25 rounded-xl p-3 text-sm text-[#FFF8ED] focus:outline-none focus:border-[#F5C542] cursor-pointer"
+              className="w-full bg-[#FAF6EE] border border-[#D8C6A8] rounded-xl p-3 text-sm text-[#241A15] focus:outline-none focus:border-[#B8944A] cursor-pointer"
             >
               <option value="">All Occasions</option>
               {occasions.map(occ => (
@@ -114,11 +114,11 @@ export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart })
           </div>
 
           <div>
-            <label className="block text-[10px] uppercase tracking-wider text-[#F5C542] font-bold mb-1.5">Preferred Budget?</label>
+            <label className="block text-[10px] uppercase tracking-wider text-[#8E6E2F] font-bold mb-1.5">Preferred Budget?</label>
             <select
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
-              className="w-full bg-[#1a0004]/80 border border-[#D9A514]/25 rounded-xl p-3 text-sm text-[#FFF8ED] focus:outline-none focus:border-[#F5C542] cursor-pointer"
+              className="w-full bg-[#FAF6EE] border border-[#D8C6A8] rounded-xl p-3 text-sm text-[#241A15] focus:outline-none focus:border-[#B8944A] cursor-pointer"
             >
               <option value="">Any Budget</option>
               {buyerMarket === 'INTERNATIONAL' ? (
@@ -142,8 +142,8 @@ export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart })
 
         {/* Matched Package */}
         {matchedPackage && (
-          <div className="bg-[#230005]/80 border border-[#D9A514]/30 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 animate-scale-in backdrop-blur-sm shadow-xl">
-            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-xl overflow-hidden border border-white/10 bg-black/40 flex-shrink-0">
+          <div className="bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 animate-scale-in shadow-md">
+            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-xl overflow-hidden border border-[#D8C6A8]/60 bg-white/70 flex-shrink-0">
               <img
                 src={matchedPackage.image}
                 alt={matchedPackage.name}
@@ -151,25 +151,25 @@ export const GiftFinder: React.FC<GiftFinderProps> = ({ packages, onAddToCart })
               />
             </div>
             <div className="flex-1 text-center sm:text-left">
-              <span className="text-[10px] text-[#F5C542] tracking-widest uppercase font-inter font-bold">
+              <span className="text-[10px] text-[#8E6E2F] tracking-widest uppercase font-inter font-bold">
                 ★ Recommended For You
               </span>
-              <h3 className="font-podium text-lg sm:text-xl font-bold text-[#FFF8ED] mt-1">
+              <h3 className="font-podium text-lg sm:text-xl font-bold text-[#241A15] mt-1">
                 {matchedPackage.name}
               </h3>
-              <p className="text-[#FFF8ED]/70 text-xs font-inter line-clamp-2 my-2">
+              <p className="text-[#756457] text-xs font-inter line-clamp-2 my-2">
                 {matchedPackage.shortDesc}
               </p>
-              <div className="text-lg font-bold font-inter text-[#F5C542]">
+              <div className="text-lg font-bold font-inter text-[#B8944A]">
                 {formatPrice(getPkgPrice(matchedPackage), currency)}
               </div>
             </div>
 
             <button
               onClick={() => onAddToCart(matchedPackage)}
-              className="w-full sm:w-auto bg-gradient-to-r from-[#F5C542] to-[#D9A514] hover:from-[#F5C542] hover:to-[#e6b015] text-[#2B0005] font-extrabold px-6 py-3 text-xs font-inter tracking-wider uppercase rounded-xl flex items-center justify-center gap-2 transition-all flex-shrink-0 cursor-pointer shadow-lg shadow-[#D9A514]/20"
+              className="w-full sm:w-auto bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] font-extrabold px-6 py-3 text-xs font-inter tracking-wider uppercase rounded-xl flex items-center justify-center gap-2 transition-all flex-shrink-0 cursor-pointer shadow-md"
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-4 h-4 text-[#E6D5B8]" />
               <span>Add to Cart</span>
             </button>
           </div>

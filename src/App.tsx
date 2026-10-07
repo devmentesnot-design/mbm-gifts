@@ -16,6 +16,7 @@ import { PackageDetailPage } from './components/PackageDetailPage';
 import { MyOrdersPage } from './components/MyOrdersPage';
 import { ProfilePage } from './components/ProfilePage';
 import { MarketWelcomeModal } from './components/MarketWelcomeModal';
+import { AdvanceNoticeModal } from './components/AdvanceNoticeModal';
 import { supabase } from './lib/supabase';
 import { CartItem, CartItemPrepared, CartItemCustom, Order, OrderStatus, PaymentStatus } from './types/cart';
 import {
@@ -751,7 +752,7 @@ export default function App() {
           cartItems={cartItems}
           onOpenCart={handleNavigateToCart}
           onNavigateToLogin={() => navigateTo('/login')}
-          onNavigateToPackage={(id) => navigateTo(`/package/${id}`)}
+          onNavigateToPackage={(id: string) => navigateTo(`/package/${id}`)}
           onNavigateHome={() => navigateTo('/')}
           onAddToCartPrepared={handleAddToCartPrepared}
         />
@@ -763,16 +764,19 @@ export default function App() {
     <>
       {/* First-visit market welcome modal — rendered above all pages */}
       <MarketWelcomeModal />
+      
+      {/* First-visit ordering notice modal */}
+      <AdvanceNoticeModal />
 
       {/* Global Fixed Satin Background Layer */}
       <div 
         className="fixed inset-0 pointer-events-none -z-50 bg-cover bg-center bg-no-repeat bg-fixed"
         style={{
-          backgroundImage: `linear-gradient(rgba(35, 0, 5, 0.35), rgba(35, 0, 5, 0.35)), url('/images/mbm-red-satin.webp')`,
+          backgroundImage: `url('/global-satin-bg.png')`,
         }}
       />
 
-      <div className="min-h-screen w-full text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005] bg-transparent relative flex flex-col justify-between">
+      <div className="min-h-screen w-full text-[#241A15] font-inter selection:bg-[#E6D5B8] selection:text-[#241A15] bg-transparent relative flex flex-col justify-between">
         {/* Top Navbar */}
         <Navbar
           session={session}
@@ -797,7 +801,7 @@ export default function App() {
           customItems={customItems}
           onAddToCartPrepared={handleAddToCartPrepared}
           onAddToCartCustom={handleAddToCartCustom}
-          onViewPackageDetail={(id) => navigateTo(`/package/${id}`)}
+          onViewPackageDetail={(id: string) => navigateTo(`/package/${id}`)}
         />
 
         {/* Smart Gift Assistant Finder */}

@@ -134,7 +134,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
           );
         }
         return (
-          <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <span className="bg-amber-700/20 text-amber-600 border border-amber-700/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 animate-pulse" />
             Pending Verification
           </span>
@@ -154,8 +154,8 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
       case 'UNDER_REVIEW':
       case 'PAYMENT_SUBMITTED':
         return (
-          <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+          <span className="bg-amber-700/20 text-amber-600 border border-amber-700/40 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-700 animate-pulse" />
             <span>UNDER REVIEW</span>
           </span>
         );
@@ -168,7 +168,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
         );
       default:
         return (
-          <span className="bg-amber-400/15 text-amber-200/80 border border-amber-400/30 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1">
+          <span className="bg-amber-700/15 text-amber-200/80 border border-amber-700/30 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1">
             <Clock className="w-3 h-3" />
             <span>PENDING PAYMENT</span>
           </span>
@@ -192,27 +192,27 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005]">
+    <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#FBF8F2]">
       {/* Top Header Navigation */}
-      <div className="border-b border-[#D9A514]/20 bg-[#2B0005]/80 sticky top-0 z-30 backdrop-blur-md">
+      <div className="border-b border-[#D9A514]/20 bg-[#FBF8F2]/80 sticky top-0 z-30 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <button
             onClick={() => onNavigate('/')}
-            className="flex items-center gap-2 text-white/70 hover:text-white transition-colors cursor-pointer text-xs sm:text-sm uppercase tracking-wider font-bold"
+            className="flex items-center gap-2 text-[#241A15]/70 hover:text-[#241A15] transition-colors cursor-pointer text-xs sm:text-sm uppercase tracking-wider font-bold"
           >
-            <ArrowLeft className="w-4 h-4 text-amber-300" />
+            <ArrowLeft className="w-4 h-4 text-amber-600" />
             <span>Back to Shop</span>
           </button>
 
           <img
-            src="/logo.png"
+            src="/golden_logo.png"
             alt="MBM Gifts"
             referrerPolicy="no-referrer"
             className="h-24 sm:h-28 w-auto object-contain drop-shadow-md"
           />
 
           {session && (
-            <div className="flex items-center gap-2.5 bg-black/40 border border-amber-400/40 rounded-full pl-1.5 pr-3 py-1">
+            <div className="flex items-center gap-2.5 bg-black/40 border border-amber-700/40 rounded-full pl-1.5 pr-3 py-1">
               {(() => {
                 const avatarUrl =
                   session.user?.user_metadata?.avatar_url ||
@@ -231,11 +231,11 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                   <img
                     src={avatarUrl}
                     alt={firstName}
-                    className="w-7 h-7 rounded-full object-cover border-2 border-amber-400/50"
+                    className="w-7 h-7 rounded-full object-cover border-2 border-amber-700/50"
                     referrerPolicy="no-referrer"
                   />
                 ) : (
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 to-amber-200 text-[#8c1119] font-extrabold flex items-center justify-center text-xs shadow-inner">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-700 to-amber-200 text-[#8E6E2F] font-extrabold flex items-center justify-center text-xs shadow-inner">
                     {firstName.charAt(0).toUpperCase()}
                   </div>
                 );
@@ -264,7 +264,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
         {/* Page Header Title */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-6 border-b border-white/10">
           <div>
-            <div className="flex items-center gap-2 text-amber-300 text-xs uppercase tracking-widest font-bold mb-1">
+            <div className="flex items-center gap-2 text-amber-600 text-xs uppercase tracking-widest font-bold mb-1">
               <Package className="w-4 h-4" />
               <span>Customer Portal</span>
               <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 ml-2">
@@ -272,17 +272,17 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                 24/7 Dispatch Active
               </span>
             </div>
-            <h1 className="font-podium text-3xl sm:text-4xl text-white uppercase tracking-wider">
+            <h1 className="font-podium text-3xl sm:text-4xl text-[#241A15] uppercase tracking-wider">
               My Orders
             </h1>
-            <p className="text-white/60 text-xs sm:text-sm mt-1">
+            <p className="text-[#241A15]/60 text-xs sm:text-sm mt-1">
               Track delivery progress, review payment verification status, and print official receipts.
             </p>
           </div>
 
           <button
             onClick={() => onNavigate('/')}
-            className="self-start md:self-auto bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-amber-400/20"
+            className="self-start md:self-auto bg-amber-700 hover:bg-amber-600 text-[#8E6E2F] font-bold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-amber-700/20"
           >
             <ShoppingBag className="w-4 h-4" />
             <span>Order New Gift</span>
@@ -293,19 +293,19 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
         {orders.length > 0 && (
           <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-4 mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
             <div className="relative w-full sm:w-72">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#241A15]/40" />
               <input
                 type="text"
                 placeholder="Search order ID, sender name, ref..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-black/40 border border-white/15 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                className="w-full bg-black/40 border border-white/15 rounded-xl pl-10 pr-4 py-2 text-xs text-[#241A15] focus:outline-none focus:border-amber-700"
               />
             </div>
 
             {/* Status Filter Pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
-              <span className="text-[11px] text-white/40 uppercase tracking-wider mr-1 flex items-center gap-1">
+              <span className="text-[11px] text-[#241A15]/40 uppercase tracking-wider mr-1 flex items-center gap-1">
                 <Filter className="w-3 h-3" />
               </span>
               {[
@@ -321,8 +321,8 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                   onClick={() => setStatusFilter(st.id)}
                   className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                     statusFilter === st.id
-                      ? 'bg-amber-400 text-[#8c1119] shadow-sm font-extrabold'
-                      : 'bg-black/30 text-white/60 hover:text-white border border-white/10'
+                      ? 'bg-amber-700 text-[#8E6E2F] shadow-sm font-extrabold'
+                      : 'bg-black/30 text-[#241A15]/60 hover:text-[#241A15] border border-white/10'
                   }`}
                 >
                   {st.label}
@@ -334,33 +334,33 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
         {/* Orders Listing */}
         {orders.length === 0 ? (
-          <div className="bg-[#2a0407] border border-white/10 rounded-3xl p-12 sm:p-16 text-center text-white/60 max-w-xl mx-auto my-8">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300">
+          <div className="bg-[#2a0407] border border-white/10 rounded-3xl p-12 sm:p-16 text-center text-[#241A15]/60 max-w-xl mx-auto my-8">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-amber-700/10 border border-amber-700/30 flex items-center justify-center text-amber-600">
               <Truck className="w-10 h-10" />
             </div>
-            <h2 className="font-podium text-2xl uppercase text-white mb-2 tracking-wider">
+            <h2 className="font-podium text-2xl uppercase text-[#241A15] mb-2 tracking-wider">
               No Orders Placed Yet
             </h2>
-            <p className="text-sm text-white/60 max-w-md mx-auto mb-8 leading-relaxed">
+            <p className="text-sm text-[#241A15]/60 max-w-md mx-auto mb-8 leading-relaxed">
               When you send gifts or create custom gift boxes with MBM Gifts, your live order status and payment verification will appear right here.
             </p>
             <button
               onClick={() => onNavigate('/')}
-              className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all cursor-pointer shadow-xl shadow-amber-400/20 inline-flex items-center gap-2"
+              className="bg-amber-700 hover:bg-amber-600 text-[#8E6E2F] font-bold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all cursor-pointer shadow-xl shadow-amber-700/20 inline-flex items-center gap-2"
             >
               <ShoppingBag className="w-4 h-4" />
               <span>Explore Gift Collection</span>
             </button>
           </div>
         ) : filteredOrders.length === 0 ? (
-          <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-10 text-center text-white/50">
+          <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-10 text-center text-[#241A15]/50">
             <p className="text-sm">No orders matching your search or filter criteria.</p>
             <button
               onClick={() => {
                 setSearchTerm('');
                 setStatusFilter('all');
               }}
-              className="mt-3 text-xs text-amber-300 underline uppercase tracking-wider font-bold cursor-pointer"
+              className="mt-3 text-xs text-amber-600 underline uppercase tracking-wider font-bold cursor-pointer"
             >
               Clear filters
             </button>
@@ -379,18 +379,18 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
               return (
                 <div
                   key={ord.id}
-                  className="bg-[#2a0407] border border-white/10 hover:border-amber-400/30 transition-all rounded-2xl overflow-hidden shadow-xl"
+                  className="bg-[#2a0407] border border-white/10 hover:border-amber-700/30 transition-all rounded-2xl overflow-hidden shadow-xl"
                 >
                   {/* Order Top Summary Header */}
                   <div className="p-4 md:p-5 bg-[#350509] border-b border-white/10">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
                       <div className="flex flex-wrap items-center gap-2.5">
-                        <div className="font-podium text-2xl text-white uppercase tracking-wider font-bold">
+                        <div className="font-podium text-2xl text-[#241A15] uppercase tracking-wider font-bold">
                           {ord.id}
                         </div>
 
                         {/* Market Badge */}
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-black/40 border border-white/20 text-white flex items-center gap-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-black/40 border border-white/20 text-[#241A15] flex items-center gap-1">
                           <span>{ord.buyerMarket === 'INTERNATIONAL' ? '🌍 Diaspora (USD)' : '🇪🇹 Local (ETB)'}</span>
                         </span>
 
@@ -398,20 +398,20 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                         {getPaymentStatusBadge(ord.paymentStatus)}
                       </div>
 
-                      <div className="flex items-center justify-between md:justify-end gap-4 text-xs text-white/70">
+                      <div className="flex items-center justify-between md:justify-end gap-4 text-xs text-[#241A15]/70">
                         <div>
-                          <span className="text-white/40 uppercase tracking-wider text-[10px] block">Placed On</span>
-                          <span className="font-semibold text-white">{ord.createdAt}</span>
+                          <span className="text-[#241A15]/40 uppercase tracking-wider text-[10px] block">Placed On</span>
+                          <span className="font-semibold text-[#241A15]">{ord.createdAt}</span>
                         </div>
                         <div>
-                          <span className="text-white/40 uppercase tracking-wider text-[10px] block">Total Amount</span>
-                          <span className="font-podium text-xl text-amber-300 font-bold">
+                          <span className="text-[#241A15]/40 uppercase tracking-wider text-[10px] block">Total Amount</span>
+                          <span className="font-podium text-xl text-amber-600 font-bold">
                             {formatPrice(ord.total, ordCurr)}
                           </span>
                         </div>
                         <button
                           onClick={() => toggleExpand(ord.id)}
-                          className="p-1.5 bg-black/30 hover:bg-black/50 rounded-lg border border-white/10 text-white/80 hover:text-white transition-colors cursor-pointer"
+                          className="p-1.5 bg-black/30 hover:bg-black/50 rounded-lg border border-white/10 text-[#241A15]/80 hover:text-[#241A15] transition-colors cursor-pointer"
                           title="Toggle Order Details"
                         >
                           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -425,16 +425,16 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
                       <div className="flex flex-wrap items-center gap-2">
                         {ord.senderName && (
-                          <div className="flex items-center gap-1.5 text-[11px] bg-black/40 border border-amber-400/20 px-2.5 py-1 rounded-lg text-amber-200">
-                            <User className="w-3 h-3 text-amber-300" />
+                          <div className="flex items-center gap-1.5 text-[11px] bg-black/40 border border-amber-700/20 px-2.5 py-1 rounded-lg text-amber-200">
+                            <User className="w-3 h-3 text-amber-600" />
                             <span>Sender: <strong>{ord.senderName}</strong></span>
                           </div>
                         )}
 
                         {ord.transactionId && (
                           <div className="flex items-center gap-1.5 text-[11px] bg-black/40 border border-white/10 px-2.5 py-1 rounded-lg">
-                            <span className="text-white/50">Ref:</span>
-                            <span className="font-mono text-amber-300 font-bold">{ord.transactionId}</span>
+                            <span className="text-[#241A15]/50">Ref:</span>
+                            <span className="font-mono text-amber-600 font-bold">{ord.transactionId}</span>
                           </div>
                         )}
                       </div>
@@ -449,7 +449,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                           
                           {/* Active Progress Fill */}
                           <div 
-                            className="absolute top-1/2 left-4 -translate-y-1/2 h-1 bg-gradient-to-r from-amber-400 via-emerald-400 to-emerald-500 rounded-full transition-all duration-500 z-0"
+                            className="absolute top-1/2 left-4 -translate-y-1/2 h-1 bg-gradient-to-r from-amber-700 via-emerald-400 to-emerald-500 rounded-full transition-all duration-500 z-0"
                             style={{
                               width: progress.stage === 1 ? '10%' : progress.stage === 2 ? '30%' : progress.stage === 3 ? '55%' : progress.stage === 4 ? '80%' : '94%'
                             }}
@@ -461,12 +461,12 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                             <div className="flex flex-col items-center">
                               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                                 ord.paymentReceiptUrl || isPaid || progress.stage >= 1
-                                  ? 'bg-emerald-500 text-white shadow-emerald-500/30'
-                                  : 'bg-black/60 text-white/50 border border-white/20'
+                                  ? 'bg-emerald-500 text-[#241A15] shadow-emerald-500/30'
+                                  : 'bg-black/60 text-[#241A15]/50 border border-white/20'
                               }`}>
                                 <Check className="w-4 h-4" />
                               </div>
-                              <span className="text-[10px] font-bold text-white/90 mt-1.5 uppercase tracking-wider hidden sm:block">
+                              <span className="text-[10px] font-bold text-[#241A15]/90 mt-1.5 uppercase tracking-wider hidden sm:block">
                                 1. Proof Uploaded
                               </span>
                             </div>
@@ -475,15 +475,15 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                             <div className="flex flex-col items-center">
                               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                                 isPaid || progress.stage >= 2
-                                  ? 'bg-emerald-500 text-white shadow-emerald-500/30'
+                                  ? 'bg-emerald-500 text-[#241A15] shadow-emerald-500/30'
                                   : isUnderReview
-                                  ? 'bg-amber-400 text-[#8c1119] ring-4 ring-amber-400/30 animate-pulse'
-                                  : 'bg-black/60 text-white/50 border border-white/20'
+                                  ? 'bg-amber-700 text-[#8E6E2F] ring-4 ring-amber-700/30 animate-pulse'
+                                  : 'bg-black/60 text-[#241A15]/50 border border-white/20'
                               }`}>
                                 {isPaid ? <ShieldCheck className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                               </div>
                               <span className={`text-[10px] font-bold mt-1.5 uppercase tracking-wider hidden sm:block ${
-                                isPaid ? 'text-emerald-300 font-extrabold' : isUnderReview ? 'text-amber-300 animate-pulse' : 'text-white/60'
+                                isPaid ? 'text-emerald-300 font-extrabold' : isUnderReview ? 'text-amber-600 animate-pulse' : 'text-[#241A15]/60'
                               }`}>
                                 {isPaid ? '2. Verified (Paid)' : '2. Verifying'}
                               </span>
@@ -493,15 +493,15 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                             <div className="flex flex-col items-center">
                               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                                 ord.status === 'Processing'
-                                  ? 'bg-blue-500 text-white ring-4 ring-blue-500/30 animate-pulse'
+                                  ? 'bg-blue-500 text-[#241A15] ring-4 ring-blue-500/30 animate-pulse'
                                   : ord.status === 'Shipped' || ord.status === 'Delivered'
-                                  ? 'bg-emerald-500 text-white'
-                                  : 'bg-black/60 text-white/50 border border-white/20'
+                                  ? 'bg-emerald-500 text-[#241A15]'
+                                  : 'bg-black/60 text-[#241A15]/50 border border-white/20'
                               }`}>
                                 <Package className="w-4 h-4" />
                               </div>
                               <span className={`text-[10px] font-bold mt-1.5 uppercase tracking-wider hidden sm:block ${
-                                ord.status === 'Processing' ? 'text-blue-300 font-extrabold' : ord.status === 'Shipped' || ord.status === 'Delivered' ? 'text-emerald-300' : 'text-white/60'
+                                ord.status === 'Processing' ? 'text-blue-300 font-extrabold' : ord.status === 'Shipped' || ord.status === 'Delivered' ? 'text-emerald-300' : 'text-[#241A15]/60'
                               }`}>
                                 3. Packing Box
                               </span>
@@ -511,15 +511,15 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                             <div className="flex flex-col items-center">
                               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                                 ord.status === 'Shipped'
-                                  ? 'bg-indigo-500 text-white ring-4 ring-indigo-500/30 animate-bounce'
+                                  ? 'bg-indigo-500 text-[#241A15] ring-4 ring-indigo-500/30 animate-bounce'
                                   : ord.status === 'Delivered'
-                                  ? 'bg-emerald-500 text-white'
-                                  : 'bg-black/60 text-white/50 border border-white/20'
+                                  ? 'bg-emerald-500 text-[#241A15]'
+                                  : 'bg-black/60 text-[#241A15]/50 border border-white/20'
                               }`}>
                                 <Truck className="w-4 h-4" />
                               </div>
                               <span className={`text-[10px] font-bold mt-1.5 uppercase tracking-wider hidden sm:block ${
-                                ord.status === 'Shipped' ? 'text-indigo-300 font-extrabold' : ord.status === 'Delivered' ? 'text-emerald-300' : 'text-white/60'
+                                ord.status === 'Shipped' ? 'text-indigo-300 font-extrabold' : ord.status === 'Delivered' ? 'text-emerald-300' : 'text-[#241A15]/60'
                               }`}>
                                 4. Out for Delivery
                               </span>
@@ -529,13 +529,13 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                             <div className="flex flex-col items-center">
                               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                                 ord.status === 'Delivered'
-                                  ? 'bg-emerald-500 text-white ring-4 ring-emerald-500/30'
-                                  : 'bg-black/60 text-white/50 border border-white/20'
+                                  ? 'bg-emerald-500 text-[#241A15] ring-4 ring-emerald-500/30'
+                                  : 'bg-black/60 text-[#241A15]/50 border border-white/20'
                               }`}>
                                 <Sparkles className="w-4 h-4" />
                               </div>
                               <span className={`text-[10px] font-bold mt-1.5 uppercase tracking-wider hidden sm:block ${
-                                ord.status === 'Delivered' ? 'text-emerald-300 font-extrabold' : 'text-white/60'
+                                ord.status === 'Delivered' ? 'text-emerald-300 font-extrabold' : 'text-[#241A15]/60'
                               }`}>
                                 5. Delivered
                               </span>
@@ -543,7 +543,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                           </div>
                         </div>
 
-                        <div className="sm:hidden text-center mt-2 text-xs font-bold text-amber-300">
+                        <div className="sm:hidden text-center mt-2 text-xs font-bold text-amber-600">
                           Current Stage: {progress.label}
                         </div>
                       </div>
@@ -556,10 +556,10 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                       
                       {/* Special Banner for UNDER_REVIEW */}
                       {isUnderReview && (
-                        <div className="bg-amber-400/10 border border-amber-400/30 rounded-xl p-4 flex items-start gap-3 text-xs text-amber-200">
-                          <Clock className="w-5 h-5 text-amber-300 flex-shrink-0 mt-0.5 animate-pulse" />
+                        <div className="bg-amber-700/10 border border-amber-700/30 rounded-xl p-4 flex items-start gap-3 text-xs text-amber-200">
+                          <Clock className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5 animate-pulse" />
                           <div>
-                            <strong className="text-amber-300 block mb-0.5">Payment Verification in Progress</strong>
+                            <strong className="text-amber-600 block mb-0.5">Payment Verification in Progress</strong>
                             Your payment proof has been submitted. Our team is verifying your payment with our accounts. Your order will be confirmed upon verification.
                           </div>
                         </div>
@@ -585,7 +585,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                           <div className="pt-2 flex justify-end">
                             <button
                               onClick={() => handleResubmitPayment(ord)}
-                              className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-md"
+                              className="bg-amber-700 hover:bg-amber-600 text-[#8E6E2F] font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-md"
                             >
                               <RefreshCw className="w-3.5 h-3.5" />
                               <span>Re-submit Payment Proof</span>
@@ -597,12 +597,12 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                       {/* Customer & Recipient Info Grid */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/30 border border-white/10 rounded-xl p-4 text-xs">
                         <div>
-                          <span className="text-amber-300 uppercase font-bold text-[10px] tracking-wider block mb-1">
+                          <span className="text-amber-600 uppercase font-bold text-[10px] tracking-wider block mb-1">
                             Customer / Recipient
                           </span>
-                          <div className="text-white font-semibold">{ord.customer.fullName}</div>
-                          <div className="text-white/60">{ord.customer.phone}</div>
-                          <div className="text-white/40 text-[11px]">{ord.customer.email}</div>
+                          <div className="text-[#241A15] font-semibold">{ord.customer.fullName}</div>
+                          <div className="text-[#241A15]/60">{ord.customer.phone}</div>
+                          <div className="text-[#241A15]/40 text-[11px]">{ord.customer.email}</div>
                           {ord.customer.giftRecipientName && (
                             <div className="text-amber-200/80 mt-1 italic">
                               Gift for: {ord.customer.giftRecipientName}
@@ -611,13 +611,13 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                         </div>
 
                         <div>
-                          <span className="text-amber-300 uppercase font-bold text-[10px] tracking-wider block mb-1">
+                          <span className="text-amber-600 uppercase font-bold text-[10px] tracking-wider block mb-1">
                             Delivery Destination (Ethiopia)
                           </span>
-                          <div className="text-white font-semibold">{ord.customer.address}</div>
-                          <div className="text-white/60">{ord.customer.city}</div>
+                          <div className="text-[#241A15] font-semibold">{ord.customer.address}</div>
+                          <div className="text-[#241A15]/60">{ord.customer.city}</div>
                           {ord.customer.giftMessage && (
-                            <div className="text-amber-200/90 mt-2 text-[11px] bg-amber-400/10 border border-amber-400/20 rounded-lg p-2.5">
+                            <div className="text-amber-200/90 mt-2 text-[11px] bg-amber-700/10 border border-amber-700/20 rounded-lg p-2.5">
                               "{ord.customer.giftMessage}"
                             </div>
                           )}
@@ -626,7 +626,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
                       {/* Items in this Order */}
                       <div>
-                        <span className="text-white/50 uppercase font-bold text-[10px] tracking-widest block mb-3">
+                        <span className="text-[#241A15]/50 uppercase font-bold text-[10px] tracking-widest block mb-3">
                           Items Included ({ord.items.length})
                         </span>
                         <div className="space-y-3">
@@ -687,21 +687,21 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                                     className="w-12 h-12 rounded-lg object-cover bg-black/40 border border-white/10 flex-shrink-0"
                                   />
                                 ) : (
-                                  <div className="w-12 h-12 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 text-white/30">
+                                  <div className="w-12 h-12 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 text-[#241A15]/30">
                                     🎁
                                   </div>
                                 )}
                                 <div className="flex-1 min-w-0">
-                                  <div className="font-podium text-sm uppercase text-white truncate font-bold">
+                                  <div className="font-podium text-sm uppercase text-[#241A15] truncate font-bold">
                                     {title}
                                   </div>
-                                  <div className="text-[11px] text-white/50 truncate">
+                                  <div className="text-[11px] text-[#241A15]/50 truncate">
                                     {subtitle}
                                   </div>
                                 </div>
                                 <div className="text-right flex-shrink-0">
-                                  <div className="text-xs text-white/50">Qty: {item.quantity}</div>
-                                  <div className="text-xs font-bold text-amber-300">
+                                  <div className="text-xs text-[#241A15]/50">Qty: {item.quantity}</div>
+                                  <div className="text-xs font-bold text-amber-600">
                                     {formatPrice(unitPrice * item.quantity, ordCurr)}
                                   </div>
                                 </div>
@@ -715,9 +715,9 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                       <div className="bg-black/40 border border-white/10 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                         <div className="flex flex-wrap items-center gap-3">
                           <div className="flex items-center gap-2">
-                            <CreditCard className="w-4 h-4 text-amber-300" />
-                            <span className="text-white/70">Payment:</span>
-                            <span className="font-semibold text-white">
+                            <CreditCard className="w-4 h-4 text-amber-600" />
+                            <span className="text-[#241A15]/70">Payment:</span>
+                            <span className="font-semibold text-[#241A15]">
                               {ord.paymentMethod || 'Manual Transfer'}
                             </span>
                           </div>
@@ -727,9 +727,9 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                               href={ord.paymentReceiptUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+                              className="bg-white/10 hover:bg-white/20 text-[#241A15] px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
                             >
-                              <Eye className="w-3.5 h-3.5 text-amber-300" />
+                              <Eye className="w-3.5 h-3.5 text-amber-600" />
                               <span>View Receipt</span>
                             </a>
                           )}
@@ -737,7 +737,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                           {isPaid && (
                             <button
                               onClick={() => setSelectedReceiptOrder(ord)}
-                              className="bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/40 text-amber-300 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                              className="bg-amber-700/15 hover:bg-amber-700/25 border border-amber-700/40 text-amber-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
                             >
                               <FileText className="w-3.5 h-3.5" />
                               <span>View Official Invoice</span>
@@ -746,8 +746,8 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                         </div>
 
                         <div className="flex items-center gap-3">
-                          <span className="text-white/60">Final Total:</span>
-                          <span className="font-podium text-xl font-bold text-amber-300">
+                          <span className="text-[#241A15]/60">Final Total:</span>
+                          <span className="font-podium text-xl font-bold text-amber-600">
                             {formatPrice(ord.total, ordCurr)}
                           </span>
                         </div>

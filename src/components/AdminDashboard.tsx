@@ -1075,9 +1075,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   ];
 
   return (
-    <div className="min-h-screen w-full bg-[#180305] text-white flex flex-col font-inter selection:bg-amber-400 selection:text-[#8c1119]">
+    <div className="min-h-screen w-full bg-[#140F0D] text-[#FBF8F2] flex flex-col font-inter selection:bg-[#E6D5B8] selection:text-[#241A15]">
       {/* Top Navbar Header */}
-      <header className="h-16 border-b border-white/10 bg-[#240407] px-4 lg:px-8 flex items-center justify-between sticky top-0 z-40 shadow-xl">
+      <header className="h-16 border-b border-[#D8C6A8]/20 bg-[#1C1512] px-4 lg:px-8 flex items-center justify-between sticky top-0 z-40 shadow-xl">
         <div className="flex items-center gap-4">
           <button
             onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
@@ -1088,7 +1088,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           
           <div className="flex items-center py-1">
             <img
-              src="/logo.png"
+              src="/golden_logo.png"
               alt="MBM Gifts Admin"
               referrerPolicy="no-referrer"
               className="h-14 sm:h-16 w-auto object-contain drop-shadow-xl"
@@ -1099,7 +1099,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="flex items-center gap-4">
           <button
             onClick={onClose}
-            className="flex items-center gap-2 bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 hover:border-red-400 text-red-300 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md"
+            className="flex items-center gap-2 bg-rose-500/20 border border-rose-500/40 hover:bg-rose-500/30 hover:border-rose-400 text-rose-300 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md"
             title="Sign out of Admin Portal"
           >
             <LogOut className="w-4 h-4" />
@@ -1107,7 +1107,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </button>
 
           <div className="flex items-center gap-2 border-l border-white/10 pl-4">
-            <div className="w-8 h-8 rounded-full bg-amber-400 text-[#8c1119] font-bold flex items-center justify-center text-xs">
+            <div className="w-8 h-8 rounded-full bg-[#E6D5B8] text-[#241A15] font-bold flex items-center justify-center text-xs">
               AD
             </div>
             <div className="hidden md:block">
@@ -1124,12 +1124,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       <div className="flex-1 flex overflow-hidden relative">
         {/* Sidebar Navigation */}
         <aside
-          className={`fixed lg:static top-16 bottom-0 lg:top-0 left-0 z-50 w-72 bg-[#200306] border-r border-white/10 flex flex-col justify-between transition-transform duration-300 shadow-2xl lg:translate-x-0 ${
+          className={`fixed lg:static top-16 bottom-0 lg:top-0 left-0 z-50 w-72 bg-[#18120F] border-r border-[#D8C6A8]/15 flex flex-col justify-between transition-transform duration-300 shadow-2xl lg:translate-x-0 ${
             isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
           <div className="p-4 space-y-1 overflow-y-auto">
-            <div className="px-3 py-2 text-[10px] uppercase tracking-widest font-bold text-amber-300/80">
+            <div className="px-3 py-2 text-[10px] uppercase tracking-widest font-bold text-[#E6D5B8]">
               Management Menu
             </div>
 
@@ -1145,12 +1145,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   }}
                   className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-amber-400 text-[#8c1119] shadow-lg font-bold'
+                      ? 'bg-[#E6D5B8] text-[#241A15] shadow-lg font-bold'
                       : 'text-white/70 hover:bg-white/10 hover:text-white'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#8c1119]' : 'text-amber-300'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#241A15]' : 'text-[#E6D5B8]'}`} />
                     <span>{item.label}</span>
                   </div>
                   {item.badge && (

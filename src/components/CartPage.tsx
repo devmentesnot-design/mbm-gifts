@@ -325,15 +325,17 @@ export const CartPage: React.FC<CartPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005]">
+    <div className="min-h-screen bg-transparent text-[#241A15] font-inter selection:bg-[#B8944A]/40 selection:text-[#241A15]">
       {/* Header Bar */}
-      <div className="border-b border-[#D9A514]/20 bg-[#2B0005]/80 backdrop-blur-md">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors cursor-pointer text-sm uppercase tracking-wider font-bold">
+      <div 
+        className="sticky top-0 w-full px-4 sm:px-8 lg:px-12 py-2 h-16 sm:h-20 flex items-center justify-between z-30 transition-all duration-300" 
+        style={{background: 'linear-gradient(to bottom, rgba(212,183,132,0.97) 0%, rgba(222,196,152,0.92) 55%, rgba(230,213,184,0.55) 85%, rgba(230,213,184,0) 100%)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)'}}
+      >
+        <div className="max-w-[1400px] w-full mx-auto flex items-center justify-start">
+          <a href="/" className="flex items-center gap-2 text-[#756457] hover:text-[#241A15] transition-colors cursor-pointer text-sm uppercase tracking-wider font-bold">
             <ArrowLeft className="w-4 h-4" />
             Back to Shop
           </a>
-          <img src="/logo.png" alt="MBM Gifts" referrerPolicy="no-referrer" className="h-10 sm:h-12 w-auto object-contain drop-shadow-md scale-[2]" />
         </div>
       </div>
 
@@ -341,9 +343,9 @@ export const CartPage: React.FC<CartPageProps> = ({
         {/* ================= CART VIEW ================= */}
         <div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-            <h2 className="font-podium text-2xl sm:text-3xl text-white uppercase tracking-wider">Your Cart</h2>
-            <div className="flex items-center gap-1.5 text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-bold w-fit">
-              <Truck className="w-3.5 h-3.5 text-emerald-400" />
+            <h2 className="font-podium text-2xl sm:text-3xl text-[#241A15] uppercase tracking-wider">Your Cart</h2>
+            <div className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold w-fit">
+              <Truck className="w-3.5 h-3.5 text-emerald-600" />
               <span>Complimentary Express Delivery Included</span>
             </div>
           </div>
@@ -357,29 +359,29 @@ export const CartPage: React.FC<CartPageProps> = ({
                   onNavigate('/login?redirect=/cart');
                 }
               }}
-              className="bg-amber-400/10 hover:bg-amber-400/15 transition-all border border-amber-400/30 rounded-xl p-4 mb-6 flex items-center justify-between gap-3 group cursor-pointer"
+              className="bg-[#B8944A]/10 hover:bg-[#B8944A]/15 transition-all border border-[#B8944A]/30 rounded-xl p-4 mb-6 flex items-center justify-between gap-3 group cursor-pointer"
             >
               <div className="flex items-center gap-3">
-                <div className="bg-amber-400/20 group-hover:bg-amber-400/30 transition-colors rounded-full p-2 flex-shrink-0">
-                  <Package className="w-5 h-5 text-amber-300" />
+                <div className="bg-[#B8944A]/20 group-hover:bg-[#B8944A]/30 transition-colors rounded-full p-2 flex-shrink-0">
+                  <Package className="w-5 h-5 text-[#B8944A]" />
                 </div>
                 <div className="flex-1 min-w-0 text-left">
-                  <p className="text-amber-300 text-sm font-bold">Sign up required to complete your order</p>
-                  <p className="text-amber-300/70 text-xs">Click here to sign in or create an account — your filled details are saved</p>
+                  <p className="text-[#3A2A20] text-sm font-bold">Sign up required to complete your order</p>
+                  <p className="text-[#756457] text-xs">Click here to sign in or create an account — your filled details are saved</p>
                 </div>
               </div>
-              <span className="text-xs uppercase font-bold text-[#8c1119] bg-amber-400 hover:bg-amber-300 px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-colors">
+              <span className="text-xs uppercase font-bold text-[#FBF8F2] bg-[#241A15] hover:bg-[#3A2A20] px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-colors">
                 Sign In / Up →
               </span>
             </a>
           )}
 
           {items.length === 0 ? (
-            <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-12 text-center text-white/60">
-              <Package className="w-16 h-16 mx-auto mb-4 text-white/20" />
-              <p className="text-lg">Your gift cart is empty.</p>
-              <p className="text-sm text-white/40 mt-2">Browse our collection and add items to get started</p>
-              <a href="/" className="inline-block mt-4 text-amber-300 border-b border-amber-300/30 hover:border-amber-300 uppercase tracking-widest text-sm pb-1 font-bold">Return to Shop</a>
+            <div className="bg-[#FBF8F2] border border-[#D8C6A8]/60 rounded-2xl p-12 text-center text-[#756457]">
+              <Package className="w-16 h-16 mx-auto mb-4 text-[#D8C6A8]" />
+              <p className="text-lg text-[#3A2A20]">Your gift cart is empty.</p>
+              <p className="text-sm text-[#756457] mt-2">Browse our collection and add items to get started</p>
+              <a href="/" className="inline-block mt-4 text-[#B8944A] border-b border-[#B8944A]/30 hover:border-[#B8944A] uppercase tracking-widest text-sm pb-1 font-bold">Return to Shop</a>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_400px] gap-8 items-start">
@@ -392,8 +394,8 @@ export const CartPage: React.FC<CartPageProps> = ({
                     const itemSubtitle = getItemSubtitle(item);
                     const itemImg = getItemImage(item);
                     return (
-                      <div key={item.id} className="bg-[#2a0407] border border-white/10 rounded-2xl p-4 flex gap-4">
-                        <div className="w-20 h-20 bg-black/50 border border-white/10 rounded-xl overflow-hidden flex-shrink-0">
+                      <div key={item.id} className="bg-[#FBF8F2] border border-[#D8C6A8]/60 rounded-2xl p-4 flex gap-4 shadow-sm">
+                        <div className="w-20 h-20 bg-[#F7F1E7] border border-[#D8C6A8]/40 rounded-xl overflow-hidden flex-shrink-0">
                           {itemImg ? (
                             <img
                               src={itemImg}
@@ -403,27 +405,27 @@ export const CartPage: React.FC<CartPageProps> = ({
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              <Box className="w-8 h-8 text-white/20" />
+                              <Box className="w-8 h-8 text-[#D8C6A8]" />
                             </div>
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-start gap-4">
                             <div>
-                              <div className="font-podium text-lg uppercase text-white truncate">
+                              <div className="font-podium text-lg uppercase text-[#241A15] truncate">
                                 {itemName}
                               </div>
-                              <div className="text-xs text-white/50 mt-1">
+                              <div className="text-xs text-[#756457] mt-1">
                                 {itemSubtitle}
                               </div>
                               {item.customUnitValue != null && (
-                                <div className="inline-flex items-center gap-1.5 mt-1.5 px-2.5 py-0.5 rounded-md bg-amber-400/15 border border-amber-400/30 text-amber-300 text-[11px] font-semibold">
+                                <div className="inline-flex items-center gap-1.5 mt-1.5 px-2.5 py-0.5 rounded-md bg-[#B8944A]/10 border border-[#B8944A]/30 text-[#B8944A] text-[11px] font-semibold">
                                   <span>Selected Portion / Size:</span>
-                                  <span className="font-bold text-white">{item.customUnitValue} {item.customUnitName || 'kg'}</span>
+                                  <span className="font-bold text-[#241A15]">{item.customUnitValue} {item.customUnitName || 'kg'}</span>
                                 </div>
                               )}
                             </div>
-                            <div className="font-bold text-amber-300">
+                            <div className="font-bold text-[#B8944A]">
                               {formatPrice(calculateItemPrice(item), currency)}
                             </div>
                           </div>
@@ -472,41 +474,41 @@ export const CartPage: React.FC<CartPageProps> = ({
 
                         {/* Customer-provided Customization (Photo / Custom Text) */}
                         {(item.customerInputText || item.customerInputImageUrl) && (
-                          <div className="mt-2.5 bg-black/40 border border-purple-400/30 rounded-xl p-2.5 space-y-1.5">
-                            <div className="text-[10px] text-purple-300 font-bold uppercase tracking-wider flex items-center gap-1">
-                              <Sparkles className="w-3 h-3 text-purple-400" />
+                          <div className="mt-2.5 bg-[#F7F1E7] border border-[#D8C6A8]/50 rounded-xl p-2.5 space-y-1.5">
+                            <div className="text-[10px] text-[#B8944A] font-bold uppercase tracking-wider flex items-center gap-1">
+                              <Sparkles className="w-3 h-3 text-[#B8944A]" />
                               <span>Your Customization</span>
                             </div>
                             {item.customerInputText && (
-                              <div className="text-xs text-white/90">
-                                <span className="text-white/50">Custom Text: </span>
-                                <span className="font-mono text-amber-300 font-medium">"{item.customerInputText}"</span>
+                              <div className="text-xs text-[#3A2A20]">
+                                <span className="text-[#756457]">Custom Text: </span>
+                                <span className="font-mono text-[#B8944A] font-medium">"{item.customerInputText}"</span>
                               </div>
                             )}
                             {item.customerInputImageUrl && (
                               <div className="flex items-center gap-2 pt-0.5">
-                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-purple-400/40 bg-black/60 flex-shrink-0">
+                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-[#D8C6A8]/50 bg-[#FBF8F2] flex-shrink-0">
                                   <img
                                     src={item.customerInputImageUrl}
                                     alt="Custom Photo"
                                     className="w-full h-full object-cover"
                                   />
                                 </div>
-                                <span className="text-[11px] text-white/70">Custom Photo Attached</span>
+                                <span className="text-[11px] text-[#756457]">Custom Photo Attached</span>
                               </div>
                             )}
                           </div>
                         )}
 
                         <div className="flex items-center justify-between mt-4">
-                          <div className="flex items-center border border-white/20 rounded-full bg-black/30">
-                            <button onClick={() => onUpdateQuantity(item.id, -1)} className="w-8 h-7 flex items-center justify-center text-white/60 hover:text-amber-300 cursor-pointer">–</button>
-                            <span className="w-6 text-center text-xs font-bold">{item.quantity}</span>
-                            <button onClick={() => onUpdateQuantity(item.id, 1)} className="w-8 h-7 flex items-center justify-center text-white/60 hover:text-amber-300 cursor-pointer">+</button>
+                          <div className="flex items-center border border-[#D8C6A8] rounded-full bg-[#F7F1E7]">
+                            <button onClick={() => onUpdateQuantity(item.id, -1)} className="w-8 h-7 flex items-center justify-center text-[#756457] hover:text-[#B8944A] cursor-pointer">–</button>
+                            <span className="w-6 text-center text-xs font-bold text-[#241A15]">{item.quantity}</span>
+                            <button onClick={() => onUpdateQuantity(item.id, 1)} className="w-8 h-7 flex items-center justify-center text-[#756457] hover:text-[#B8944A] cursor-pointer">+</button>
                           </div>
                           <button
                             onClick={() => onRemoveItem(item.id)}
-                            className="text-xs text-red-400 hover:text-red-300 font-semibold cursor-pointer uppercase tracking-wider"
+                            className="text-xs text-red-600 hover:text-red-700 font-semibold cursor-pointer uppercase tracking-wider"
                           >
                             Remove
                           </button>
@@ -519,16 +521,16 @@ export const CartPage: React.FC<CartPageProps> = ({
 
                 {/* Gift Wrap / Box Styles — only shown for custom boxes when admin has added boxes in DB */}
                 {hasCustomItems && giftBoxes.length > 0 && (
-                <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-5 md:p-6 mt-6">
+                <div className="bg-[#FBF8F2] border border-[#D8C6A8]/60 rounded-2xl p-5 md:p-6 mt-6 shadow-sm">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-podium text-xl uppercase tracking-wider text-white">How should we wrap it?</h3>
+                    <h3 className="font-podium text-xl uppercase tracking-wider text-[#241A15]">How should we wrap it?</h3>
                     {selectedBox && (
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300 bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#B8944A] bg-[#B8944A]/10 border border-[#B8944A]/30 px-2.5 py-0.5 rounded-full">
                         {selectedBox.name}
                       </span>
                     )}
                   </div>
-                  <div className="text-xs text-white/60 mb-5">
+                  <div className="text-xs text-[#756457] mb-5">
                     Choose your luxury physical container — price and dimensions apply directly to your total.
                   </div>
 
@@ -540,27 +542,27 @@ export const CartPage: React.FC<CartPageProps> = ({
                           key={box.id}
                           onClick={() => setSelectedBoxId(box.id)}
                           className={`group relative border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 flex flex-col justify-between ${isSelected
-                              ? 'border-amber-400 bg-amber-400/15 ring-2 ring-amber-400/50 shadow-lg shadow-amber-400/10'
-                              : 'border-white/10 bg-black/30 hover:border-white/30 hover:bg-black/40'
+                              ? 'border-[#B8944A] bg-[#B8944A]/10 ring-2 ring-[#B8944A]/30 shadow-lg shadow-[#B8944A]/10'
+                              : 'border-[#D8C6A8]/50 bg-[#F7F1E7] hover:border-[#B8944A]/40 hover:bg-[#F7F1E7]'
                             }`}
                         >
                           {/* Box Image */}
-                          <div className="relative h-32 sm:h-36 w-full overflow-hidden bg-black/60">
+                          <div className="relative h-32 sm:h-36 w-full overflow-hidden bg-[#F0E8D8]">
                             <img
                               src={box.image}
                               alt={box.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#241A15]/60 via-transparent to-transparent" />
 
                             {/* Price tag */}
-                            <div className="absolute top-2.5 right-2.5 bg-black/80 backdrop-blur-md border border-amber-400/40 text-amber-300 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">
+                            <div className="absolute top-2.5 right-2.5 bg-[#FBF8F2]/90 backdrop-blur-md border border-[#D8C6A8]/60 text-[#B8944A] text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">
                               {getBoxPrice(box) === 0 ? 'Complimentary' : `+${formatPrice(getBoxPrice(box), currency)}`}
                             </div>
 
                             {/* Selection Radio / Badge */}
-                            <div className={`absolute top-2.5 left-2.5 w-6 h-6 rounded-full flex items-center justify-center border transition-all ${isSelected ? 'bg-amber-400 border-amber-400 text-[#8c1119]' : 'bg-black/50 border-white/40 text-transparent'
+                            <div className={`absolute top-2.5 left-2.5 w-6 h-6 rounded-full flex items-center justify-center border transition-all ${isSelected ? 'bg-[#B8944A] border-[#B8944A] text-[#FBF8F2]' : 'bg-[#FBF8F2]/80 border-[#D8C6A8] text-transparent'
                               }`}>
                               <Check className="w-3.5 h-3.5 stroke-[3]" />
                             </div>
@@ -569,22 +571,22 @@ export const CartPage: React.FC<CartPageProps> = ({
                           {/* Details Body */}
                           <div className="p-3.5 flex-1 flex flex-col justify-between">
                             <div>
-                              <h4 className={`font-podium text-sm uppercase font-bold transition-colors ${isSelected ? 'text-amber-300' : 'text-white'}`}>
+                              <h4 className={`font-podium text-sm uppercase font-bold transition-colors ${isSelected ? 'text-[#B8944A]' : 'text-[#241A15]'}`}>
                                 {box.name}
                               </h4>
-                              <div className="text-[10px] text-amber-300/80 font-mono font-semibold mt-0.5 mb-1.5">
+                              <div className="text-[10px] text-[#B8944A] font-mono font-semibold mt-0.5 mb-1.5">
                                 {box.dimensions} {box.color ? `• ${box.color}` : ''}
                               </div>
-                              <p className="text-white/70 text-xs font-inter leading-relaxed line-clamp-2">
+                              <p className="text-[#756457] text-xs font-inter leading-relaxed line-clamp-2">
                                 {box.description}
                               </p>
                             </div>
 
-                            <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[10px]">
-                              <span className={isSelected ? 'text-amber-300 font-bold uppercase tracking-wider' : 'text-white/40 uppercase tracking-wider'}>
+                            <div className="mt-3 pt-2 border-t border-[#D8C6A8]/40 flex items-center justify-between text-[10px]">
+                              <span className={isSelected ? 'text-[#B8944A] font-bold uppercase tracking-wider' : 'text-[#756457] uppercase tracking-wider'}>
                                 {isSelected ? '✓ Selected Style' : 'Click to Select'}
                               </span>
-                              <span className="text-white/80 font-bold">
+                              <span className="text-[#3A2A20] font-bold">
                                 {getBoxPrice(box) === 0 ? 'Included Free' : `+${formatPrice(getBoxPrice(box), currency)}`}
                               </span>
                             </div>
@@ -597,50 +599,50 @@ export const CartPage: React.FC<CartPageProps> = ({
                 )}
 
                 {/* Gift Note with Live Preview */}
-                <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-5 md:p-6 mt-6 space-y-6">
+                <div className="bg-[#FBF8F2] border border-[#D8C6A8]/60 rounded-2xl p-5 md:p-6 mt-6 space-y-6 shadow-sm">
                   <div>
-                    <h3 className="font-podium text-xl uppercase mb-1">Add a personalized gift note</h3>
-                    <div className="text-xs text-white/60 mb-4">Optional — we'll hand-print it on premium cardstock and tuck it securely inside your box.</div>
+                    <h3 className="font-podium text-xl uppercase mb-1 text-[#241A15]">Add a personalized gift note</h3>
+                    <div className="text-xs text-[#756457] mb-4">Optional — we'll hand-print it on premium cardstock and tuck it securely inside your box.</div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
-                        <label className="block text-[10px] uppercase tracking-widest text-white/50 font-bold mb-1.5">To (Recipient Name)</label>
+                        <label className="block text-[10px] uppercase tracking-widest text-[#756457] font-bold mb-1.5">To (Recipient Name)</label>
                         <input
                           type="text"
                           value={recipientName}
                           onChange={(e) => setRecipientName(e.target.value)}
                           placeholder="e.g. Bethlehem Abera"
-                          className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
+                          className="w-full bg-[#F7F1E7] border border-[#D8C6A8] rounded-lg p-3 text-sm text-[#241A15] placeholder-[#B8A898] focus:outline-none focus:border-[#B8944A]"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] uppercase tracking-widest text-white/50 font-bold mb-1.5">From (Your Name / Sender)</label>
+                        <label className="block text-[10px] uppercase tracking-widest text-[#756457] font-bold mb-1.5">From (Your Name / Sender)</label>
                         <input
                           type="text"
                           value={senderName}
                           onChange={(e) => setSenderName(e.target.value)}
                           placeholder="e.g. Yonas & Family"
-                          className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
+                          className="w-full bg-[#F7F1E7] border border-[#D8C6A8] rounded-lg p-3 text-sm text-[#241A15] placeholder-[#B8A898] focus:outline-none focus:border-[#B8944A]"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-[10px] uppercase tracking-widest text-white/50 font-bold mb-1.5">Gift Message</label>
+                      <label className="block text-[10px] uppercase tracking-widest text-[#756457] font-bold mb-1.5">Gift Message</label>
                       <textarea
                         value={giftMessage}
                         onChange={(e) => setGiftMessage(e.target.value)}
                         maxLength={200}
                         placeholder="Write your heartfelt message here..."
-                        className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400 resize-y min-h-[80px]"
+                        className="w-full bg-[#F7F1E7] border border-[#D8C6A8] rounded-lg p-3 text-sm text-[#241A15] placeholder-[#B8A898] focus:outline-none focus:border-[#B8944A] resize-y min-h-[80px]"
                       />
-                      <div className="text-right text-[10px] text-white/40 mt-1">
+                      <div className="text-right text-[10px] text-[#B8A898] mt-1">
                         {giftMessage.length} / 200 characters
                       </div>
                     </div>
                   </div>
 
                   {/* LIVE PREVIEW COMPONENT */}
-                  <div className="pt-2 border-t border-white/10">
+                  <div className="pt-2 border-t border-[#D8C6A8]/40">
                     <GiftNotePreview
                       recipientName={recipientName}
                       senderName={senderName}
@@ -650,52 +652,52 @@ export const CartPage: React.FC<CartPageProps> = ({
                 </div>
 
                 {/* Delivery Mode & Location Details */}
-                <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-5 md:p-6 mt-6">
+                <div className="bg-[#FBF8F2] border border-[#D8C6A8]/60 rounded-2xl p-5 md:p-6 mt-6 shadow-sm">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1">
-                    <h3 className="font-podium text-xl uppercase text-white">Delivery Details</h3>
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-300 bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-0.5 rounded-full w-fit">
+                    <h3 className="font-podium text-xl uppercase text-[#241A15]">Delivery Details</h3>
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full w-fit">
                       ★ Free Express Delivery
                     </span>
                   </div>
-                  <div className="text-xs text-white/60 mb-4">Please provide delivery location and contact number</div>
+                  <div className="text-xs text-[#756457] mb-4">Please provide delivery location and contact number</div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
                     <div
                       onClick={() => setShipMode('recipient')}
-                      className={`border rounded-xl p-4 flex gap-3 cursor-pointer items-start transition-colors ${shipMode === 'recipient' ? 'border-amber-400 bg-amber-400/10' : 'border-white/10 bg-black/20'
+                      className={`border rounded-xl p-4 flex gap-3 cursor-pointer items-start transition-colors ${shipMode === 'recipient' ? 'border-[#B8944A] bg-[#B8944A]/10' : 'border-[#D8C6A8]/60 bg-[#F7F1E7]'
                         }`}
                     >
-                      <Truck className={`w-5 h-5 flex-shrink-0 mt-0.5 ${shipMode === 'recipient' ? 'text-amber-300' : 'text-white/40'}`} />
+                      <Truck className={`w-5 h-5 flex-shrink-0 mt-0.5 ${shipMode === 'recipient' ? 'text-[#B8944A]' : 'text-[#B8A898]'}`} />
                       <div>
-                        <div className={`text-sm font-bold ${shipMode === 'recipient' ? 'text-amber-300' : 'text-white'}`}>Ship to recipient</div>
-                        <div className="text-[11px] text-white/50 mt-1">Sent directly, prices hidden on packing slip.</div>
+                        <div className={`text-sm font-bold ${shipMode === 'recipient' ? 'text-[#B8944A]' : 'text-[#241A15]'}`}>Ship to recipient</div>
+                        <div className="text-[11px] text-[#756457] mt-1">Sent directly, prices hidden on packing slip.</div>
                       </div>
                     </div>
                     <div
                       onClick={() => setShipMode('me')}
-                      className={`border rounded-xl p-4 flex gap-3 cursor-pointer items-start transition-colors ${shipMode === 'me' ? 'border-amber-400 bg-amber-400/10' : 'border-white/10 bg-black/20'
+                      className={`border rounded-xl p-4 flex gap-3 cursor-pointer items-start transition-colors ${shipMode === 'me' ? 'border-[#B8944A] bg-[#B8944A]/10' : 'border-[#D8C6A8]/60 bg-[#F7F1E7]'
                         }`}
                     >
-                      <Package className={`w-5 h-5 flex-shrink-0 mt-0.5 ${shipMode === 'me' ? 'text-amber-300' : 'text-white/40'}`} />
+                      <Package className={`w-5 h-5 flex-shrink-0 mt-0.5 ${shipMode === 'me' ? 'text-[#B8944A]' : 'text-[#B8A898]'}`} />
                       <div>
-                        <div className={`text-sm font-bold ${shipMode === 'me' ? 'text-amber-300' : 'text-white'}`}>Ship to me</div>
-                        <div className="text-[11px] text-white/50 mt-1">I'll deliver it myself.</div>
+                        <div className={`text-sm font-bold ${shipMode === 'me' ? 'text-[#B8944A]' : 'text-[#241A15]'}`}>Ship to me</div>
+                        <div className="text-[11px] text-[#756457] mt-1">I'll deliver it myself.</div>
                       </div>
                     </div>
                   </div>
 
                   {/* Contact & Address Form — no Customer Full Name field */}
-                  <div className="space-y-4 pt-4 border-t border-white/10">
+                  <div className="space-y-4 pt-4 border-t border-[#D8C6A8]/40">
                     {validationError && (
-                      <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-200 text-xs font-semibold flex items-center gap-2">
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-xs font-semibold flex items-center gap-2">
                         <span>⚠️ {validationError}</span>
                       </div>
                     )}
 
                     <div>
-                      <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center justify-between">
-                        <span>{shipMode === 'recipient' ? 'Your Phone Number (Sender)' : 'Your Phone Number'} <span className="text-red-400">*</span></span>
-                        <span className="text-amber-400/80 text-[9px] font-normal">For order confirmation</span>
+                      <label className="block text-[10px] uppercase tracking-widest text-[#B8944A] font-bold mb-1.5 flex items-center justify-between">
+                        <span>{shipMode === 'recipient' ? 'Your Phone Number (Sender)' : 'Your Phone Number'} <span className="text-red-500">*</span></span>
+                        <span className="text-[#B8944A]/80 text-[9px] font-normal">For order confirmation</span>
                       </label>
                       <input
                         type="tel"
@@ -703,16 +705,16 @@ export const CartPage: React.FC<CartPageProps> = ({
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="e.g. +251 911 234 567"
-                        className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
+                        className="w-full bg-[#F7F1E7] border border-[#D8C6A8] rounded-lg p-3 text-sm text-[#241A15] placeholder-[#B8A898] focus:outline-none focus:border-[#B8944A]"
                       />
                     </div>
 
                     {/* Recipient phone — only shown when shipping to someone else */}
                     {shipMode === 'recipient' && (
                       <div>
-                        <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center justify-between">
-                          <span>Recipient's Phone Number <span className="text-red-400">*</span></span>
-                          <span className="text-amber-400/80 text-[9px] font-normal">So we can reach them at delivery</span>
+                        <label className="block text-[10px] uppercase tracking-widest text-[#B8944A] font-bold mb-1.5 flex items-center justify-between">
+                          <span>Recipient's Phone Number <span className="text-red-500">*</span></span>
+                          <span className="text-[#B8944A]/80 text-[9px] font-normal">So we can reach them at delivery</span>
                         </label>
                         <input
                           type="tel"
@@ -720,16 +722,16 @@ export const CartPage: React.FC<CartPageProps> = ({
                           value={recipientPhone}
                           onChange={(e) => setRecipientPhone(e.target.value)}
                           placeholder="e.g. +251 922 345 678"
-                          className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
+                          className="w-full bg-[#F7F1E7] border border-[#D8C6A8] rounded-lg p-3 text-sm text-[#241A15] placeholder-[#B8A898] focus:outline-none focus:border-[#B8944A]"
                         />
                       </div>
                     )}
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="md:col-span-2">
-                        <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center justify-between">
-                          <span>Delivery Address / Location <span className="text-red-400">*</span></span>
-                          <span className="text-amber-400/80 text-[9px] font-normal">Street, landmark, or house #</span>
+                        <label className="block text-[10px] uppercase tracking-widest text-[#B8944A] font-bold mb-1.5 flex items-center justify-between">
+                          <span>Delivery Address / Location <span className="text-red-500">*</span></span>
+                          <span className="text-[#B8944A]/80 text-[9px] font-normal">Street, landmark, or house #</span>
                         </label>
                         <input
                           type="text"
@@ -737,12 +739,12 @@ export const CartPage: React.FC<CartPageProps> = ({
                           value={address}
                           onChange={(e) => setAddress(e.target.value)}
                           placeholder="e.g. Bole Sub-city, Woreda 03, House #142"
-                          className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
+                          className="w-full bg-[#F7F1E7] border border-[#D8C6A8] rounded-lg p-3 text-sm text-[#241A15] placeholder-[#B8A898] focus:outline-none focus:border-[#B8944A]"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5">
+                        <label className="block text-[10px] uppercase tracking-widest text-[#B8944A] font-bold mb-1.5">
                           City / Area
                         </label>
                         <input
@@ -750,15 +752,15 @@ export const CartPage: React.FC<CartPageProps> = ({
                           value={city}
                           onChange={(e) => setCity(e.target.value)}
                           placeholder="e.g. Addis Ababa"
-                          className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400"
+                          className="w-full bg-[#F7F1E7] border border-[#D8C6A8] rounded-lg p-3 text-sm text-[#241A15] placeholder-[#B8A898] focus:outline-none focus:border-[#B8944A]"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center gap-2">
-                          <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                        <label className="block text-[10px] uppercase tracking-widest text-[#B8944A] font-bold mb-1.5 flex items-center gap-2">
+                          <Calendar className="w-3.5 h-3.5 text-[#B8944A]" />
                           <span>Preferred Delivery Date</span>
                         </label>
                         <div className="relative">
@@ -767,26 +769,23 @@ export const CartPage: React.FC<CartPageProps> = ({
                             value={deliveryDate}
                             onChange={(e) => setDeliveryDate(e.target.value)}
                             min={new Date().toISOString().split('T')[0]}
-                            className="w-full bg-black/40 border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400 cursor-pointer"
-                            style={{
-                              colorScheme: 'dark',
-                            }}
+                            className="w-full bg-[#F7F1E7] border border-[#D8C6A8] rounded-lg p-3 text-sm text-[#241A15] focus:outline-none focus:border-[#B8944A] cursor-pointer"
                           />
-                          <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-300/50 pointer-events-none" />
+                          <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#B8944A]/50 pointer-events-none" />
                         </div>
-                        <p className="text-[10px] text-white/50 mt-1.5">Leave blank for earliest available delivery</p>
+                        <p className="text-[10px] text-[#B8A898] mt-1.5">Leave blank for earliest available delivery</p>
                       </div>
 
                       <div>
-                        <label className="block text-[10px] uppercase tracking-widest text-amber-300 font-bold mb-1.5 flex items-center gap-2">
-                          <Clock className="w-3.5 h-3.5 text-amber-400" />
+                        <label className="block text-[10px] uppercase tracking-widest text-[#B8944A] font-bold mb-1.5 flex items-center gap-2">
+                          <Clock className="w-3.5 h-3.5 text-[#B8944A]" />
                           <span>Preferred Delivery Time</span>
                         </label>
                         <div className="relative">
                           <select
                             value={deliveryTime}
                             onChange={(e) => setDeliveryTime(e.target.value)}
-                            className="w-full bg-[#1e0204] border border-white/20 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-400 cursor-pointer appearance-none"
+                            className="w-full bg-[#F7F1E7] border border-[#D8C6A8] rounded-lg p-3 text-sm text-[#241A15] focus:outline-none focus:border-[#B8944A] cursor-pointer appearance-none"
                           >
                             <option value="">Select delivery time window (Optional)</option>
                             <option value="Morning (9:00 AM – 12:00 PM)">Morning (9:00 AM – 12:00 PM)</option>
@@ -794,9 +793,9 @@ export const CartPage: React.FC<CartPageProps> = ({
                             <option value="Evening (5:00 PM – 8:00 PM)">Evening (5:00 PM – 8:00 PM)</option>
                             <option value="Flexible / Anytime">Flexible / Anytime (Business Hours)</option>
                           </select>
-                          <Clock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-300/50 pointer-events-none" />
+                          <Clock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#B8944A]/50 pointer-events-none" />
                         </div>
-                        <p className="text-[10px] text-white/50 mt-1.5">Recipient will be contacted before delivery</p>
+                        <p className="text-[10px] text-[#B8A898] mt-1.5">Recipient will be contacted before delivery</p>
                       </div>
                     </div>
                   </div>
@@ -804,47 +803,47 @@ export const CartPage: React.FC<CartPageProps> = ({
               </div>
 
               {/* Right Column: Summary Sticky Box */}
-              <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-6 sticky top-24 shadow-2xl">
-                <h3 className="font-podium text-2xl uppercase mb-5">Order summary</h3>
+              <div className="bg-[#FBF8F2] border border-[#D8C6A8]/60 rounded-2xl p-6 sticky top-24 shadow-lg">
+                <h3 className="font-podium text-2xl uppercase mb-5 text-[#241A15]">Order summary</h3>
 
                 <div className="space-y-3 text-sm">
-                  <div className="flex justify-between text-white/80">
+                  <div className="flex justify-between text-[#756457]">
                     <span>Subtotal ({items.length} item{items.length !== 1 ? 's' : ''})</span>
-                    <span className="font-bold">{formatPrice(subtotal, currency)}</span>
+                    <span className="font-bold text-[#3A2A20]">{formatPrice(subtotal, currency)}</span>
                   </div>
                   {hasCustomItems && selectedBox && (
-                    <div className="flex justify-between text-white/80">
+                    <div className="flex justify-between text-[#756457]">
                       <span className="truncate pr-2">Packaging: {selectedBox.name}</span>
-                      <span className="font-bold flex-shrink-0">
+                      <span className="font-bold flex-shrink-0 text-[#3A2A20]">
                         {wrapTier === 0 ? 'Free' : formatPrice(wrapTier, currency)}
                       </span>
                     </div>
                   )}
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-white/80">Delivery in Ethiopia</span>
-                    <span className="text-emerald-400 font-extrabold uppercase tracking-wider bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/40">
+                    <span className="text-[#756457]">Delivery in Ethiopia</span>
+                    <span className="text-emerald-700 font-extrabold uppercase tracking-wider bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                       FREE
                     </span>
                   </div>
                 </div>
 
-                <div className="border-t border-white/10 my-4"></div>
+                <div className="border-t border-[#D8C6A8]/50 my-4"></div>
 
                 <div className="flex justify-between items-end mb-6">
                   <div>
-                    <span className="text-sm uppercase tracking-widest font-bold text-white/70 block">Total</span>
-                    <span className="text-[10px] text-amber-300/80 uppercase font-semibold">
+                    <span className="text-sm uppercase tracking-widest font-bold text-[#756457] block">Total</span>
+                    <span className="text-[10px] text-[#B8944A] uppercase font-semibold">
                       {buyerMarket === 'INTERNATIONAL' ? 'USD (International)' : 'ETB (Ethiopia)'}
                     </span>
                   </div>
-                  <span className="font-podium text-3xl text-amber-300">{formatPrice(total, currency)}</span>
+                  <span className="font-podium text-3xl text-[#B8944A]">{formatPrice(total, currency)}</span>
                 </div>
 
                 <button
                   id="cart-place-order-btn"
                   onClick={handlePlaceOrder}
                   disabled={isPlacingOrder}
-                  className="w-full bg-amber-400 hover:bg-amber-300 disabled:opacity-70 disabled:cursor-not-allowed text-[#8c1119] font-bold py-4 text-sm uppercase tracking-wider rounded-xl transition-all shadow-xl shadow-amber-400/20 cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full bg-[#241A15] hover:bg-[#3A2A20] disabled:opacity-70 disabled:cursor-not-allowed text-[#F7F1E7] font-bold py-4 text-sm uppercase tracking-wider rounded-xl transition-all shadow-xl shadow-[#241A15]/20 cursor-pointer flex items-center justify-center gap-2"
                 >
                   {isPlacingOrder ? (
                     <>
@@ -861,7 +860,7 @@ export const CartPage: React.FC<CartPageProps> = ({
                     </>
                   )}
                 </button>
-                <p className="text-center text-[10px] text-white/40 mt-4 uppercase tracking-widest">
+                <p className="text-center text-[10px] text-[#B8A898] mt-4 uppercase tracking-widest">
                   {session ? "100% Secure Checkout • Telebirr & Bank Transfer" : 'Create an account to complete your purchase'}
                 </p>
               </div>

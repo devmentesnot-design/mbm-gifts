@@ -76,19 +76,19 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ session, onNavigate })
   const email = session?.user?.email;
 
   return (
-    <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#2B0005]">
+    <div className="min-h-screen bg-transparent text-[#241A15] font-inter selection:bg-[#E6D5B8] selection:text-[#241A15]">
       {/* Header */}
-      <div className="border-b border-[#D9A514]/20 bg-[#2B0005]/80 backdrop-blur-md sticky top-0 z-30">
+      <div className="border-b border-[#D8C6A8]/60 bg-[#FBF8F2]/90 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <button
             onClick={() => onNavigate('/')}
-            className="flex items-center gap-2 text-white/70 hover:text-white transition-colors cursor-pointer text-xs sm:text-sm uppercase tracking-wider font-bold"
+            className="flex items-center gap-2 text-[#756457] hover:text-[#241A15] transition-colors cursor-pointer text-xs sm:text-sm uppercase tracking-wider font-bold"
           >
-            <ArrowLeft className="w-4 h-4 text-amber-300" />
+            <ArrowLeft className="w-4 h-4 text-[#8E6E2F]" />
             <span>Back</span>
           </button>
 
-          <h1 className="font-podium text-xl uppercase tracking-wider text-[#FFF8ED]">My Profile</h1>
+          <h1 className="font-podium text-xl uppercase tracking-wider text-[#241A15]">My Profile</h1>
           <div className="w-20"></div> {/* Spacer for centering */}
         </div>
       </div>
@@ -97,43 +97,43 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ session, onNavigate })
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-amber-300" />
+            <Loader2 className="w-8 h-8 animate-spin text-[#8E6E2F]" />
           </div>
         ) : (
           <div className="space-y-6">
             {/* Profile Card */}
-            <div className="luxury-satin-card border border-[#D9A514]/30 rounded-3xl p-8 backdrop-blur-xl shadow-2xl">
+            <div className="bg-[#FBF8F2] border border-[#D8C6A8] rounded-3xl p-8 shadow-xl">
               <div className="flex items-center gap-6 mb-8">
                 {avatar ? (
                   <img
                     src={avatar}
                     alt={fullName}
-                    className="w-24 h-24 rounded-full object-cover border-4 border-amber-400/50"
+                    className="w-24 h-24 rounded-full object-cover border-4 border-[#B8944A]/60 shadow-md"
                     referrerPolicy="no-referrer"
                   />
                 ) : (
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-amber-400 to-amber-200 text-[#8c1119] font-extrabold flex items-center justify-center text-3xl">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#DCC39A] to-[#E6D5B8] text-[#241A15] font-extrabold flex items-center justify-center text-3xl shadow-md">
                     {fullName.charAt(0).toUpperCase()}
                   </div>
                 )}
 
                 <div>
-                  <h2 className="font-podium text-2xl uppercase text-white mb-1">{fullName}</h2>
-                  <p className="text-white/60 text-sm flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
+                  <h2 className="font-podium text-2xl uppercase text-[#241A15] mb-1">{fullName}</h2>
+                  <p className="text-[#756457] text-sm flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-[#8E6E2F]" />
                     {email}
                   </p>
                 </div>
               </div>
 
               {/* Role Section */}
-              <div className="border-t border-white/10 pt-6">
+              <div className="border-t border-[#D8C6A8]/40 pt-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <Shield className="w-5 h-5 text-amber-300" />
-                  <h3 className="font-bold text-lg uppercase tracking-wider">Account Role</h3>
+                  <Shield className="w-5 h-5 text-[#8E6E2F]" />
+                  <h3 className="font-bold text-lg uppercase tracking-wider text-[#241A15]">Account Role</h3>
                 </div>
 
-                <p className="text-white/60 text-xs mb-4">
+                <p className="text-[#756457] text-xs mb-4">
                   Change your account role to access different features. Admin role gives you access to the admin dashboard.
                 </p>
 
@@ -143,19 +143,19 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ session, onNavigate })
                     onClick={() => setRole('customer')}
                     className={`border-2 rounded-xl p-4 transition-all cursor-pointer ${
                       role === 'customer'
-                        ? 'border-amber-400 bg-amber-400/10'
-                        : 'border-white/10 bg-black/20 hover:border-white/30'
+                        ? 'border-[#B8944A] bg-[#E6D5B8]/30'
+                        : 'border-[#D8C6A8]/60 bg-[#FAF6EE] hover:border-[#D8C6A8]'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <User className="w-6 h-6 text-amber-300" />
+                      <User className="w-6 h-6 text-[#8E6E2F]" />
                       {role === 'customer' && (
-                        <Check className="w-5 h-5 text-amber-400" />
+                        <Check className="w-5 h-5 text-[#8E6E2F]" />
                       )}
                     </div>
                     <div className="text-left">
-                      <div className="font-bold text-white mb-1">Customer</div>
-                      <div className="text-xs text-white/60">Browse and order gifts</div>
+                      <div className="font-bold text-[#241A15] mb-1">Customer</div>
+                      <div className="text-xs text-[#756457]">Browse and order gifts</div>
                     </div>
                   </button>
 
@@ -164,33 +164,33 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ session, onNavigate })
                     onClick={() => setRole('admin')}
                     className={`border-2 rounded-xl p-4 transition-all cursor-pointer ${
                       role === 'admin'
-                        ? 'border-amber-400 bg-amber-400/10'
-                        : 'border-white/10 bg-black/20 hover:border-white/30'
+                        ? 'border-[#B8944A] bg-[#E6D5B8]/30'
+                        : 'border-[#D8C6A8]/60 bg-[#FAF6EE] hover:border-[#D8C6A8]'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <Shield className="w-6 h-6 text-amber-300" />
+                      <Shield className="w-6 h-6 text-[#8E6E2F]" />
                       {role === 'admin' && (
-                        <Check className="w-5 h-5 text-amber-400" />
+                        <Check className="w-5 h-5 text-[#8E6E2F]" />
                       )}
                     </div>
                     <div className="text-left">
-                      <div className="font-bold text-white mb-1">Admin</div>
-                      <div className="text-xs text-white/60">Full dashboard access</div>
+                      <div className="font-bold text-[#241A15] mb-1">Admin</div>
+                      <div className="text-xs text-[#756457]">Full dashboard access</div>
                     </div>
                   </button>
                 </div>
 
                 {message && (
-                  <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3 mb-4 flex items-center gap-2 text-emerald-300 text-sm">
-                    <Check className="w-4 h-4" />
+                  <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3 mb-4 flex items-center gap-2 text-emerald-800 text-sm">
+                    <Check className="w-4 h-4 text-emerald-600" />
                     <span>{message}</span>
                   </div>
                 )}
 
                 {error && (
-                  <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 mb-4 flex items-center gap-2 text-red-300 text-sm">
-                    <AlertCircle className="w-4 h-4" />
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 mb-4 flex items-center gap-2 text-red-800 text-sm">
+                    <AlertCircle className="w-4 h-4 text-red-600" />
                     <span>{error}</span>
                   </div>
                 )}
@@ -198,16 +198,16 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ session, onNavigate })
                 <button
                   onClick={handleSaveRole}
                   disabled={saving || role === profile?.role}
-                  className="w-full bg-amber-400 hover:bg-amber-300 disabled:bg-white/10 disabled:text-white/40 text-[#8c1119] font-bold py-3 rounded-xl text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
+                  className="w-full bg-[#241A15] hover:bg-[#3A2A20] disabled:bg-[#D8C6A8]/40 disabled:text-[#756457] text-[#FBF8F2] font-bold py-3 rounded-xl text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed shadow-md"
                 >
                   {saving ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin text-[#E6D5B8]" />
                       <span>Saving...</span>
                     </>
                   ) : (
                     <>
-                      <Check className="w-4 h-4" />
+                      <Check className="w-4 h-4 text-[#E6D5B8]" />
                       <span>Save Changes</span>
                     </>
                   )}
@@ -216,14 +216,14 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ session, onNavigate })
             </div>
 
             {/* Info Card */}
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 text-sm">
+            <div className="bg-[#FAF6EE] border border-[#D8C6A8] rounded-xl p-4 text-sm text-[#3A2A20]">
               <div className="flex gap-3">
-                <AlertCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                <div className="text-blue-200">
-                  <p className="font-bold mb-1">Database Setup Required</p>
-                  <p className="text-blue-200/80 text-xs leading-relaxed">
+                <AlertCircle className="w-5 h-5 text-[#8E6E2F] flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold mb-1 text-[#241A15]">Database Setup Required</p>
+                  <p className="text-[#756457] text-xs leading-relaxed">
                     To use role management, make sure you've created the profiles table in Supabase. 
-                    Check <code className="bg-black/30 px-1 py-0.5 rounded">SUPABASE_SETUP.md</code> for instructions.
+                    Check <code className="bg-[#E6D5B8]/40 px-1 py-0.5 rounded text-[#241A15]">SUPABASE_SETUP.md</code> for instructions.
                   </p>
                 </div>
               </div>
