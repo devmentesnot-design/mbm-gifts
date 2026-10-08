@@ -32,6 +32,12 @@ export const Hero: React.FC<HeroProps> = ({
         loading="eager"
       />
 
+      {/* Bottom fade: dissolves hero image into page bg (no hard cut line) */}
+      <div
+        className="hidden lg:block absolute bottom-0 left-0 right-0 z-[1] pointer-events-none"
+        style={{ height: '38%', background: 'linear-gradient(to top, #F7F1E7 0%, rgba(247,241,231,0.82) 30%, rgba(247,241,231,0.35) 65%, transparent 100%)' }}
+      />
+
       {/* Mobile Folded Satin Background (Matches other pages and sections) */}
       <div 
         className="lg:hidden absolute inset-0 bg-cover bg-center pointer-events-none -z-10"
@@ -141,8 +147,8 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
       </div>
 
-      {/* Hero Bottom Bar — desktop only on mobile to avoid gap */}
-      <div className="hidden lg:flex w-full px-5 sm:px-8 lg:px-14 py-2 z-10 items-center justify-between text-[8px] sm:text-[9px] text-[#756457]/80 font-inter tracking-widest uppercase border-t border-[#D8C6A8]/40 bg-white/30 backdrop-blur-[2px]">
+      {/* Hero Bottom Bar — desktop only, sits above the fade overlay */}
+      <div className="hidden lg:flex w-full px-5 sm:px-8 lg:px-14 py-2 z-10 items-center justify-between text-[8px] sm:text-[9px] text-[#756457]/60 font-inter tracking-widest uppercase">
         <div>© MBM GIFTS</div>
         <div>LUXURY COLLECTION</div>
       </div>
