@@ -21,7 +21,7 @@ export const Hero: React.FC<HeroProps> = ({
   const { buyerMarket } = useMarket();
 
   return (
-    <section 
+    <section
       className="relative w-full lg:aspect-[2089/753] min-h-0 lg:max-h-[640px] overflow-hidden flex flex-col justify-between select-none bg-transparent"
     >
       {/* Desktop Real Hero Background (Panoramic header image fitted cleanly) */}
@@ -32,21 +32,15 @@ export const Hero: React.FC<HeroProps> = ({
         loading="eager"
       />
 
-      {/* Bottom fade: dissolves hero image into page bg (no hard cut line) */}
-      <div
-        className="hidden lg:block absolute bottom-0 left-0 right-0 z-[1] pointer-events-none"
-        style={{ height: '38%', background: 'linear-gradient(to top, #F7F1E7 0%, rgba(247,241,231,0.82) 30%, rgba(247,241,231,0.35) 65%, transparent 100%)' }}
-      />
-
       {/* Mobile Folded Satin Background (Matches other pages and sections) */}
-      <div 
+      <div
         className="lg:hidden absolute inset-0 bg-cover bg-center pointer-events-none -z-10"
         style={{ backgroundImage: "url('/global-satin-bg.png')" }}
       />
 
       {/* Main Hero Container: Left Content & Right Promo Popup */}
       <div className="w-full h-full px-5 sm:px-8 md:px-10 lg:px-14 xl:px-18 flex-1 flex flex-col lg:flex-row items-center justify-between z-10 py-5 lg:py-8 gap-4 lg:gap-6">
-        
+
         {/* ========================================================================= */}
         {/* LEFT COLUMN: HERO HEADLINE, CTAS, STATS (Strictly confined to left silk)   */}
         {/* ========================================================================= */}
@@ -68,9 +62,9 @@ export const Hero: React.FC<HeroProps> = ({
 
           {/* Main Heading */}
           <h1 className="animate-fade-up-delay-1 font-podium font-black uppercase tracking-tight text-[2.1rem] sm:text-[2.6rem] lg:text-[2.4rem] xl:text-[2.95rem] leading-[1.05]">
-            <span className="block font-black" style={{color: '#7A5C1E', textShadow: '0 1px 8px rgba(255,255,255,0.7)'}}>BESPOKE GIFTS</span>
-            <span className="block mt-0.5" style={{color: '#1A1008', textShadow: '0 1px 6px rgba(255,255,255,0.5)'}}>FOR EVERY</span>
-            <span className="block" style={{color: '#1A1008', textShadow: '0 1px 6px rgba(255,255,255,0.5)'}}>MILESTONE</span>
+            <span className="block font-black" style={{ color: '#7A5C1E', textShadow: '0 1px 8px rgba(255,255,255,0.7)' }}>BESPOKE GIFTS</span>
+            <span className="block mt-0.5" style={{ color: '#1A1008', textShadow: '0 1px 6px rgba(255,255,255,0.5)' }}>FOR EVERY</span>
+            <span className="block" style={{ color: '#1A1008', textShadow: '0 1px 6px rgba(255,255,255,0.5)' }}>MILESTONE</span>
           </h1>
 
           {/* Subtext */}
@@ -147,8 +141,8 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
       </div>
 
-      {/* Hero Bottom Bar — desktop only, sits above the fade overlay */}
-      <div className="hidden lg:flex w-full px-5 sm:px-8 lg:px-14 py-2 z-10 items-center justify-between text-[8px] sm:text-[9px] text-[#756457]/60 font-inter tracking-widest uppercase">
+      {/* Hero Bottom Bar — desktop only on mobile to avoid gap */}
+      <div className="hidden lg:flex w-full px-5 sm:px-8 lg:px-14 py-2 z-10 items-center justify-between text-[8px] sm:text-[9px] text-[#756457]/80 font-inter tracking-widest uppercase border-t border-[#D8C6A8]/40 bg-white/30 backdrop-blur-[2px]">
         <div>© MBM GIFTS</div>
         <div>LUXURY COLLECTION</div>
       </div>
