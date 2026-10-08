@@ -19,6 +19,7 @@ import {
   Eye,
   User,
   Sparkles,
+  Calendar,
 } from 'lucide-react';
 import { Order, OrderStatus, PaymentStatus } from '../types/cart';
 import { formatPrice } from '../utils/currency';
@@ -204,12 +205,9 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
             <span>Back to Shop</span>
           </button>
 
-          <img
-            src="/golden_logo.png"
-            alt="MBM Gifts"
-            referrerPolicy="no-referrer"
-            className="h-24 sm:h-28 w-auto object-contain drop-shadow-md"
-          />
+          <span className="font-podium text-lg sm:text-xl uppercase tracking-widest text-[#241A15] select-none">
+            My Orders
+          </span>
 
           {session && (
             <div className="flex items-center gap-2.5 bg-white/60 border border-[#B8944A]/40 rounded-full pl-1.5 pr-3 py-1">
@@ -616,6 +614,21 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                           </span>
                           <div className="text-[#241A15] font-semibold">{ord.customer.address}</div>
                           <div className="text-[#241A15]/60">{ord.customer.city}</div>
+                          {/* Requested Delivery Date & Time */}
+                          {(ord.deliveryDate || ord.customer?.deliveryDate) && (
+                            <div className="mt-2 flex items-center gap-2 text-[11px] bg-[#FBF8F2] border border-[#B8944A]/25 rounded-lg px-2.5 py-1.5">
+                              <Calendar className="w-3.5 h-3.5 text-[#B8944A] flex-shrink-0" />
+                              <span className="text-[#241A15]/70 font-medium">
+                                <span className="font-bold text-[#241A15]">Requested Delivery:</span>{' '}
+                                {ord.deliveryDate || ord.customer?.deliveryDate}
+                                {(ord.deliveryTime || ord.customer?.deliveryTime) && (
+                                  <span className="ml-1 text-[#8E6E2F] font-semibold">
+                                    @ {ord.deliveryTime || ord.customer?.deliveryTime}
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                          )}
                           {ord.customer.giftMessage && (
                             <div className="text-[#8E6E2F]/90 mt-2 text-[11px] bg-amber-50 border border-[#B8944A]/20 rounded-lg p-2.5">
                               "{ord.customer.giftMessage}"

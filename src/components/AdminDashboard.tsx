@@ -2042,11 +2042,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
               pkgCategoryFilter === 'all'
                 ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
-                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
+                : 'bg-[#F7F1E7] border-[#D8C6A8]/50 text-[#241A15]/80 hover:border-[#B8944A]/60 hover:text-[#241A15]'
             }`}
           >
             <span>All Packages</span>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${pkgCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${pkgCategoryFilter === 'all' ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/70'}`}>
               {packages.length}
             </span>
           </button>
@@ -2072,12 +2072,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                     isActive
                       ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
-                      : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
+                      : 'bg-[#F7F1E7] border-[#D8C6A8]/50 text-[#241A15]/80 hover:border-[#B8944A]/60 hover:text-[#241A15]'
                   }`}
                 >
                   <span className="truncate flex-1">{cat.name}</span>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/70'}`}>
                       {count}
                     </span>
                     {hasSubs && (
@@ -2099,11 +2099,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                             isSubActive
                               ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-sm'
-                              : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/70 hover:border-[#F5C542]/40 hover:text-[#241A15]'
+                              : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/70 hover:border-[#B8944A]/50 hover:text-[#241A15]'
                           }`}
                         >
                           <span className="truncate">↳ {sub}</span>
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/60'}`}>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                             {subCount}
                           </span>
                         </button>
@@ -2304,7 +2304,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <button
             onClick={() => setIsPkgCategorySidebarOpen((prev) => !prev)}
             title={isPkgCategorySidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-            className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b0003] border border-[#D9A514]/30 hover:border-[#F5C542] text-[#241A15]/80 hover:text-[#F5C542] transition-all cursor-pointer flex-shrink-0 shadow"
+            className="flex items-center justify-center w-7 h-7 rounded-full bg-[#FBF8F2] border border-[#D8C6A8]/60 hover:border-[#B8944A] text-[#241A15]/70 hover:text-[#B8944A] transition-all cursor-pointer flex-shrink-0 shadow"
           >
             {isPkgCategorySidebarOpen ? (
               <ChevronRight className="w-3.5 h-3.5" />
@@ -2328,11 +2328,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
               pkgCategoryFilter === 'all'
                 ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
-                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
+                : 'bg-[#F7F1E7] border-[#D8C6A8]/50 text-[#241A15]/80 hover:border-[#B8944A]/60 hover:text-[#241A15] hover:bg-[#E6D5B8]/50'
             }`}
           >
             <span className="truncate">All Packages</span>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${pkgCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${pkgCategoryFilter === 'all' ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/70'}`}>
               {packages.length}
             </span>
           </button>
@@ -2358,12 +2358,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                     isActive
                       ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
-                      : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
+                      : 'bg-[#F7F1E7] border-[#D8C6A8]/50 text-[#241A15]/80 hover:border-[#B8944A]/60 hover:text-[#241A15] hover:bg-[#E6D5B8]/50'
                   }`}
                 >
                   <span className="truncate flex-1">{cat.name}</span>
                   <div className="flex items-center gap-1 flex-shrink-0">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/70'}`}>
                       {count}
                     </span>
                     {hasSubs && (
@@ -2385,11 +2385,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           className={`w-full text-left px-2.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                             isSubActive
                               ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
-                              : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/60 hover:border-[#F5C542]/40 hover:text-[#241A15] hover:bg-[#230005]/70'
+                              : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/60 hover:border-[#B8944A]/50 hover:text-[#241A15] hover:bg-[#E6D5B8]/40'
                           }`}
                         >
                           <span className="truncate">↳ {sub}</span>
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/60'}`}>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                             {subCount}
                           </span>
                         </button>
@@ -2467,11 +2467,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                         itemCategoryFilter === 'all'
                           ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
-                          : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
+                          : 'bg-[#F7F1E7] border-[#D8C6A8]/50 text-[#241A15]/80 hover:border-[#B8944A]/60 hover:text-[#241A15]'
                       }`}
                     >
                       <span>All Custom Items</span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${itemCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${itemCategoryFilter === 'all' ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/70'}`}>
                         {customItems.length}
                       </span>
                     </button>
@@ -2497,12 +2497,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                               isActive
                                 ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
-                                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
+                                : 'bg-[#F7F1E7] border-[#D8C6A8]/50 text-[#241A15]/80 hover:border-[#B8944A]/60 hover:text-[#241A15]'
                             }`}
                           >
                             <span className="truncate flex-1">{cat.name}</span>
                             <div className="flex items-center gap-1.5 flex-shrink-0">
-                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/70'}`}>
                                 {count}
                               </span>
                               {hasSubs && (
@@ -2524,11 +2524,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                                       isSubActive
                                         ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-sm'
-                                        : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/70 hover:border-[#F5C542]/40 hover:text-[#241A15]'
+                                        : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/70 hover:border-[#B8944A]/50 hover:text-[#241A15]'
                                     }`}
                                   >
                                     <span className="truncate">↳ {sub}</span>
-                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/60'}`}>
+                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                                       {subCount}
                                     </span>
                                   </button>
@@ -2719,7 +2719,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <button
                       onClick={() => setIsItemCategorySidebarOpen((prev) => !prev)}
                       title={isItemCategorySidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-                      className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b0003] border border-[#D9A514]/30 hover:border-[#F5C542] text-[#241A15]/80 hover:text-[#F5C542] transition-all cursor-pointer flex-shrink-0 shadow"
+                      className="flex items-center justify-center w-7 h-7 rounded-full bg-[#FBF8F2] border border-[#D8C6A8]/60 hover:border-[#B8944A] text-[#241A15]/70 hover:text-[#B8944A] transition-all cursor-pointer flex-shrink-0 shadow"
                     >
                       {isItemCategorySidebarOpen ? (
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -2743,11 +2743,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                         itemCategoryFilter === 'all'
                           ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
-                          : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
+                          : 'bg-[#F7F1E7] border-[#D8C6A8]/50 text-[#241A15]/80 hover:border-[#B8944A]/60 hover:text-[#241A15] hover:bg-[#E6D5B8]/50'
                       }`}
                     >
                       <span className="truncate">All Items</span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${itemCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${itemCategoryFilter === 'all' ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/70'}`}>
                         {customItems.length}
                       </span>
                     </button>
@@ -2773,12 +2773,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                               isActive
                                 ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
-                                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
+                                : 'bg-[#F7F1E7] border-[#D8C6A8]/50 text-[#241A15]/80 hover:border-[#B8944A]/60 hover:text-[#241A15] hover:bg-[#E6D5B8]/50'
                             }`}
                           >
                             <span className="truncate flex-1">{cat.name}</span>
                             <div className="flex items-center gap-1 flex-shrink-0">
-                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/70'}`}>
                                 {count}
                               </span>
                               {hasSubs && (
@@ -2800,11 +2800,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     className={`w-full text-left px-2.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                                       isSubActive
                                         ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
-                                        : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/60 hover:border-[#F5C542]/40 hover:text-[#241A15] hover:bg-[#230005]/70'
+                                        : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/60 hover:border-[#B8944A]/50 hover:text-[#241A15] hover:bg-[#E6D5B8]/40'
                                     }`}
                                   >
                                     <span className="truncate">↳ {sub}</span>
-                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/60'}`}>
+                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                                       {subCount}
                                     </span>
                                   </button>
@@ -2843,7 +2843,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Sub-Navbar for Master Categories */}
-              <div className="bg-[#2a0508]/80 border border-[#D8C6A8]/40 rounded-2xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shadow-xl">
+              <div className="bg-[#FBF8F2] border border-[#D8C6A8]/40 rounded-2xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shadow-xl">
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-thin">
                   {[
                     { id: 'all', label: 'All Categories', count: categoriesList.length },
@@ -2861,7 +2861,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       }`}
                     >
                       <span>{tab.label}</span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] ${categoryTypeFilter === tab.id ? 'bg-[#8c1119] text-[#8E6E2F]' : 'bg-white/60 text-[#241A15]/70'}`}>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] ${categoryTypeFilter === tab.id ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-[#F7F1E7] text-[#241A15]/70 border border-[#D8C6A8]/40'}`}>
                         {tab.count}
                       </span>
                     </button>
@@ -2911,9 +2911,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <span className="text-[10px] uppercase font-bold tracking-wider text-[#241A15]/50">Applies To:</span>
                           <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
                             cat.type === 'package'
-                              ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+                              ? 'bg-purple-500/20 text-purple-700 border-purple-300/50'
                               : cat.type === 'custom_item'
-                              ? 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+                              ? 'bg-blue-500/20 text-blue-700 border-blue-300/50'
                               : 'bg-amber-400/20 text-[#8E6E2F] border-amber-400/30'
                           }`}>
                             {cat.type === 'package' ? 'Ready-made Packages' : cat.type === 'custom_item' ? 'Single Custom Items' : 'Universal (Packages & Items)'}
@@ -3386,7 +3386,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                           }}
                                           className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 cursor-pointer ${
                                             isSubSelected
-                                              ? 'bg-amber-300 text-[#8c1119] border border-amber-300 shadow-sm'
+                                              ? 'bg-[#B8944A] text-white border border-[#B8944A] shadow-sm'
                                               : 'bg-white/60 text-[#241A15]/60 border border-[#D8C6A8]/40 hover:border-amber-300/40 hover:text-[#241A15]'
                                           }`}
                                         >
@@ -4047,7 +4047,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         }}
                                         className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 cursor-pointer ${
                                           isSubSelected
-                                            ? 'bg-amber-300 text-[#8c1119] border border-amber-300 shadow-sm'
+                                            ? 'bg-[#B8944A] text-white border border-[#B8944A] shadow-sm'
                                             : 'bg-white/60 text-[#241A15]/60 border border-[#D8C6A8]/40 hover:border-amber-300/40 hover:text-[#241A15]'
                                         }`}
                                       >
