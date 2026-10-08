@@ -203,7 +203,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
       currentOrder.paymentStatus === 'PAYMENT_SUBMITTED')
   ) {
     return (
-      <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 selection:bg-[#D9A514] selection:text-[#2B0005]">
+      <div className="min-h-screen bg-transparent text-[#241A15] font-inter flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 selection:bg-[#D9A514] selection:text-[#2B0005]">
         <div className="w-full max-w-2xl luxury-satin-card border border-amber-400/40 rounded-3xl shadow-2xl overflow-hidden p-6 sm:p-10 text-center space-y-6 animate-scale-in backdrop-blur-xl">
           
           {/* Pulsing Status Icon */}
@@ -215,52 +215,52 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
           </div>
 
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 bg-amber-400/20 text-amber-300 border border-amber-400/40 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-1.5 bg-amber-400/20 text-[#8E6E2F] border border-amber-400/40 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
               <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse" />
               <span>Status: Under Review</span>
             </div>
-            <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+            <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-[#241A15] tracking-wide">
               Payment Verification in Progress
             </h2>
-            <p className="text-sm text-white/80 max-w-lg mx-auto leading-relaxed">
+            <p className="text-sm text-[#241A15]/80 max-w-lg mx-auto leading-relaxed">
               Your payment information has been submitted successfully. Our team is currently verifying your payment.
             </p>
           </div>
 
           {/* Payment Summary Box */}
-          <div className="bg-black/40 border border-amber-400/30 rounded-2xl p-5 text-left text-xs space-y-3">
-            <div className="flex justify-between items-center pb-2 border-b border-white/10">
-              <span className="text-white/60">Order Reference:</span>
-              <span className="font-podium text-base text-amber-300 font-bold">{currentOrder.id}</span>
+          <div className="bg-white/60 border border-amber-400/30 rounded-2xl p-5 text-left text-xs space-y-3">
+            <div className="flex justify-between items-center pb-2 border-b border-[#D8C6A8]/40">
+              <span className="text-[#241A15]/60">Order Reference:</span>
+              <span className="font-podium text-base text-[#8E6E2F] font-bold">{currentOrder.id}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-white/60">Amount to Pay:</span>
-              <span className="font-bold text-white text-sm">{formatPrice(currentOrder.total, currency)}</span>
+              <span className="text-[#241A15]/60">Amount to Pay:</span>
+              <span className="font-bold text-[#241A15] text-sm">{formatPrice(currentOrder.total, currency)}</span>
             </div>
             {currentOrder.senderName && (
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Sender Name:</span>
-                <span className="font-semibold text-amber-200">{currentOrder.senderName}</span>
+                <span className="text-[#241A15]/60">Sender Name:</span>
+                <span className="font-semibold text-[#8E6E2F]">{currentOrder.senderName}</span>
               </div>
             )}
             {currentOrder.transactionId && (
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Transaction Reference:</span>
-                <span className="font-mono text-white/90">{currentOrder.transactionId}</span>
+                <span className="text-[#241A15]/60">Transaction Reference:</span>
+                <span className="font-mono text-[#241A15]/90">{currentOrder.transactionId}</span>
               </div>
             )}
             <div className="flex justify-between items-center">
-              <span className="text-white/60">Payment Method:</span>
-              <span className="text-white/90">{currentOrder.paymentMethod || 'Manual Transfer'}</span>
+              <span className="text-[#241A15]/60">Payment Method:</span>
+              <span className="text-[#241A15]/90">{currentOrder.paymentMethod || 'Manual Transfer'}</span>
             </div>
             {currentOrder.paymentReceiptUrl && (
-              <div className="pt-2 border-t border-white/10 flex items-center justify-between">
-                <span className="text-white/60">Submitted Receipt:</span>
+              <div className="pt-2 border-t border-[#D8C6A8]/40 flex items-center justify-between">
+                <span className="text-[#241A15]/60">Submitted Receipt:</span>
                 <a
                   href={currentOrder.paymentReceiptUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-amber-300 hover:text-amber-200 underline font-bold flex items-center gap-1"
+                  className="text-[#8E6E2F] hover:text-[#8E6E2F] underline font-bold flex items-center gap-1"
                 >
                   <FileText className="w-3.5 h-3.5" />
                   <span>View Uploaded Proof</span>
@@ -270,10 +270,10 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
           </div>
 
           {/* Friendly Guidance */}
-          <div className="bg-amber-400/10 border border-amber-400/20 rounded-xl p-4 text-xs text-amber-200/90 leading-relaxed text-left flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-amber-300 flex-shrink-0 mt-0.5" />
+          <div className="bg-amber-400/10 border border-amber-400/20 rounded-xl p-4 text-xs text-[#8E6E2F]/90 leading-relaxed text-left flex items-start gap-3">
+            <ShieldCheck className="w-5 h-5 text-[#8E6E2F] flex-shrink-0 mt-0.5" />
             <div>
-              <div className="font-bold text-amber-300 mb-0.5">Please wait while your payment is being confirmed.</div>
+              <div className="font-bold text-[#8E6E2F] mb-0.5">Please wait while your payment is being confirmed.</div>
               Once verified by our finance team, your order will automatically be confirmed and dispatched for preparation. You can check the status anytime in your account.
             </div>
           </div>
@@ -288,7 +288,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
             </button>
             <button
               onClick={() => (onNavigate ? onNavigate('/') : (window.location.href = '/'))}
-              className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider py-3.5 px-6 rounded-xl transition-colors cursor-pointer border border-white/10"
+              className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-[#241A15] font-bold text-xs uppercase tracking-wider py-3.5 px-6 rounded-xl transition-colors cursor-pointer border border-[#D8C6A8]/40"
             >
               Continue Shopping
             </button>
@@ -304,45 +304,45 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
   // ─────────────────────────────────────────────────────────────────────────
   if (!isReSubmitting && currentOrder.paymentStatus === 'REJECTED') {
     return (
-      <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 selection:bg-[#D9A514] selection:text-[#2B0005]">
+      <div className="min-h-screen bg-transparent text-[#241A15] font-inter flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 selection:bg-[#D9A514] selection:text-[#2B0005]">
         <div className="w-full max-w-2xl luxury-satin-card border border-red-500/40 rounded-3xl shadow-2xl overflow-hidden p-6 sm:p-10 text-center space-y-6 animate-scale-in backdrop-blur-xl">
           
-          <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 flex items-center justify-center mx-auto shadow-lg shadow-red-500/20">
+          <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/40 text-red-600 flex items-center justify-center mx-auto shadow-lg shadow-red-500/20">
             <XCircle className="w-8 h-8" />
           </div>
 
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 bg-red-500/20 text-red-300 border border-red-500/40 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-1.5 bg-red-500/20 text-red-700 border border-red-500/40 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
               <span>Status: Verification Unsuccessful</span>
             </div>
-            <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+            <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-[#241A15] tracking-wide">
               Payment Could Not Be Verified
             </h2>
-            <p className="text-sm text-white/80 max-w-md mx-auto">
+            <p className="text-sm text-[#241A15]/80 max-w-md mx-auto">
               Our team was unable to confirm your payment with the details provided.
             </p>
           </div>
 
           {/* Rejection Reason Notice */}
           <div className="bg-red-950/50 border border-red-500/40 rounded-2xl p-5 text-left space-y-2 text-xs">
-            <div className="text-red-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+            <div className="text-red-600 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
               <AlertCircle className="w-4 h-4" />
               <span>Reason Provided by Verification Team</span>
             </div>
-            <p className="text-red-200 text-sm font-medium bg-black/40 p-3 rounded-xl border border-red-500/20">
+            <p className="text-red-800 text-sm font-medium bg-white/60 p-3 rounded-xl border border-red-500/20">
               "{currentOrder.rejectionReason || 'Transfer record could not be located with the provided sender name or receipt.'}"
             </p>
           </div>
 
           {/* Order Details */}
-          <div className="bg-black/40 border border-white/10 rounded-2xl p-4 text-xs space-y-2 text-left">
+          <div className="bg-white/60 border border-[#D8C6A8]/40 rounded-2xl p-4 text-xs space-y-2 text-left">
             <div className="flex justify-between">
-              <span className="text-white/60">Order ID:</span>
-              <span className="font-bold text-white">{currentOrder.id}</span>
+              <span className="text-[#241A15]/60">Order ID:</span>
+              <span className="font-bold text-[#241A15]">{currentOrder.id}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-white/60">Required Amount:</span>
-              <span className="font-bold text-amber-300">{formatPrice(currentOrder.total, currency)}</span>
+              <span className="text-[#241A15]/60">Required Amount:</span>
+              <span className="font-bold text-[#8E6E2F]">{formatPrice(currentOrder.total, currency)}</span>
             </div>
           </div>
 
@@ -357,7 +357,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
             </button>
             <button
               onClick={onBack}
-              className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider py-3.5 px-6 rounded-xl transition-colors cursor-pointer border border-white/10"
+              className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-[#241A15] font-bold text-xs uppercase tracking-wider py-3.5 px-6 rounded-xl transition-colors cursor-pointer border border-[#D8C6A8]/40"
             >
               Back
             </button>
@@ -372,7 +372,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
   // MAIN CHECKOUT VIEW
   // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 selection:bg-[#D9A514] selection:text-[#2B0005]">
+    <div className="min-h-screen bg-transparent text-[#241A15] font-inter flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 selection:bg-[#D9A514] selection:text-[#2B0005]">
       <div className="w-full max-w-5xl luxury-satin-card border border-[#D9A514]/40 rounded-3xl shadow-2xl overflow-hidden animate-scale-in backdrop-blur-xl">
         <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr]">
             
@@ -382,17 +382,17 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
               {/* Top Header */}
               <div className="flex items-center justify-between pb-4 border-b border-amber-400/20">
                 <div>
-                  <div className="inline-flex items-center gap-1.5 text-amber-300 text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full mb-1">
-                    <ShieldCheck className="w-3 h-3 text-amber-300" />
+                  <div className="inline-flex items-center gap-1.5 text-[#8E6E2F] text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full mb-1">
+                    <ShieldCheck className="w-3 h-3 text-[#8E6E2F]" />
                     <span>100% Secure Checkout</span>
                   </div>
-                  <h2 className="font-podium text-2xl sm:text-3xl uppercase tracking-wide text-white">
+                  <h2 className="font-podium text-2xl sm:text-3xl uppercase tracking-wide text-[#241A15]">
                     Complete Your Payment
                   </h2>
                 </div>
                 <button
                   onClick={onBack}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white cursor-pointer"
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors text-[#241A15]/60 hover:text-[#241A15] cursor-pointer"
                   title="Go back to cart"
                 >
                   <ArrowLeft className="w-5 h-5" />
@@ -405,21 +405,21 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
               <div className="space-y-6">
                 
                 {/* Account Summary & Transfer Instructions */}
-                <div className="bg-black/30 border border-amber-400/25 rounded-2xl p-5 space-y-4">
-                    <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                <div className="bg-white/50 border border-amber-400/25 rounded-2xl p-5 space-y-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#D8C6A8]/40">
                       <div>
-                        <span className="text-[10px] text-amber-300 uppercase tracking-widest font-bold block">
+                        <span className="text-[10px] text-[#8E6E2F] uppercase tracking-widest font-bold block">
                           Send Payment To
                         </span>
-                        <div className="text-base font-bold text-white">
+                        <div className="text-base font-bold text-[#241A15]">
                           {PAYMENT_CONFIG.businessName}
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className="text-[10px] text-white/50 uppercase tracking-widest block">
+                        <span className="text-[10px] text-[#241A15]/50 uppercase tracking-widest block">
                           Amount to Pay
                         </span>
-                        <div className="font-podium text-xl text-amber-300 font-bold">
+                        <div className="font-podium text-xl text-[#8E6E2F] font-bold">
                           {formatPrice(currentOrder.total, currency)}
                         </div>
                       </div>
@@ -427,7 +427,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
 
                     {/* Account Cards Selection */}
                     <div className="space-y-2">
-                      <div className="text-[11px] text-white/70 font-semibold">
+                      <div className="text-[11px] text-[#241A15]/70 font-semibold">
                         Select a payment account to transfer:
                       </div>
 
@@ -442,8 +442,8 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                               onClick={() => setSelectedAccount(acc)}
                               className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
                                 isSelected
-                                  ? 'bg-amber-400/10 border-amber-400 text-white shadow-md'
-                                  : 'bg-black/40 border-white/10 text-white/70 hover:border-white/20'
+                                  ? 'bg-amber-400/10 border-amber-400 text-[#241A15] shadow-md'
+                                  : 'bg-white/60 border-[#D8C6A8]/40 text-[#241A15]/70 hover:border-[#D8C6A8]/60'
                               }`}
                             >
                               <div className="flex items-center justify-between mb-1.5 gap-2">
@@ -460,20 +460,20 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                                   />
                                 ) : null}
                                 <span
-                                  className="font-bold text-xs text-white truncate"
+                                  className="font-bold text-xs text-[#241A15] truncate"
                                   style={{ display: acc.logo ? 'none' : 'block' }}
                                 >
                                   {acc.name}
                                 </span>
                                 {acc.badge && (
-                                  <span className="text-[9px] bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">
+                                  <span className="text-[9px] bg-amber-400/20 text-[#8E6E2F] px-1.5 py-0.5 rounded font-bold whitespace-nowrap">
                                     {acc.badge}
                                   </span>
                                 )}
                               </div>
 
-                              <div className="flex items-center justify-between gap-2 mt-1 pt-1.5 border-t border-white/5">
-                                <span className="font-mono text-xs text-amber-300 font-bold tracking-wide select-all">
+                              <div className="flex items-center justify-between gap-2 mt-1 pt-1.5 border-t border-[#D8C6A8]/20">
+                                <span className="font-mono text-xs text-[#8E6E2F] font-bold tracking-wide select-all">
                                   {acc.accountNumber}
                                 </span>
                                 <button
@@ -482,7 +482,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                                     e.stopPropagation();
                                     handleCopyAccount(acc.accountNumber, acc.id);
                                   }}
-                                  className="p-1 rounded bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-colors cursor-pointer"
+                                  className="p-1 rounded bg-white/10 hover:bg-white/20 text-[#241A15]/80 hover:text-[#241A15] transition-colors cursor-pointer"
                                   title="Copy account number"
                                 >
                                   {isCopied ? (
@@ -498,7 +498,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                       </div>
                     </div>
 
-                    <p className="text-[11px] text-white/60 leading-relaxed italic">
+                    <p className="text-[11px] text-[#241A15]/60 leading-relaxed italic">
                       After completing the payment, provide your details below for verification.
                     </p>
                   </div>
@@ -508,8 +508,8 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                     
                     {/* Error Banner */}
                     {manualError && (
-                      <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-3.5 flex items-start gap-2.5 text-red-200 text-xs animate-shake">
-                        <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-400" />
+                      <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-3.5 flex items-start gap-2.5 text-red-800 text-xs animate-shake">
+                        <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-600" />
                         <div>{manualError}</div>
                       </div>
                     )}
@@ -517,11 +517,11 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                     {/* 1. SENDER NAME (REQUIRED) */}
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <label className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1">
+                        <label className="text-xs font-bold text-[#241A15] uppercase tracking-wider flex items-center gap-1">
                           <span>Sender Name</span>
-                          <span className="text-amber-400">*</span>
+                          <span className="text-[#B8944A]">*</span>
                         </label>
-                        <span className="text-[10px] text-amber-300 font-semibold">REQUIRED FOR VERIFICATION</span>
+                        <span className="text-[10px] text-[#8E6E2F] font-semibold">REQUIRED FOR VERIFICATION</span>
                       </div>
                       <input
                         type="text"
@@ -529,9 +529,9 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                         value={senderName}
                         onChange={(e) => setSenderName(e.target.value)}
                         placeholder="Enter the name used to send the payment"
-                        className="w-full bg-black/50 border border-amber-400/40 focus:border-amber-400 rounded-xl px-4 py-3 text-xs sm:text-sm text-white placeholder-white/40 focus:outline-none transition-all shadow-inner"
+                        className="w-full bg-white/70 border border-amber-400/40 focus:border-amber-400 rounded-xl px-4 py-3 text-xs sm:text-sm text-[#241A15] placeholder-[#241A15]/40 focus:outline-none transition-all shadow-inner"
                       />
-                      <p className="text-[11px] text-white/60">
+                      <p className="text-[11px] text-[#241A15]/60">
                         {PAYMENT_CONFIG.instructions.senderNameHelper}
                       </p>
                     </div>
@@ -539,14 +539,14 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                     {/* 2. RECEIPT UPLOAD (REQUIRED) */}
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <label className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1">
+                        <label className="text-xs font-bold text-[#241A15] uppercase tracking-wider flex items-center gap-1">
                           <span>Payment Receipt / Screenshot</span>
-                          <span className="text-amber-400">*</span>
+                          <span className="text-[#B8944A]">*</span>
                         </label>
-                        <span className="text-[10px] text-white/50">JPG, PNG, WEBP, PDF (Max 12MB)</span>
+                        <span className="text-[10px] text-[#241A15]/50">JPG, PNG, WEBP, PDF (Max 12MB)</span>
                       </div>
 
-                      <div className="relative border-2 border-dashed border-amber-400/30 hover:border-amber-400/60 rounded-2xl p-4 text-center transition-colors bg-black/30">
+                      <div className="relative border-2 border-dashed border-amber-400/30 hover:border-amber-400/60 rounded-2xl p-4 text-center transition-colors bg-white/50">
                         <input
                           type="file"
                           accept="image/jpeg,image/jpg,image/png,image/webp,application/pdf"
@@ -557,7 +557,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                         {receiptPreview ? (
                           <div className="space-y-2">
                             {receiptPreview === 'PDF_DOCUMENT' ? (
-                              <div className="flex items-center justify-center gap-2 text-amber-300 font-bold text-xs py-4">
+                              <div className="flex items-center justify-center gap-2 text-[#8E6E2F] font-bold text-xs py-4">
                                 <FileText className="w-8 h-8" />
                                 <span>PDF Document Selected ({receiptFile?.name})</span>
                               </div>
@@ -566,7 +566,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                                 <img
                                   src={receiptPreview}
                                   alt="Receipt Preview"
-                                  className="w-full max-h-44 object-contain bg-black/60"
+                                  className="w-full max-h-44 object-contain bg-white/80"
                                 />
                               </div>
                             )}
@@ -577,13 +577,13 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                           </div>
                         ) : (
                           <div className="py-4 space-y-2">
-                            <div className="w-10 h-10 mx-auto rounded-full bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300">
+                            <div className="w-10 h-10 mx-auto rounded-full bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-[#8E6E2F]">
                               <Upload className="w-5 h-5" />
                             </div>
-                            <div className="text-xs font-bold text-white">
+                            <div className="text-xs font-bold text-[#241A15]">
                               Click or Drag Receipt Screenshot Here
                             </div>
-                            <p className="text-[11px] text-white/50">
+                            <p className="text-[11px] text-[#241A15]/50">
                               {PAYMENT_CONFIG.instructions.receiptHelper}
                             </p>
                           </div>
@@ -615,19 +615,19 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
             </div>
 
             {/* Right Column: Order Summary & Review Breakdown */}
-            <div className="bg-black/40 p-6 sm:p-8 border-t lg:border-t-0 lg:border-l border-amber-400/20 flex flex-col justify-between space-y-6">
+            <div className="bg-white/60 p-6 sm:p-8 border-t lg:border-t-0 lg:border-l border-amber-400/20 flex flex-col justify-between space-y-6">
               <div className="space-y-4">
-                <div className="bg-black/30 border border-white/10 rounded-xl p-3.5 text-center">
-                  <span className="text-[10px] text-white/50 uppercase tracking-widest font-bold block mb-0.5">
+                <div className="bg-white/50 border border-[#D8C6A8]/40 rounded-xl p-3.5 text-center">
+                  <span className="text-[10px] text-[#241A15]/50 uppercase tracking-widest font-bold block mb-0.5">
                     Order Reference
                   </span>
-                  <span className="font-podium text-2xl text-amber-300 font-bold tracking-wide">
+                  <span className="font-podium text-2xl text-[#8E6E2F] font-bold tracking-wide">
                     {currentOrder.id}
                   </span>
                 </div>
 
                 <div>
-                  <span className="text-[10px] text-white/50 uppercase tracking-widest font-bold block mb-2">
+                  <span className="text-[10px] text-[#241A15]/50 uppercase tracking-widest font-bold block mb-2">
                     Gift Items ({currentOrder.items.length})
                   </span>
                   <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
@@ -649,19 +649,19 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                       return (
                         <div
                           key={idx}
-                          className="bg-black/30 border border-white/5 rounded-lg p-2.5 flex items-center justify-between text-xs"
+                          className="bg-white/50 border border-[#D8C6A8]/20 rounded-lg p-2.5 flex items-center justify-between text-xs"
                         >
                           <div className="truncate pr-2">
-                            <div className="font-bold text-white truncate flex items-center gap-1.5 flex-wrap">
+                            <div className="font-bold text-[#241A15] truncate flex items-center gap-1.5 flex-wrap">
                               <span>{it.quantity}x {title}</span>
                               {it.customUnitValue != null && (
-                                <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-400/20 text-amber-300">
+                                <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-400/20 text-[#8E6E2F]">
                                   ({it.customUnitValue} {it.customUnitName || 'kg'})
                                 </span>
                               )}
                             </div>
                           </div>
-                          <span className="text-amber-300 font-bold flex-shrink-0">
+                          <span className="text-[#8E6E2F] font-bold flex-shrink-0">
                             {formatPrice(itemTotal > 0 ? itemTotal : currentOrder.total, currency)}
                           </span>
                         </div>
@@ -670,46 +670,46 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                   </div>
                 </div>
 
-                <div className="bg-black/30 border border-white/10 rounded-xl p-3 text-xs space-y-1.5">
-                  <div className="text-[10px] text-amber-300 font-bold uppercase tracking-wider mb-1">
+                <div className="bg-white/50 border border-[#D8C6A8]/40 rounded-xl p-3 text-xs space-y-1.5">
+                  <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-wider mb-1">
                     Delivery Destination (Ethiopia)
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/60">Recipient:</span>
-                    <span className="font-semibold text-white">{currentOrder.customer.giftRecipientName || currentOrder.customer.fullName}</span>
+                    <span className="text-[#241A15]/60">Recipient:</span>
+                    <span className="font-semibold text-[#241A15]">{currentOrder.customer.giftRecipientName || currentOrder.customer.fullName}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/60">Contact:</span>
-                    <span className="text-white/90">{currentOrder.customer.phone}</span>
+                    <span className="text-[#241A15]/60">Contact:</span>
+                    <span className="text-[#241A15]/90">{currentOrder.customer.phone}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/60">Destination:</span>
-                    <span className="text-white/90">{currentOrder.customer.address}{currentOrder.customer.city ? `, ${currentOrder.customer.city}` : ''}</span>
+                    <span className="text-[#241A15]/60">Destination:</span>
+                    <span className="text-[#241A15]/90">{currentOrder.customer.address}{currentOrder.customer.city ? `, ${currentOrder.customer.city}` : ''}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-white/10 space-y-2 text-xs">
-                <div className="flex justify-between text-white/70">
+              <div className="pt-4 border-t border-[#D8C6A8]/40 space-y-2 text-xs">
+                <div className="flex justify-between text-[#241A15]/70">
                   <span>Subtotal</span>
-                  <span className="font-bold text-white">{formatPrice(currentOrder.subtotal || currentOrder.total, currency)}</span>
+                  <span className="font-bold text-[#241A15]">{formatPrice(currentOrder.subtotal || currentOrder.total, currency)}</span>
                 </div>
                 {currentOrder.giftBoxPrice != null && currentOrder.giftBoxPrice > 0 && (
-                  <div className="flex justify-between text-white/70">
+                  <div className="flex justify-between text-[#241A15]/70">
                     <span>Packaging ({currentOrder.giftBoxStyle})</span>
-                    <span className="font-bold text-white">{formatPrice(currentOrder.giftBoxPrice, currency)}</span>
+                    <span className="font-bold text-[#241A15]">{formatPrice(currentOrder.giftBoxPrice, currency)}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-white/70">
+                <div className="flex justify-between text-[#241A15]/70">
                   <span>Delivery in Ethiopia</span>
                   <span className="text-emerald-400 font-bold uppercase">Free</span>
                 </div>
-                <div className="flex justify-between items-baseline pt-2 border-t border-white/10">
+                <div className="flex justify-between items-baseline pt-2 border-t border-[#D8C6A8]/40">
                   <div>
-                    <div className="font-podium text-sm uppercase text-white font-bold">Total Amount Due</div>
-                    <div className="text-[10px] text-white/40">Includes all taxes & delivery</div>
+                    <div className="font-podium text-sm uppercase text-[#241A15] font-bold">Total Amount Due</div>
+                    <div className="text-[10px] text-[#241A15]/40">Includes all taxes & delivery</div>
                   </div>
-                  <span className="font-podium text-2xl text-amber-300 font-bold">
+                  <span className="font-podium text-2xl text-[#8E6E2F] font-bold">
                     {formatPrice(currentOrder.total, currency)}
                   </span>
                 </div>

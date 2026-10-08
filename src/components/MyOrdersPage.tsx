@@ -89,8 +89,8 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
   const getOrderStatusBadge = (ord: Order) => {
     if (ord.paymentStatus === 'REJECTED') {
       return (
-        <span className="bg-red-500/20 text-red-300 border border-red-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
-          <AlertCircle className="w-3.5 h-3.5 text-red-400" />
+        <span className="bg-red-500/20 text-red-700 border border-red-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+          <AlertCircle className="w-3.5 h-3.5 text-red-600" />
           Verification Unsuccessful
         </span>
       );
@@ -119,7 +119,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
         );
       case 'Cancelled':
         return (
-          <span className="bg-red-500/20 text-red-300 border border-red-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <span className="bg-red-500/20 text-red-700 border border-red-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center gap-1.5">
             <AlertCircle className="w-3.5 h-3.5" />
             Cancelled
           </span>
@@ -161,14 +161,14 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
         );
       case 'REJECTED':
         return (
-          <span className="bg-red-500/20 text-red-300 border border-red-500/40 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1">
-            <AlertCircle className="w-3 h-3 text-red-400" />
+          <span className="bg-red-500/20 text-red-700 border border-red-500/40 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1">
+            <AlertCircle className="w-3 h-3 text-red-600" />
             <span>PAYMENT REJECTED</span>
           </span>
         );
       default:
         return (
-          <span className="bg-amber-700/15 text-amber-200/80 border border-amber-700/30 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1">
+          <span className="bg-amber-700/15 text-[#8E6E2F]/80 border border-amber-700/30 font-bold px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider flex items-center gap-1">
             <Clock className="w-3 h-3" />
             <span>PENDING PAYMENT</span>
           </span>
@@ -192,7 +192,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-[#FFF8ED] font-inter selection:bg-[#D9A514] selection:text-[#FBF8F2]">
+    <div className="min-h-screen bg-transparent text-[#241A15] font-inter selection:bg-[#D9A514] selection:text-[#FBF8F2]">
       {/* Top Header Navigation */}
       <div className="border-b border-[#D9A514]/20 bg-[#FBF8F2]/80 sticky top-0 z-30 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -212,7 +212,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
           />
 
           {session && (
-            <div className="flex items-center gap-2.5 bg-black/40 border border-amber-700/40 rounded-full pl-1.5 pr-3 py-1">
+            <div className="flex items-center gap-2.5 bg-white/60 border border-amber-700/40 rounded-full pl-1.5 pr-3 py-1">
               {(() => {
                 const avatarUrl =
                   session.user?.user_metadata?.avatar_url ||
@@ -240,7 +240,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                   </div>
                 );
               })()}
-              <span className="font-semibold tracking-wide text-amber-200 text-xs max-w-[100px] truncate">
+              <span className="font-semibold tracking-wide text-[#8E6E2F] text-xs max-w-[100px] truncate">
                 {(() => {
                   const fullName =
                     session.user?.user_metadata?.full_name ||
@@ -262,7 +262,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
       {/* Main Content Container */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-12">
         {/* Page Header Title */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-6 border-b border-white/10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-6 border-b border-[#D8C6A8]/40">
           <div>
             <div className="flex items-center gap-2 text-amber-600 text-xs uppercase tracking-widest font-bold mb-1">
               <Package className="w-4 h-4" />
@@ -291,7 +291,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
         {/* Filter and Search Bar */}
         {orders.length > 0 && (
-          <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-4 mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
+          <div className="bg-[#FBF8F2]/80 border border-[#D8C6A8]/40 rounded-2xl p-4 mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
             <div className="relative w-full sm:w-72">
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#241A15]/40" />
               <input
@@ -299,7 +299,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                 placeholder="Search order ID, sender name, ref..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-black/40 border border-white/15 rounded-xl pl-10 pr-4 py-2 text-xs text-[#241A15] focus:outline-none focus:border-amber-700"
+                className="w-full bg-white/60 border border-[#D8C6A8]/50 rounded-xl pl-10 pr-4 py-2 text-xs text-[#241A15] focus:outline-none focus:border-amber-700"
               />
             </div>
 
@@ -322,7 +322,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                   className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                     statusFilter === st.id
                       ? 'bg-amber-700 text-[#8E6E2F] shadow-sm font-extrabold'
-                      : 'bg-black/30 text-[#241A15]/60 hover:text-[#241A15] border border-white/10'
+                      : 'bg-white/50 text-[#241A15]/60 hover:text-[#241A15] border border-[#D8C6A8]/40'
                   }`}
                 >
                   {st.label}
@@ -334,7 +334,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
         {/* Orders Listing */}
         {orders.length === 0 ? (
-          <div className="bg-[#2a0407] border border-white/10 rounded-3xl p-12 sm:p-16 text-center text-[#241A15]/60 max-w-xl mx-auto my-8">
+          <div className="bg-[#FBF8F2]/80 border border-[#D8C6A8]/40 rounded-3xl p-12 sm:p-16 text-center text-[#241A15]/60 max-w-xl mx-auto my-8">
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-amber-700/10 border border-amber-700/30 flex items-center justify-center text-amber-600">
               <Truck className="w-10 h-10" />
             </div>
@@ -353,7 +353,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
             </button>
           </div>
         ) : filteredOrders.length === 0 ? (
-          <div className="bg-[#2a0407] border border-white/10 rounded-2xl p-10 text-center text-[#241A15]/50">
+          <div className="bg-[#FBF8F2]/80 border border-[#D8C6A8]/40 rounded-2xl p-10 text-center text-[#241A15]/50">
             <p className="text-sm">No orders matching your search or filter criteria.</p>
             <button
               onClick={() => {
@@ -379,10 +379,10 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
               return (
                 <div
                   key={ord.id}
-                  className="bg-[#2a0407] border border-white/10 hover:border-amber-700/30 transition-all rounded-2xl overflow-hidden shadow-xl"
+                  className="bg-[#FBF8F2]/80 border border-[#D8C6A8]/40 hover:border-amber-700/30 transition-all rounded-2xl overflow-hidden shadow-xl"
                 >
                   {/* Order Top Summary Header */}
-                  <div className="p-4 md:p-5 bg-[#350509] border-b border-white/10">
+                  <div className="p-4 md:p-5 bg-white/60 border-b border-[#D8C6A8]/40">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
                       <div className="flex flex-wrap items-center gap-2.5">
                         <div className="font-podium text-2xl text-[#241A15] uppercase tracking-wider font-bold">
@@ -390,7 +390,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                         </div>
 
                         {/* Market Badge */}
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-black/40 border border-white/20 text-[#241A15] flex items-center gap-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/60 border border-[#D8C6A8]/60 text-[#241A15] flex items-center gap-1">
                           <span>{ord.buyerMarket === 'INTERNATIONAL' ? '🌍 Diaspora (USD)' : '🇪🇹 Local (ETB)'}</span>
                         </span>
 
@@ -411,7 +411,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                         </div>
                         <button
                           onClick={() => toggleExpand(ord.id)}
-                          className="p-1.5 bg-black/30 hover:bg-black/50 rounded-lg border border-white/10 text-[#241A15]/80 hover:text-[#241A15] transition-colors cursor-pointer"
+                          className="p-1.5 bg-white/50 hover:bg-white/70 rounded-lg border border-[#D8C6A8]/40 text-[#241A15]/80 hover:text-[#241A15] transition-colors cursor-pointer"
                           title="Toggle Order Details"
                         >
                           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -425,14 +425,14 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
                       <div className="flex flex-wrap items-center gap-2">
                         {ord.senderName && (
-                          <div className="flex items-center gap-1.5 text-[11px] bg-black/40 border border-amber-700/20 px-2.5 py-1 rounded-lg text-amber-200">
+                          <div className="flex items-center gap-1.5 text-[11px] bg-white/60 border border-amber-700/20 px-2.5 py-1 rounded-lg text-[#8E6E2F]">
                             <User className="w-3 h-3 text-amber-600" />
                             <span>Sender: <strong>{ord.senderName}</strong></span>
                           </div>
                         )}
 
                         {ord.transactionId && (
-                          <div className="flex items-center gap-1.5 text-[11px] bg-black/40 border border-white/10 px-2.5 py-1 rounded-lg">
+                          <div className="flex items-center gap-1.5 text-[11px] bg-white/60 border border-[#D8C6A8]/40 px-2.5 py-1 rounded-lg">
                             <span className="text-[#241A15]/50">Ref:</span>
                             <span className="font-mono text-amber-600 font-bold">{ord.transactionId}</span>
                           </div>
@@ -442,10 +442,10 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
 
                     {/* Visual 5-Stage Step Progress Tracker */}
                     {!isRejected && (
-                      <div className="pt-4 pb-2 border-t border-white/10">
+                      <div className="pt-4 pb-2 border-t border-[#D8C6A8]/40">
                         <div className="relative">
                           {/* Background Connector Bar */}
-                          <div className="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-1 bg-black/50 rounded-full z-0" />
+                          <div className="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-1 bg-white/70 rounded-full z-0" />
                           
                           {/* Active Progress Fill */}
                           <div 
@@ -462,7 +462,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                                 ord.paymentReceiptUrl || isPaid || progress.stage >= 1
                                   ? 'bg-emerald-500 text-[#241A15] shadow-emerald-500/30'
-                                  : 'bg-black/60 text-[#241A15]/50 border border-white/20'
+                                  : 'bg-white/80 text-[#241A15]/50 border border-[#D8C6A8]/60'
                               }`}>
                                 <Check className="w-4 h-4" />
                               </div>
@@ -478,7 +478,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                                   ? 'bg-emerald-500 text-[#241A15] shadow-emerald-500/30'
                                   : isUnderReview
                                   ? 'bg-amber-700 text-[#8E6E2F] ring-4 ring-amber-700/30 animate-pulse'
-                                  : 'bg-black/60 text-[#241A15]/50 border border-white/20'
+                                  : 'bg-white/80 text-[#241A15]/50 border border-[#D8C6A8]/60'
                               }`}>
                                 {isPaid ? <ShieldCheck className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                               </div>
@@ -496,7 +496,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                                   ? 'bg-blue-500 text-[#241A15] ring-4 ring-blue-500/30 animate-pulse'
                                   : ord.status === 'Shipped' || ord.status === 'Delivered'
                                   ? 'bg-emerald-500 text-[#241A15]'
-                                  : 'bg-black/60 text-[#241A15]/50 border border-white/20'
+                                  : 'bg-white/80 text-[#241A15]/50 border border-[#D8C6A8]/60'
                               }`}>
                                 <Package className="w-4 h-4" />
                               </div>
@@ -514,7 +514,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                                   ? 'bg-indigo-500 text-[#241A15] ring-4 ring-indigo-500/30 animate-bounce'
                                   : ord.status === 'Delivered'
                                   ? 'bg-emerald-500 text-[#241A15]'
-                                  : 'bg-black/60 text-[#241A15]/50 border border-white/20'
+                                  : 'bg-white/80 text-[#241A15]/50 border border-[#D8C6A8]/60'
                               }`}>
                                 <Truck className="w-4 h-4" />
                               </div>
@@ -530,7 +530,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                                 ord.status === 'Delivered'
                                   ? 'bg-emerald-500 text-[#241A15] ring-4 ring-emerald-500/30'
-                                  : 'bg-black/60 text-[#241A15]/50 border border-white/20'
+                                  : 'bg-white/80 text-[#241A15]/50 border border-[#D8C6A8]/60'
                               }`}>
                                 <Sparkles className="w-4 h-4" />
                               </div>
@@ -556,7 +556,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                       
                       {/* Special Banner for UNDER_REVIEW */}
                       {isUnderReview && (
-                        <div className="bg-amber-700/10 border border-amber-700/30 rounded-xl p-4 flex items-start gap-3 text-xs text-amber-200">
+                        <div className="bg-amber-700/10 border border-amber-700/30 rounded-xl p-4 flex items-start gap-3 text-xs text-[#8E6E2F]">
                           <Clock className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5 animate-pulse" />
                           <div>
                             <strong className="text-amber-600 block mb-0.5">Payment Verification in Progress</strong>
@@ -568,12 +568,12 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                       {/* Special Banner for REJECTED */}
                       {isRejected && (
                         <div className="bg-red-500/15 border border-red-500/40 rounded-xl p-4 space-y-3 text-xs">
-                          <div className="flex items-start gap-3 text-red-200">
-                            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                          <div className="flex items-start gap-3 text-red-800">
+                            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                             <div className="flex-1">
-                              <strong className="text-red-300 block mb-0.5">Payment Verification Unsuccessful</strong>
+                              <strong className="text-red-700 block mb-0.5">Payment Verification Unsuccessful</strong>
                               {ord.rejectionReason ? (
-                                <p className="bg-black/30 p-2.5 rounded-lg border border-red-500/20 text-red-100 mt-1">
+                                <p className="bg-white/50 p-2.5 rounded-lg border border-red-500/20 text-red-100 mt-1">
                                   Reason: "{ord.rejectionReason}"
                                 </p>
                               ) : (
@@ -595,7 +595,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                       )}
 
                       {/* Customer & Recipient Info Grid */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/30 border border-white/10 rounded-xl p-4 text-xs">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white/50 border border-[#D8C6A8]/40 rounded-xl p-4 text-xs">
                         <div>
                           <span className="text-amber-600 uppercase font-bold text-[10px] tracking-wider block mb-1">
                             Customer / Recipient
@@ -604,7 +604,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                           <div className="text-[#241A15]/60">{ord.customer.phone}</div>
                           <div className="text-[#241A15]/40 text-[11px]">{ord.customer.email}</div>
                           {ord.customer.giftRecipientName && (
-                            <div className="text-amber-200/80 mt-1 italic">
+                            <div className="text-[#8E6E2F]/80 mt-1 italic">
                               Gift for: {ord.customer.giftRecipientName}
                             </div>
                           )}
@@ -617,7 +617,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                           <div className="text-[#241A15] font-semibold">{ord.customer.address}</div>
                           <div className="text-[#241A15]/60">{ord.customer.city}</div>
                           {ord.customer.giftMessage && (
-                            <div className="text-amber-200/90 mt-2 text-[11px] bg-amber-700/10 border border-amber-700/20 rounded-lg p-2.5">
+                            <div className="text-[#8E6E2F]/90 mt-2 text-[11px] bg-amber-700/10 border border-amber-700/20 rounded-lg p-2.5">
                               "{ord.customer.giftMessage}"
                             </div>
                           )}
@@ -678,16 +678,16 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                             return (
                               <div
                                 key={item.id}
-                                className="bg-black/20 border border-white/5 rounded-xl p-3 flex items-center gap-3"
+                                className="bg-white/40 border border-[#D8C6A8]/20 rounded-xl p-3 flex items-center gap-3"
                               >
                                 {img ? (
                                   <img
                                     src={img}
                                     alt={title}
-                                    className="w-12 h-12 rounded-lg object-cover bg-black/40 border border-white/10 flex-shrink-0"
+                                    className="w-12 h-12 rounded-lg object-cover bg-white/60 border border-[#D8C6A8]/40 flex-shrink-0"
                                   />
                                 ) : (
-                                  <div className="w-12 h-12 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 text-[#241A15]/30">
+                                  <div className="w-12 h-12 rounded-lg bg-white/60 border border-[#D8C6A8]/40 flex items-center justify-center flex-shrink-0 text-[#241A15]/30">
                                     🎁
                                   </div>
                                 )}
@@ -712,7 +712,7 @@ export const MyOrdersPage: React.FC<MyOrdersPageProps> = ({
                       </div>
 
                       {/* Summary Breakdown */}
-                      <div className="bg-black/40 border border-white/10 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                      <div className="bg-white/60 border border-[#D8C6A8]/40 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                         <div className="flex flex-wrap items-center gap-3">
                           <div className="flex items-center gap-2">
                             <CreditCard className="w-4 h-4 text-amber-600" />

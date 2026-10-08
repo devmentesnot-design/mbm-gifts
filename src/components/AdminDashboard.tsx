@@ -1081,7 +1081,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="flex items-center gap-4">
           <button
             onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-            className="lg:hidden p-2 rounded-lg bg-white/10 text-white hover:bg-white/20"
+            className="lg:hidden p-2 rounded-lg bg-white/10 text-[#241A15] hover:bg-white/20"
           >
             <Menu className="w-5 h-5" />
           </button>
@@ -1106,12 +1106,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <span className="hidden sm:inline">Sign Out</span>
           </button>
 
-          <div className="flex items-center gap-2 border-l border-white/10 pl-4">
+          <div className="flex items-center gap-2 border-l border-[#D8C6A8]/40 pl-4">
             <div className="w-8 h-8 rounded-full bg-[#E6D5B8] text-[#241A15] font-bold flex items-center justify-center text-xs">
               AD
             </div>
             <div className="hidden md:block">
-              <div className="text-xs font-bold text-white">Administrator</div>
+              <div className="text-xs font-bold text-[#241A15]">Administrator</div>
               <div className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Connected
               </div>
@@ -1146,7 +1146,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive
                       ? 'bg-[#E6D5B8] text-[#241A15] shadow-lg font-bold'
-                      : 'text-white/70 hover:bg-white/10 hover:text-white'
+                      : 'text-[#241A15]/70 hover:bg-white/10 hover:text-[#241A15]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -1154,7 +1154,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <span>{item.label}</span>
                   </div>
                   {item.badge && (
-                    <span className="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">
+                    <span className="bg-emerald-500 text-[#241A15] text-[9px] px-2 py-0.5 rounded-full font-bold">
                       {item.badge}
                     </span>
                   )}
@@ -1163,8 +1163,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             })}
           </div>
 
-          <div className="p-4 border-t border-white/10 bg-black/20 text-xs text-white/50 space-y-1">
-            <div className="font-semibold text-white/70">MBM Admin Suite v2.5</div>
+          <div className="p-4 border-t border-[#D8C6A8]/40 bg-white/40 text-xs text-[#241A15]/50 space-y-1">
+            <div className="font-semibold text-[#241A15]/70">MBM Admin Suite v2.5</div>
             <div>Category Engine & Detail Forms Enabled</div>
           </div>
         </aside>
@@ -1185,10 +1185,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-[#241A15] tracking-wide">
                     Executive Dashboard Overview
                   </h2>
-                  <p className="text-white/60 text-xs font-inter mt-1">
+                  <p className="text-[#241A15]/60 text-xs font-inter mt-1">
                     Real-time sales, order volumes, customer statistics, and inventory control.
                   </p>
                 </div>
@@ -1203,15 +1203,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               {/* Stats Cards — Dollar and Birr calculated separately */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-5 flex items-start justify-between shadow-lg">
+                <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg">
                   <div>
-                    <span className="text-[10px] text-white/50 uppercase font-bold tracking-widest">Total Revenue</span>
+                    <span className="text-[10px] text-[#241A15]/50 uppercase font-bold tracking-widest">Total Revenue</span>
                     <div className="mt-1.5 space-y-1">
                       <div className="flex items-baseline gap-1.5">
-                        <span className="font-podium text-xl sm:text-2xl text-amber-300 font-bold">
+                        <span className="font-podium text-xl sm:text-2xl text-[#8E6E2F] font-bold">
                           {totalRevenueETB.toLocaleString()}
                         </span>
-                        <span className="text-xs text-amber-300/80 font-bold">ETB (ብር)</span>
+                        <span className="text-xs text-[#8E6E2F]/80 font-bold">ETB (ብር)</span>
                       </div>
                       <div className="flex items-baseline gap-1.5">
                         <span className="font-podium text-base sm:text-lg text-emerald-400 font-bold">
@@ -1221,40 +1221,40 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
                     </div>
                   </div>
-                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 flex-shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-[#8E6E2F] flex-shrink-0">
                     <DollarSign className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-5 flex items-start justify-between shadow-lg">
+                <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg">
                   <div>
-                    <span className="text-[10px] text-white/50 uppercase font-bold tracking-widest">Total Orders</span>
-                    <div className="font-podium text-2xl sm:text-3xl text-white font-bold mt-1">
+                    <span className="text-[10px] text-[#241A15]/50 uppercase font-bold tracking-widest">Total Orders</span>
+                    <div className="font-podium text-2xl sm:text-3xl text-[#241A15] font-bold mt-1">
                       {totalOrdersCount}
                     </div>
-                    <div className="text-[10px] text-white/60 font-semibold mt-1 flex items-center gap-1.5">
-                      <span className="text-amber-300">{etbOrders.length} ETB</span>
+                    <div className="text-[10px] text-[#241A15]/60 font-semibold mt-1 flex items-center gap-1.5">
+                      <span className="text-[#8E6E2F]">{etbOrders.length} ETB</span>
                       <span>•</span>
                       <span className="text-emerald-400">{usdOrders.length} USD</span>
                     </div>
-                    <span className="text-[10px] text-amber-300/90 font-medium block mt-0.5">
+                    <span className="text-[10px] text-[#8E6E2F]/90 font-medium block mt-0.5">
                       {pendingOrdersCount} Pending Confirmation
                     </span>
                   </div>
-                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 flex-shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-[#8E6E2F] flex-shrink-0">
                     <ShoppingBag className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-5 flex items-start justify-between shadow-lg">
+                <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg">
                   <div>
-                    <span className="text-[10px] text-white/50 uppercase font-bold tracking-widest">Average Order Value</span>
+                    <span className="text-[10px] text-[#241A15]/50 uppercase font-bold tracking-widest">Average Order Value</span>
                     <div className="mt-1.5 space-y-1">
                       <div className="flex items-baseline gap-1.5">
-                        <span className="font-podium text-lg sm:text-xl text-amber-300 font-bold">
+                        <span className="font-podium text-lg sm:text-xl text-[#8E6E2F] font-bold">
                           {avgOrderValueETB.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </span>
-                        <span className="text-xs text-amber-300/80 font-bold">ETB</span>
+                        <span className="text-xs text-[#8E6E2F]/80 font-bold">ETB</span>
                       </div>
                       <div className="flex items-baseline gap-1.5">
                         <span className="font-podium text-sm sm:text-base text-emerald-400 font-bold">
@@ -1264,34 +1264,34 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
                     </div>
                   </div>
-                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 flex-shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-[#8E6E2F] flex-shrink-0">
                     <TrendingUp className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-5 flex items-center justify-between shadow-lg">
+                <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-center justify-between shadow-lg">
                   <div>
-                    <span className="text-[10px] text-white/50 uppercase font-bold tracking-widest">Active Customers</span>
-                    <div className="font-podium text-2xl sm:text-3xl text-white font-bold mt-1">
+                    <span className="text-[10px] text-[#241A15]/50 uppercase font-bold tracking-widest">Active Customers</span>
+                    <div className="font-podium text-2xl sm:text-3xl text-[#241A15] font-bold mt-1">
                       {customersList.length}
                     </div>
                     <span className="text-[10px] text-emerald-400 font-semibold mt-1 block">Registered in Database</span>
                   </div>
-                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-[#8E6E2F]">
                     <Users className="w-6 h-6" />
                   </div>
                 </div>
               </div>
 
               {/* Recent Orders Overview */}
-              <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-6 shadow-xl space-y-4">
+              <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-6 shadow-xl space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-podium text-lg uppercase font-bold text-white flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-amber-300" /> Recent Customer Orders
+                  <h3 className="font-podium text-lg uppercase font-bold text-[#241A15] flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-[#8E6E2F]" /> Recent Customer Orders
                   </h3>
                   <button
                     onClick={() => setActiveTab('orders')}
-                    className="text-amber-300 hover:underline text-xs font-semibold flex items-center gap-1"
+                    className="text-[#8E6E2F] hover:underline text-xs font-semibold flex items-center gap-1"
                   >
                     View All Orders ({orders.length}) <ChevronRight className="w-4 h-4" />
                   </button>
@@ -1300,7 +1300,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="overflow-x-auto">
                   <table className="w-full text-left font-inter text-xs">
                     <thead>
-                      <tr className="border-b border-white/10 text-white/50 uppercase text-[10px] tracking-wider">
+                      <tr className="border-b border-[#D8C6A8]/40 text-[#241A15]/50 uppercase text-[10px] tracking-wider">
                         <th className="py-3 px-3">Order ID</th>
                         <th className="py-3 px-3">Customer Contact</th>
                         <th className="py-3 px-3">Location</th>
@@ -1312,20 +1312,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <tbody className="divide-y divide-white/5">
                       {approvedOrders.slice(0, 5).map((ord) => (
                         <tr key={ord.id} className="hover:bg-white/5 transition-colors">
-                          <td className="py-3 px-3 font-bold text-amber-300">{ord.id}</td>
+                          <td className="py-3 px-3 font-bold text-[#8E6E2F]">{ord.id}</td>
                           <td className="py-3 px-3">
-                            <div className="font-semibold text-white">{ord.customer.fullName}</div>
-                            <div className="text-[11px] text-white/60 flex items-center gap-1 mt-0.5">
-                              <Phone className="w-3 h-3 text-amber-300" /> {ord.customer.phone || 'No phone'}
+                            <div className="font-semibold text-[#241A15]">{ord.customer.fullName}</div>
+                            <div className="text-[11px] text-[#241A15]/60 flex items-center gap-1 mt-0.5">
+                              <Phone className="w-3 h-3 text-[#8E6E2F]" /> {ord.customer.phone || 'No phone'}
                             </div>
                           </td>
-                          <td className="py-3 px-3 text-white/80 max-w-[180px] truncate">
+                          <td className="py-3 px-3 text-[#241A15]/80 max-w-[180px] truncate">
                             <div className="flex items-center gap-1 truncate">
-                              <MapPin className="w-3 h-3 text-amber-300 flex-shrink-0" />
+                              <MapPin className="w-3 h-3 text-[#8E6E2F] flex-shrink-0" />
                               <span className="truncate">{ord.customer.address}, {ord.customer.city}</span>
                             </div>
                           </td>
-                          <td className="py-3 px-3 font-bold text-amber-300">
+                          <td className="py-3 px-3 font-bold text-[#8E6E2F]">
                             {ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL'
                               ? `$${ord.total.toFixed(2)} USD`
                               : `${ord.total.toLocaleString()} ብር`}
@@ -1346,7 +1346,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <td className="py-3 px-3 text-right">
                             <button
                               onClick={() => setSelectedOrderDetails(ord)}
-                              className="px-3 py-1 rounded bg-white/10 hover:bg-white/20 text-amber-300 font-bold text-[11px]"
+                              className="px-3 py-1 rounded bg-white/10 hover:bg-white/20 text-[#8E6E2F] font-bold text-[11px]"
                             >
                               View
                             </button>
@@ -1355,7 +1355,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       ))}
                       {approvedOrders.length === 0 && (
                         <tr>
-                          <td colSpan={6} className="py-8 text-center text-white/40">
+                          <td colSpan={6} className="py-8 text-center text-[#241A15]/40">
                             No approved orders in dispatch yet.
                           </td>
                         </tr>
@@ -1372,14 +1372,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <div className="inline-flex items-center gap-1.5 text-amber-300 text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full mb-1">
+                  <div className="inline-flex items-center gap-1.5 text-[#8E6E2F] text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full mb-1">
                     <ShieldCheck className="w-3 h-3 text-emerald-400" />
                     <span>Verified & Paid Orders Dispatch Queue</span>
                   </div>
-                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-[#241A15] tracking-wide">
                     Orders Management ({approvedOrders.length})
                   </h2>
-                  <p className="text-white/60 text-xs font-inter mt-1">
+                  <p className="text-[#241A15]/60 text-xs font-inter mt-1">
                     Only verified & paid orders appear here. Unapproved submissions wait in Payment Verification. Advance packaging and delivery dispatch below.
                   </p>
                 </div>
@@ -1398,12 +1398,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {pendingPaymentsCount > 0 && (
                 <div className="bg-amber-400/10 border border-amber-400/30 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
                   <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-amber-400 animate-pulse flex-shrink-0" />
+                    <Clock className="w-5 h-5 text-[#B8944A] animate-pulse flex-shrink-0" />
                     <div>
-                      <div className="text-xs font-bold text-amber-300">
+                      <div className="text-xs font-bold text-[#8E6E2F]">
                         {pendingPaymentsCount} unverified payment{pendingPaymentsCount > 1 ? 's' : ''} waiting in Payment Verification
                       </div>
-                      <div className="text-[11px] text-white/60">
+                      <div className="text-[11px] text-[#241A15]/60">
                         Orders move automatically into this active fulfillment queue as soon as you approve their payment.
                       </div>
                     </div>
@@ -1419,15 +1419,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               )}
 
               {/* Filters */}
-              <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-4 flex flex-col lg:flex-row gap-4 items-center justify-between shadow-lg">
+              <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-4 flex flex-col lg:flex-row gap-4 items-center justify-between shadow-lg">
                 <div className="relative w-full lg:w-80">
-                  <Search className="w-4 h-4 absolute left-3 top-3 text-white/40" />
+                  <Search className="w-4 h-4 absolute left-3 top-3 text-[#241A15]/40" />
                   <input
                     type="text"
                     placeholder="Search by ID, name, sender, phone, address..."
                     value={orderSearchTerm}
                     onChange={(e) => setOrderSearchTerm(e.target.value)}
-                    className="w-full bg-black/40 border border-white/15 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-white/40 focus:outline-none focus:border-amber-400"
+                    className="w-full bg-white/60 border border-[#D8C6A8]/50 rounded-xl pl-9 pr-4 py-2 text-xs text-[#241A15] placeholder-white/40 focus:outline-none focus:border-amber-400"
                   />
                 </div>
 
@@ -1446,7 +1446,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border transition-all cursor-pointer whitespace-nowrap ${
                         orderStatusFilter === st.id
                           ? 'bg-amber-400 border-amber-400 text-[#8c1119] shadow-md font-extrabold'
-                          : 'bg-black/20 border-white/10 text-white/70 hover:text-white'
+                          : 'bg-white/40 border-[#D8C6A8]/40 text-[#241A15]/70 hover:text-[#241A15]'
                       }`}
                     >
                       {st.label}
@@ -1456,10 +1456,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Orders Table */}
-              <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-6 shadow-xl overflow-x-auto">
+              <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-6 shadow-xl overflow-x-auto">
                 <table className="w-full text-left font-inter text-xs">
                   <thead>
-                    <tr className="border-b border-white/10 text-white/50 uppercase text-[10px] tracking-wider">
+                    <tr className="border-b border-[#D8C6A8]/40 text-[#241A15]/50 uppercase text-[10px] tracking-wider">
                       <th className="py-3 px-3">Order ID</th>
                       <th className="py-3 px-3">Customer & Sender</th>
                       <th className="py-3 px-3">Delivery Destination</th>
@@ -1479,50 +1479,50 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       return (
                         <tr key={ord.id} className="hover:bg-white/5 transition-colors">
                           <td className="py-4 px-3">
-                            <div className="font-bold text-amber-300 font-podium text-sm">{ord.id}</div>
-                            <span className="text-[10px] text-white/50 block mt-0.5">
+                            <div className="font-bold text-[#8E6E2F] font-podium text-sm">{ord.id}</div>
+                            <span className="text-[10px] text-[#241A15]/50 block mt-0.5">
                               {ord.buyerMarket === 'INTERNATIONAL' ? '🌍 Diaspora' : '🇪🇹 Local'}
                             </span>
                           </td>
 
                           <td className="py-4 px-3">
-                            <div className="font-bold text-white">{ord.customer.fullName}</div>
-                            <div className="text-[11px] text-amber-300/90 font-medium flex items-center gap-1.5 mt-0.5">
-                              <Phone className="w-3 h-3 text-amber-300" />
+                            <div className="font-bold text-[#241A15]">{ord.customer.fullName}</div>
+                            <div className="text-[11px] text-[#8E6E2F]/90 font-medium flex items-center gap-1.5 mt-0.5">
+                              <Phone className="w-3 h-3 text-[#8E6E2F]" />
                               <span>{ord.customer.phone || 'No phone provided'}</span>
                             </div>
                             {ord.senderName && (
-                              <div className="text-[10px] text-amber-200/80 mt-0.5 flex items-center gap-1">
-                                <User className="w-2.5 h-2.5 text-amber-400" />
+                              <div className="text-[10px] text-[#8E6E2F]/80 mt-0.5 flex items-center gap-1">
+                                <User className="w-2.5 h-2.5 text-[#B8944A]" />
                                 <span>Sender: <strong>{ord.senderName}</strong></span>
                               </div>
                             )}
                           </td>
 
                           <td className="py-4 px-3">
-                            <div className="flex items-start gap-1.5 text-white/80 max-w-xs">
-                              <MapPin className="w-3.5 h-3.5 text-amber-300 flex-shrink-0 mt-0.5" />
+                            <div className="flex items-start gap-1.5 text-[#241A15]/80 max-w-xs">
+                              <MapPin className="w-3.5 h-3.5 text-[#8E6E2F] flex-shrink-0 mt-0.5" />
                               <div>
-                                <div className="font-semibold text-white">{ord.customer.address}</div>
-                                <div className="text-[10px] text-white/50">{ord.customer.city}, {ord.customer.zipCode}</div>
+                                <div className="font-semibold text-[#241A15]">{ord.customer.address}</div>
+                                <div className="text-[10px] text-[#241A15]/50">{ord.customer.city}, {ord.customer.zipCode}</div>
                                 {/* Ship mode badge */}
                                 {ord.customer.shipMode && (
                                   <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${
                                     ord.customer.shipMode === 'recipient'
-                                      ? 'bg-amber-400/15 text-amber-300 border border-amber-400/30'
-                                      : 'bg-white/10 text-white/60 border border-white/20'
+                                      ? 'bg-amber-400/15 text-[#8E6E2F] border border-amber-400/30'
+                                      : 'bg-white/10 text-[#241A15]/60 border border-[#D8C6A8]/60'
                                   }`}>
                                     {ord.customer.shipMode === 'recipient' ? '📦 Ship to Recipient' : '🏠 Ship to Me'}
                                   </span>
                                 )}
                                 {ord.customer.giftRecipientName && ord.customer.giftRecipientName !== ord.customer.fullName && (
-                                  <div className="text-[10px] text-amber-200/90 italic mt-0.5">
+                                  <div className="text-[10px] text-[#8E6E2F]/90 italic mt-0.5">
                                     Recipient: <strong>{ord.customer.giftRecipientName}</strong>
                                   </div>
                                 )}
                                 {ord.customer.giftRecipientPhone && (
-                                  <div className="text-[10px] text-amber-300/80 flex items-center gap-1 mt-0.5">
-                                    <Phone className="w-2.5 h-2.5 text-amber-400" />
+                                  <div className="text-[10px] text-[#8E6E2F]/80 flex items-center gap-1 mt-0.5">
+                                    <Phone className="w-2.5 h-2.5 text-[#B8944A]" />
                                     <span>Recipient Ph: <strong>{ord.customer.giftRecipientPhone}</strong></span>
                                   </div>
                                 )}
@@ -1530,7 +1530,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </div>
                           </td>
 
-                          <td className="py-4 px-3 text-white/80 font-medium">
+                          <td className="py-4 px-3 text-[#241A15]/80 font-medium">
                             <div>{ord.items.length} item{ord.items.length !== 1 ? 's' : ''}</div>
                             {ord.items.some((it: any) => it.customerInputText || it.customerInputImageUrl) && (
                               <span className="inline-flex items-center gap-1 text-[9px] font-bold text-purple-300 bg-purple-900/40 border border-purple-500/40 px-2 py-0.5 rounded-full mt-1">
@@ -1541,12 +1541,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </td>
 
                           <td className="py-4 px-3">
-                            <div className="font-bold text-amber-300 text-sm">
+                            <div className="font-bold text-[#8E6E2F] text-sm">
                               {ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL'
                                 ? `$${ord.total.toFixed(2)} USD`
                                 : `${ord.total.toLocaleString()} ብር`}
                             </div>
-                            <span className="text-[10px] text-white/40 block">
+                            <span className="text-[10px] text-[#241A15]/40 block">
                               {ord.paymentMethod?.replace('Manual Payment ', '') || 'Transfer'}
                             </span>
                           </td>
@@ -1564,19 +1564,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   setActiveTab('payments');
                                   setPaymentSearchTerm(ord.id);
                                 }}
-                                className="inline-flex items-center gap-1 bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider hover:bg-amber-400/30 cursor-pointer animate-pulse"
+                                className="inline-flex items-center gap-1 bg-amber-400/20 text-[#8E6E2F] border border-amber-400/40 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider hover:bg-amber-400/30 cursor-pointer animate-pulse"
                                 title="Click to verify in Payment dashboard"
                               >
                                 <Clock className="w-3 h-3" />
                                 <span>Review</span>
                               </button>
                             ) : isRejected ? (
-                              <span className="inline-flex items-center gap-1 bg-red-500/20 text-red-300 border border-red-500/40 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">
-                                <AlertCircle className="w-3 h-3 text-red-400" />
+                              <span className="inline-flex items-center gap-1 bg-red-500/20 text-red-700 border border-red-500/40 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">
+                                <AlertCircle className="w-3 h-3 text-red-600" />
                                 <span>Rejected</span>
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 bg-white/10 text-white/60 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">
+                              <span className="inline-flex items-center gap-1 bg-white/10 text-[#241A15]/60 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">
                                 <span>Unpaid</span>
                               </span>
                             )}
@@ -1595,8 +1595,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   : ord.status === 'Processing'
                                   ? 'bg-blue-950/80 border-blue-500/50 text-blue-300'
                                   : ord.status === 'Cancelled'
-                                  ? 'bg-red-950/80 border-red-500/50 text-red-300'
-                                  : 'bg-black/60 border-amber-400/40 text-amber-300'
+                                  ? 'bg-red-950/80 border-red-500/50 text-red-700'
+                                  : 'bg-white/80 border-amber-400/40 text-[#8E6E2F]'
                               }`}
                             >
                               <option value="Pending">Pending (Awaiting Audit)</option>
@@ -1614,7 +1614,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => setViewingReceiptUrl(ord.paymentReceiptUrl || null)}
-                                  className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-amber-300 hover:text-white transition-colors cursor-pointer"
+                                  className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#8E6E2F] hover:text-[#241A15] transition-colors cursor-pointer"
                                   title="View Uploaded Payment Proof"
                                 >
                                   <Eye className="w-3.5 h-3.5" />
@@ -1645,7 +1645,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                               <button
                                 onClick={() => setSelectedOrderDetails(ord)}
-                                className="px-3 py-1.5 rounded-lg bg-amber-400/15 border border-amber-400/30 hover:border-amber-400 hover:bg-amber-400/25 text-amber-300 font-bold text-xs cursor-pointer transition-all whitespace-nowrap"
+                                className="px-3 py-1.5 rounded-lg bg-amber-400/15 border border-amber-400/30 hover:border-amber-400 hover:bg-amber-400/25 text-[#8E6E2F] font-bold text-xs cursor-pointer transition-all whitespace-nowrap"
                               >
                                 Full Details
                               </button>
@@ -1656,7 +1656,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     })}
                     {filteredOrders.length === 0 && (
                       <tr>
-                        <td colSpan={8} className="py-12 text-center text-white/40">
+                        <td colSpan={8} className="py-12 text-center text-[#241A15]/40">
                           No orders matched your selected filter or search term.
                         </td>
                       </tr>
@@ -1673,22 +1673,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {/* Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <div className="inline-flex items-center gap-1.5 text-amber-300 text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full mb-1">
-                    <ShieldCheck className="w-3 h-3 text-amber-300" />
+                  <div className="inline-flex items-center gap-1.5 text-[#8E6E2F] text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full mb-1">
+                    <ShieldCheck className="w-3 h-3 text-[#8E6E2F]" />
                     <span>Financial Review & Manual Audit</span>
                   </div>
-                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-[#241A15] tracking-wide">
                     Payment Verification Dashboard
                   </h2>
-                  <p className="text-white/60 text-xs font-inter mt-1">
+                  <p className="text-[#241A15]/60 text-xs font-inter mt-1">
                     Cross-check incoming Telebirr and bank deposits against customer sender names and uploaded receipt screenshots.
                   </p>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <div className="bg-[#2e0508] border border-amber-400/30 rounded-xl px-4 py-2 text-right shadow-lg">
-                    <span className="text-[10px] text-white/50 uppercase font-bold block">Awaiting Verification</span>
-                    <span className="font-podium text-xl text-amber-300 font-bold">
+                    <span className="text-[10px] text-[#241A15]/50 uppercase font-bold block">Awaiting Verification</span>
+                    <span className="font-podium text-xl text-[#8E6E2F] font-bold">
                       {pendingPaymentsCount} order{pendingPaymentsCount !== 1 ? 's' : ''}
                     </span>
                   </div>
@@ -1696,15 +1696,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Filters & Search */}
-              <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-lg">
+              <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-lg">
                 <div className="relative w-full sm:w-80">
-                  <Search className="w-4 h-4 absolute left-3 top-3 text-white/40" />
+                  <Search className="w-4 h-4 absolute left-3 top-3 text-[#241A15]/40" />
                   <input
                     type="text"
                     placeholder="Search by sender name, order ID, phone..."
                     value={paymentSearchTerm}
                     onChange={(e) => setPaymentSearchTerm(e.target.value)}
-                    className="w-full bg-black/40 border border-white/15 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-white/40 focus:outline-none focus:border-amber-400"
+                    className="w-full bg-white/60 border border-[#D8C6A8]/50 rounded-xl pl-9 pr-4 py-2 text-xs text-[#241A15] placeholder-white/40 focus:outline-none focus:border-amber-400"
                   />
                 </div>
 
@@ -1721,7 +1721,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border transition-all cursor-pointer whitespace-nowrap ${
                         paymentFilter === filterTab.id
                           ? 'bg-amber-400 border-amber-400 text-[#8c1119] shadow-md'
-                          : 'bg-black/20 border-white/10 text-white/70 hover:text-white'
+                          : 'bg-white/40 border-[#D8C6A8]/40 text-[#241A15]/70 hover:text-[#241A15]'
                       }`}
                     >
                       {filterTab.label}
@@ -1757,10 +1757,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 if (paymentsToDisplay.length === 0) {
                   return (
-                    <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-12 text-center text-white/40 space-y-3">
-                      <ShieldCheck className="w-12 h-12 text-white/20 mx-auto" />
-                      <div className="font-podium text-lg uppercase text-white font-bold">No payments in this queue</div>
-                      <p className="text-xs text-white/50 max-w-sm mx-auto">
+                    <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-12 text-center text-[#241A15]/40 space-y-3">
+                      <ShieldCheck className="w-12 h-12 text-[#241A15]/20 mx-auto" />
+                      <div className="font-podium text-lg uppercase text-[#241A15] font-bold">No payments in this queue</div>
+                      <p className="text-xs text-[#241A15]/50 max-w-sm mx-auto">
                         {paymentFilter === 'under_review'
                           ? 'Great job! There are no manual payments currently waiting for verification.'
                           : 'No payment records matched your selected filter or search term.'}
@@ -1785,7 +1785,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               ? 'border-amber-400/50 bg-gradient-to-r from-[#2e0508] to-[#3a060a]'
                               : isRejected
                               ? 'border-red-500/30'
-                              : 'border-white/10'
+                              : 'border-[#D8C6A8]/40'
                           }`}
                         >
                           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
@@ -1793,7 +1793,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             {/* Col 1: Order ID & Summary (3 cols) */}
                             <div className="lg:col-span-3 space-y-2">
                               <div className="flex items-center gap-2">
-                                <span className="font-podium text-xl text-white font-bold uppercase tracking-wide">
+                                <span className="font-podium text-xl text-[#241A15] font-bold uppercase tracking-wide">
                                   {ord.id}
                                 </span>
                                 {isUnderReview && (
@@ -1804,88 +1804,88 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               </div>
 
                               <div className="text-xs space-y-1">
-                                <div className="text-white font-semibold flex items-center gap-1.5">
+                                <div className="text-[#241A15] font-semibold flex items-center gap-1.5">
                                   <span>{ord.customer.fullName}</span>
                                 </div>
-                                <div className="text-amber-300/80 flex items-center gap-1 font-medium text-[11px]">
-                                  <Phone className="w-3 h-3 text-amber-300" />
+                                <div className="text-[#8E6E2F]/80 flex items-center gap-1 font-medium text-[11px]">
+                                  <Phone className="w-3 h-3 text-[#8E6E2F]" />
                                   <span>{ord.customer.phone || 'No phone'}</span>
                                 </div>
-                                <div className="text-white/40 text-[10px]">
+                                <div className="text-[#241A15]/40 text-[10px]">
                                   {ord.customer.email}
                                 </div>
-                                <div className="text-white/40 text-[10px] pt-1">
+                                <div className="text-[#241A15]/40 text-[10px] pt-1">
                                   Submitted: {ord.paymentSubmittedAt ? new Date(ord.paymentSubmittedAt).toLocaleString() : ord.createdAt}
                                 </div>
                               </div>
                             </div>
 
                             {/* Col 2: Sender Name & Expected Amount (4 cols) */}
-                            <div className="lg:col-span-4 space-y-3 bg-black/40 border border-white/10 rounded-xl p-3.5">
+                            <div className="lg:col-span-4 space-y-3 bg-white/60 border border-[#D8C6A8]/40 rounded-xl p-3.5">
                               {/* Prominent Sender Name Highlight */}
                               <div>
-                                <span className="text-[10px] text-amber-300 font-bold uppercase tracking-wider block mb-0.5">
+                                <span className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-wider block mb-0.5">
                                   Sender Name (Cross-Check On Phone/Bank):
                                 </span>
-                                <div className="font-bold text-amber-200 text-sm bg-amber-400/10 border border-amber-400/30 px-3 py-1.5 rounded-lg inline-flex items-center gap-2">
-                                  <User className="w-4 h-4 text-amber-400" />
+                                <div className="font-bold text-[#8E6E2F] text-sm bg-amber-400/10 border border-amber-400/30 px-3 py-1.5 rounded-lg inline-flex items-center gap-2">
+                                  <User className="w-4 h-4 text-[#B8944A]" />
                                   <span>{ord.senderName || '(Not provided / Gateway)'}</span>
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-white/10">
+                              <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[#D8C6A8]/40">
                                 <div>
-                                  <span className="text-white/50 text-[10px] uppercase block">Expected Amount:</span>
-                                  <span className="font-podium text-base font-bold text-amber-300">
+                                  <span className="text-[#241A15]/50 text-[10px] uppercase block">Expected Amount:</span>
+                                  <span className="font-podium text-base font-bold text-[#8E6E2F]">
                                     {isUsd ? `$${ord.total.toFixed(2)} USD` : `${ord.total.toLocaleString()} ETB`}
                                   </span>
                                 </div>
                                 <div>
-                                  <span className="text-white/50 text-[10px] uppercase block">Method:</span>
-                                  <span className="font-medium text-white text-[11px] truncate block">
+                                  <span className="text-[#241A15]/50 text-[10px] uppercase block">Method:</span>
+                                  <span className="font-medium text-[#241A15] text-[11px] truncate block">
                                     {ord.paymentMethod || 'Manual Transfer'}
                                   </span>
                                 </div>
                               </div>
 
                               {ord.transactionId && (
-                                <div className="text-[11px] text-white/70 bg-black/30 px-2.5 py-1 rounded border border-white/5 font-mono">
-                                  <span className="text-white/40 mr-1.5">Ref / TX:</span>
-                                  <strong className="text-white">{ord.transactionId}</strong>
+                                <div className="text-[11px] text-[#241A15]/70 bg-white/50 px-2.5 py-1 rounded border border-[#D8C6A8]/20 font-mono">
+                                  <span className="text-[#241A15]/40 mr-1.5">Ref / TX:</span>
+                                  <strong className="text-[#241A15]">{ord.transactionId}</strong>
                                 </div>
                               )}
                             </div>
 
                             {/* Col 3: Receipt Proof Preview (2 cols) */}
                             <div className="lg:col-span-2 space-y-2 text-center">
-                              <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider block">
+                              <span className="text-[10px] text-[#241A15]/50 font-bold uppercase tracking-wider block">
                                 Uploaded Receipt Proof
                               </span>
                               {ord.paymentReceiptUrl && !ord.paymentReceiptUrl.includes('placeholder') ? (
                                 <div className="space-y-1.5">
                                   <div
                                     onClick={() => setViewingReceiptUrl(ord.paymentReceiptUrl || null)}
-                                    className="w-20 h-20 mx-auto rounded-xl overflow-hidden border-2 border-amber-400/40 hover:border-amber-400 bg-black/60 cursor-pointer shadow-lg group relative"
+                                    className="w-20 h-20 mx-auto rounded-xl overflow-hidden border-2 border-amber-400/40 hover:border-amber-400 bg-white/80 cursor-pointer shadow-lg group relative"
                                   >
                                     <img
                                       src={ord.paymentReceiptUrl}
                                       alt="Payment Receipt Proof"
                                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                                     />
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-amber-300">
+                                    <div className="absolute inset-0 bg-white/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-[#8E6E2F]">
                                       <Eye className="w-5 h-5" />
                                     </div>
                                   </div>
                                   <button
                                     type="button"
                                     onClick={() => setViewingReceiptUrl(ord.paymentReceiptUrl || null)}
-                                    className="text-amber-300 hover:text-amber-200 text-[11px] font-bold underline inline-flex items-center gap-1 cursor-pointer"
+                                    className="text-[#8E6E2F] hover:text-[#8E6E2F] text-[11px] font-bold underline inline-flex items-center gap-1 cursor-pointer"
                                   >
                                     <Eye className="w-3 h-3" /> View Full Proof
                                   </button>
                                 </div>
                               ) : (
-                                <div className="py-4 text-[11px] text-white/40 bg-black/20 rounded-xl border border-white/5">
+                                <div className="py-4 text-[11px] text-[#241A15]/40 bg-white/40 rounded-xl border border-[#D8C6A8]/20">
                                   No receipt file
                                 </div>
                               )}
@@ -1894,7 +1894,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             {/* Col 4: Status & Admin Decision Actions (3 cols) */}
                             <div className="lg:col-span-3 space-y-3 flex flex-col justify-between h-full">
                               <div>
-                                <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider block mb-1">
+                                <span className="text-[10px] text-[#241A15]/50 font-bold uppercase tracking-wider block mb-1">
                                   Payment Status
                                 </span>
                                 <div className="flex items-center gap-2">
@@ -1905,40 +1905,40 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     </span>
                                   )}
                                   {isUnderReview && (
-                                    <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold px-3 py-1 rounded-full text-xs uppercase flex items-center gap-1.5">
-                                      <Clock className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                                    <span className="bg-amber-400/20 text-[#8E6E2F] border border-amber-400/40 font-bold px-3 py-1 rounded-full text-xs uppercase flex items-center gap-1.5">
+                                      <Clock className="w-3.5 h-3.5 text-[#B8944A] animate-pulse" />
                                       <span>UNDER REVIEW</span>
                                     </span>
                                   )}
                                   {isRejected && (
-                                    <span className="bg-red-500/20 text-red-300 border border-red-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase flex items-center gap-1.5">
-                                      <AlertCircle className="w-3.5 h-3.5 text-red-400" />
+                                    <span className="bg-red-500/20 text-red-700 border border-red-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase flex items-center gap-1.5">
+                                      <AlertCircle className="w-3.5 h-3.5 text-red-600" />
                                       <span>REJECTED</span>
                                     </span>
                                   )}
                                 </div>
 
                                 {ord.rejectionReason && (
-                                  <div className="text-[10px] text-red-300 bg-red-950/40 p-2 rounded-lg border border-red-500/20 mt-2">
+                                  <div className="text-[10px] text-red-700 bg-red-950/40 p-2 rounded-lg border border-red-500/20 mt-2">
                                     <strong>Rejection Note:</strong> "{ord.rejectionReason}"
                                   </div>
                                 )}
 
                                 {ord.reviewedBy && (
-                                  <div className="text-[10px] text-white/40 mt-1">
+                                  <div className="text-[10px] text-[#241A15]/40 mt-1">
                                     Reviewed by: {ord.reviewedBy} {ord.reviewedAt ? `on ${new Date(ord.reviewedAt).toLocaleDateString()}` : ''}
                                   </div>
                                 )}
                               </div>
 
                               {/* Decision Action Buttons */}
-                              <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/10">
+                              <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#D8C6A8]/40">
                                 {!isPaid && (
                                   <button
                                     type="button"
                                     disabled={isProcessingPaymentAction}
                                     onClick={() => handleApprovePayment(ord)}
-                                    className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                                    className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-[#241A15] font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                                     title="Confirm payment received and mark order as PAID"
                                   >
                                     <ThumbsUp className="w-3.5 h-3.5" />
@@ -1951,7 +1951,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     type="button"
                                     disabled={isProcessingPaymentAction}
                                     onClick={() => handleOpenRejectModal(ord)}
-                                    className="bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 text-red-300 font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                                    className="bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 text-red-700 font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                                     title="Reject payment proof with reason"
                                   >
                                     <ThumbsDown className="w-3.5 h-3.5" />
@@ -1962,7 +1962,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => setSelectedOrderDetails(ord)}
-                                  className="px-2.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white/80 text-xs font-semibold cursor-pointer"
+                                  className="px-2.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#241A15]/80 text-xs font-semibold cursor-pointer"
                                   title="View full order inspection details"
                                 >
                                   <Eye className="w-3.5 h-3.5" />
@@ -1987,22 +1987,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     {/* Header & Actions */}
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
       <div>
-        <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+        <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-[#241A15] tracking-wide">
           Ready-made Gift Packages ({packages.length})
         </h2>
-        <p className="text-white/60 text-xs font-inter mt-1">
+        <p className="text-[#241A15]/60 text-xs font-inter mt-1">
           Manage curated gift bundles, dynamic package categories, and internal sub-items.
         </p>
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative min-w-[220px]">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#241A15]/40" />
           <input
             type="text"
             value={pkgSearchTerm}
             onChange={(e) => setPkgSearchTerm(e.target.value)}
             placeholder="Search packages..."
-            className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber-400"
+            className="w-full bg-white/60 border border-[#D8C6A8]/60 rounded-xl pl-9 pr-3 py-2 text-xs text-[#241A15] placeholder:text-[#241A15]/40 focus:outline-none focus:border-amber-400"
           />
         </div>
         <button
@@ -2025,28 +2025,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542]">
             Categories
           </span>
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/40 text-amber-300 font-bold border border-amber-400/30">
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/60 text-[#8E6E2F] font-bold border border-amber-400/30">
             {pkgCategoryFilter === 'all' ? 'All Packages' : pkgCategoryFilter}
           </span>
         </div>
-        <div className="flex items-center gap-1 text-xs font-bold text-amber-300">
+        <div className="flex items-center gap-1 text-xs font-bold text-[#8E6E2F]">
           <span>{isMobilePkgCategoryOpen ? 'Hide Menu' : 'Browse Categories'}</span>
           <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobilePkgCategoryOpen ? 'rotate-180' : ''}`} />
         </div>
       </button>
 
       {isMobilePkgCategoryOpen && (
-        <div className="mt-3 pt-3 border-t border-white/10 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto pr-1">
+        <div className="mt-3 pt-3 border-t border-[#D8C6A8]/40 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto pr-1">
           <button
             onClick={() => setPkgCategoryFilter('all')}
             className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
               pkgCategoryFilter === 'all'
                 ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
+                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
             }`}
           >
             <span>All Packages</span>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${pkgCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${pkgCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
               {packages.length}
             </span>
           </button>
@@ -2072,12 +2072,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                     isActive
                       ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                      : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
+                      : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
                   }`}
                 >
                   <span className="truncate flex-1">{cat.name}</span>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
                       {count}
                     </span>
                     {hasSubs && (
@@ -2099,11 +2099,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                             isSubActive
                               ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
-                              : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/70 hover:border-[#F5C542]/40 hover:text-[#FFF8ED]'
+                              : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/70 hover:border-[#F5C542]/40 hover:text-[#241A15]'
                           }`}
                         >
                           <span className="truncate">↳ {sub}</span>
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/60'}`}>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/60'}`}>
                             {subCount}
                           </span>
                         </button>
@@ -2152,7 +2152,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           if (displayList.length === 0) {
             return (
-              <div className="py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
+              <div className="py-16 text-center text-[#241A15]/50 border border-dashed border-[#D8C6A8]/40 rounded-2xl p-6 bg-white/40">
                 <p className="text-sm font-medium">No packages found for this category or search.</p>
               </div>
             );
@@ -2171,9 +2171,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   return (
                     <div
                       key={pkg.id}
-                      className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
+                      className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
                     >
-                      <div className="relative h-48 bg-black/60 overflow-hidden flex items-center justify-center">
+                      <div className="relative h-48 bg-white/80 overflow-hidden flex items-center justify-center">
                         <img src={pkg.image} alt={pkg.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                         {pkg.badge && (
                           <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full shadow">
@@ -2186,39 +2186,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <span>{pkg.customInputType === 'image' ? 'Photo Required' : pkg.customInputType === 'both' ? 'Photo & Text' : 'Text Required'}</span>
                           </span>
                         )}
-                        <span className="absolute bottom-3 right-3 bg-black/80 text-amber-300 border border-white/20 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                        <span className="absolute bottom-3 right-3 bg-black/80 text-[#8E6E2F] border border-[#D8C6A8]/60 text-[10px] font-bold px-2 py-0.5 rounded-md">
                           {pkg.itemsIncludedDetailed?.length || pkg.itemsIncluded.length} Items Inside
                         </span>
                       </div>
 
                       <div className="p-4 flex-1 flex flex-col justify-between">
                         <div>
-                          <div className="text-[10px] text-amber-300/80 font-bold uppercase tracking-wider mb-0.5">
+                          <div className="text-[10px] text-[#8E6E2F]/80 font-bold uppercase tracking-wider mb-0.5">
                             {primaryCat}
                           </div>
-                          <h3 className="font-podium text-lg uppercase font-bold text-white mt-1">{pkg.name}</h3>
-                          <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{pkg.shortDesc}</p>
+                          <h3 className="font-podium text-lg uppercase font-bold text-[#241A15] mt-1">{pkg.name}</h3>
+                          <p className="text-[#241A15]/60 text-xs font-inter line-clamp-2 mt-1">{pkg.shortDesc}</p>
                         </div>
 
-                        <div className="pt-4 mt-4 border-t border-white/10">
+                        <div className="pt-4 mt-4 border-t border-[#D8C6A8]/40">
                           <div className="flex items-center justify-between">
                             <div className="flex flex-col gap-0.5">
-                              <span className="font-bold text-amber-300 text-lg">ETB {pkg.price.toFixed(2)}</span>
+                              <span className="font-bold text-[#8E6E2F] text-lg">ETB {pkg.price.toFixed(2)}</span>
                               {pkg.price_usd && pkg.price_usd > 0 && (
-                                <span className="text-white/50 text-xs">USD ${pkg.price_usd.toFixed(2)}</span>
+                                <span className="text-[#241A15]/50 text-xs">USD ${pkg.price_usd.toFixed(2)}</span>
                               )}
                             </div>
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => handleOpenPkgModal(pkg)}
-                                className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
+                                className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-[#241A15] transition-colors cursor-pointer"
                                 title="Edit Package & Internal Items"
                               >
                                 <Edit2 className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => handleDeletePkg(pkg.id)}
-                                className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
+                                className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-800 hover:text-[#241A15] transition-colors cursor-pointer"
                                 title="Delete Package"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -2230,7 +2230,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           {pkgCategoryFilter === 'all' && routeCat && (
                             <button
                               onClick={() => setPkgCategoryFilter(routeCat)}
-                              className="group/sa mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 text-[11px] text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-lg transition-all cursor-pointer bg-black/20 hover:bg-black/40"
+                              className="group/sa mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 text-[11px] text-[#8E6E2F]/80 hover:text-[#8E6E2F] font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-lg transition-all cursor-pointer bg-white/40 hover:bg-white/60"
                             >
                               <span>See all {routeCat}</span>
                               <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
@@ -2249,7 +2249,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <button
                     onClick={() => { setPkgPage((p) => Math.max(1, p - 1)); }}
                     disabled={safePage === 1}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                   >
                     <span>‹</span> Prev
                   </button>
@@ -2258,14 +2258,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       const isActive = p === safePage;
                       const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
                       if (!show) {
-                        if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-white/30 text-xs px-1">…</span>;
+                        if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#241A15]/30 text-xs px-1">…</span>;
                         return null;
                       }
                       return (
                         <button
                           key={p}
                           onClick={() => { setPkgPage(p); }}
-                          className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-black/40 border-white/15 text-white/60 hover:border-amber-400/50 hover:text-amber-300'}`}
+                          className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/60 hover:border-amber-400/50 hover:text-[#8E6E2F]'}`}
                         >{p}</button>
                       );
                     })}
@@ -2273,14 +2273,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <button
                     onClick={() => { setPkgPage((p) => Math.min(totalPages, p + 1)); }}
                     disabled={safePage === totalPages}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                   >
                     Next <span>›</span>
                   </button>
                 </div>
               )}
               {totalPages > 1 && (
-                <p className="text-center text-[11px] text-white/40 mt-2 font-inter">
+                <p className="text-center text-[11px] text-[#241A15]/40 mt-2 font-inter">
                   Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}–{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} packages · Page {safePage} of {totalPages}
                 </p>
               )}
@@ -2295,7 +2295,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         style={{ width: isPkgCategorySidebarOpen ? '220px' : '48px' }}
       >
         {/* Sidebar Header & Toggle */}
-        <div className={`flex items-center mb-3 pb-2 border-b border-white/10 gap-2 ${isPkgCategorySidebarOpen ? 'justify-between' : 'justify-center'}`}>
+        <div className={`flex items-center mb-3 pb-2 border-b border-[#D8C6A8]/40 gap-2 ${isPkgCategorySidebarOpen ? 'justify-between' : 'justify-center'}`}>
           {isPkgCategorySidebarOpen && (
             <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542] whitespace-nowrap pl-1">
               Categories
@@ -2304,7 +2304,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <button
             onClick={() => setIsPkgCategorySidebarOpen((prev) => !prev)}
             title={isPkgCategorySidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-            className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b0003] border border-[#D9A514]/30 hover:border-[#F5C542] text-[#FFF8ED]/80 hover:text-[#F5C542] transition-all cursor-pointer flex-shrink-0 shadow"
+            className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b0003] border border-[#D9A514]/30 hover:border-[#F5C542] text-[#241A15]/80 hover:text-[#F5C542] transition-all cursor-pointer flex-shrink-0 shadow"
           >
             {isPkgCategorySidebarOpen ? (
               <ChevronRight className="w-3.5 h-3.5" />
@@ -2328,11 +2328,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
               pkgCategoryFilter === 'all'
                 ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
             }`}
           >
             <span className="truncate">All Packages</span>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${pkgCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${pkgCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
               {packages.length}
             </span>
           </button>
@@ -2358,12 +2358,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                     isActive
                       ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                      : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                      : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
                   }`}
                 >
                   <span className="truncate flex-1">{cat.name}</span>
                   <div className="flex items-center gap-1 flex-shrink-0">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
                       {count}
                     </span>
                     {hasSubs && (
@@ -2385,11 +2385,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           className={`w-full text-left px-2.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                             isSubActive
                               ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                              : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
+                              : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/60 hover:border-[#F5C542]/40 hover:text-[#241A15] hover:bg-[#230005]/70'
                           }`}
                         >
                           <span className="truncate">↳ {sub}</span>
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/60'}`}>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/60'}`}>
                             {subCount}
                           </span>
                         </button>
@@ -2412,22 +2412,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {/* Header & Actions */}
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div>
-                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-[#241A15] tracking-wide">
                     Single Custom Gift Items ({customItems.length})
                   </h2>
-                  <p className="text-white/60 text-xs font-inter mt-1">
+                  <p className="text-[#241A15]/60 text-xs font-inter mt-1">
                     Upload and manage individual item options for custom box builders, categorized using your Category Menu.
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="relative min-w-[220px]">
-                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#241A15]/40" />
                     <input
                       type="text"
                       value={itemSearchTerm}
                       onChange={(e) => setItemSearchTerm(e.target.value)}
                       placeholder="Search custom items..."
-                      className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber-400"
+                      className="w-full bg-white/60 border border-[#D8C6A8]/60 rounded-xl pl-9 pr-3 py-2 text-xs text-[#241A15] placeholder:text-[#241A15]/40 focus:outline-none focus:border-amber-400"
                     />
                   </div>
                   <button
@@ -2450,28 +2450,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542]">
                       Categories
                     </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/40 text-amber-300 font-bold border border-amber-400/30">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/60 text-[#8E6E2F] font-bold border border-amber-400/30">
                       {itemCategoryFilter === 'all' ? 'All Custom Items' : itemCategoryFilter}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-amber-300">
+                  <div className="flex items-center gap-1 text-xs font-bold text-[#8E6E2F]">
                     <span>{isMobileItemCategoryOpen ? 'Hide Menu' : 'Browse Categories'}</span>
                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobileItemCategoryOpen ? 'rotate-180' : ''}`} />
                   </div>
                 </button>
 
                 {isMobileItemCategoryOpen && (
-                  <div className="mt-3 pt-3 border-t border-white/10 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto pr-1">
+                  <div className="mt-3 pt-3 border-t border-[#D8C6A8]/40 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto pr-1">
                     <button
                       onClick={() => setItemCategoryFilter('all')}
                       className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                         itemCategoryFilter === 'all'
                           ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                          : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
+                          : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
                       }`}
                     >
                       <span>All Custom Items</span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${itemCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${itemCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
                         {customItems.length}
                       </span>
                     </button>
@@ -2497,12 +2497,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                               isActive
                                 ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED]'
+                                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
                             }`}
                           >
                             <span className="truncate flex-1">{cat.name}</span>
                             <div className="flex items-center gap-1.5 flex-shrink-0">
-                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
                                 {count}
                               </span>
                               {hasSubs && (
@@ -2524,11 +2524,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                                       isSubActive
                                         ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
-                                        : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/70 hover:border-[#F5C542]/40 hover:text-[#FFF8ED]'
+                                        : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/70 hover:border-[#F5C542]/40 hover:text-[#241A15]'
                                     }`}
                                   >
                                     <span className="truncate">↳ {sub}</span>
-                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/60'}`}>
+                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/60'}`}>
                                       {subCount}
                                     </span>
                                   </button>
@@ -2577,7 +2577,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     if (displayList.length === 0) {
                       return (
-                        <div className="py-16 text-center text-white/50 border border-dashed border-white/10 rounded-2xl p-6 bg-black/20">
+                        <div className="py-16 text-center text-[#241A15]/50 border border-dashed border-[#D8C6A8]/40 rounded-2xl p-6 bg-white/40">
                           <p className="text-sm font-medium">No custom items found for this category or search.</p>
                         </div>
                       );
@@ -2596,9 +2596,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             return (
                               <div
                                 key={item.id}
-                                className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
+                                className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
                               >
-                                <div className="relative h-44 bg-black/60 overflow-hidden flex items-center justify-center">
+                                <div className="relative h-44 bg-white/80 overflow-hidden flex items-center justify-center">
                                   <img src={item.image} alt={item.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                                   {item.requiresCustomInput && (
                                     <span className="absolute top-3 left-3 bg-purple-900/90 text-purple-200 border border-purple-400/40 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full shadow backdrop-blur-sm flex items-center gap-1">
@@ -2610,31 +2610,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                                 <div className="p-4 flex-1 flex flex-col justify-between">
                                   <div>
-                                    <div className="text-[10px] text-amber-300/80 font-bold uppercase tracking-wider mb-0.5">
+                                    <div className="text-[10px] text-[#8E6E2F]/80 font-bold uppercase tracking-wider mb-0.5">
                                       {primaryCat}
                                     </div>
-                                    <h3 className="font-podium text-base uppercase font-bold text-white">{item.name}</h3>
-                                    <p className="text-white/60 text-xs font-inter line-clamp-2 mt-1">{item.description}</p>
+                                    <h3 className="font-podium text-base uppercase font-bold text-[#241A15]">{item.name}</h3>
+                                    <p className="text-[#241A15]/60 text-xs font-inter line-clamp-2 mt-1">{item.description}</p>
                                   </div>
 
-                                  <div className="pt-4 mt-4 border-t border-white/10">
+                                  <div className="pt-4 mt-4 border-t border-[#D8C6A8]/40">
                                     <div className="flex items-center justify-between">
                                       <div className="flex flex-col gap-0.5">
-                                        <span className="font-bold text-amber-300 text-lg">ETB {item.price.toFixed(2)}</span>
+                                        <span className="font-bold text-[#8E6E2F] text-lg">ETB {item.price.toFixed(2)}</span>
                                         {item.price_usd && item.price_usd > 0 && (
-                                          <span className="text-white/50 text-xs">USD ${item.price_usd.toFixed(2)}</span>
+                                          <span className="text-[#241A15]/50 text-xs">USD ${item.price_usd.toFixed(2)}</span>
                                         )}
                                       </div>
                                       <div className="flex items-center gap-2">
                                         <button
                                           onClick={() => handleOpenItemModal(item)}
-                                          className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white transition-colors cursor-pointer"
+                                          className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-[#241A15] transition-colors cursor-pointer"
                                         >
                                           <Edit2 className="w-4 h-4" />
                                         </button>
                                         <button
                                           onClick={() => handleDeleteItem(item.id)}
-                                          className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white transition-colors cursor-pointer"
+                                          className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-800 hover:text-[#241A15] transition-colors cursor-pointer"
                                         >
                                           <Trash2 className="w-4 h-4" />
                                         </button>
@@ -2645,7 +2645,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     {itemCategoryFilter === 'all' && routeCat && (
                                       <button
                                         onClick={() => setItemCategoryFilter(routeCat)}
-                                        className="group/sa mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 text-[11px] text-amber-300/80 hover:text-amber-300 font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-lg transition-all cursor-pointer bg-black/20 hover:bg-black/40"
+                                        className="group/sa mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 text-[11px] text-[#8E6E2F]/80 hover:text-[#8E6E2F] font-inter font-bold uppercase tracking-wider border border-amber-400/20 hover:border-amber-400/50 rounded-lg transition-all cursor-pointer bg-white/40 hover:bg-white/60"
                                       >
                                         <span>See all {routeCat}</span>
                                         <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform" />
@@ -2664,7 +2664,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <button
                               onClick={() => { setItemPage((p) => Math.max(1, p - 1)); }}
                               disabled={safePage === 1}
-                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                             >
                               <span>‹</span> Prev
                             </button>
@@ -2673,14 +2673,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 const isActive = p === safePage;
                                 const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
                                 if (!show) {
-                                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-white/30 text-xs px-1">…</span>;
+                                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#241A15]/30 text-xs px-1">…</span>;
                                   return null;
                                 }
                                 return (
                                   <button
                                     key={p}
                                     onClick={() => { setItemPage(p); }}
-                                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-black/40 border-white/15 text-white/60 hover:border-amber-400/50 hover:text-amber-300'}`}
+                                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/60 hover:border-amber-400/50 hover:text-[#8E6E2F]'}`}
                                   >{p}</button>
                                 );
                               })}
@@ -2688,14 +2688,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <button
                               onClick={() => { setItemPage((p) => Math.min(totalPages, p + 1)); }}
                               disabled={safePage === totalPages}
-                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-black/40 border-white/15 text-white/70 hover:border-amber-400/50 hover:text-amber-300"
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                             >
                               Next <span>›</span>
                             </button>
                           </div>
                         )}
                         {totalPages > 1 && (
-                          <p className="text-center text-[11px] text-white/40 mt-2 font-inter">
+                          <p className="text-center text-[11px] text-[#241A15]/40 mt-2 font-inter">
                             Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}–{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} items · Page {safePage} of {totalPages}
                           </p>
                         )}
@@ -2710,7 +2710,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   style={{ width: isItemCategorySidebarOpen ? '220px' : '48px' }}
                 >
                   {/* Sidebar Header & Toggle */}
-                  <div className={`flex items-center mb-3 pb-2 border-b border-white/10 gap-2 ${isItemCategorySidebarOpen ? 'justify-between' : 'justify-center'}`}>
+                  <div className={`flex items-center mb-3 pb-2 border-b border-[#D8C6A8]/40 gap-2 ${isItemCategorySidebarOpen ? 'justify-between' : 'justify-center'}`}>
                     {isItemCategorySidebarOpen && (
                       <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542] whitespace-nowrap pl-1">
                         Categories
@@ -2719,7 +2719,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <button
                       onClick={() => setIsItemCategorySidebarOpen((prev) => !prev)}
                       title={isItemCategorySidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-                      className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b0003] border border-[#D9A514]/30 hover:border-[#F5C542] text-[#FFF8ED]/80 hover:text-[#F5C542] transition-all cursor-pointer flex-shrink-0 shadow"
+                      className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b0003] border border-[#D9A514]/30 hover:border-[#F5C542] text-[#241A15]/80 hover:text-[#F5C542] transition-all cursor-pointer flex-shrink-0 shadow"
                     >
                       {isItemCategorySidebarOpen ? (
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -2743,11 +2743,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                         itemCategoryFilter === 'all'
                           ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                          : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                          : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
                       }`}
                     >
                       <span className="truncate">All Items</span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${itemCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${itemCategoryFilter === 'all' ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
                         {customItems.length}
                       </span>
                     </button>
@@ -2773,12 +2773,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                               isActive
                                 ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#FFF8ED]/80 hover:border-[#F5C542]/50 hover:text-[#FFF8ED] hover:bg-[#230005]/90'
+                                : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
                             }`}
                           >
                             <span className="truncate flex-1">{cat.name}</span>
                             <div className="flex items-center gap-1 flex-shrink-0">
-                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/70'}`}>
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/70'}`}>
                                 {count}
                               </span>
                               {hasSubs && (
@@ -2800,11 +2800,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     className={`w-full text-left px-2.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                                       isSubActive
                                         ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
-                                        : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#FFF8ED]/60 hover:border-[#F5C542]/40 hover:text-[#FFF8ED] hover:bg-[#230005]/70'
+                                        : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/60 hover:border-[#F5C542]/40 hover:text-[#241A15] hover:bg-[#230005]/70'
                                     }`}
                                   >
                                     <span className="truncate">↳ {sub}</span>
-                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-black/40 text-white/60'}`}>
+                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#2B0005] text-[#F5C542]' : 'bg-white/60 text-[#241A15]/60'}`}>
                                       {subCount}
                                     </span>
                                   </button>
@@ -2826,10 +2826,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-[#241A15] tracking-wide">
                     Master Categories Menu ({categoriesList.length})
                   </h2>
-                  <p className="text-white/60 text-xs font-inter mt-1">
+                  <p className="text-[#241A15]/60 text-xs font-inter mt-1">
                     Create store categories and specify whether they apply to Ready-Made Gift Packages, Single Items, or Both. Newly added categories automatically populate product forms.
                   </p>
                 </div>
@@ -2843,7 +2843,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Sub-Navbar for Master Categories */}
-              <div className="bg-[#2a0508]/80 border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shadow-xl">
+              <div className="bg-[#2a0508]/80 border border-[#D8C6A8]/40 rounded-2xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shadow-xl">
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-thin">
                   {[
                     { id: 'all', label: 'All Categories', count: categoriesList.length },
@@ -2857,11 +2857,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className={`px-4 py-2 rounded-xl text-xs font-bold font-inter whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
                         categoryTypeFilter === tab.id
                           ? 'bg-amber-400 text-[#8c1119] shadow-lg scale-105 font-extrabold'
-                          : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
+                          : 'bg-white/5 hover:bg-white/10 text-[#241A15]/80 border border-[#D8C6A8]/40'
                       }`}
                     >
                       <span>{tab.label}</span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] ${categoryTypeFilter === tab.id ? 'bg-[#8c1119] text-amber-300' : 'bg-black/40 text-white/70'}`}>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] ${categoryTypeFilter === tab.id ? 'bg-[#8c1119] text-[#8E6E2F]' : 'bg-white/60 text-[#241A15]/70'}`}>
                         {tab.count}
                       </span>
                     </button>
@@ -2869,13 +2869,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div className="relative min-w-[220px]">
-                  <Search className="w-4 h-4 absolute left-3 top-3 text-white/40" />
+                  <Search className="w-4 h-4 absolute left-3 top-3 text-[#241A15]/40" />
                   <input
                     type="text"
                     value={categorySearchTerm}
                     onChange={(e) => setCategorySearchTerm(e.target.value)}
                     placeholder="Search categories..."
-                    className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-amber-400"
+                    className="w-full bg-white/60 border border-[#D8C6A8]/60 rounded-xl pl-9 pr-3 py-2 text-xs text-[#241A15] placeholder:text-[#241A15]/40 focus:outline-none focus:border-amber-400"
                   />
                 </div>
               </div>
@@ -2891,30 +2891,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   .map((cat) => (
                     <div
                       key={cat.id}
-                      className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden p-5 flex flex-col justify-between shadow-xl"
+                      className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl overflow-hidden p-5 flex flex-col justify-between shadow-xl"
                     >
                       <div>
                         <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 flex-shrink-0">
+                          <div className="w-12 h-12 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-[#8E6E2F] flex-shrink-0">
                             <FolderTree className="w-6 h-6" />
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <h3 className="font-podium text-lg uppercase font-bold text-white">{cat.name}</h3>
+                              <h3 className="font-podium text-lg uppercase font-bold text-[#241A15]">{cat.name}</h3>
                             </div>
-                            <span className="text-[10px] text-amber-300/80 font-mono font-bold block mt-0.5">/{cat.slug}</span>
-                            <p className="text-white/60 text-xs font-inter mt-1 leading-snug">{cat.description}</p>
+                            <span className="text-[10px] text-[#8E6E2F]/80 font-mono font-bold block mt-0.5">/{cat.slug}</span>
+                            <p className="text-[#241A15]/60 text-xs font-inter mt-1 leading-snug">{cat.description}</p>
                           </div>
                         </div>
 
-                        <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
-                          <span className="text-[10px] uppercase font-bold tracking-wider text-white/50">Applies To:</span>
+                        <div className="mt-4 pt-3 border-t border-[#D8C6A8]/40 flex items-center justify-between">
+                          <span className="text-[10px] uppercase font-bold tracking-wider text-[#241A15]/50">Applies To:</span>
                           <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
                             cat.type === 'package'
                               ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
                               : cat.type === 'custom_item'
                               ? 'bg-blue-500/20 text-blue-300 border-blue-500/30'
-                              : 'bg-amber-400/20 text-amber-300 border-amber-400/30'
+                              : 'bg-amber-400/20 text-[#8E6E2F] border-amber-400/30'
                           }`}>
                             {cat.type === 'package' ? 'Ready-made Packages' : cat.type === 'custom_item' ? 'Single Custom Items' : 'Universal (Packages & Items)'}
                           </span>
@@ -2922,11 +2922,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                         {/* Subcategory Pills */}
                         {cat.subcategories && cat.subcategories.length > 0 && (
-                          <div className="mt-3 pt-3 border-t border-white/10">
-                            <span className="text-[10px] uppercase font-bold tracking-wider text-white/40 block mb-1.5">Subcategories:</span>
+                          <div className="mt-3 pt-3 border-t border-[#D8C6A8]/40">
+                            <span className="text-[10px] uppercase font-bold tracking-wider text-[#241A15]/40 block mb-1.5">Subcategories:</span>
                             <div className="flex flex-wrap gap-1">
                               {cat.subcategories.map((sub) => (
-                                <span key={sub} className="px-2 py-0.5 rounded-full bg-[#F5C542]/10 border border-[#F5C542]/25 text-amber-300/80 text-[10px] font-bold font-inter">
+                                <span key={sub} className="px-2 py-0.5 rounded-full bg-[#F5C542]/10 border border-[#F5C542]/25 text-[#8E6E2F]/80 text-[10px] font-bold font-inter">
                                   {sub}
                                 </span>
                               ))}
@@ -2935,16 +2935,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         )}
                       </div>
 
-                      <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-end gap-2">
+                      <div className="pt-4 mt-4 border-t border-[#D8C6A8]/40 flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleOpenCategoryModal(cat)}
-                          className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white text-xs font-bold transition-colors cursor-pointer"
+                          className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-[#241A15] text-xs font-bold transition-colors cursor-pointer"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDeleteCategory(cat.id)}
-                          className="px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white text-xs font-bold transition-colors cursor-pointer"
+                          className="px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-800 hover:text-[#241A15] text-xs font-bold transition-colors cursor-pointer"
                         >
                           Delete
                         </button>
@@ -2960,10 +2960,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+                  <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-[#241A15] tracking-wide">
                     Gift Box Styles ({giftBoxesList.length})
                   </h2>
-                  <p className="text-white/60 text-xs font-inter mt-1">
+                  <p className="text-[#241A15]/60 text-xs font-inter mt-1">
                     Manage physical box containers, velvet hampers, cedar chests, and outer dimensions.
                   </p>
                 </div>
@@ -2980,33 +2980,33 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 {giftBoxesList.map((box) => (
                   <div
                     key={box.id}
-                    className="bg-[#2e0508] border border-white/10 rounded-2xl overflow-hidden p-5 flex flex-col justify-between shadow-xl"
+                    className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl overflow-hidden p-5 flex flex-col justify-between shadow-xl"
                   >
                     <div>
-                      <div className="h-44 rounded-xl overflow-hidden bg-black/60 mb-4 border border-white/10 flex items-center justify-center">
+                      <div className="h-44 rounded-xl overflow-hidden bg-white/80 mb-4 border border-[#D8C6A8]/40 flex items-center justify-center">
                         <img src={box.image} alt={box.name} className="w-full h-full object-contain" />
                       </div>
-                      <h3 className="font-podium text-lg uppercase font-bold text-white">{box.name}</h3>
-                      <div className="text-xs text-amber-300 font-bold mt-1">
+                      <h3 className="font-podium text-lg uppercase font-bold text-[#241A15]">{box.name}</h3>
+                      <div className="text-xs text-[#8E6E2F] font-bold mt-1">
                         {box.dimensions} • {box.color}
                       </div>
-                      <p className="text-white/60 text-xs font-inter mt-2 line-clamp-2">{box.description}</p>
+                      <p className="text-[#241A15]/60 text-xs font-inter mt-2 line-clamp-2">{box.description}</p>
                     </div>
 
-                    <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
-                      <span className="font-bold text-amber-300 text-lg">
+                    <div className="pt-4 mt-4 border-t border-[#D8C6A8]/40 flex items-center justify-between">
+                      <span className="font-bold text-[#8E6E2F] text-lg">
                         {box.price === 0 ? 'Complimentary' : `+$${box.price.toFixed(2)}`}
                       </span>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleOpenBoxModal(box)}
-                          className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-white text-xs font-bold transition-colors"
+                          className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-[#241A15] text-xs font-bold transition-colors"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDeleteBox(box.id)}
-                          className="px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white text-xs font-bold transition-colors"
+                          className="px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-800 hover:text-[#241A15] text-xs font-bold transition-colors"
                         >
                           Delete
                         </button>
@@ -3022,18 +3022,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {activeTab === 'customers' && (
             <div className="space-y-6">
               <div>
-                <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-white tracking-wide">
+                <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-[#241A15] tracking-wide">
                   Customer Directory ({customersList.length})
                 </h2>
-                <p className="text-white/60 text-xs font-inter mt-1">
+                <p className="text-[#241A15]/60 text-xs font-inter mt-1">
                   Aggregated directory of all customers who have placed orders, complete with phone numbers and delivery locations.
                 </p>
               </div>
 
-              <div className="bg-[#2e0508] border border-white/10 rounded-2xl p-6 shadow-xl overflow-x-auto">
+              <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-6 shadow-xl overflow-x-auto">
                 <table className="w-full text-left font-inter text-xs">
                   <thead>
-                    <tr className="border-b border-white/10 text-white/50 uppercase text-[10px] tracking-wider">
+                    <tr className="border-b border-[#D8C6A8]/40 text-[#241A15]/50 uppercase text-[10px] tracking-wider">
                       <th className="py-3 px-3">Customer Name</th>
                       <th className="py-3 px-3">Phone Number</th>
                       <th className="py-3 px-3">Email Address</th>
@@ -3045,25 +3045,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <tbody className="divide-y divide-white/5">
                     {customersList.map((c, idx) => (
                       <tr key={idx} className="hover:bg-white/5 transition-colors">
-                        <td className="py-4 px-3 font-bold text-white">{c.fullName}</td>
-                        <td className="py-4 px-3 font-semibold text-amber-300">
+                        <td className="py-4 px-3 font-bold text-[#241A15]">{c.fullName}</td>
+                        <td className="py-4 px-3 font-semibold text-[#8E6E2F]">
                           <div className="flex items-center gap-1.5">
-                            <Phone className="w-3.5 h-3.5 text-amber-300" />
+                            <Phone className="w-3.5 h-3.5 text-[#8E6E2F]" />
                             <span>{c.phone}</span>
                           </div>
                         </td>
-                        <td className="py-4 px-3 text-white/70">{c.email}</td>
-                        <td className="py-4 px-3 text-white/80">
+                        <td className="py-4 px-3 text-[#241A15]/70">{c.email}</td>
+                        <td className="py-4 px-3 text-[#241A15]/80">
                           <div className="flex items-center gap-1.5">
-                            <MapPin className="w-3.5 h-3.5 text-amber-300 flex-shrink-0" />
+                            <MapPin className="w-3.5 h-3.5 text-[#8E6E2F] flex-shrink-0" />
                             <span>{c.address}</span>
                           </div>
                         </td>
-                        <td className="py-4 px-3 font-bold text-white">{c.totalOrders} order{c.totalOrders !== 1 ? 's' : ''}</td>
+                        <td className="py-4 px-3 font-bold text-[#241A15]">{c.totalOrders} order{c.totalOrders !== 1 ? 's' : ''}</td>
                         <td className="py-4 px-3 text-right font-bold text-xs space-y-0.5">
                           {c.totalSpentETB > 0 && (
-                            <div className="text-amber-300 font-bold text-sm">
-                              {c.totalSpentETB.toLocaleString()} <span className="text-[10px] text-amber-300/80 font-normal">ብር</span>
+                            <div className="text-[#8E6E2F] font-bold text-sm">
+                              {c.totalSpentETB.toLocaleString()} <span className="text-[10px] text-[#8E6E2F]/80 font-normal">ብር</span>
                             </div>
                           )}
                           {c.totalSpentUSD > 0 && (
@@ -3072,14 +3072,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </div>
                           )}
                           {c.totalSpentETB === 0 && c.totalSpentUSD === 0 && (
-                            <div className="text-white/40">0 ብር</div>
+                            <div className="text-[#241A15]/40">0 ብር</div>
                           )}
                         </td>
                       </tr>
                     ))}
                     {customersList.length === 0 && (
                       <tr>
-                        <td colSpan={6} className="py-12 text-center text-white/40">
+                        <td colSpan={6} className="py-12 text-center text-[#241A15]/40">
                           No customer records found.
                         </td>
                       </tr>
@@ -3101,23 +3101,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setCategoryModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="font-podium text-xl uppercase font-bold text-white mb-1">
+            <h3 className="font-podium text-xl uppercase font-bold text-[#241A15] mb-1">
               {editingCategory ? 'Edit Store Category' : 'Create New Master Category'}
             </h3>
-            <p className="text-white/60 text-xs mb-5">
+            <p className="text-[#241A15]/60 text-xs mb-5">
               Specify category type to automatically link it with Ready-Made Packages or Single Custom Items.
             </p>
 
             <form onSubmit={handleSaveCategory} className="space-y-4">
               <div>
-                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                  Category Name <span className="text-red-400">*</span>
+                <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
+                  Category Name <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -3132,13 +3132,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     });
                   }}
                   placeholder="e.g. Anniversary Luxe or Artisan Chocolates"
-                  className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                  className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-sm text-[#241A15] focus:border-amber-400 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                  Category Usage / Applies To <span className="text-red-400">*</span>
+                <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
+                  Category Usage / Applies To <span className="text-red-600">*</span>
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   <button
@@ -3147,7 +3147,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     className={`p-2.5 rounded-lg border text-xs font-bold text-center transition-all ${
                       categoryForm.type === 'package'
                         ? 'bg-amber-400 text-[#8c1119] border-amber-400'
-                        : 'bg-black/30 border-white/20 text-white/70 hover:text-white'
+                        : 'bg-white/50 border-[#D8C6A8]/60 text-[#241A15]/70 hover:text-[#241A15]'
                     }`}
                   >
                     Ready-made Packages
@@ -3159,7 +3159,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     className={`p-2.5 rounded-lg border text-xs font-bold text-center transition-all ${
                       categoryForm.type === 'custom_item'
                         ? 'bg-amber-400 text-[#8c1119] border-amber-400'
-                        : 'bg-black/30 border-white/20 text-white/70 hover:text-white'
+                        : 'bg-white/50 border-[#D8C6A8]/60 text-[#241A15]/70 hover:text-[#241A15]'
                     }`}
                   >
                     Single Custom Items
@@ -3171,7 +3171,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     className={`p-2.5 rounded-lg border text-xs font-bold text-center transition-all ${
                       categoryForm.type === 'both'
                         ? 'bg-amber-400 text-[#8c1119] border-amber-400'
-                        : 'bg-black/30 border-white/20 text-white/70 hover:text-white'
+                        : 'bg-white/50 border-[#D8C6A8]/60 text-[#241A15]/70 hover:text-[#241A15]'
                     }`}
                   >
                     Both (Universal)
@@ -3180,32 +3180,32 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">URL Slug</label>
+                <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">URL Slug</label>
                 <input
                   type="text"
                   value={categoryForm.slug}
                   onChange={(e) => setCategoryForm({ ...categoryForm, slug: e.target.value })}
                   placeholder="e.g. anniversary-luxe"
-                  className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white/80 font-mono focus:border-amber-400 focus:outline-none"
+                  className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-sm text-[#241A15]/80 font-mono focus:border-amber-400 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Description</label>
+                <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Description</label>
                 <textarea
                   value={categoryForm.description}
                   onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
                   placeholder="Brief overview describing this gift category..."
-                  className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-xs text-white focus:border-amber-400 focus:outline-none h-20 resize-none"
+                  className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none h-20 resize-none"
                 />
               </div>
 
               {/* Subcategories Section */}
               <div>
-                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                  Subcategories <span className="text-white/40 normal-case font-normal">(optional)</span>
+                <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
+                  Subcategories <span className="text-[#241A15]/40 normal-case font-normal">(optional)</span>
                 </label>
-                <p className="text-white/40 text-[10px] mb-2 font-inter leading-snug">
+                <p className="text-[#241A15]/40 text-[10px] mb-2 font-inter leading-snug">
                   Add subcategory names (e.g. "Muslim", "Christian"). Tag items with these names and they will appear grouped under this parent.
                 </p>
                 <div className="flex gap-2 mb-2">
@@ -3224,7 +3224,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       }
                     }}
                     placeholder="Type a subcategory and press Enter..."
-                    className="flex-1 bg-black/50 border border-white/20 rounded-lg px-3 py-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                    className="flex-1 bg-white/70 border border-[#D8C6A8]/60 rounded-lg px-3 py-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                   />
                   <button
                     type="button"
@@ -3235,7 +3235,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       }
                       setSubcategoryInput('');
                     }}
-                    className="px-3 py-2 rounded-lg bg-amber-400/20 border border-amber-400/40 hover:bg-amber-400/40 text-amber-300 text-xs font-bold transition-all cursor-pointer"
+                    className="px-3 py-2 rounded-lg bg-amber-400/20 border border-amber-400/40 hover:bg-amber-400/40 text-[#8E6E2F] text-xs font-bold transition-all cursor-pointer"
                   >
                     Add
                   </button>
@@ -3243,12 +3243,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 {categoryForm.subcategories.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {categoryForm.subcategories.map((sub) => (
-                      <span key={sub} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F5C542]/15 border border-[#F5C542]/30 text-amber-300 text-[10px] font-bold font-inter">
+                      <span key={sub} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F5C542]/15 border border-[#F5C542]/30 text-[#8E6E2F] text-[10px] font-bold font-inter">
                         {sub}
                         <button
                           type="button"
                           onClick={() => setCategoryForm({ ...categoryForm, subcategories: categoryForm.subcategories.filter((s) => s !== sub) })}
-                          className="text-amber-400/70 hover:text-red-400 transition-colors cursor-pointer ml-0.5"
+                          className="text-[#B8944A]/70 hover:text-red-600 transition-colors cursor-pointer ml-0.5"
                         >
                           <X className="w-2.5 h-2.5" />
                         </button>
@@ -3258,11 +3258,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 )}
               </div>
 
-              <div className="pt-4 border-t border-white/10 flex justify-end gap-2">
+              <div className="pt-4 border-t border-[#D8C6A8]/40 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setCategoryModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold"
+                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-[#241A15] text-xs font-bold"
                 >
                   Cancel
                 </button>
@@ -3286,30 +3286,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-4xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[95vh] sm:max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => setPkgModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 sm:w-6 h-5 sm:h-6" />
             </button>
 
-            <h3 className="font-podium text-2xl uppercase font-bold text-white mb-1">
+            <h3 className="font-podium text-2xl uppercase font-bold text-[#241A15] mb-1">
               {editingPkg ? 'Edit Ready-made Package Details' : 'Create New Ready-made Gift Package'}
             </h3>
-            <p className="text-white/60 text-xs mb-6">
+            <p className="text-[#241A15]/60 text-xs mb-6">
               Configure package information, pick category from Category Menu, and upload separate descriptions & images for EACH item included inside.
             </p>
 
             <form onSubmit={handleSavePkgSubmit} className="space-y-6">
               {/* SECTION 1: Core Package Details */}
-              <div className="bg-black/30 border border-white/10 rounded-xl p-5 space-y-4">
-                <h4 className="text-xs uppercase tracking-widest text-amber-300 font-bold border-b border-white/10 pb-2 flex items-center gap-2">
+              <div className="bg-white/50 border border-[#D8C6A8]/40 rounded-xl p-5 space-y-4">
+                <h4 className="text-xs uppercase tracking-widest text-[#8E6E2F] font-bold border-b border-[#D8C6A8]/40 pb-2 flex items-center gap-2">
                   <Package className="w-4 h-4" /> 1. Core Package Information
                 </h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                      Package Title <span className="text-red-400">*</span>
+                    <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
+                      Package Title <span className="text-red-600">*</span>
                     </label>
                     <input
                       type="text"
@@ -3317,16 +3317,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       value={pkgForm.name}
                       onChange={(e) => setPkgForm({ ...pkgForm, name: e.target.value })}
                       placeholder="e.g. The Royal Crimson Luxury Box"
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                      className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-sm text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                      Categories (Select One or More) <span className="text-red-400">*</span>
+                    <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
+                      Categories (Select One or More) <span className="text-red-600">*</span>
                     </label>
                     <div className="space-y-2">
-                      <div className="p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px]">
+                      <div className="p-2.5 bg-white/70 border border-[#D8C6A8]/60 rounded-lg min-h-[46px]">
                         {/* Parent category pills row */}
                         <div className="flex flex-wrap gap-2">
                           {packageCategories.map((c) => {
@@ -3349,10 +3349,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                                   isSelected
                                     ? 'bg-amber-400 text-[#8c1119] border border-amber-400 shadow-sm scale-105'
-                                    : 'bg-black/60 text-white/70 border border-white/15 hover:border-amber-400/50 hover:text-white'
+                                    : 'bg-white/80 text-[#241A15]/70 border border-[#D8C6A8]/50 hover:border-amber-400/50 hover:text-[#241A15]'
                                 }`}
                               >
-                                {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-white/40" />}
+                                {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-[#241A15]/40" />}
                                 <span>{c.name}</span>
                               </button>
                             );
@@ -3365,7 +3365,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               const selectedList = pkgForm.category.split(',').map((s) => s.trim()).filter(Boolean);
                               return (
                                 <div key={`sub-${c.id}`} className="pl-2 border-l border-amber-400/20">
-                                  <span className="text-[10px] text-amber-400/70 font-bold uppercase tracking-wider">{c.name} ↳</span>
+                                  <span className="text-[10px] text-[#B8944A]/70 font-bold uppercase tracking-wider">{c.name} ↳</span>
                                   <div className="flex flex-wrap gap-1 mt-1">
                                     {c.subcategories!.map((sub) => {
                                       const subKey = `${c.name} > ${sub}`;
@@ -3387,10 +3387,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                           className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 cursor-pointer ${
                                             isSubSelected
                                               ? 'bg-amber-300 text-[#8c1119] border border-amber-300 shadow-sm'
-                                              : 'bg-black/40 text-white/60 border border-white/10 hover:border-amber-300/40 hover:text-white'
+                                              : 'bg-white/60 text-[#241A15]/60 border border-[#D8C6A8]/40 hover:border-amber-300/40 hover:text-[#241A15]'
                                           }`}
                                         >
-                                          {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-white/30">↳</span>}
+                                          {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-[#241A15]/30">↳</span>}
                                           <span>{sub}</span>
                                         </button>
                                       );
@@ -3408,9 +3408,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         value={pkgForm.category}
                         onChange={(e) => setPkgForm({ ...pkgForm, category: e.target.value })}
                         placeholder="e.g. Birthday, Luxury, Anniversary (comma separated)"
-                        className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-amber-300 font-bold focus:border-amber-400 focus:outline-none"
+                        className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#8E6E2F] font-bold focus:border-amber-400 focus:outline-none"
                       />
-                      <p className="text-[10px] text-white/50">
+                      <p className="text-[10px] text-[#241A15]/50">
                         💡 Click badges above to toggle multiple categories, or type custom comma-separated category names.
                       </p>
                     </div>
@@ -3419,8 +3419,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                      Local Price (ETB / ብር) <span className="text-red-400">*</span>
+                    <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
+                      Local Price (ETB / ብር) <span className="text-red-600">*</span>
                     </label>
                     <input
                       type="number"
@@ -3429,12 +3429,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       value={pkgForm.price}
                       onChange={(e) => setPkgForm({ ...pkgForm, price: e.target.value })}
                       placeholder="e.g. 2500"
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                      className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-sm text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
+                    <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
                       International Price ($ USD)
                     </label>
                     <input
@@ -3443,52 +3443,52 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       value={pkgForm.price_usd}
                       onChange={(e) => setPkgForm({ ...pkgForm, price_usd: e.target.value })}
                       placeholder="e.g. 45.00"
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                      className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-sm text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Badge Tag</label>
+                    <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Badge Tag</label>
                     <input
                       type="text"
                       value={pkgForm.badge}
                       onChange={(e) => setPkgForm({ ...pkgForm, badge: e.target.value })}
                       placeholder="e.g. BEST SELLER, POPULAR"
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                      className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-sm text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Popular For</label>
+                    <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Popular For</label>
                     <input
                       type="text"
                       value={pkgForm.popularFor}
                       onChange={(e) => setPkgForm({ ...pkgForm, popularFor: e.target.value })}
                       placeholder="e.g. Anniversaries & Celebrations"
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                      className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-sm text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Package Overview Description</label>
+                  <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Package Overview Description</label>
                   <textarea
                     value={pkgForm.shortDesc}
                     onChange={(e) => setPkgForm({ ...pkgForm, shortDesc: e.target.value })}
                     placeholder="Provide a compelling luxury summary of this complete gift box bundle..."
-                    className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-xs text-white focus:border-amber-400 focus:outline-none h-20 resize-none"
+                    className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none h-20 resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Main Package Hero Image</label>
+                  <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Main Package Hero Image</label>
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={pkgForm.image}
                       onChange={(e) => setPkgForm({ ...pkgForm, image: e.target.value })}
                       placeholder="Cloudinary image URL or paste link..."
-                      className="flex-1 bg-black/50 border border-white/20 rounded-lg p-2.5 text-xs text-white focus:border-amber-400 focus:outline-none"
+                      className="flex-1 bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
                     <label className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md transition-all">
                       {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
@@ -3502,14 +3502,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </label>
                   </div>
                   {pkgForm.image && (
-                    <div className="mt-2 h-28 rounded-lg overflow-hidden border border-white/20 bg-black/40 max-w-xs">
+                    <div className="mt-2 h-28 rounded-lg overflow-hidden border border-[#D8C6A8]/60 bg-white/60 max-w-xs">
                       <img src={pkgForm.image} alt="Package Hero Preview" className="w-full h-full object-cover" />
                     </div>
                   )}
                 </div>
 
                 {/* Customer Input Requirement Controls */}
-                <div className="mt-4 pt-4 border-t border-white/10 bg-[#3a060b]/60 rounded-xl p-4 border border-amber-400/20">
+                <div className="mt-4 pt-4 border-t border-[#D8C6A8]/40 bg-[#3a060b]/60 rounded-xl p-4 border border-amber-400/20">
                   <div className="flex items-center justify-between">
                     <div>
                       <label className="flex items-center gap-2.5 cursor-pointer">
@@ -3517,22 +3517,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           type="checkbox"
                           checked={pkgForm.requiresCustomInput}
                           onChange={(e) => setPkgForm({ ...pkgForm, requiresCustomInput: e.target.checked })}
-                          className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-black/40 cursor-pointer"
+                          className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-white/60 cursor-pointer"
                         />
-                        <span className="font-bold text-xs uppercase tracking-wider text-amber-300">
+                        <span className="font-bold text-xs uppercase tracking-wider text-[#8E6E2F]">
                           Requires Client Customization (Photo / Custom Text)
                         </span>
                       </label>
-                      <p className="text-[11px] text-white/60 ml-6.5 mt-0.5">
+                      <p className="text-[11px] text-[#241A15]/60 ml-6.5 mt-0.5">
                         Enable if the buyer must upload a photo or write custom text when adding this package to their cart.
                       </p>
                     </div>
                   </div>
 
                   {pkgForm.requiresCustomInput && (
-                    <div className="mt-4 pt-3 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-4 pl-6.5">
+                    <div className="mt-4 pt-3 border-t border-[#D8C6A8]/40 grid grid-cols-1 md:grid-cols-2 gap-4 pl-6.5">
                       <div>
-                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1.5">
+                        <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
                           What does the client need to provide?
                         </label>
                         <div className="grid grid-cols-3 gap-2">
@@ -3551,7 +3551,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                                   isSelected
                                     ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-md font-extrabold'
-                                    : 'bg-black/30 border-white/15 text-white/70 hover:text-white hover:border-white/30'
+                                    : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15] hover:border-white/30'
                                 }`}
                               >
                                 <Icon className="w-3.5 h-3.5" />
@@ -3563,7 +3563,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
 
                       <div>
-                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1.5">
+                        <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
                           Prompt / Instruction Label for Client
                         </label>
                         <input
@@ -3571,9 +3571,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           value={pkgForm.customInputLabel}
                           onChange={(e) => setPkgForm({ ...pkgForm, customInputLabel: e.target.value })}
                           placeholder="e.g. Upload couple photo & enter anniversary date"
-                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                          className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                         />
-                        <span className="text-[10px] text-white/40 block mt-1">
+                        <span className="text-[10px] text-[#241A15]/40 block mt-1">
                           This label is shown directly to the buyer when adding to cart.
                         </span>
                       </div>
@@ -3582,7 +3582,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 {/* Scalable Unit Controls (e.g. Cakes by Kg, Flowers by Stems) */}
-                <div className="mt-4 pt-4 border-t border-white/10 bg-[#3a060b]/60 rounded-xl p-4 border border-amber-400/20">
+                <div className="mt-4 pt-4 border-t border-[#D8C6A8]/40 bg-[#3a060b]/60 rounded-xl p-4 border border-amber-400/20">
                   <div className="flex items-center justify-between">
                     <div>
                       <label className="flex items-center gap-2.5 cursor-pointer">
@@ -3590,22 +3590,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           type="checkbox"
                           checked={pkgForm.hasCustomUnit}
                           onChange={(e) => setPkgForm({ ...pkgForm, hasCustomUnit: e.target.checked })}
-                          className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-black/40 cursor-pointer"
+                          className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-white/60 cursor-pointer"
                         />
-                        <span className="font-bold text-xs uppercase tracking-wider text-amber-300">
+                        <span className="font-bold text-xs uppercase tracking-wider text-[#8E6E2F]">
                           Enable Scalable Portion / Size (Kg, Stems, Pieces, etc.)
                         </span>
                       </label>
-                      <p className="text-[11px] text-white/60 ml-6.5 mt-0.5">
+                      <p className="text-[11px] text-[#241A15]/60 ml-6.5 mt-0.5">
                         Ideal for gifts like cakes (e.g., min 2 kg), flower bouquets (by stems), or chocolates (by pieces) where price scales with quantity.
                       </p>
                     </div>
                   </div>
 
                   {pkgForm.hasCustomUnit && (
-                    <div className="mt-4 pt-3 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pl-6.5">
+                    <div className="mt-4 pt-3 border-t border-[#D8C6A8]/40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pl-6.5">
                       <div>
-                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                           Unit Name (e.g., kg, stems, pieces)
                         </label>
                         <input
@@ -3613,12 +3613,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           value={pkgForm.customUnitName}
                           onChange={(e) => setPkgForm({ ...pkgForm, customUnitName: e.target.value })}
                           placeholder="e.g. kg, stems, pieces"
-                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                          className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                           Minimum Quantity / Starting Size
                         </label>
                         <input
@@ -3628,13 +3628,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           value={pkgForm.customUnitMin}
                           onChange={(e) => setPkgForm({ ...pkgForm, customUnitMin: e.target.value })}
                           placeholder="e.g. 2"
-                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                          className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                         />
-                        <span className="text-[10px] text-white/40 block mt-0.5">Base price applies to this starting amount</span>
+                        <span className="text-[10px] text-[#241A15]/40 block mt-0.5">Base price applies to this starting amount</span>
                       </div>
 
                       <div>
-                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                           Step Increment (+ / -)
                         </label>
                         <input
@@ -3644,12 +3644,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           value={pkgForm.customUnitStep}
                           onChange={(e) => setPkgForm({ ...pkgForm, customUnitStep: e.target.value })}
                           placeholder="e.g. 1"
-                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                          className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                           Maximum Quantity (Optional)
                         </label>
                         <input
@@ -3658,12 +3658,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           value={pkgForm.customUnitMax}
                           onChange={(e) => setPkgForm({ ...pkgForm, customUnitMax: e.target.value })}
                           placeholder="e.g. 10"
-                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                          className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                           Price per Unit ETB (Optional)
                         </label>
                         <input
@@ -3672,12 +3672,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           value={pkgForm.customUnitPricePerUnit}
                           onChange={(e) => setPkgForm({ ...pkgForm, customUnitPricePerUnit: e.target.value })}
                           placeholder="Defaults to Base / Min"
-                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                          className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                        <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                           Price per Unit USD (Optional)
                         </label>
                         <input
@@ -3686,7 +3686,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           value={pkgForm.customUnitPricePerUnitUsd}
                           onChange={(e) => setPkgForm({ ...pkgForm, customUnitPricePerUnitUsd: e.target.value })}
                           placeholder="Defaults to Base USD / Min"
-                          className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                          className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                         />
                       </div>
                     </div>
@@ -3695,13 +3695,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* SECTION 2: Detailed Sub-Items Manager (Individual Images & Descriptions) */}
-              <div className="bg-black/30 border border-white/10 rounded-xl p-5 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-2 gap-2">
+              <div className="bg-white/50 border border-[#D8C6A8]/40 rounded-xl p-5 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#D8C6A8]/40 pb-2 gap-2">
                   <div>
-                    <h4 className="text-xs uppercase tracking-widest text-amber-300 font-bold flex items-center gap-2">
+                    <h4 className="text-xs uppercase tracking-widest text-[#8E6E2F] font-bold flex items-center gap-2">
                       <Layers className="w-4 h-4" /> 2. Items Included Inside ({pkgSubItems.length} Sub-Items)
                     </h4>
-                    <p className="text-[11px] text-white/50">
+                    <p className="text-[11px] text-[#241A15]/50">
                       Search inventory to quickly add items, or upload photos & descriptions for custom components.
                     </p>
                   </div>
@@ -3716,21 +3716,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 {/* Quick Search & Add from Inventory Bar */}
-                <div className="bg-black/40 border border-amber-400/30 rounded-xl p-3 space-y-2">
+                <div className="bg-white/60 border border-amber-400/30 rounded-xl p-3 space-y-2">
                   <div className="flex items-center gap-2">
-                    <Search className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                    <Search className="w-4 h-4 text-[#8E6E2F] flex-shrink-0" />
                     <input
                       type="text"
                       value={pkgSubItemSearch}
                       onChange={(e) => setPkgSubItemSearch(e.target.value)}
                       placeholder="Search single items to quickly add to this package (e.g. cake, chocolate, mug, perfume)..."
-                      className="flex-1 bg-black/60 border border-white/20 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-white/40 focus:border-amber-400 focus:outline-none"
+                      className="flex-1 bg-white/80 border border-[#D8C6A8]/60 rounded-lg px-3 py-1.5 text-xs text-[#241A15] placeholder:text-[#241A15]/40 focus:border-amber-400 focus:outline-none"
                     />
                     {pkgSubItemSearch && (
                       <button
                         type="button"
                         onClick={() => setPkgSubItemSearch('')}
-                        className="text-xs text-white/50 hover:text-white px-2 py-1 cursor-pointer"
+                        className="text-xs text-[#241A15]/50 hover:text-[#241A15] px-2 py-1 cursor-pointer"
                       >
                         Clear
                       </button>
@@ -3739,7 +3739,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                   {/* Search Results */}
                   {pkgSubItemSearch.trim() && (
-                    <div className="max-h-56 overflow-y-auto space-y-1.5 pt-2 border-t border-white/10">
+                    <div className="max-h-56 overflow-y-auto space-y-1.5 pt-2 border-t border-[#D8C6A8]/40">
                       {(() => {
                         const query = pkgSubItemSearch.toLowerCase().trim();
                         const matches = customItems.filter(
@@ -3751,7 +3751,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                         if (matches.length === 0) {
                           return (
-                            <p className="text-xs text-white/40 italic py-2 text-center">
+                            <p className="text-xs text-[#241A15]/40 italic py-2 text-center">
                               No matching items found for "{pkgSubItemSearch}". You can click "+ Add Blank Item" to add a custom item.
                             </p>
                           );
@@ -3766,23 +3766,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               return (
                                 <div
                                   key={item.id}
-                                  className="flex items-center justify-between p-2 rounded-lg bg-black/60 border border-white/10 hover:border-amber-400/50 transition-all gap-2"
+                                  className="flex items-center justify-between p-2 rounded-lg bg-white/80 border border-[#D8C6A8]/40 hover:border-amber-400/50 transition-all gap-2"
                                 >
                                   <div className="flex items-center gap-2 overflow-hidden min-w-0">
                                     {item.image ? (
                                       <img
                                         src={item.image}
                                         alt={item.name}
-                                        className="w-9 h-9 rounded object-cover flex-shrink-0 border border-white/10"
+                                        className="w-9 h-9 rounded object-cover flex-shrink-0 border border-[#D8C6A8]/40"
                                       />
                                     ) : (
-                                      <div className="w-9 h-9 rounded bg-white/10 flex items-center justify-center text-[10px] text-white/40 flex-shrink-0">
+                                      <div className="w-9 h-9 rounded bg-white/10 flex items-center justify-center text-[10px] text-[#241A15]/40 flex-shrink-0">
                                         No img
                                       </div>
                                     )}
                                     <div className="truncate text-left">
-                                      <p className="text-xs font-semibold text-white truncate">{item.name}</p>
-                                      <p className="text-[10px] text-amber-300/80 truncate">{item.category}</p>
+                                      <p className="text-xs font-semibold text-[#241A15] truncate">{item.name}</p>
+                                      <p className="text-[10px] text-[#8E6E2F]/80 truncate">{item.category}</p>
                                     </div>
                                   </div>
                                   <button
@@ -3816,16 +3816,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   {pkgSubItems.map((subItem, index) => (
                     <div
                       key={index}
-                      className="bg-black/40 border border-white/15 rounded-xl p-4 relative space-y-3"
+                      className="bg-white/60 border border-[#D8C6A8]/50 rounded-xl p-4 relative space-y-3"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded border border-amber-400/30">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#8E6E2F] bg-amber-400/10 px-2.5 py-0.5 rounded border border-amber-400/30">
                           Included Item #{index + 1}
                         </span>
                           <button
                             type="button"
                             onClick={() => handleRemoveSubItem(index)}
-                            className="text-red-400 hover:text-red-200 text-xs font-bold flex items-center gap-1"
+                            className="text-red-600 hover:text-red-800 text-xs font-bold flex items-center gap-1"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             <span>Remove</span>
@@ -3834,8 +3834,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-[10px] uppercase text-white/70 font-bold mb-1">
-                            Item Name <span className="text-red-400">*</span>
+                          <label className="block text-[10px] uppercase text-[#241A15]/70 font-bold mb-1">
+                            Item Name <span className="text-red-600">*</span>
                           </label>
                           <select
                             value={customItems.some((i) => i.name === subItem.name) ? subItem.name : (subItem.name ? '__custom__' : '')}
@@ -3852,7 +3852,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 handleUpdateSubItem(index, 'name', '');
                               }
                             }}
-                            className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none cursor-pointer"
+                            className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none cursor-pointer"
                           >
                             <option value="">-- Select from Single Items --</option>
                             {customItems.map((item) => (
@@ -3867,14 +3867,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               type="text"
                               value={subItem.name === '__custom__' ? '' : subItem.name}
                               placeholder="Enter custom item name..."
-                              className="w-full bg-black/60 border border-amber-400/40 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none mt-2"
+                              className="w-full bg-white/80 border border-amber-400/40 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none mt-2"
                               onChange={(e) => handleUpdateSubItem(index, 'name', e.target.value)}
                             />
                           )}
                         </div>
 
                         <div>
-                          <label className="block text-[10px] uppercase text-white/70 font-bold mb-1">
+                          <label className="block text-[10px] uppercase text-[#241A15]/70 font-bold mb-1">
                             Item Image (Upload or URL)
                           </label>
                           <div className="flex gap-2">
@@ -3883,7 +3883,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               value={subItem.image}
                               onChange={(e) => handleUpdateSubItem(index, 'image', e.target.value)}
                               placeholder="Image URL..."
-                              className="flex-1 bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                              className="flex-1 bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                             />
                             <label className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer shadow transition-all">
                               {uploadingImage ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
@@ -3903,12 +3903,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                       <div className="flex gap-3 items-start">
                         {subItem.image && (
-                          <div className="w-16 h-16 rounded-lg overflow-hidden border border-white/20 bg-black/50 flex-shrink-0">
+                          <div className="w-16 h-16 rounded-lg overflow-hidden border border-[#D8C6A8]/60 bg-white/70 flex-shrink-0">
                             <img src={subItem.image} alt={subItem.name} className="w-full h-full object-cover" />
                           </div>
                         )}
                         <div className="flex-1">
-                          <label className="block text-[10px] uppercase text-white/70 font-bold mb-1">
+                          <label className="block text-[10px] uppercase text-[#241A15]/70 font-bold mb-1">
                             Detailed Description
                           </label>
                           <input
@@ -3916,7 +3916,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             value={subItem.description}
                             onChange={(e) => handleUpdateSubItem(index, 'description', e.target.value)}
                             placeholder="e.g. Hand-poured 100% soy wax infused with French lavender essential oil."
-                            className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                            className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                           />
                         </div>
                       </div>
@@ -3925,11 +3925,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+              <div className="pt-4 border-t border-[#D8C6A8]/40 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setPkgModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold"
+                  className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#241A15] text-xs font-bold"
                 >
                   Cancel
                 </button>
@@ -3953,23 +3953,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setItemModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="font-podium text-xl uppercase font-bold text-white mb-1">
+            <h3 className="font-podium text-xl uppercase font-bold text-[#241A15] mb-1">
               {editingItem ? 'Edit Single Custom Item' : 'Add Single Custom Gift Component'}
             </h3>
-            <p className="text-white/60 text-xs mb-5">
+            <p className="text-[#241A15]/60 text-xs mb-5">
               Add individual items that customers can select inside the custom box builder.
             </p>
 
             <form onSubmit={handleSaveItemSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                  Item Title <span className="text-red-400">*</span>
+                <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
+                  Item Title <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -3977,17 +3977,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   value={itemForm.name}
                   onChange={(e) => setItemForm({ ...itemForm, name: e.target.value })}
                   placeholder="e.g. Artisan Swiss Truffles"
-                  className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                  className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-sm text-[#241A15] focus:border-amber-400 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="md:col-span-3">
-                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                    Categories (Select One or More) <span className="text-red-400">*</span>
+                  <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
+                    Categories (Select One or More) <span className="text-red-600">*</span>
                   </label>
                   <div className="space-y-2">
-                    <div className="p-2.5 bg-black/50 border border-white/20 rounded-lg min-h-[46px]">
+                    <div className="p-2.5 bg-white/70 border border-[#D8C6A8]/60 rounded-lg min-h-[46px]">
                       {/* Parent category pills row */}
                       <div className="flex flex-wrap gap-2">
                         {customItemCategories.map((c) => {
@@ -4010,10 +4010,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                                 isSelected
                                   ? 'bg-amber-400 text-[#8c1119] border border-amber-400 shadow-sm scale-105'
-                                  : 'bg-black/60 text-white/70 border border-white/15 hover:border-amber-400/50 hover:text-white'
+                                  : 'bg-white/80 text-[#241A15]/70 border border-[#D8C6A8]/50 hover:border-amber-400/50 hover:text-[#241A15]'
                               }`}
                             >
-                              {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-white/40" />}
+                              {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-[#241A15]/40" />}
                               <span>{c.name}</span>
                             </button>
                           );
@@ -4026,7 +4026,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             const selectedList = itemForm.category.split(',').map((s) => s.trim()).filter(Boolean);
                             return (
                               <div key={`sub-${c.id}`} className="pl-2 border-l border-amber-400/20">
-                                <span className="text-[10px] text-amber-400/70 font-bold uppercase tracking-wider">{c.name} ↳</span>
+                                <span className="text-[10px] text-[#B8944A]/70 font-bold uppercase tracking-wider">{c.name} ↳</span>
                                 <div className="flex flex-wrap gap-1 mt-1">
                                   {c.subcategories!.map((sub) => {
                                     const subKey = `${c.name} > ${sub}`;
@@ -4048,10 +4048,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 cursor-pointer ${
                                           isSubSelected
                                             ? 'bg-amber-300 text-[#8c1119] border border-amber-300 shadow-sm'
-                                            : 'bg-black/40 text-white/60 border border-white/10 hover:border-amber-300/40 hover:text-white'
+                                            : 'bg-white/60 text-[#241A15]/60 border border-[#D8C6A8]/40 hover:border-amber-300/40 hover:text-[#241A15]'
                                         }`}
                                       >
-                                        {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-white/30">↳</span>}
+                                        {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-[#241A15]/30">↳</span>}
                                         <span>{sub}</span>
                                       </button>
                                     );
@@ -4069,17 +4069,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       value={itemForm.category}
                       onChange={(e) => setItemForm({ ...itemForm, category: e.target.value })}
                       placeholder="e.g. Sweets & Chocolates, Romantic Add-ons (comma separated)"
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-amber-300 font-bold focus:border-amber-400 focus:outline-none"
+                      className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#8E6E2F] font-bold focus:border-amber-400 focus:outline-none"
                     />
-                    <p className="text-[10px] text-white/50">
+                    <p className="text-[10px] text-[#241A15]/50">
                       💡 Click badges above to toggle multiple categories, or type custom comma-separated category names.
                     </p>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
-                    Local Price (ETB / ብር) <span className="text-red-400">*</span>
+                  <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
+                    Local Price (ETB / ብር) <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="number"
@@ -4088,12 +4088,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     value={itemForm.price}
                     onChange={(e) => setItemForm({ ...itemForm, price: e.target.value })}
                     placeholder="e.g. 850"
-                    className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                    className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-sm text-[#241A15] focus:border-amber-400 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">
+                  <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
                     International Price ($ USD)
                   </label>
                   <input
@@ -4102,30 +4102,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     value={itemForm.price_usd}
                     onChange={(e) => setItemForm({ ...itemForm, price_usd: e.target.value })}
                     placeholder="e.g. 15.00"
-                    className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                    className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-sm text-[#241A15] focus:border-amber-400 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Description</label>
+                <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Description</label>
                 <textarea
                   value={itemForm.description}
                   onChange={(e) => setItemForm({ ...itemForm, description: e.target.value })}
                   placeholder="Detailed description of this custom item option..."
-                  className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-xs text-white focus:border-amber-400 focus:outline-none h-20 resize-none"
+                  className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none h-20 resize-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Item Image</label>
+                <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Item Image</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={itemForm.image}
                     onChange={(e) => setItemForm({ ...itemForm, image: e.target.value })}
                     placeholder="https://images.unsplash.com/..."
-                    className="flex-1 bg-black/50 border border-white/20 rounded-lg p-2.5 text-xs text-white focus:border-amber-400 focus:outline-none"
+                    className="flex-1 bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                   />
                   <label className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-3 py-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow transition-all">
                     {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
@@ -4139,35 +4139,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </label>
                 </div>
                 {itemForm.image && (
-                  <div className="mt-2 h-20 rounded-lg overflow-hidden border border-white/20 bg-black/40">
+                  <div className="mt-2 h-20 rounded-lg overflow-hidden border border-[#D8C6A8]/60 bg-white/60">
                     <img src={itemForm.image} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 )}
               </div>
 
               {/* Customer Customization Requirement Controls */}
-              <div className="pt-3 border-t border-white/10 bg-[#3a060b]/60 rounded-xl p-3.5 border border-amber-400/20 space-y-3">
+              <div className="pt-3 border-t border-[#D8C6A8]/40 bg-[#3a060b]/60 rounded-xl p-3.5 border border-amber-400/20 space-y-3">
                 <div>
                   <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={itemForm.requiresCustomInput}
                       onChange={(e) => setItemForm({ ...itemForm, requiresCustomInput: e.target.checked })}
-                      className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-black/40 cursor-pointer"
+                      className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-white/60 cursor-pointer"
                     />
-                    <span className="font-bold text-xs uppercase tracking-wider text-amber-300">
+                    <span className="font-bold text-xs uppercase tracking-wider text-[#8E6E2F]">
                       Requires Client Customization (Photo / Custom Text)
                     </span>
                   </label>
-                  <p className="text-[11px] text-white/60 ml-6.5 mt-0.5">
+                  <p className="text-[11px] text-[#241A15]/60 ml-6.5 mt-0.5">
                     Enable for items like printed mugs, custom jewelry, photo frames, or custom engraved accessories.
                   </p>
                 </div>
 
                 {itemForm.requiresCustomInput && (
-                  <div className="space-y-3 pt-2 border-t border-white/10 pl-6.5">
+                  <div className="space-y-3 pt-2 border-t border-[#D8C6A8]/40 pl-6.5">
                     <div>
-                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1.5">
+                      <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
                         What does the client need to provide?
                       </label>
                       <div className="grid grid-cols-3 gap-2">
@@ -4186,7 +4186,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                                 isSelected
                                   ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-md font-extrabold'
-                                  : 'bg-black/30 border-white/15 text-white/70 hover:text-white hover:border-white/30'
+                                  : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15] hover:border-white/30'
                               }`}
                             >
                               <Icon className="w-3.5 h-3.5" />
@@ -4198,7 +4198,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
 
                     <div>
-                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1.5">
+                      <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
                         Prompt / Instruction Label for Client
                       </label>
                       <input
@@ -4206,9 +4206,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         value={itemForm.customInputLabel}
                         onChange={(e) => setItemForm({ ...itemForm, customInputLabel: e.target.value })}
                         placeholder="e.g. Enter name or message to print on mug"
-                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                       />
-                      <span className="text-[10px] text-white/40 block mt-1">
+                      <span className="text-[10px] text-[#241A15]/40 block mt-1">
                         This instruction is shown to the buyer when adding this item to their custom box.
                       </span>
                     </div>
@@ -4217,28 +4217,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Scalable Unit Controls (e.g. Cakes by Kg, Flowers by Stems, Chocolates by Piece) */}
-              <div className="pt-3 border-t border-white/10 bg-[#3a060b]/60 rounded-xl p-3.5 border border-amber-400/20 space-y-3">
+              <div className="pt-3 border-t border-[#D8C6A8]/40 bg-[#3a060b]/60 rounded-xl p-3.5 border border-amber-400/20 space-y-3">
                 <div>
                   <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={itemForm.hasCustomUnit}
                       onChange={(e) => setItemForm({ ...itemForm, hasCustomUnit: e.target.checked })}
-                      className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-black/40 cursor-pointer"
+                      className="w-4 h-4 rounded border-amber-400/50 text-amber-500 focus:ring-amber-400 bg-white/60 cursor-pointer"
                     />
-                    <span className="font-bold text-xs uppercase tracking-wider text-amber-300">
+                    <span className="font-bold text-xs uppercase tracking-wider text-[#8E6E2F]">
                       Enable Scalable Portion / Size (Kg, Stems, Pieces, etc.)
                     </span>
                   </label>
-                  <p className="text-[11px] text-white/60 ml-6.5 mt-0.5">
+                  <p className="text-[11px] text-[#241A15]/60 ml-6.5 mt-0.5">
                     Ideal for single items like cakes (e.g., starting at 2 kg), flowers (by stem), or chocolates (by piece).
                   </p>
                 </div>
 
                 {itemForm.hasCustomUnit && (
-                  <div className="pt-2 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pl-6.5">
+                  <div className="pt-2 border-t border-[#D8C6A8]/40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pl-6.5">
                     <div>
-                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                      <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                         Unit Name (e.g., kg, stems, pieces)
                       </label>
                       <input
@@ -4246,12 +4246,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         value={itemForm.customUnitName}
                         onChange={(e) => setItemForm({ ...itemForm, customUnitName: e.target.value })}
                         placeholder="e.g. kg, stems, pieces"
-                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                      <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                         Minimum Quantity / Starting Size
                       </label>
                       <input
@@ -4261,13 +4261,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         value={itemForm.customUnitMin}
                         onChange={(e) => setItemForm({ ...itemForm, customUnitMin: e.target.value })}
                         placeholder="e.g. 2"
-                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                       />
-                      <span className="text-[10px] text-white/40 block mt-0.5">Base price applies to this starting amount</span>
+                      <span className="text-[10px] text-[#241A15]/40 block mt-0.5">Base price applies to this starting amount</span>
                     </div>
 
                     <div>
-                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                      <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                         Step Increment (+ / -)
                       </label>
                       <input
@@ -4277,12 +4277,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         value={itemForm.customUnitStep}
                         onChange={(e) => setItemForm({ ...itemForm, customUnitStep: e.target.value })}
                         placeholder="e.g. 1"
-                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                      <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                         Maximum Quantity (Optional)
                       </label>
                       <input
@@ -4291,12 +4291,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         value={itemForm.customUnitMax}
                         onChange={(e) => setItemForm({ ...itemForm, customUnitMax: e.target.value })}
                         placeholder="e.g. 10"
-                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                      <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                         Price per Unit ETB (Optional)
                       </label>
                       <input
@@ -4305,12 +4305,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         value={itemForm.customUnitPricePerUnit}
                         onChange={(e) => setItemForm({ ...itemForm, customUnitPricePerUnit: e.target.value })}
                         placeholder="Defaults to Base / Min"
-                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] uppercase text-amber-300 font-bold mb-1">
+                      <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
                         Price per Unit USD (Optional)
                       </label>
                       <input
@@ -4319,18 +4319,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         value={itemForm.customUnitPricePerUnitUsd}
                         onChange={(e) => setItemForm({ ...itemForm, customUnitPricePerUnitUsd: e.target.value })}
                         placeholder="Defaults to Base USD / Min"
-                        className="w-full bg-black/60 border border-white/20 rounded-lg p-2 text-xs text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
+                        className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
                       />
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="pt-4 border-t border-white/10 flex justify-end gap-2">
+              <div className="pt-4 border-t border-[#D8C6A8]/40 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setItemModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold"
+                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-[#241A15] text-xs font-bold"
                 >
                   Cancel
                 </button>
@@ -4354,99 +4354,99 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setBoxModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="font-podium text-xl uppercase font-bold text-white mb-1">
+            <h3 className="font-podium text-xl uppercase font-bold text-[#241A15] mb-1">
               {editingBox ? 'Edit Gift Box Style' : 'Add Gift Box Style'}
             </h3>
-            <p className="text-white/60 text-xs mb-5">
+            <p className="text-[#241A15]/60 text-xs mb-5">
               Define physical container dimensions, ribbon material, and box prices.
             </p>
 
             <form onSubmit={handleSaveBox} className="space-y-4">
               <div>
-                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Box Style Title</label>
+                <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Box Style Title</label>
                 <input
                   type="text"
                   required
                   value={boxForm.name}
                   onChange={(e) => setBoxForm({ ...boxForm, name: e.target.value })}
                   placeholder="e.g. Signature Velvet Keepsake Box"
-                  className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none"
+                  className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-sm text-[#241A15] focus:border-amber-400 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Dimensions</label>
+                  <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Dimensions</label>
                   <input
                     type="text"
                     value={boxForm.dimensions}
                     onChange={(e) => setBoxForm({ ...boxForm, dimensions: e.target.value })}
                     placeholder="12 x 10 x 5"
-                    className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                    className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Color / Finish</label>
+                  <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Color / Finish</label>
                   <input
                     type="text"
                     value={boxForm.color}
                     onChange={(e) => setBoxForm({ ...boxForm, color: e.target.value })}
                     placeholder="Crimson Red"
-                    className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                    className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Local Price (ETB)</label>
+                  <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Local Price (ETB)</label>
                   <input
                     type="number"
                     step="0.01"
                     value={boxForm.price}
                     onChange={(e) => setBoxForm({ ...boxForm, price: e.target.value })}
                     placeholder="0 for free"
-                    className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                    className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase text-amber-300 font-bold mb-1">International ($ USD)</label>
+                  <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">International ($ USD)</label>
                   <input
                     type="number"
                     step="0.01"
                     value={boxForm.price_usd}
                     onChange={(e) => setBoxForm({ ...boxForm, price_usd: e.target.value })}
                     placeholder="0 for free"
-                    className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                    className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Description</label>
+                <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Description</label>
                 <textarea
                   value={boxForm.description}
                   onChange={(e) => setBoxForm({ ...boxForm, description: e.target.value })}
                   placeholder="Description of box material, lining, and latch..."
-                  className="w-full bg-black/50 border border-white/20 rounded-lg p-2.5 text-xs text-white focus:border-amber-400 focus:outline-none h-20 resize-none"
+                  className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none h-20 resize-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs uppercase text-amber-300 font-bold mb-1">Box Photo</label>
+                <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Box Photo</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={boxForm.image}
                     onChange={(e) => setBoxForm({ ...boxForm, image: e.target.value })}
                     placeholder="https://images.unsplash.com/..."
-                    className="flex-1 bg-black/50 border border-white/20 rounded-lg p-2.5 text-xs text-white focus:border-amber-400 focus:outline-none"
+                    className="flex-1 bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                   />
                   <label className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-3 py-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow transition-all">
                     {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
@@ -4460,17 +4460,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </label>
                 </div>
                 {boxForm.image && (
-                  <div className="mt-2 h-20 rounded-lg overflow-hidden border border-white/20 bg-black/40">
+                  <div className="mt-2 h-20 rounded-lg overflow-hidden border border-[#D8C6A8]/60 bg-white/60">
                     <img src={boxForm.image} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 )}
               </div>
 
-              <div className="pt-4 border-t border-white/10 flex justify-end gap-2">
+              <div className="pt-4 border-t border-[#D8C6A8]/40 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setBoxModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold"
+                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-[#241A15] text-xs font-bold"
                 >
                   Cancel
                 </button>
@@ -4494,90 +4494,90 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-3xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[95vh] sm:max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => setCreateOrderModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 sm:w-6 h-5 sm:h-6" />
             </button>
 
-            <h3 className="font-podium text-2xl uppercase font-bold text-white mb-1">
+            <h3 className="font-podium text-2xl uppercase font-bold text-[#241A15] mb-1">
               Create Manual Customer Order
             </h3>
-            <p className="text-white/60 text-xs mb-6">
+            <p className="text-[#241A15]/60 text-xs mb-6">
               Enter customer contact information, phone, delivery location, and select packages or custom gift items.
             </p>
 
             <form onSubmit={handleCreateOrderSubmit} className="space-y-6">
               {/* Customer Info */}
-              <div className="bg-black/30 border border-white/10 rounded-xl p-4 space-y-3">
-                <h4 className="text-xs uppercase text-amber-300 font-bold tracking-wider">Customer & Delivery Info</h4>
+              <div className="bg-white/50 border border-[#D8C6A8]/40 rounded-xl p-4 space-y-3">
+                <h4 className="text-xs uppercase text-[#8E6E2F] font-bold tracking-wider">Customer & Delivery Info</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-[10px] uppercase text-white/70 font-bold mb-1">Customer Name *</label>
+                    <label className="block text-[10px] uppercase text-[#241A15]/70 font-bold mb-1">Customer Name *</label>
                     <input
                       type="text"
                       required
                       value={orderCustomer.fullName}
                       onChange={(e) => setOrderCustomer({ ...orderCustomer, fullName: e.target.value })}
                       placeholder="e.g. Marcus Vance"
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                      className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase text-white/70 font-bold mb-1">Phone Number *</label>
+                    <label className="block text-[10px] uppercase text-[#241A15]/70 font-bold mb-1">Phone Number *</label>
                     <input
                       type="tel"
                       required
                       value={orderCustomer.phone}
                       onChange={(e) => setOrderCustomer({ ...orderCustomer, phone: e.target.value })}
                       placeholder="+251 911 234 567"
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                      className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase text-white/70 font-bold mb-1">Email *</label>
+                    <label className="block text-[10px] uppercase text-[#241A15]/70 font-bold mb-1">Email *</label>
                     <input
                       type="email"
                       required
                       value={orderCustomer.email}
                       onChange={(e) => setOrderCustomer({ ...orderCustomer, email: e.target.value })}
                       placeholder="customer@example.com"
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                      className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div className="md:col-span-2">
-                    <label className="block text-[10px] uppercase text-white/70 font-bold mb-1">Delivery Address *</label>
+                    <label className="block text-[10px] uppercase text-[#241A15]/70 font-bold mb-1">Delivery Address *</label>
                     <input
                       type="text"
                       required
                       value={orderCustomer.address}
                       onChange={(e) => setOrderCustomer({ ...orderCustomer, address: e.target.value })}
                       placeholder="Bole Sub-city, House #104"
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                      className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase text-white/70 font-bold mb-1">City</label>
+                    <label className="block text-[10px] uppercase text-[#241A15]/70 font-bold mb-1">City</label>
                     <input
                       type="text"
                       value={orderCustomer.city}
                       onChange={(e) => setOrderCustomer({ ...orderCustomer, city: e.target.value })}
                       placeholder="Addis Ababa"
-                      className="w-full bg-black/50 border border-white/20 rounded-lg p-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                      className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Order Packages Selector */}
-              <div className="bg-black/30 border border-white/10 rounded-xl p-4 space-y-3">
-                <h4 className="text-xs uppercase text-amber-300 font-bold tracking-wider">Select Ready-made Packages</h4>
+              <div className="bg-white/50 border border-[#D8C6A8]/40 rounded-xl p-4 space-y-3">
+                <h4 className="text-xs uppercase text-[#8E6E2F] font-bold tracking-wider">Select Ready-made Packages</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
                   {packages.map((pkg) => {
                     const existing = selectedOrderPackages.find((p) => p.pkg.id === pkg.id);
@@ -4594,26 +4594,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         }}
                         className={`p-3 rounded-lg border text-xs flex items-center justify-between cursor-pointer transition-colors ${
                           isSelected
-                            ? 'bg-amber-400/20 border-amber-400 text-amber-300 font-bold'
-                            : 'bg-black/40 border-white/15 text-white/80 hover:border-white/30'
+                            ? 'bg-amber-400/20 border-amber-400 text-[#8E6E2F] font-bold'
+                            : 'bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/80 hover:border-white/30'
                         }`}
                       >
                         <div className="truncate pr-2">
                           <div className="truncate">{pkg.name}</div>
-                          <div className="text-[10px] text-white/50">${pkg.price.toFixed(2)}</div>
+                          <div className="text-[10px] text-[#241A15]/50">${pkg.price.toFixed(2)}</div>
                         </div>
-                        {isSelected && <Check className="w-4 h-4 text-amber-300 flex-shrink-0" />}
+                        {isSelected && <Check className="w-4 h-4 text-[#8E6E2F] flex-shrink-0" />}
                       </div>
                     );
                   })}
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+              <div className="pt-4 border-t border-[#D8C6A8]/40 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setCreateOrderModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold"
+                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-[#241A15] text-xs font-bold"
                 >
                   Cancel
                 </button>
@@ -4637,36 +4637,36 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-2xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedOrderDetails(null)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-white/70 hover:text-white p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-white/20 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-3 border-b border-white/15 pb-4 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300">
+            <div className="flex items-center gap-3 border-b border-[#D8C6A8]/50 pb-4 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-[#8E6E2F]">
                 <ShoppingBag className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-podium text-xl uppercase font-bold text-white">
+                <h3 className="font-podium text-xl uppercase font-bold text-[#241A15]">
                   Order Inspection: {selectedOrderDetails.id}
                 </h3>
-                <span className="text-xs text-white/60 font-mono">Placed on {selectedOrderDetails.createdAt}</span>
+                <span className="text-xs text-[#241A15]/60 font-mono">Placed on {selectedOrderDetails.createdAt}</span>
               </div>
             </div>
 
             <div className="space-y-5 text-xs">
               {/* Customer & Delivery Contact */}
-              <div className="bg-black/40 border border-white/10 rounded-xl p-4 space-y-2">
-                <div className="text-[10px] text-amber-300 font-bold uppercase tracking-widest">Customer & Delivery Information</div>
-                <div className="text-sm font-bold text-white">{selectedOrderDetails.customer.fullName}</div>
-                <div className="flex items-center gap-2 text-amber-300 font-bold text-xs">
-                  <Phone className="w-4 h-4 text-amber-300" />
+              <div className="bg-white/60 border border-[#D8C6A8]/40 rounded-xl p-4 space-y-2">
+                <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-widest">Customer & Delivery Information</div>
+                <div className="text-sm font-bold text-[#241A15]">{selectedOrderDetails.customer.fullName}</div>
+                <div className="flex items-center gap-2 text-[#8E6E2F] font-bold text-xs">
+                  <Phone className="w-4 h-4 text-[#8E6E2F]" />
                   <span>Phone: {selectedOrderDetails.customer.phone || 'Not provided'}</span>
                 </div>
-                <div className="text-white/80">Email: {selectedOrderDetails.customer.email}</div>
-                <div className="flex items-start gap-1.5 text-white/90 pt-1">
-                  <MapPin className="w-4 h-4 text-amber-300 flex-shrink-0 mt-0.5" />
+                <div className="text-[#241A15]/80">Email: {selectedOrderDetails.customer.email}</div>
+                <div className="flex items-start gap-1.5 text-[#241A15]/90 pt-1">
+                  <MapPin className="w-4 h-4 text-[#8E6E2F] flex-shrink-0 mt-0.5" />
                   <div>
                     <span className="font-semibold">{selectedOrderDetails.customer.address}</span>, {selectedOrderDetails.customer.city}
                   </div>
@@ -4685,8 +4685,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   schedStatus === 'Scheduled'
                     ? 'text-emerald-300 bg-emerald-500/15 border-emerald-500/40'
                     : schedStatus === 'Awaiting Customer Confirmation'
-                    ? 'text-amber-300 bg-amber-400/15 border-amber-400/40'
-                    : 'text-white/50 bg-white/5 border-white/15';
+                    ? 'text-[#8E6E2F] bg-amber-400/15 border-amber-400/40'
+                    : 'text-[#241A15]/50 bg-white/5 border-[#D8C6A8]/50';
 
                 const statusDot =
                   schedStatus === 'Scheduled' ? '🟢' :
@@ -4706,15 +4706,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       {/* Order Placed */}
-                      <div className="bg-black/30 rounded-lg p-3 space-y-0.5">
-                        <div className="text-[9px] text-white/40 uppercase tracking-widest font-bold">Order Placed</div>
-                        <div className="text-white font-semibold text-xs font-mono">{od.createdAt}</div>
+                      <div className="bg-white/50 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-[#241A15]/40 uppercase tracking-widest font-bold">Order Placed</div>
+                        <div className="text-[#241A15] font-semibold text-xs font-mono">{od.createdAt}</div>
                       </div>
 
                       {/* Requested Delivery Date */}
-                      <div className="bg-black/30 rounded-lg p-3 space-y-0.5">
-                        <div className="text-[9px] text-white/40 uppercase tracking-widest font-bold">Requested Delivery Date</div>
-                        <div className={`font-semibold text-xs ${rawDate ? 'text-emerald-300' : 'text-white/30 italic'}`}>
+                      <div className="bg-white/50 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-[#241A15]/40 uppercase tracking-widest font-bold">Requested Delivery Date</div>
+                        <div className={`font-semibold text-xs ${rawDate ? 'text-emerald-300' : 'text-[#241A15]/30 italic'}`}>
                           {rawDate
                             ? (() => {
                                 try {
@@ -4726,16 +4726,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
 
                       {/* Preferred Delivery Time */}
-                      <div className="bg-black/30 rounded-lg p-3 space-y-0.5">
-                        <div className="text-[9px] text-white/40 uppercase tracking-widest font-bold">Preferred Delivery Time</div>
-                        <div className={`font-semibold text-xs flex items-center gap-1.5 ${rawTime ? 'text-blue-300' : 'text-white/30 italic'}`}>
+                      <div className="bg-white/50 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-[#241A15]/40 uppercase tracking-widest font-bold">Preferred Delivery Time</div>
+                        <div className={`font-semibold text-xs flex items-center gap-1.5 ${rawTime ? 'text-blue-300' : 'text-[#241A15]/30 italic'}`}>
                           {rawTime ? <><Clock className="w-3 h-3" />{rawTime}</> : 'Not Recorded'}
                         </div>
                       </div>
 
                       {/* Delivery Schedule Status */}
-                      <div className="bg-black/30 rounded-lg p-3 space-y-0.5">
-                        <div className="text-[9px] text-white/40 uppercase tracking-widest font-bold">Delivery Schedule Status</div>
+                      <div className="bg-white/50 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-[#241A15]/40 uppercase tracking-widest font-bold">Delivery Schedule Status</div>
                         <div className={`font-bold text-xs ${statusColor.split(' ')[0]}`}>
                           {statusDot} {schedStatus}
                         </div>
@@ -4748,21 +4748,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {/* Gift Note Section - if any gift fields present */}
               {(selectedOrderDetails.customer.giftRecipientName || selectedOrderDetails.customer.giftSenderName || selectedOrderDetails.customer.giftMessage) && (
                 <div className="bg-amber-400/5 border border-amber-400/30 rounded-xl p-4 space-y-2">
-                  <div className="text-[10px] text-amber-300 font-bold uppercase tracking-widest">Gift Note Details</div>
+                  <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-widest">Gift Note Details</div>
                   {selectedOrderDetails.customer.giftRecipientName && (
-                    <div className="text-white/90">
-                      <span className="text-white/60">To: </span>
+                    <div className="text-[#241A15]/90">
+                      <span className="text-[#241A15]/60">To: </span>
                       <span className="font-semibold">{selectedOrderDetails.customer.giftRecipientName}</span>
                     </div>
                   )}
                   {selectedOrderDetails.customer.giftSenderName && (
-                    <div className="text-white/90">
-                      <span className="text-white/60">From: </span>
+                    <div className="text-[#241A15]/90">
+                      <span className="text-[#241A15]/60">From: </span>
                       <span className="font-semibold">{selectedOrderDetails.customer.giftSenderName}</span>
                     </div>
                   )}
                   {selectedOrderDetails.customer.giftMessage && (
-                    <div className="bg-black/30 border border-amber-400/20 rounded-lg p-3 text-amber-200 mt-2 italic">
+                    <div className="bg-white/50 border border-amber-400/20 rounded-lg p-3 text-[#8E6E2F] mt-2 italic">
                       "{selectedOrderDetails.customer.giftMessage}"
                     </div>
                   )}
@@ -4771,11 +4771,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               {/* Gift Box Selection - if present */}
               {selectedOrderDetails.giftBoxStyle && (
-                <div className="bg-black/40 border border-white/10 rounded-xl p-4 space-y-2">
-                  <div className="text-[10px] text-amber-300 font-bold uppercase tracking-widest">Gift Box Selection</div>
+                <div className="bg-white/60 border border-[#D8C6A8]/40 rounded-xl p-4 space-y-2">
+                  <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-widest">Gift Box Selection</div>
                   <div className="flex items-center justify-between">
-                    <div className="text-white font-semibold">{selectedOrderDetails.giftBoxStyle}</div>
-                    <div className="text-amber-300 font-bold">
+                    <div className="text-[#241A15] font-semibold">{selectedOrderDetails.giftBoxStyle}</div>
+                    <div className="text-[#8E6E2F] font-bold">
                       {selectedOrderDetails.giftBoxPrice
                         ? `+${selectedOrderDetails.currency === 'USD' ? '$' : ''}${selectedOrderDetails.giftBoxPrice.toFixed(2)} ${selectedOrderDetails.currency || 'ETB'}`
                         : 'Free'}
@@ -4785,8 +4785,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               )}
 
               {/* Order Items Breakdown */}
-              <div className="bg-black/40 border border-white/10 rounded-xl p-4 space-y-3">
-                <div className="text-[10px] text-amber-300 font-bold uppercase tracking-widest">Items Purchased</div>
+              <div className="bg-white/60 border border-[#D8C6A8]/40 rounded-xl p-4 space-y-3">
+                <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-widest">Items Purchased</div>
                 <div className="divide-y divide-white/10">
                   {selectedOrderDetails.items.map((it: any, idx: number) => {
                     const isUsd = selectedOrderDetails.currency === 'USD' || selectedOrderDetails.buyerMarket === 'INTERNATIONAL';
@@ -4817,7 +4817,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                              ? (it.package?.image || it.package?.imageUrl)
                              : (singleObj?.image || singleObj?.imageUrl);
                            return imgSrc ? (
-                             <div className="w-16 h-16 rounded-lg overflow-hidden border border-white/15 bg-black/40 flex-shrink-0">
+                             <div className="w-16 h-16 rounded-lg overflow-hidden border border-[#D8C6A8]/50 bg-white/60 flex-shrink-0">
                                <img
                                  src={imgSrc}
                                  alt={title}
@@ -4826,23 +4826,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                />
                              </div>
                            ) : (
-                             <div className="w-16 h-16 rounded-lg border border-white/10 bg-white/5 flex-shrink-0 flex items-center justify-center">
-                               <Gift className="w-6 h-6 text-white/20" />
+                             <div className="w-16 h-16 rounded-lg border border-[#D8C6A8]/40 bg-white/5 flex-shrink-0 flex items-center justify-center">
+                               <Gift className="w-6 h-6 text-[#241A15]/20" />
                              </div>
                            );
                          })()}
 
                          <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                            <div className="flex-1 min-w-0">
-                             <div className="font-bold text-white text-sm flex items-center flex-wrap gap-2">
+                             <div className="font-bold text-[#241A15] text-sm flex items-center flex-wrap gap-2">
                                <span>{title}</span>
                                {it.customUnitValue != null && (
-                                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-[#8E6E2F] border border-amber-400/30">
                                    Size / Portion: {it.customUnitValue} {it.customUnitName || 'kg'}
                                  </span>
                                )}
                              </div>
-                             <div className="text-[11px] text-white/60">Qty: {it.quantity} • {isPkg ? 'Ready-Made Package' : (singleObj?.category || 'Single Item')}</div>
+                             <div className="text-[11px] text-[#241A15]/60">Qty: {it.quantity} • {isPkg ? 'Ready-Made Package' : (singleObj?.category || 'Single Item')}</div>
 
                              {/* Customer Customization Details (Text & Photo) */}
                              {(it.customerInputText || it.customerInputImageUrl) && (
@@ -4852,14 +4852,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                    <span>Client Customization Details</span>
                                  </div>
                                  {it.customerInputText && (
-                                   <div className="text-white text-xs bg-black/40 rounded p-1.5 border border-white/10">
-                                     <span className="text-white/60 font-semibold">Custom Text: </span>
-                                     <span className="text-amber-200 font-medium font-mono">"{it.customerInputText}"</span>
+                                   <div className="text-[#241A15] text-xs bg-white/60 rounded p-1.5 border border-[#D8C6A8]/40">
+                                     <span className="text-[#241A15]/60 font-semibold">Custom Text: </span>
+                                     <span className="text-[#8E6E2F] font-medium font-mono">"{it.customerInputText}"</span>
                                    </div>
                                  )}
                                  {it.customerInputImageUrl && (
                                    <div className="pt-1 flex items-center gap-2">
-                                     <div className="w-14 h-14 rounded-lg overflow-hidden border border-purple-400/40 bg-black/60 flex-shrink-0">
+                                     <div className="w-14 h-14 rounded-lg overflow-hidden border border-purple-400/40 bg-white/80 flex-shrink-0">
                                        <img
                                          src={it.customerInputImageUrl}
                                          alt="Client Custom Photo"
@@ -4867,12 +4867,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                        />
                                      </div>
                                      <div>
-                                       <span className="text-[10px] text-white/70 block">Client Uploaded Photo</span>
+                                       <span className="text-[10px] text-[#241A15]/70 block">Client Uploaded Photo</span>
                                        <a
                                          href={it.customerInputImageUrl}
                                          target="_blank"
                                          rel="noreferrer"
-                                         className="text-amber-300 hover:underline text-[11px] font-bold inline-flex items-center gap-1 mt-0.5"
+                                         className="text-[#8E6E2F] hover:underline text-[11px] font-bold inline-flex items-center gap-1 mt-0.5"
                                        >
                                          <Eye className="w-3 h-3" /> View Full Image
                                        </a>
@@ -4882,7 +4882,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                </div>
                              )}
                            </div>
-                           <div className="font-bold text-amber-300 text-sm whitespace-nowrap">
+                           <div className="font-bold text-[#8E6E2F] text-sm whitespace-nowrap">
                              {isUsd ? `$${(itemPrice * it.quantity).toFixed(2)} USD` : `${(itemPrice * it.quantity).toLocaleString()} ብር`}
                            </div>
                          </div>
@@ -4894,48 +4894,48 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Payment & Market Details */}
-              <div className="bg-black/40 border border-white/10 rounded-xl p-4 space-y-3">
-                <div className="text-[10px] text-amber-300 font-bold uppercase tracking-widest">Payment & Verification Details</div>
+              <div className="bg-white/60 border border-[#D8C6A8]/40 rounded-xl p-4 space-y-3">
+                <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-widest">Payment & Verification Details</div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-white/70">Buyer Market:</span>
-                  <span className="text-amber-300 font-bold">
+                  <span className="text-[#241A15]/70">Buyer Market:</span>
+                  <span className="text-[#8E6E2F] font-bold">
                     {selectedOrderDetails.buyerMarket === 'INTERNATIONAL' ? '🌍 International (Abroad / USD)' : '🇪🇹 Local (Ethiopia / ETB)'}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-white/70">Payment Method:</span>
-                  <span className="text-white font-semibold">{selectedOrderDetails.paymentMethod || 'Manual Payment / Gateway'}</span>
+                  <span className="text-[#241A15]/70">Payment Method:</span>
+                  <span className="text-[#241A15] font-semibold">{selectedOrderDetails.paymentMethod || 'Manual Payment / Gateway'}</span>
                 </div>
 
                 {/* Sender Name Highlight */}
                 {selectedOrderDetails.senderName && (
                   <div className="flex items-center justify-between bg-amber-400/10 border border-amber-400/30 p-2.5 rounded-lg">
-                    <span className="text-amber-300 font-bold text-[11px] flex items-center gap-1">
-                      <User className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="text-[#8E6E2F] font-bold text-[11px] flex items-center gap-1">
+                      <User className="w-3.5 h-3.5 text-[#B8944A]" />
                       <span>Customer Sender Name:</span>
                     </span>
-                    <span className="text-amber-200 font-bold text-xs">{selectedOrderDetails.senderName}</span>
+                    <span className="text-[#8E6E2F] font-bold text-xs">{selectedOrderDetails.senderName}</span>
                   </div>
                 )}
 
                 {selectedOrderDetails.transactionId && (
                   <div className="flex items-center justify-between">
-                    <span className="text-white/70">Transaction ID / Ref:</span>
-                    <span className="text-white font-mono text-[11px]">{selectedOrderDetails.transactionId}</span>
+                    <span className="text-[#241A15]/70">Transaction ID / Ref:</span>
+                    <span className="text-[#241A15] font-mono text-[11px]">{selectedOrderDetails.transactionId}</span>
                   </div>
                 )}
 
                 {selectedOrderDetails.paymentStatus && (
                   <div className="flex items-center justify-between">
-                    <span className="text-white/70">Payment Status:</span>
+                    <span className="text-[#241A15]/70">Payment Status:</span>
                     <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                       selectedOrderDetails.paymentStatus === 'PAID'
                         ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
                         : selectedOrderDetails.paymentStatus === 'REJECTED'
-                        ? 'bg-red-500/20 text-red-300 border border-red-500/40'
-                        : 'bg-amber-400/20 text-amber-300 border border-amber-400/40'
+                        ? 'bg-red-500/20 text-red-700 border border-red-500/40'
+                        : 'bg-amber-400/20 text-[#8E6E2F] border border-amber-400/40'
                     }`}>
                       {selectedOrderDetails.paymentStatus}
                     </span>
@@ -4943,33 +4943,33 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 )}
 
                 {selectedOrderDetails.rejectionReason && (
-                  <div className="text-[11px] text-red-300 bg-red-950/50 p-2.5 rounded-lg border border-red-500/30">
+                  <div className="text-[11px] text-red-700 bg-red-950/50 p-2.5 rounded-lg border border-red-500/30">
                     <strong>Rejection Reason:</strong> "{selectedOrderDetails.rejectionReason}"
                   </div>
                 )}
 
                 {selectedOrderDetails.reviewedBy && (
-                  <div className="text-[10px] text-white/50 pt-1 border-t border-white/5">
+                  <div className="text-[10px] text-[#241A15]/50 pt-1 border-t border-[#D8C6A8]/20">
                     Reviewed by <strong>{selectedOrderDetails.reviewedBy}</strong> on {selectedOrderDetails.reviewedAt ? new Date(selectedOrderDetails.reviewedAt).toLocaleString() : 'N/A'}
                   </div>
                 )}
 
                 {selectedOrderDetails.chapaTxRef && (
                   <div className="flex items-center justify-between">
-                    <span className="text-white/70">Chapa Reference:</span>
-                    <span className="text-amber-300 font-mono text-[11px] font-bold">{selectedOrderDetails.chapaTxRef}</span>
+                    <span className="text-[#241A15]/70">Chapa Reference:</span>
+                    <span className="text-[#8E6E2F] font-mono text-[11px] font-bold">{selectedOrderDetails.chapaTxRef}</span>
                   </div>
                 )}
 
                 {/* Receipt Preview Thumbnail */}
                 {selectedOrderDetails.paymentReceiptUrl && !selectedOrderDetails.paymentReceiptUrl.includes('placeholder') && (
-                  <div className="mt-3 pt-3 border-t border-white/10">
-                    <div className="text-white/70 text-[10px] mb-2 flex items-center justify-between">
+                  <div className="mt-3 pt-3 border-t border-[#D8C6A8]/40">
+                    <div className="text-[#241A15]/70 text-[10px] mb-2 flex items-center justify-between">
                       <span>Submitted Receipt Proof:</span>
                       <button
                         type="button"
                         onClick={() => setViewingReceiptUrl(selectedOrderDetails.paymentReceiptUrl || null)}
-                        className="text-amber-300 hover:text-amber-200 text-[11px] font-bold underline flex items-center gap-1 cursor-pointer"
+                        className="text-[#8E6E2F] hover:text-[#8E6E2F] text-[11px] font-bold underline flex items-center gap-1 cursor-pointer"
                       >
                         <Eye className="w-3 h-3" /> Full Screen View
                       </button>
@@ -4981,7 +4981,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <img 
                         src={selectedOrderDetails.paymentReceiptUrl} 
                         alt="Payment Receipt" 
-                        className="w-full max-h-56 object-contain bg-black/60 group-hover:scale-[1.02] transition-transform"
+                        className="w-full max-h-56 object-contain bg-white/80 group-hover:scale-[1.02] transition-transform"
                       />
                     </div>
                   </div>
@@ -4989,12 +4989,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 {/* Direct Verification Actions inside Inspection Modal */}
                 {selectedOrderDetails.paymentStatus !== 'PAID' && (
-                  <div className="pt-3 border-t border-white/10 flex items-center gap-2">
+                  <div className="pt-3 border-t border-[#D8C6A8]/40 flex items-center gap-2">
                     <button
                       type="button"
                       disabled={isProcessingPaymentAction}
                       onClick={() => handleApprovePayment(selectedOrderDetails)}
-                      className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                      className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-[#241A15] font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       <ThumbsUp className="w-3.5 h-3.5" />
                       <span>Approve Payment (Mark Paid)</span>
@@ -5003,7 +5003,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       type="button"
                       disabled={isProcessingPaymentAction}
                       onClick={() => handleOpenRejectModal(selectedOrderDetails)}
-                      className="bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 text-red-300 font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                      className="bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 text-red-700 font-bold text-xs uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       <ThumbsDown className="w-3.5 h-3.5" />
                       <span>Reject</span>
@@ -5011,10 +5011,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 )}
                 {/* Delivery & Fulfillment Status Controller inside Modal */}
-                <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="pt-3 border-t border-[#D8C6A8]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="text-xs">
-                    <span className="text-white/60 block text-[10px] uppercase font-bold tracking-wider">Fulfillment Status</span>
-                    <span className="font-bold text-white">Current: {selectedOrderDetails.status}</span>
+                    <span className="text-[#241A15]/60 block text-[10px] uppercase font-bold tracking-wider">Fulfillment Status</span>
+                    <span className="font-bold text-[#241A15]">Current: {selectedOrderDetails.status}</span>
                   </div>
 
                   <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -5028,7 +5028,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           status: newSt,
                         });
                       }}
-                      className="flex-1 sm:flex-initial bg-black/60 border border-amber-400/40 rounded-xl px-3 py-2 text-xs font-bold text-amber-300 focus:outline-none focus:border-amber-400 cursor-pointer"
+                      className="flex-1 sm:flex-initial bg-white/80 border border-amber-400/40 rounded-xl px-3 py-2 text-xs font-bold text-[#8E6E2F] focus:outline-none focus:border-amber-400 cursor-pointer"
                     >
                       <option value="Pending">Pending (Unconfirmed)</option>
                       <option value="Processing">Processing (Paid & In Prep)</option>
@@ -5042,9 +5042,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Summary */}
-              <div className="flex items-center justify-between bg-black/60 rounded-xl p-4 border border-white/10 text-sm font-bold">
+              <div className="flex items-center justify-between bg-white/80 rounded-xl p-4 border border-[#D8C6A8]/40 text-sm font-bold">
                 <span>Total Amount:</span>
-                <span className="text-amber-300 text-lg">
+                <span className="text-[#8E6E2F] text-lg">
                   {selectedOrderDetails.currency === 'USD' ? '$' : ''}{selectedOrderDetails.total.toFixed(2)} {selectedOrderDetails.currency || (selectedOrderDetails.buyerMarket === 'INTERNATIONAL' ? 'USD' : 'ETB')}
                 </span>
               </div>
@@ -5058,24 +5058,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* ========================================================================= */}
       {rejectingPaymentOrder && (
         <div className="fixed inset-0 z-[70] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto font-inter">
-          <div className="bg-[#2a0407] border border-red-500/50 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl animate-scale-in">
+          <div className="bg-[#FBF8F2]/80 border border-red-500/50 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl animate-scale-in">
             <button
               onClick={() => setRejectingPaymentOrder(null)}
-              className="absolute top-4 right-4 text-white/60 hover:text-white p-1 rounded-full hover:bg-white/10 cursor-pointer"
+              className="absolute top-4 right-4 text-[#241A15]/60 hover:text-[#241A15] p-1 rounded-full hover:bg-white/10 cursor-pointer"
               title="Cancel rejection"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-3 border-b border-white/15 pb-4 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400">
+            <div className="flex items-center gap-3 border-b border-[#D8C6A8]/50 pb-4 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-600">
                 <AlertCircle className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-podium text-lg uppercase font-bold text-white">
+                <h3 className="font-podium text-lg uppercase font-bold text-[#241A15]">
                   Reject Payment for Order {rejectingPaymentOrder.id}
                 </h3>
-                <span className="text-xs text-white/60">
+                <span className="text-xs text-[#241A15]/60">
                   Customer: {rejectingPaymentOrder.customer.fullName} • {formatPrice(rejectingPaymentOrder.total, rejectingPaymentOrder.currency || 'ETB')}
                 </span>
               </div>
@@ -5083,7 +5083,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             <div className="space-y-4 text-xs">
               <div>
-                <label className="font-bold text-white block mb-1">
+                <label className="font-bold text-[#241A15] block mb-1">
                   Choose a Quick Reason:
                 </label>
                 <div className="flex flex-wrap gap-1.5">
@@ -5100,8 +5100,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       onClick={() => setRejectionReasonInput(quickReason)}
                       className={`text-[11px] px-2.5 py-1 rounded-lg border transition-all cursor-pointer text-left ${
                         rejectionReasonInput === quickReason
-                          ? 'bg-red-500/30 border-red-400 text-white font-semibold'
-                          : 'bg-black/30 border-white/10 text-white/70 hover:text-white'
+                          ? 'bg-red-500/30 border-red-400 text-[#241A15] font-semibold'
+                          : 'bg-white/50 border-[#D8C6A8]/40 text-[#241A15]/70 hover:text-[#241A15]'
                       }`}
                     >
                       {quickReason}
@@ -5111,7 +5111,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               <div>
-                <label className="font-bold text-white block mb-1">
+                <label className="font-bold text-[#241A15] block mb-1">
                   Detailed Rejection Note (Will be displayed to customer):
                 </label>
                 <textarea
@@ -5119,19 +5119,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   value={rejectionReasonInput}
                   onChange={(e) => setRejectionReasonInput(e.target.value)}
                   placeholder="Explain why the payment proof could not be accepted so the customer can correct it..."
-                  className="w-full bg-black/50 border border-red-500/40 focus:border-red-400 rounded-xl p-3 text-xs text-white placeholder-white/40 focus:outline-none"
+                  className="w-full bg-white/70 border border-red-500/40 focus:border-red-400 rounded-xl p-3 text-xs text-[#241A15] placeholder-white/40 focus:outline-none"
                 />
               </div>
 
-              <div className="bg-black/30 p-3 rounded-xl border border-white/10 text-[11px] text-white/60">
-                The order will be marked as <strong className="text-red-400">REJECTED</strong> and the customer will be able to review this note and upload a corrected receipt.
+              <div className="bg-white/50 p-3 rounded-xl border border-[#D8C6A8]/40 text-[11px] text-[#241A15]/60">
+                The order will be marked as <strong className="text-red-600">REJECTED</strong> and the customer will be able to review this note and upload a corrected receipt.
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setRejectingPaymentOrder(null)}
-                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-[#241A15] font-bold text-xs uppercase cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -5139,7 +5139,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   type="button"
                   disabled={isProcessingPaymentAction}
                   onClick={handleConfirmRejectPayment}
-                  className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-[#241A15] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {isProcessingPaymentAction ? (
                     <>
@@ -5180,7 +5180,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </a>
             <button
               onClick={() => setViewingReceiptUrl(null)}
-              className="p-2 rounded-full bg-black/70 hover:bg-white/20 text-white border border-white/20 cursor-pointer shadow-lg"
+              className="p-2 rounded-full bg-black/70 hover:bg-white/20 text-[#241A15] border border-[#D8C6A8]/60 cursor-pointer shadow-lg"
               title="Close viewer"
             >
               <X className="w-5 h-5" />
