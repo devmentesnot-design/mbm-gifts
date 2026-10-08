@@ -1075,13 +1075,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   ];
 
   return (
-    <div className="min-h-screen w-full bg-[#140F0D] text-[#FBF8F2] flex flex-col font-inter selection:bg-[#E6D5B8] selection:text-[#241A15]">
+    <div className="min-h-screen w-full bg-[#F7F1E7] text-[#241A15] flex flex-col font-inter selection:bg-[#E6D5B8] selection:text-[#241A15]">
       {/* Top Navbar Header */}
-      <header className="h-16 border-b border-[#D8C6A8]/20 bg-[#1C1512] px-4 lg:px-8 flex items-center justify-between sticky top-0 z-40 shadow-xl">
+      <header className="h-16 border-b border-[#D8C6A8]/50 bg-[#FBF8F2]/95 px-4 lg:px-8 flex items-center justify-between sticky top-0 z-40 shadow-xl">
         <div className="flex items-center gap-4">
           <button
             onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-            className="lg:hidden p-2 rounded-lg bg-white/10 text-[#241A15] hover:bg-white/20"
+            className="lg:hidden p-2 rounded-lg bg-[#E6D5B8]/30 text-[#241A15] hover:bg-white/20"
           >
             <Menu className="w-5 h-5" />
           </button>
@@ -1099,7 +1099,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="flex items-center gap-4">
           <button
             onClick={onClose}
-            className="flex items-center gap-2 bg-rose-500/20 border border-rose-500/40 hover:bg-rose-500/30 hover:border-rose-400 text-rose-300 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md"
+            className="flex items-center gap-2 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300 text-red-700 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md"
             title="Sign out of Admin Portal"
           >
             <LogOut className="w-4 h-4" />
@@ -1107,13 +1107,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </button>
 
           <div className="flex items-center gap-2 border-l border-[#D8C6A8]/40 pl-4">
-            <div className="w-8 h-8 rounded-full bg-[#E6D5B8] text-[#241A15] font-bold flex items-center justify-center text-xs">
+            <div className="w-8 h-8 rounded-full bg-[#241A15] text-[#E6D5B8] font-bold flex items-center justify-center text-xs">
               AD
             </div>
             <div className="hidden md:block">
               <div className="text-xs font-bold text-[#241A15]">Administrator</div>
-              <div className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Connected
+              <div className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Connected
               </div>
             </div>
           </div>
@@ -1124,12 +1124,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       <div className="flex-1 flex overflow-hidden relative">
         {/* Sidebar Navigation */}
         <aside
-          className={`fixed lg:static top-16 bottom-0 lg:top-0 left-0 z-50 w-72 bg-[#18120F] border-r border-[#D8C6A8]/15 flex flex-col justify-between transition-transform duration-300 shadow-2xl lg:translate-x-0 ${
+          className={`fixed lg:static top-16 bottom-0 lg:top-0 left-0 z-50 w-72 bg-[#F2EBD9] border-r border-[#D8C6A8]/40 flex flex-col justify-between transition-transform duration-300 shadow-2xl lg:translate-x-0 ${
             isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
           <div className="p-4 space-y-1 overflow-y-auto">
-            <div className="px-3 py-2 text-[10px] uppercase tracking-widest font-bold text-[#E6D5B8]">
+            <div className="px-3 py-2 text-[10px] uppercase tracking-widest font-bold text-[#756457]">
               Management Menu
             </div>
 
@@ -1146,11 +1146,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive
                       ? 'bg-[#E6D5B8] text-[#241A15] shadow-lg font-bold'
-                      : 'text-[#241A15]/70 hover:bg-white/10 hover:text-[#241A15]'
+                      : 'text-[#241A15]/70 hover:bg-[#D8C6A8]/40 hover:text-[#241A15]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#241A15]' : 'text-[#E6D5B8]'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#241A15]' : 'text-[#756457]'}`} />
                     <span>{item.label}</span>
                   </div>
                   {item.badge && (
@@ -1163,7 +1163,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             })}
           </div>
 
-          <div className="p-4 border-t border-[#D8C6A8]/40 bg-white/40 text-xs text-[#241A15]/50 space-y-1">
+          <div className="p-4 border-t border-[#D8C6A8]/40 bg-[#E6D5B8]/40 text-xs text-[#241A15]/50 space-y-1">
             <div className="font-semibold text-[#241A15]/70">MBM Admin Suite v2.5</div>
             <div>Category Engine & Detail Forms Enabled</div>
           </div>
@@ -1173,7 +1173,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {isMobileSidebarOpen && (
           <div
             onClick={() => setIsMobileSidebarOpen(false)}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-[#241A15]/50 backdrop-blur-sm z-40 lg:hidden"
           />
         )}
 
@@ -1194,7 +1194,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
                 <button
                   onClick={() => setCreateOrderModalOpen(true)}
-                  className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
+                  className="bg-[#B8944A] hover:bg-[#D9A514] text-white font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
                 >
                   <Plus className="w-4 h-4" />
                   <span>New Manual Order</span>
@@ -1203,7 +1203,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               {/* Stats Cards — Dollar and Birr calculated separately */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg">
+                <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg">
                   <div>
                     <span className="text-[10px] text-[#241A15]/50 uppercase font-bold tracking-widest">Total Revenue</span>
                     <div className="mt-1.5 space-y-1">
@@ -1214,7 +1214,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <span className="text-xs text-[#8E6E2F]/80 font-bold">ETB (ብር)</span>
                       </div>
                       <div className="flex items-baseline gap-1.5">
-                        <span className="font-podium text-base sm:text-lg text-emerald-400 font-bold">
+                        <span className="font-podium text-base sm:text-lg text-emerald-600 font-bold">
                           ${totalRevenueUSD.toFixed(2)}
                         </span>
                         <span className="text-[11px] text-emerald-400/80 font-bold">USD ($)</span>
@@ -1226,7 +1226,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 </div>
 
-                <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg">
+                <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg">
                   <div>
                     <span className="text-[10px] text-[#241A15]/50 uppercase font-bold tracking-widest">Total Orders</span>
                     <div className="font-podium text-2xl sm:text-3xl text-[#241A15] font-bold mt-1">
@@ -1235,7 +1235,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <div className="text-[10px] text-[#241A15]/60 font-semibold mt-1 flex items-center gap-1.5">
                       <span className="text-[#8E6E2F]">{etbOrders.length} ETB</span>
                       <span>•</span>
-                      <span className="text-emerald-400">{usdOrders.length} USD</span>
+                      <span className="text-emerald-600">{usdOrders.length} USD</span>
                     </div>
                     <span className="text-[10px] text-[#8E6E2F]/90 font-medium block mt-0.5">
                       {pendingOrdersCount} Pending Confirmation
@@ -1246,7 +1246,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 </div>
 
-                <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg">
+                <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg">
                   <div>
                     <span className="text-[10px] text-[#241A15]/50 uppercase font-bold tracking-widest">Average Order Value</span>
                     <div className="mt-1.5 space-y-1">
@@ -1257,7 +1257,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <span className="text-xs text-[#8E6E2F]/80 font-bold">ETB</span>
                       </div>
                       <div className="flex items-baseline gap-1.5">
-                        <span className="font-podium text-sm sm:text-base text-emerald-400 font-bold">
+                        <span className="font-podium text-sm sm:text-base text-emerald-600 font-bold">
                           ${avgOrderValueUSD.toFixed(2)}
                         </span>
                         <span className="text-[11px] text-emerald-400/80 font-bold">USD</span>
@@ -1269,13 +1269,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 </div>
 
-                <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-center justify-between shadow-lg">
+                <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-center justify-between shadow-lg">
                   <div>
                     <span className="text-[10px] text-[#241A15]/50 uppercase font-bold tracking-widest">Active Customers</span>
                     <div className="font-podium text-2xl sm:text-3xl text-[#241A15] font-bold mt-1">
                       {customersList.length}
                     </div>
-                    <span className="text-[10px] text-emerald-400 font-semibold mt-1 block">Registered in Database</span>
+                    <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">Registered in Database</span>
                   </div>
                   <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-[#8E6E2F]">
                     <Users className="w-6 h-6" />
@@ -1284,7 +1284,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Recent Orders Overview */}
-              <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-6 shadow-xl space-y-4">
+              <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-6 shadow-xl space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-podium text-lg uppercase font-bold text-[#241A15] flex items-center gap-2">
                     <Clock className="w-5 h-5 text-[#8E6E2F]" /> Recent Customer Orders
@@ -1309,9 +1309,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <th className="py-3 px-3 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-[#D8C6A8]/30">
                       {approvedOrders.slice(0, 5).map((ord) => (
-                        <tr key={ord.id} className="hover:bg-white/5 transition-colors">
+                        <tr key={ord.id} className="hover:bg-[#E6D5B8]/30 transition-colors">
                           <td className="py-3 px-3 font-bold text-[#8E6E2F]">{ord.id}</td>
                           <td className="py-3 px-3">
                             <div className="font-semibold text-[#241A15]">{ord.customer.fullName}</div>
@@ -1334,10 +1334,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <span
                               className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                                 ord.status === 'Delivered'
-                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                  ? 'bg-emerald-100 text-emerald-700 border border-emerald-300/50'
                                   : ord.status === 'Shipped'
-                                  ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
-                                  : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                                  ? 'bg-indigo-100 text-indigo-700 border border-indigo-300/50'
+                                  : 'bg-blue-100 text-blue-700 border border-blue-300/50'
                               }`}
                             >
                               {ord.status}
@@ -1346,7 +1346,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <td className="py-3 px-3 text-right">
                             <button
                               onClick={() => setSelectedOrderDetails(ord)}
-                              className="px-3 py-1 rounded bg-white/10 hover:bg-white/20 text-[#8E6E2F] font-bold text-[11px]"
+                              className="px-3 py-1 rounded bg-[#E6D5B8]/50 hover:bg-[#D8C6A8]/70 text-[#241A15] font-bold text-[11px]"
                             >
                               View
                             </button>
@@ -1373,7 +1373,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <div className="inline-flex items-center gap-1.5 text-[#8E6E2F] text-[10px] font-bold uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full mb-1">
-                    <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                    <ShieldCheck className="w-3 h-3 text-emerald-600" />
                     <span>Verified & Paid Orders Dispatch Queue</span>
                   </div>
                   <h2 className="font-podium text-2xl sm:text-3xl uppercase font-bold text-[#241A15] tracking-wide">
@@ -1386,7 +1386,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setCreateOrderModalOpen(true)}
-                    className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
+                    className="bg-[#B8944A] hover:bg-[#D9A514] text-white font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
                   >
                     <Plus className="w-4 h-4" />
                     <span>+ Create Manual Order</span>
@@ -1411,7 +1411,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <button
                     type="button"
                     onClick={() => setActiveTab('payments')}
-                    className="px-3.5 py-1.5 rounded-xl bg-amber-400 text-[#8c1119] font-bold text-xs uppercase tracking-wider hover:bg-amber-300 transition-all cursor-pointer whitespace-nowrap shadow"
+                    className="px-3.5 py-1.5 rounded-xl bg-[#B8944A] text-white font-bold text-xs uppercase tracking-wider hover:bg-amber-300 transition-all cursor-pointer whitespace-nowrap shadow"
                   >
                     Review Payments ({pendingPaymentsCount}) →
                   </button>
@@ -1419,7 +1419,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               )}
 
               {/* Filters */}
-              <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-4 flex flex-col lg:flex-row gap-4 items-center justify-between shadow-lg">
+              <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-4 flex flex-col lg:flex-row gap-4 items-center justify-between shadow-lg">
                 <div className="relative w-full lg:w-80">
                   <Search className="w-4 h-4 absolute left-3 top-3 text-[#241A15]/40" />
                   <input
@@ -1445,7 +1445,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       onClick={() => setOrderStatusFilter(st.id)}
                       className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border transition-all cursor-pointer whitespace-nowrap ${
                         orderStatusFilter === st.id
-                          ? 'bg-amber-400 border-amber-400 text-[#8c1119] shadow-md font-extrabold'
+                          ? 'bg-[#B8944A] border-[#B8944A] text-white shadow-md font-extrabold'
                           : 'bg-white/40 border-[#D8C6A8]/40 text-[#241A15]/70 hover:text-[#241A15]'
                       }`}
                     >
@@ -1456,7 +1456,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Orders Table */}
-              <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-6 shadow-xl overflow-x-auto">
+              <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-6 shadow-xl overflow-x-auto">
                 <table className="w-full text-left font-inter text-xs">
                   <thead>
                     <tr className="border-b border-[#D8C6A8]/40 text-[#241A15]/50 uppercase text-[10px] tracking-wider">
@@ -1470,14 +1470,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <th className="py-3 px-3 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-[#D8C6A8]/30">
                     {filteredOrders.map((ord) => {
                       const isPaid = ord.paymentStatus === 'PAID';
                       const isUnderReview = ord.paymentStatus === 'UNDER_REVIEW' || ord.paymentStatus === 'PAYMENT_SUBMITTED';
                       const isRejected = ord.paymentStatus === 'REJECTED';
 
                       return (
-                        <tr key={ord.id} className="hover:bg-white/5 transition-colors">
+                        <tr key={ord.id} className="hover:bg-[#E6D5B8]/30 transition-colors">
                           <td className="py-4 px-3">
                             <div className="font-bold text-[#8E6E2F] font-podium text-sm">{ord.id}</div>
                             <span className="text-[10px] text-[#241A15]/50 block mt-0.5">
@@ -1510,7 +1510,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${
                                     ord.customer.shipMode === 'recipient'
                                       ? 'bg-amber-400/15 text-[#8E6E2F] border border-amber-400/30'
-                                      : 'bg-white/10 text-[#241A15]/60 border border-[#D8C6A8]/60'
+                                      : 'bg-[#E6D5B8]/30 text-[#241A15]/60 border border-[#D8C6A8]/60'
                                   }`}>
                                     {ord.customer.shipMode === 'recipient' ? '📦 Ship to Recipient' : '🏠 Ship to Me'}
                                   </span>
@@ -1554,8 +1554,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           {/* Payment Verification Status Badge */}
                           <td className="py-4 px-3">
                             {isPaid ? (
-                              <span className="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">
-                                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                              <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 border border-emerald-300/50 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">
+                                <ShieldCheck className="w-3 h-3 text-emerald-600" />
                                 <span>PAID</span>
                               </span>
                             ) : isUnderReview ? (
@@ -1576,7 +1576,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <span>Rejected</span>
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 bg-white/10 text-[#241A15]/60 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">
+                              <span className="inline-flex items-center gap-1 bg-[#E6D5B8]/30 text-[#241A15]/60 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">
                                 <span>Unpaid</span>
                               </span>
                             )}
@@ -1589,7 +1589,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               onChange={(e) => onUpdateOrderStatus(ord.id, e.target.value as OrderStatus)}
                               className={`border rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none transition-all cursor-pointer ${
                                 ord.status === 'Delivered'
-                                  ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300'
+                                  ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-700'
                                   : ord.status === 'Shipped'
                                   ? 'bg-indigo-950/80 border-indigo-500/50 text-indigo-300'
                                   : ord.status === 'Processing'
@@ -1614,7 +1614,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => setViewingReceiptUrl(ord.paymentReceiptUrl || null)}
-                                  className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#8E6E2F] hover:text-[#241A15] transition-colors cursor-pointer"
+                                  className="p-1.5 rounded-lg bg-[#E6D5B8]/50 hover:bg-[#D8C6A8]/70 text-[#241A15] hover:text-[#241A15] transition-colors cursor-pointer"
                                   title="View Uploaded Payment Proof"
                                 >
                                   <Eye className="w-3.5 h-3.5" />
@@ -1636,7 +1636,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => onUpdateOrderStatus(ord.id, 'Delivered')}
-                                  className="px-2 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold uppercase transition-all cursor-pointer whitespace-nowrap"
+                                  className="px-2 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 border border-emerald-500/40 text-[10px] font-bold uppercase transition-all cursor-pointer whitespace-nowrap"
                                   title="Mark as Delivered"
                                 >
                                   Deliver
@@ -1686,7 +1686,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="bg-[#2e0508] border border-amber-400/30 rounded-xl px-4 py-2 text-right shadow-lg">
+                  <div className="bg-white border border-amber-400/30 rounded-xl px-4 py-2 text-right shadow-lg">
                     <span className="text-[10px] text-[#241A15]/50 uppercase font-bold block">Awaiting Verification</span>
                     <span className="font-podium text-xl text-[#8E6E2F] font-bold">
                       {pendingPaymentsCount} order{pendingPaymentsCount !== 1 ? 's' : ''}
@@ -1696,7 +1696,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Filters & Search */}
-              <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-lg">
+              <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-lg">
                 <div className="relative w-full sm:w-80">
                   <Search className="w-4 h-4 absolute left-3 top-3 text-[#241A15]/40" />
                   <input
@@ -1720,7 +1720,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       onClick={() => setPaymentFilter(filterTab.id as any)}
                       className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border transition-all cursor-pointer whitespace-nowrap ${
                         paymentFilter === filterTab.id
-                          ? 'bg-amber-400 border-amber-400 text-[#8c1119] shadow-md'
+                          ? 'bg-[#B8944A] border-[#B8944A] text-white shadow-md'
                           : 'bg-white/40 border-[#D8C6A8]/40 text-[#241A15]/70 hover:text-[#241A15]'
                       }`}
                     >
@@ -1757,7 +1757,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 if (paymentsToDisplay.length === 0) {
                   return (
-                    <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-12 text-center text-[#241A15]/40 space-y-3">
+                    <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-12 text-center text-[#241A15]/40 space-y-3">
                       <ShieldCheck className="w-12 h-12 text-[#241A15]/20 mx-auto" />
                       <div className="font-podium text-lg uppercase text-[#241A15] font-bold">No payments in this queue</div>
                       <p className="text-xs text-[#241A15]/50 max-w-sm mx-auto">
@@ -1780,9 +1780,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       return (
                         <div
                           key={ord.id}
-                          className={`bg-[#2e0508] border rounded-2xl p-5 shadow-xl transition-all ${
+                          className={`bg-white border rounded-2xl p-5 shadow-xl transition-all ${
                             isUnderReview
-                              ? 'border-amber-400/50 bg-gradient-to-r from-[#2e0508] to-[#3a060a]'
+                              ? 'border-[#B8944A]/50 bg-gradient-to-r from-amber-50 to-[#FBF8F2]'
                               : isRejected
                               ? 'border-red-500/30'
                               : 'border-[#D8C6A8]/40'
@@ -1797,7 +1797,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   {ord.id}
                                 </span>
                                 {isUnderReview && (
-                                  <span className="bg-amber-400 text-[#8c1119] text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase animate-pulse">
+                                  <span className="bg-[#B8944A] text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase animate-pulse">
                                     Needs Audit
                                   </span>
                                 )}
@@ -1849,7 +1849,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               </div>
 
                               {ord.transactionId && (
-                                <div className="text-[11px] text-[#241A15]/70 bg-white/50 px-2.5 py-1 rounded border border-[#D8C6A8]/20 font-mono">
+                                <div className="text-[11px] text-[#241A15]/70 bg-white/50 px-2.5 py-1 rounded border border-[#D8C6A8]/50 font-mono">
                                   <span className="text-[#241A15]/40 mr-1.5">Ref / TX:</span>
                                   <strong className="text-[#241A15]">{ord.transactionId}</strong>
                                 </div>
@@ -1885,7 +1885,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   </button>
                                 </div>
                               ) : (
-                                <div className="py-4 text-[11px] text-[#241A15]/40 bg-white/40 rounded-xl border border-[#D8C6A8]/20">
+                                <div className="py-4 text-[11px] text-[#241A15]/40 bg-white/40 rounded-xl border border-[#D8C6A8]/50">
                                   No receipt file
                                 </div>
                               )}
@@ -1899,8 +1899,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 </span>
                                 <div className="flex items-center gap-2">
                                   {isPaid && (
-                                    <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold px-3 py-1 rounded-full text-xs uppercase flex items-center gap-1.5">
-                                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                                    <span className="bg-emerald-100 text-emerald-700 border border-emerald-300/50 font-bold px-3 py-1 rounded-full text-xs uppercase flex items-center gap-1.5">
+                                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                                       <span>VERIFIED & PAID</span>
                                     </span>
                                   )}
@@ -1962,7 +1962,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => setSelectedOrderDetails(ord)}
-                                  className="px-2.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#241A15]/80 text-xs font-semibold cursor-pointer"
+                                  className="px-2.5 py-2.5 rounded-xl bg-[#E6D5B8]/30 hover:bg-[#D8C6A8]/60 text-[#241A15]/80 text-xs font-semibold cursor-pointer"
                                   title="View full order inspection details"
                                 >
                                   <Eye className="w-3.5 h-3.5" />
@@ -2007,7 +2007,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
         <button
           onClick={() => handleOpenPkgModal()}
-          className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
+          className="bg-[#B8944A] hover:bg-[#D9A514] text-white font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
         >
           <Plus className="w-4 h-4" />
           <span>+ Create Package</span>
@@ -2041,7 +2041,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             onClick={() => setPkgCategoryFilter('all')}
             className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
               pkgCategoryFilter === 'all'
-                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
                 : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
             }`}
           >
@@ -2071,7 +2071,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   }}
                   className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                      ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
                       : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
                   }`}
                 >
@@ -2098,7 +2098,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           onClick={() => setPkgCategoryFilter(subKey)}
                           className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                             isSubActive
-                              ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
+                              ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-sm'
                               : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/70 hover:border-[#F5C542]/40 hover:text-[#241A15]'
                           }`}
                         >
@@ -2171,12 +2171,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   return (
                     <div
                       key={pkg.id}
-                      className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
+                      className="bg-white border border-[#D8C6A8]/40 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
                     >
                       <div className="relative h-48 bg-white/80 overflow-hidden flex items-center justify-center">
                         <img src={pkg.image} alt={pkg.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                         {pkg.badge && (
-                          <span className="absolute top-3 left-3 bg-amber-400 text-[#8c1119] text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full shadow">
+                          <span className="absolute top-3 left-3 bg-[#B8944A] text-white text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full shadow">
                             {pkg.badge}
                           </span>
                         )}
@@ -2211,7 +2211,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => handleOpenPkgModal(pkg)}
-                                className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-[#241A15] transition-colors cursor-pointer"
+                                className="p-2 rounded-lg bg-[#E6D5B8]/30 hover:bg-[#D9A514] hover:text-white text-[#241A15] transition-colors cursor-pointer"
                                 title="Edit Package & Internal Items"
                               >
                                 <Edit2 className="w-4 h-4" />
@@ -2265,7 +2265,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <button
                           key={p}
                           onClick={() => { setPkgPage(p); }}
-                          className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/60 hover:border-amber-400/50 hover:text-[#8E6E2F]'}`}
+                          className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-[#B8944A] text-white border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/60 hover:border-amber-400/50 hover:text-[#8E6E2F]'}`}
                         >{p}</button>
                       );
                     })}
@@ -2327,7 +2327,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             onClick={() => setPkgCategoryFilter('all')}
             className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
               pkgCategoryFilter === 'all'
-                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
                 : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
             }`}
           >
@@ -2357,7 +2357,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   }}
                   className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                      ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
                       : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
                   }`}
                 >
@@ -2384,7 +2384,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           onClick={() => setPkgCategoryFilter(subKey)}
                           className={`w-full text-left px-2.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                             isSubActive
-                              ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                              ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
                               : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/60 hover:border-[#F5C542]/40 hover:text-[#241A15] hover:bg-[#230005]/70'
                           }`}
                         >
@@ -2432,7 +2432,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                   <button
                     onClick={() => handleOpenItemModal()}
-                    className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
+                    className="bg-[#B8944A] hover:bg-[#D9A514] text-white font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
                   >
                     <Plus className="w-4 h-4" />
                     <span>+ Add Single Item</span>
@@ -2466,7 +2466,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       onClick={() => setItemCategoryFilter('all')}
                       className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                         itemCategoryFilter === 'all'
-                          ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                          ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
                           : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
                       }`}
                     >
@@ -2496,7 +2496,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             }}
                             className={`w-full text-left px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                               isActive
-                                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
                                 : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15]'
                             }`}
                           >
@@ -2523,7 +2523,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     onClick={() => setItemCategoryFilter(subKey)}
                                     className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                                       isSubActive
-                                        ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-sm'
+                                        ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-sm'
                                         : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/70 hover:border-[#F5C542]/40 hover:text-[#241A15]'
                                     }`}
                                   >
@@ -2596,7 +2596,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             return (
                               <div
                                 key={item.id}
-                                className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
+                                className="bg-white border border-[#D8C6A8]/40 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl group"
                               >
                                 <div className="relative h-44 bg-white/80 overflow-hidden flex items-center justify-center">
                                   <img src={item.image} alt={item.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
@@ -2628,7 +2628,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       <div className="flex items-center gap-2">
                                         <button
                                           onClick={() => handleOpenItemModal(item)}
-                                          className="p-2 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-[#241A15] transition-colors cursor-pointer"
+                                          className="p-2 rounded-lg bg-[#E6D5B8]/30 hover:bg-[#D9A514] hover:text-white text-[#241A15] transition-colors cursor-pointer"
                                         >
                                           <Edit2 className="w-4 h-4" />
                                         </button>
@@ -2680,7 +2680,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   <button
                                     key={p}
                                     onClick={() => { setItemPage(p); }}
-                                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/60 hover:border-amber-400/50 hover:text-[#8E6E2F]'}`}
+                                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${isActive ? 'bg-[#B8944A] text-white border-amber-400 shadow-lg shadow-amber-400/20' : 'bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/60 hover:border-amber-400/50 hover:text-[#8E6E2F]'}`}
                                   >{p}</button>
                                 );
                               })}
@@ -2742,7 +2742,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       onClick={() => setItemCategoryFilter('all')}
                       className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                         itemCategoryFilter === 'all'
-                          ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                          ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
                           : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
                       }`}
                     >
@@ -2772,7 +2772,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             }}
                             className={`w-full text-left px-3 py-2 text-[11px] font-bold font-inter uppercase tracking-wider rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 ${
                               isActive
-                                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                                ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
                                 : 'bg-[#230005]/60 border-[#D9A514]/20 text-[#241A15]/80 hover:border-[#F5C542]/50 hover:text-[#241A15] hover:bg-[#230005]/90'
                             }`}
                           >
@@ -2799,7 +2799,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     onClick={() => setItemCategoryFilter(subKey)}
                                     className={`w-full text-left px-2.5 py-1.5 text-[10px] font-bold font-inter uppercase tracking-wider rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                                       isSubActive
-                                        ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#2B0005] font-black shadow-md'
+                                        ? 'bg-gradient-to-r from-[#F5C542] to-[#D9A514] border-[#F5C542] text-[#241A15] font-black shadow-md'
                                         : 'bg-[#230005]/40 border-[#D9A514]/15 text-[#241A15]/60 hover:border-[#F5C542]/40 hover:text-[#241A15] hover:bg-[#230005]/70'
                                     }`}
                                   >
@@ -2835,7 +2835,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
                 <button
                   onClick={() => handleOpenCategoryModal()}
-                  className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
+                  className="bg-[#B8944A] hover:bg-[#D9A514] text-white font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
                 >
                   <Plus className="w-4 h-4" />
                   <span>+ Create Category</span>
@@ -2856,8 +2856,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       onClick={() => setCategoryTypeFilter(tab.id)}
                       className={`px-4 py-2 rounded-xl text-xs font-bold font-inter whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
                         categoryTypeFilter === tab.id
-                          ? 'bg-amber-400 text-[#8c1119] shadow-lg scale-105 font-extrabold'
-                          : 'bg-white/5 hover:bg-white/10 text-[#241A15]/80 border border-[#D8C6A8]/40'
+                          ? 'bg-[#B8944A] text-white shadow-lg scale-105 font-extrabold'
+                          : 'bg-[#F7F1E7] hover:bg-[#D8C6A8]/40 text-[#241A15]/80 border border-[#D8C6A8]/40'
                       }`}
                     >
                       <span>{tab.label}</span>
@@ -2891,7 +2891,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   .map((cat) => (
                     <div
                       key={cat.id}
-                      className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl overflow-hidden p-5 flex flex-col justify-between shadow-xl"
+                      className="bg-white border border-[#D8C6A8]/40 rounded-2xl overflow-hidden p-5 flex flex-col justify-between shadow-xl"
                     >
                       <div>
                         <div className="flex items-start gap-4">
@@ -2938,7 +2938,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <div className="pt-4 mt-4 border-t border-[#D8C6A8]/40 flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleOpenCategoryModal(cat)}
-                          className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-[#241A15] text-xs font-bold transition-colors cursor-pointer"
+                          className="px-3 py-1.5 rounded-lg bg-[#E6D5B8]/30 hover:bg-[#D9A514] hover:text-white text-[#241A15] text-xs font-bold transition-colors cursor-pointer"
                         >
                           Edit
                         </button>
@@ -2969,7 +2969,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
                 <button
                   onClick={() => handleOpenBoxModal()}
-                  className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
+                  className="bg-[#B8944A] hover:bg-[#D9A514] text-white font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg"
                 >
                   <Plus className="w-4 h-4" />
                   <span>+ Add Box Style</span>
@@ -2980,7 +2980,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 {giftBoxesList.map((box) => (
                   <div
                     key={box.id}
-                    className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl overflow-hidden p-5 flex flex-col justify-between shadow-xl"
+                    className="bg-white border border-[#D8C6A8]/40 rounded-2xl overflow-hidden p-5 flex flex-col justify-between shadow-xl"
                   >
                     <div>
                       <div className="h-44 rounded-xl overflow-hidden bg-white/80 mb-4 border border-[#D8C6A8]/40 flex items-center justify-center">
@@ -3000,7 +3000,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleOpenBoxModal(box)}
-                          className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-amber-400 hover:text-[#8c1119] text-[#241A15] text-xs font-bold transition-colors"
+                          className="px-3 py-1.5 rounded-lg bg-[#E6D5B8]/30 hover:bg-[#D9A514] hover:text-white text-[#241A15] text-xs font-bold transition-colors"
                         >
                           Edit
                         </button>
@@ -3030,7 +3030,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </p>
               </div>
 
-              <div className="bg-[#2e0508] border border-[#D8C6A8]/40 rounded-2xl p-6 shadow-xl overflow-x-auto">
+              <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-6 shadow-xl overflow-x-auto">
                 <table className="w-full text-left font-inter text-xs">
                   <thead>
                     <tr className="border-b border-[#D8C6A8]/40 text-[#241A15]/50 uppercase text-[10px] tracking-wider">
@@ -3042,9 +3042,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <th className="py-3 px-3 text-right">Total Spent</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-[#D8C6A8]/30">
                     {customersList.map((c, idx) => (
-                      <tr key={idx} className="hover:bg-white/5 transition-colors">
+                      <tr key={idx} className="hover:bg-[#E6D5B8]/30 transition-colors">
                         <td className="py-4 px-3 font-bold text-[#241A15]">{c.fullName}</td>
                         <td className="py-4 px-3 font-semibold text-[#8E6E2F]">
                           <div className="flex items-center gap-1.5">
@@ -3067,7 +3067,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </div>
                           )}
                           {c.totalSpentUSD > 0 && (
-                            <div className="text-emerald-400 font-bold text-sm">
+                            <div className="text-emerald-600 font-bold text-sm">
                               ${c.totalSpentUSD.toFixed(2)} <span className="text-[10px] text-emerald-400/80 font-normal">USD</span>
                             </div>
                           )}
@@ -3101,7 +3101,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setCategoryModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
@@ -3146,7 +3146,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     onClick={() => setCategoryForm({ ...categoryForm, type: 'package' })}
                     className={`p-2.5 rounded-lg border text-xs font-bold text-center transition-all ${
                       categoryForm.type === 'package'
-                        ? 'bg-amber-400 text-[#8c1119] border-amber-400'
+                        ? 'bg-[#B8944A] text-white border-amber-400'
                         : 'bg-white/50 border-[#D8C6A8]/60 text-[#241A15]/70 hover:text-[#241A15]'
                     }`}
                   >
@@ -3158,7 +3158,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     onClick={() => setCategoryForm({ ...categoryForm, type: 'custom_item' })}
                     className={`p-2.5 rounded-lg border text-xs font-bold text-center transition-all ${
                       categoryForm.type === 'custom_item'
-                        ? 'bg-amber-400 text-[#8c1119] border-amber-400'
+                        ? 'bg-[#B8944A] text-white border-amber-400'
                         : 'bg-white/50 border-[#D8C6A8]/60 text-[#241A15]/70 hover:text-[#241A15]'
                     }`}
                   >
@@ -3170,7 +3170,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     onClick={() => setCategoryForm({ ...categoryForm, type: 'both' })}
                     className={`p-2.5 rounded-lg border text-xs font-bold text-center transition-all ${
                       categoryForm.type === 'both'
-                        ? 'bg-amber-400 text-[#8c1119] border-amber-400'
+                        ? 'bg-[#B8944A] text-white border-amber-400'
                         : 'bg-white/50 border-[#D8C6A8]/60 text-[#241A15]/70 hover:text-[#241A15]'
                     }`}
                   >
@@ -3262,13 +3262,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setCategoryModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-[#241A15] text-xs font-bold"
+                  className="px-4 py-2 rounded-lg bg-[#E6D5B8]/30 hover:bg-[#D8C6A8]/60 text-[#241A15] text-xs font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-amber-400 hover:bg-amber-300 text-[#8c1119] text-xs font-bold uppercase tracking-wider shadow"
+                  className="px-5 py-2 rounded-lg bg-[#B8944A] hover:bg-[#D9A514] text-white text-xs font-bold uppercase tracking-wider shadow"
                 >
                   Save Category
                 </button>
@@ -3286,7 +3286,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-4xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[95vh] sm:max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => setPkgModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 sm:w-6 h-5 sm:h-6" />
@@ -3348,7 +3348,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 }}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                                   isSelected
-                                    ? 'bg-amber-400 text-[#8c1119] border border-amber-400 shadow-sm scale-105'
+                                    ? 'bg-[#B8944A] text-white border border-amber-400 shadow-sm scale-105'
                                     : 'bg-white/80 text-[#241A15]/70 border border-[#D8C6A8]/50 hover:border-amber-400/50 hover:text-[#241A15]'
                                 }`}
                               >
@@ -3490,7 +3490,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       placeholder="Cloudinary image URL or paste link..."
                       className="flex-1 bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                     />
-                    <label className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md transition-all">
+                    <label className="bg-[#B8944A] hover:bg-[#D9A514] text-white px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md transition-all">
                       {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                       <span>Cloudinary Upload</span>
                       <input
@@ -3550,7 +3550,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 onClick={() => setPkgForm({ ...pkgForm, customInputType: t.id as any })}
                                 className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                                   isSelected
-                                    ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-md font-extrabold'
+                                    ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
                                     : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15] hover:border-white/30'
                                 }`}
                               >
@@ -3708,7 +3708,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <button
                     type="button"
                     onClick={handleAddSubItemToPackage}
-                    className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer self-start sm:self-auto shadow"
+                    className="bg-[#B8944A] hover:bg-[#D9A514] text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer self-start sm:self-auto shadow"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add Blank Item</span>
@@ -3776,7 +3776,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         className="w-9 h-9 rounded object-cover flex-shrink-0 border border-[#D8C6A8]/40"
                                       />
                                     ) : (
-                                      <div className="w-9 h-9 rounded bg-white/10 flex items-center justify-center text-[10px] text-[#241A15]/40 flex-shrink-0">
+                                      <div className="w-9 h-9 rounded bg-[#E6D5B8]/30 flex items-center justify-center text-[10px] text-[#241A15]/40 flex-shrink-0">
                                         No img
                                       </div>
                                     )}
@@ -3797,7 +3797,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         },
                                       ]);
                                     }}
-                                    className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-2.5 py-1 rounded text-[11px] font-bold flex items-center gap-1 flex-shrink-0 cursor-pointer shadow transition-all"
+                                    className="bg-[#B8944A] hover:bg-[#D9A514] text-white px-2.5 py-1 rounded text-[11px] font-bold flex items-center gap-1 flex-shrink-0 cursor-pointer shadow transition-all"
                                   >
                                     <Plus className="w-3 h-3" />
                                     <span>{isAlreadyAdded ? 'Add Again' : 'Add'}</span>
@@ -3885,7 +3885,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               placeholder="Image URL..."
                               className="flex-1 bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                             />
-                            <label className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer shadow transition-all">
+                            <label className="bg-[#B8944A] hover:bg-[#D9A514] text-white px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer shadow transition-all">
                               {uploadingImage ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
                               <span className="text-[10px]">Cloudinary</span>
                               <input
@@ -3929,13 +3929,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setPkgModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#241A15] text-xs font-bold"
+                  className="px-5 py-2.5 rounded-xl bg-[#E6D5B8]/30 hover:bg-[#D8C6A8]/60 text-[#241A15] text-xs font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#8c1119] text-xs font-bold uppercase tracking-wider shadow-lg"
+                  className="px-6 py-2.5 rounded-xl bg-[#B8944A] hover:bg-[#D9A514] text-white text-xs font-bold uppercase tracking-wider shadow-lg"
                 >
                   Save Package & Detailed Items
                 </button>
@@ -3953,7 +3953,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setItemModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
@@ -4009,7 +4009,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               }}
                               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                                 isSelected
-                                  ? 'bg-amber-400 text-[#8c1119] border border-amber-400 shadow-sm scale-105'
+                                  ? 'bg-[#B8944A] text-white border border-amber-400 shadow-sm scale-105'
                                   : 'bg-white/80 text-[#241A15]/70 border border-[#D8C6A8]/50 hover:border-amber-400/50 hover:text-[#241A15]'
                               }`}
                             >
@@ -4127,7 +4127,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     placeholder="https://images.unsplash.com/..."
                     className="flex-1 bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                   />
-                  <label className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-3 py-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow transition-all">
+                  <label className="bg-[#B8944A] hover:bg-[#D9A514] text-white px-3 py-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow transition-all">
                     {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                     <span>Cloudinary</span>
                     <input
@@ -4185,7 +4185,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               onClick={() => setItemForm({ ...itemForm, customInputType: t.id as any })}
                               className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                                 isSelected
-                                  ? 'bg-amber-400 text-[#8c1119] border-amber-400 shadow-md font-extrabold'
+                                  ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
                                   : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15] hover:border-white/30'
                               }`}
                             >
@@ -4330,13 +4330,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setItemModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-[#241A15] text-xs font-bold"
+                  className="px-4 py-2 rounded-lg bg-[#E6D5B8]/30 hover:bg-[#D8C6A8]/60 text-[#241A15] text-xs font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-amber-400 hover:bg-amber-300 text-[#8c1119] text-xs font-bold uppercase tracking-wider shadow"
+                  className="px-5 py-2 rounded-lg bg-[#B8944A] hover:bg-[#D9A514] text-white text-xs font-bold uppercase tracking-wider shadow"
                 >
                   Save Item
                 </button>
@@ -4354,7 +4354,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setBoxModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
@@ -4448,7 +4448,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     placeholder="https://images.unsplash.com/..."
                     className="flex-1 bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2.5 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none"
                   />
-                  <label className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] px-3 py-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow transition-all">
+                  <label className="bg-[#B8944A] hover:bg-[#D9A514] text-white px-3 py-2.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow transition-all">
                     {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                     <span>Cloudinary</span>
                     <input
@@ -4470,13 +4470,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setBoxModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-[#241A15] text-xs font-bold"
+                  className="px-4 py-2 rounded-lg bg-[#E6D5B8]/30 hover:bg-[#D8C6A8]/60 text-[#241A15] text-xs font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-amber-400 hover:bg-amber-300 text-[#8c1119] text-xs font-bold uppercase tracking-wider shadow"
+                  className="px-5 py-2 rounded-lg bg-[#B8944A] hover:bg-[#D9A514] text-white text-xs font-bold uppercase tracking-wider shadow"
                 >
                   Save Gift Box
                 </button>
@@ -4494,7 +4494,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-3xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[95vh] sm:max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => setCreateOrderModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 sm:w-6 h-5 sm:h-6" />
@@ -4613,13 +4613,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setCreateOrderModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-[#241A15] text-xs font-bold"
+                  className="px-4 py-2 rounded-xl bg-[#E6D5B8]/30 hover:bg-[#D8C6A8]/60 text-[#241A15] text-xs font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#8c1119] text-xs font-bold uppercase tracking-wider shadow-lg"
+                  className="px-6 py-2.5 rounded-xl bg-[#B8944A] hover:bg-[#D9A514] text-white text-xs font-bold uppercase tracking-wider shadow-lg"
                 >
                   Create & Record Order
                 </button>
@@ -4637,7 +4637,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-2xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedOrderDetails(null)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-white/20 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
@@ -4683,10 +4683,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 const statusColor =
                   schedStatus === 'Scheduled'
-                    ? 'text-emerald-300 bg-emerald-500/15 border-emerald-500/40'
+                    ? 'text-emerald-700 bg-emerald-500/15 border-emerald-500/40'
                     : schedStatus === 'Awaiting Customer Confirmation'
                     ? 'text-[#8E6E2F] bg-amber-400/15 border-amber-400/40'
-                    : 'text-[#241A15]/50 bg-white/5 border-[#D8C6A8]/50';
+                    : 'text-[#241A15]/50 bg-[#F7F1E7] border-[#D8C6A8]/50';
 
                 const statusDot =
                   schedStatus === 'Scheduled' ? '🟢' :
@@ -4714,7 +4714,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       {/* Requested Delivery Date */}
                       <div className="bg-white/50 rounded-lg p-3 space-y-0.5">
                         <div className="text-[9px] text-[#241A15]/40 uppercase tracking-widest font-bold">Requested Delivery Date</div>
-                        <div className={`font-semibold text-xs ${rawDate ? 'text-emerald-300' : 'text-[#241A15]/30 italic'}`}>
+                        <div className={`font-semibold text-xs ${rawDate ? 'text-emerald-700' : 'text-[#241A15]/30 italic'}`}>
                           {rawDate
                             ? (() => {
                                 try {
@@ -4787,7 +4787,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {/* Order Items Breakdown */}
               <div className="bg-white/60 border border-[#D8C6A8]/40 rounded-xl p-4 space-y-3">
                 <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-widest">Items Purchased</div>
-                <div className="divide-y divide-white/10">
+                <div className="divide-y divide-[#D8C6A8]/40">
                   {selectedOrderDetails.items.map((it: any, idx: number) => {
                     const isUsd = selectedOrderDetails.currency === 'USD' || selectedOrderDetails.buyerMarket === 'INTERNATIONAL';
                     let itemPrice = 0;
@@ -4826,7 +4826,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                />
                              </div>
                            ) : (
-                             <div className="w-16 h-16 rounded-lg border border-[#D8C6A8]/40 bg-white/5 flex-shrink-0 flex items-center justify-center">
+                             <div className="w-16 h-16 rounded-lg border border-[#D8C6A8]/40 bg-[#F7F1E7] flex-shrink-0 flex items-center justify-center">
                                <Gift className="w-6 h-6 text-[#241A15]/20" />
                              </div>
                            );
@@ -4932,7 +4932,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <span className="text-[#241A15]/70">Payment Status:</span>
                     <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                       selectedOrderDetails.paymentStatus === 'PAID'
-                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                        ? 'bg-emerald-100 text-emerald-700 border border-emerald-300/50'
                         : selectedOrderDetails.paymentStatus === 'REJECTED'
                         ? 'bg-red-500/20 text-red-700 border border-red-500/40'
                         : 'bg-amber-400/20 text-[#8E6E2F] border border-amber-400/40'
@@ -4949,7 +4949,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 )}
 
                 {selectedOrderDetails.reviewedBy && (
-                  <div className="text-[10px] text-[#241A15]/50 pt-1 border-t border-[#D8C6A8]/20">
+                  <div className="text-[10px] text-[#241A15]/50 pt-1 border-t border-[#D8C6A8]/50">
                     Reviewed by <strong>{selectedOrderDetails.reviewedBy}</strong> on {selectedOrderDetails.reviewedAt ? new Date(selectedOrderDetails.reviewedAt).toLocaleString() : 'N/A'}
                   </div>
                 )}
@@ -5061,7 +5061,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="bg-[#FBF8F2]/80 border border-red-500/50 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl animate-scale-in">
             <button
               onClick={() => setRejectingPaymentOrder(null)}
-              className="absolute top-4 right-4 text-[#241A15]/60 hover:text-[#241A15] p-1 rounded-full hover:bg-white/10 cursor-pointer"
+              className="absolute top-4 right-4 text-[#241A15]/60 hover:text-[#241A15] p-1 rounded-full hover:bg-[#D8C6A8]/40 cursor-pointer"
               title="Cancel rejection"
             >
               <X className="w-5 h-5" />
@@ -5131,7 +5131,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setRejectingPaymentOrder(null)}
-                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-[#241A15] font-bold text-xs uppercase cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-[#E6D5B8]/30 hover:bg-[#D8C6A8]/60 text-[#241A15] font-bold text-xs uppercase cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -5173,14 +5173,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               target="_blank"
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="bg-amber-400 hover:bg-amber-300 text-[#8c1119] font-bold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-lg"
+              className="bg-[#B8944A] hover:bg-[#D9A514] text-white font-bold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-lg"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>Open Full Size</span>
             </a>
             <button
               onClick={() => setViewingReceiptUrl(null)}
-              className="p-2 rounded-full bg-black/70 hover:bg-white/20 text-[#241A15] border border-[#D8C6A8]/60 cursor-pointer shadow-lg"
+              className="p-2 rounded-full bg-black/70 hover:bg-[#D8C6A8]/60 text-[#241A15] border border-[#D8C6A8]/60 cursor-pointer shadow-lg"
               title="Close viewer"
             >
               <X className="w-5 h-5" />
