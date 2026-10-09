@@ -2016,13 +2016,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     </div>
 
     {/* Mobile: Vertical Category Menu (Matches PC Sidebar) */}
-    <div className="md:hidden mb-4 bg-[#240004]/80 border border-[#D9A514]/20 rounded-2xl p-3 shadow-lg">
+    <div className="md:hidden mb-4 bg-[#FBF8F2] border border-[#D8C6A8] rounded-2xl p-3 shadow-lg">
       <button
         onClick={() => setIsMobilePkgCategoryOpen(!isMobilePkgCategoryOpen)}
         className="w-full flex items-center justify-between py-1 text-left cursor-pointer"
       >
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542]">
+          <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#8E6E2F]">
             Categories
           </span>
           <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/60 text-[#8E6E2F] font-bold border border-amber-400/30">
@@ -2291,13 +2291,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       {/* Right-Side Vertical Collapsible Category Sidebar */}
       <aside
-        className="hidden md:flex flex-col flex-shrink-0 transition-[width] duration-300 ease-in-out overflow-hidden bg-[#240004]/80 border border-[#D9A514]/20 rounded-2xl p-2.5 shadow-xl sticky top-4"
+        className="hidden md:flex flex-col flex-shrink-0 transition-[width] duration-300 ease-in-out overflow-hidden bg-[#FBF8F2] border border-[#D8C6A8] rounded-2xl p-2.5 shadow-xl sticky top-4"
         style={{ width: isPkgCategorySidebarOpen ? '220px' : '48px' }}
       >
         {/* Sidebar Header & Toggle */}
         <div className={`flex items-center mb-3 pb-2 border-b border-[#D8C6A8]/40 gap-2 ${isPkgCategorySidebarOpen ? 'justify-between' : 'justify-center'}`}>
           {isPkgCategorySidebarOpen && (
-            <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542] whitespace-nowrap pl-1">
+            <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#8E6E2F] whitespace-nowrap pl-1">
               Categories
             </span>
           )}
@@ -2441,13 +2441,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Mobile: Vertical Category Menu (Matches PC Sidebar) */}
-              <div className="md:hidden mb-4 bg-[#240004]/80 border border-[#D9A514]/20 rounded-2xl p-3 shadow-lg">
+              <div className="md:hidden mb-4 bg-[#FBF8F2] border border-[#D8C6A8] rounded-2xl p-3 shadow-lg">
                 <button
                   onClick={() => setIsMobileItemCategoryOpen(!isMobileItemCategoryOpen)}
                   className="w-full flex items-center justify-between py-1 text-left cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542]">
+                    <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#8E6E2F]">
                       Categories
                     </span>
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/60 text-[#8E6E2F] font-bold border border-amber-400/30">
@@ -2706,13 +2706,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 {/* Right-Side Vertical Collapsible Category Sidebar */}
                 <aside
-                  className="hidden md:flex flex-col flex-shrink-0 transition-[width] duration-300 ease-in-out overflow-hidden bg-[#240004]/80 border border-[#D9A514]/20 rounded-2xl p-2.5 shadow-xl sticky top-4"
+                  className="hidden md:flex flex-col flex-shrink-0 transition-[width] duration-300 ease-in-out overflow-hidden bg-[#FBF8F2] border border-[#D8C6A8] rounded-2xl p-2.5 shadow-xl sticky top-4"
                   style={{ width: isItemCategorySidebarOpen ? '220px' : '48px' }}
                 >
                   {/* Sidebar Header & Toggle */}
                   <div className={`flex items-center mb-3 pb-2 border-b border-[#D8C6A8]/40 gap-2 ${isItemCategorySidebarOpen ? 'justify-between' : 'justify-center'}`}>
                     {isItemCategorySidebarOpen && (
-                      <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#F5C542] whitespace-nowrap pl-1">
+                      <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#8E6E2F] whitespace-nowrap pl-1">
                         Categories
                       </span>
                     )}
@@ -3098,10 +3098,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* ========================================================================= */}
       {categoryModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#FAF6F0] border border-[#D8C6A8] rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setCategoryModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-[#F0E6D8] hover:bg-[#E6D5B8] border border-[#D8C6A8] shadow-md z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
@@ -3283,10 +3283,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* ========================================================================= */}
       {pkgModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-4xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[95vh] sm:max-h-[92vh] overflow-y-auto">
+          <div className="bg-[#FAF6F0] border border-[#D8C6A8] rounded-2xl max-w-4xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[95vh] sm:max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => setPkgModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-[#F0E6D8] hover:bg-[#E6D5B8] border border-[#D8C6A8] shadow-md z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 sm:w-6 h-5 sm:h-6" />
@@ -3509,7 +3509,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 {/* Customer Input Requirement Controls */}
-                <div className="mt-4 pt-4 border-t border-[#D8C6A8]/40 bg-[#3a060b]/60 rounded-xl p-4 border border-amber-400/20">
+                <div className="mt-4 pt-4 border-t border-[#D8C6A8]/40 bg-[#F3EDE2] rounded-xl p-4 border border-[#D8C6A8]">
                   <div className="flex items-center justify-between">
                     <div>
                       <label className="flex items-center gap-2.5 cursor-pointer">
@@ -3582,7 +3582,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 {/* Scalable Unit Controls (e.g. Cakes by Kg, Flowers by Stems) */}
-                <div className="mt-4 pt-4 border-t border-[#D8C6A8]/40 bg-[#3a060b]/60 rounded-xl p-4 border border-amber-400/20">
+                <div className="mt-4 pt-4 border-t border-[#D8C6A8]/40 bg-[#F3EDE2] rounded-xl p-4 border border-[#D8C6A8]">
                   <div className="flex items-center justify-between">
                     <div>
                       <label className="flex items-center gap-2.5 cursor-pointer">
@@ -3950,10 +3950,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* ========================================================================= */}
       {itemModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#FAF6F0] border border-[#D8C6A8] rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setItemModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-[#F0E6D8] hover:bg-[#E6D5B8] border border-[#D8C6A8] shadow-md z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
@@ -4146,7 +4146,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Customer Customization Requirement Controls */}
-              <div className="pt-3 border-t border-[#D8C6A8]/40 bg-[#3a060b]/60 rounded-xl p-3.5 border border-amber-400/20 space-y-3">
+              <div className="pt-3 border-t border-[#D8C6A8]/40 bg-[#F3EDE2] rounded-xl p-3.5 border border-[#D8C6A8] space-y-3">
                 <div>
                   <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
@@ -4217,7 +4217,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Scalable Unit Controls (e.g. Cakes by Kg, Flowers by Stems, Chocolates by Piece) */}
-              <div className="pt-3 border-t border-[#D8C6A8]/40 bg-[#3a060b]/60 rounded-xl p-3.5 border border-amber-400/20 space-y-3">
+              <div className="pt-3 border-t border-[#D8C6A8]/40 bg-[#F3EDE2] rounded-xl p-3.5 border border-[#D8C6A8] space-y-3">
                 <div>
                   <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
@@ -4351,10 +4351,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* ========================================================================= */}
       {boxModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#FAF6F0] border border-[#D8C6A8] rounded-2xl max-w-lg w-full p-4 sm:p-6 md:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setBoxModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-[#F0E6D8] hover:bg-[#E6D5B8] border border-[#D8C6A8] shadow-md z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
@@ -4491,10 +4491,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* ========================================================================= */}
       {createOrderModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-3xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[95vh] sm:max-h-[92vh] overflow-y-auto">
+          <div className="bg-[#FAF6F0] border border-[#D8C6A8] rounded-2xl max-w-3xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[95vh] sm:max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => setCreateOrderModalOpen(false)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-3 sm:-mr-3 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-[#F0E6D8] hover:bg-[#E6D5B8] border border-[#D8C6A8] shadow-md z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 sm:w-6 h-5 sm:h-6" />
@@ -4634,10 +4634,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* ========================================================================= */}
       {selectedOrderDetails && (
         <div className="fixed inset-0 z-[60] bg-black/85 backdrop-blur-md flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto font-inter">
-          <div className="bg-[#2c0407] border border-amber-400/40 rounded-2xl max-w-2xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#FAF6F0] border border-[#D8C6A8] rounded-2xl max-w-2xl w-full p-4 sm:p-8 relative shadow-2xl animate-scale-in my-auto max-h-[94vh] sm:max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedOrderDetails(null)}
-              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-black/80 hover:bg-[#D8C6A8]/60 border border-[#D8C6A8]/60 shadow-xl z-30 cursor-pointer mb-2"
+              className="sticky top-0 float-right -mt-1 -mr-1 sm:-mt-2 sm:-mr-2 text-[#241A15]/70 hover:text-[#241A15] p-2 sm:p-2.5 rounded-full bg-[#F0E6D8] hover:bg-[#E6D5B8] border border-[#D8C6A8] shadow-md z-30 cursor-pointer mb-2"
               title="Close modal"
             >
               <X className="w-5 h-5" />
@@ -4693,9 +4693,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   schedStatus === 'Awaiting Customer Confirmation' ? '🟡' : '⚫';
 
                 return (
-                  <div className="bg-gradient-to-br from-[#1a0f1e] to-[#18060a] border border-blue-400/20 rounded-xl p-4 space-y-3">
+                  <div className="bg-[#F3EDE2] border border-[#D8C6A8] rounded-xl p-4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="text-[10px] text-blue-300 font-bold uppercase tracking-widest flex items-center gap-1.5">
+                      <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-widest flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5" />
                         Delivery Schedule
                       </div>
@@ -4706,15 +4706,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       {/* Order Placed */}
-                      <div className="bg-white/50 rounded-lg p-3 space-y-0.5">
-                        <div className="text-[9px] text-[#241A15]/40 uppercase tracking-widest font-bold">Order Placed</div>
+                      <div className="bg-white/80 border border-[#D8C6A8]/40 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-[#241A15]/60 uppercase tracking-widest font-bold">Order Placed</div>
                         <div className="text-[#241A15] font-semibold text-xs font-mono">{od.createdAt}</div>
                       </div>
 
                       {/* Requested Delivery Date */}
-                      <div className="bg-white/50 rounded-lg p-3 space-y-0.5">
-                        <div className="text-[9px] text-[#241A15]/40 uppercase tracking-widest font-bold">Requested Delivery Date</div>
-                        <div className={`font-semibold text-xs ${rawDate ? 'text-emerald-700' : 'text-[#241A15]/30 italic'}`}>
+                      <div className="bg-white/80 border border-[#D8C6A8]/40 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-[#241A15]/60 uppercase tracking-widest font-bold">Requested Delivery Date</div>
+                        <div className={`font-semibold text-xs ${rawDate ? 'text-emerald-700' : 'text-[#241A15]/40 italic'}`}>
                           {rawDate
                             ? (() => {
                                 try {
@@ -4726,16 +4726,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
 
                       {/* Preferred Delivery Time */}
-                      <div className="bg-white/50 rounded-lg p-3 space-y-0.5">
-                        <div className="text-[9px] text-[#241A15]/40 uppercase tracking-widest font-bold">Preferred Delivery Time</div>
-                        <div className={`font-semibold text-xs flex items-center gap-1.5 ${rawTime ? 'text-blue-300' : 'text-[#241A15]/30 italic'}`}>
+                      <div className="bg-white/80 border border-[#D8C6A8]/40 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-[#241A15]/60 uppercase tracking-widest font-bold">Preferred Delivery Time</div>
+                        <div className={`font-semibold text-xs flex items-center gap-1.5 ${rawTime ? 'text-[#8E6E2F]' : 'text-[#241A15]/40 italic'}`}>
                           {rawTime ? <><Clock className="w-3 h-3" />{rawTime}</> : 'Not Recorded'}
                         </div>
                       </div>
 
                       {/* Delivery Schedule Status */}
-                      <div className="bg-white/50 rounded-lg p-3 space-y-0.5">
-                        <div className="text-[9px] text-[#241A15]/40 uppercase tracking-widest font-bold">Delivery Schedule Status</div>
+                      <div className="bg-white/80 border border-[#D8C6A8]/40 rounded-lg p-3 space-y-0.5">
+                        <div className="text-[9px] text-[#241A15]/60 uppercase tracking-widest font-bold">Delivery Schedule Status</div>
                         <div className={`font-bold text-xs ${statusColor.split(' ')[0]}`}>
                           {statusDot} {schedStatus}
                         </div>
@@ -4747,7 +4747,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               {/* Gift Note Section - if any gift fields present */}
               {(selectedOrderDetails.customer.giftRecipientName || selectedOrderDetails.customer.giftSenderName || selectedOrderDetails.customer.giftMessage) && (
-                <div className="bg-amber-400/5 border border-amber-400/30 rounded-xl p-4 space-y-2">
+                <div className="bg-[#F3EDE2] border border-[#D8C6A8] rounded-xl p-4 space-y-2">
                   <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-widest">Gift Note Details</div>
                   {selectedOrderDetails.customer.giftRecipientName && (
                     <div className="text-[#241A15]/90">
@@ -4846,9 +4846,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                              {/* Customer Customization Details (Text & Photo) */}
                              {(it.customerInputText || it.customerInputImageUrl) && (
-                               <div className="mt-2 bg-[#3a060b]/70 border border-purple-400/30 rounded-lg p-2.5 space-y-1.5 max-w-md">
-                                 <div className="text-[10px] text-purple-300 font-bold uppercase tracking-wider flex items-center gap-1">
-                                   <Sparkles className="w-3 h-3 text-purple-400" />
+                               <div className="mt-2 bg-[#F3EDE2] border border-[#D8C6A8] rounded-lg p-2.5 space-y-1.5 max-w-md">
+                                 <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-1">
+                                   <Sparkles className="w-3 h-3 text-[#8E6E2F]" />
                                    <span>Client Customization Details</span>
                                  </div>
                                  {it.customerInputText && (
@@ -4859,7 +4859,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                  )}
                                  {it.customerInputImageUrl && (
                                    <div className="pt-1 flex items-center gap-2">
-                                     <div className="w-14 h-14 rounded-lg overflow-hidden border border-purple-400/40 bg-white/80 flex-shrink-0">
+                                     <div className="w-14 h-14 rounded-lg overflow-hidden border border-[#D8C6A8] bg-white/80 flex-shrink-0">
                                        <img
                                          src={it.customerInputImageUrl}
                                          alt="Client Custom Photo"
@@ -4943,7 +4943,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 )}
 
                 {selectedOrderDetails.rejectionReason && (
-                  <div className="text-[11px] text-red-700 bg-red-950/50 p-2.5 rounded-lg border border-red-500/30">
+                  <div className="text-[11px] text-red-700 bg-red-50 p-2.5 rounded-lg border border-red-200">
                     <strong>Rejection Reason:</strong> "{selectedOrderDetails.rejectionReason}"
                   </div>
                 )}
@@ -5180,7 +5180,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </a>
             <button
               onClick={() => setViewingReceiptUrl(null)}
-              className="p-2 rounded-full bg-black/70 hover:bg-[#D8C6A8]/60 text-[#241A15] border border-[#D8C6A8]/60 cursor-pointer shadow-lg"
+              className="p-2 rounded-full bg-white/20 hover:bg-white/40 text-white border border-white/40 cursor-pointer shadow-lg"
               title="Close viewer"
             >
               <X className="w-5 h-5" />
