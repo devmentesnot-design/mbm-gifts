@@ -103,7 +103,7 @@ export const Footer: React.FC = () => {
               </svg>
             </a>
             <a
-              href="https://t.me/+J7buYU7m8vQ5NmY0"
+              href="https://t.me/mbmsupportteam"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Follow MBM Gifts on Telegram"

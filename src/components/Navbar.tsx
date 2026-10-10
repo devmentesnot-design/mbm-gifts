@@ -407,7 +407,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, session, onOpenCart, 
               </svg>
             </a>
             <a
-              href="https://t.me/+J7buYU7m8vQ5NmY0"
+              href="https://t.me/mbmsupportteam"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Telegram"
