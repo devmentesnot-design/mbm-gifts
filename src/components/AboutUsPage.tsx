@@ -245,8 +245,8 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="luxury-satin-card luxury-satin-card-hover border border-[#D8C6A8] rounded-3xl overflow-hidden flex flex-col justify-between hover:border-[#B8944A] transition-all shadow-md">
                 <img
-                  src="https://images.unsplash.com/photo-1513885535751-8b9238bd345a?q=80&w=800&auto=format&fit=crop"
-                  alt="Inspection phase"
+                  src="/images/quality-inspection.png"
+                  alt="Rigorous Quality Inspection"
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6">
@@ -260,8 +260,8 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
 
               <div className="luxury-satin-card luxury-satin-card-hover border border-[#D8C6A8] rounded-3xl overflow-hidden flex flex-col justify-between hover:border-[#B8944A] transition-all shadow-md">
                 <img
-                  src="https://images.unsplash.com/photo-1576153192396-180ecef2a715?q=80&w=800&auto=format&fit=crop"
-                  alt="Calligraphy note"
+                  src="/images/handwritten-note.png"
+                  alt="Handwritten Calligraphy note"
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6">
@@ -275,8 +275,8 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
 
               <div className="luxury-satin-card luxury-satin-card-hover border border-[#D8C6A8] rounded-3xl overflow-hidden flex flex-col justify-between hover:border-[#B8944A] transition-all shadow-md">
                 <img
-                  src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800&auto=format&fit=crop"
-                  alt="Ribbon tied"
+                  src="/images/step3-reveal.png"
+                  alt="Final Reveal and satin ribbon"
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6">
