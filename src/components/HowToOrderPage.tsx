@@ -38,12 +38,37 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
   onNavigateToLogin,
   onNavigate,
 }) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [activeTab, setActiveTab] = useState<'prepared' | 'custom'>('prepared');
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
-  const [previewNote, setPreviewNote] = useState('Wishing you a birthday filled with love, laughter, and endless luxury!');
+  const [previewNote, setPreviewNote] = useState(
+    lang === 'am'
+      ? 'የልደት ቀንዎ በፍቅር፣ በደስታ እና በብዙ በረከት የተሞላ እንዲሆን እመኝልዎታለሁ!'
+      : 'Wishing you a birthday filled with love, laughter, and endless luxury!'
+  );
 
-  const faqs = [
+  const faqs = lang === 'am' ? [
+    {
+      q: 'ስጦታውን በቀጥታ ለተቀባዩ መላክ እችላለሁ?',
+      a: 'አዎ! በትዕዛዝ ማጠቃለያ ወቅት የተቀባዩን አድራሻ ብቻ ያስገቡ። እኛ በጥንቃቄ አሽገን፣ በሰም አትመን በቀጥታ ለተቀባዩ ደጃፍ ድረስ ከክትትል ጋር እናደርሳለን።'
+    },
+    {
+      q: 'በሳጥኑ ውስጥ የዋጋ ደረሰኝ ይካተታል?',
+      a: 'ፈጽሞ አይካተትም! ሁሉም የMBM የስጦታ ሳጥኖች ያለ ዋጋ እና ያለ ደረሰኝ ይላካሉ። የክፍያ ዝርዝርዎ በኢሜይል ለእርስዎ ብቻ ይላካል።'
+    },
+    {
+      q: 'ፈጣን ማድረሻ ምን ያህል ጊዜ ይወስዳል?',
+      a: 'መደበኛ ማድረሻ ከ1–3 የስራ ቀናት ይወስዳል። እንዲሁም ከቀኑ 7:00 በፊት ሲታዘዝ በተመረጡ ከተሞች በተመሳሳይ ቀን ማድረስ እንችላለን።'
+    },
+    {
+      q: 'የድርጅት ወይም የጅምላ ትዕዛዝ ማዘዝ ይቻላል?',
+      a: 'በእርግጥ። የድርጅት አርማ ያለበት የሰም ማህተም፣ ሪባን እና ልዩ የጅምላ ዋጋ ለድርጅቶች እና ለሰርግ እናቀርባለን።'
+    },
+    {
+      q: 'እቃው ቢሰበር ወይም ቢበላሽ ምን ይደረጋል?',
+      a: 'እያንዳንዱ እቃ በቬልቬት ማሸጊያ እና በጠንካራ የውጭ ሳጥን በጥንቃቄ ይዘጋጃል። በመንገድ ላይ የመጎዳት አጋጣሚ ከተፈጠረ በ24 ሰዓት ውስጥ ሲያሳውቁን ወዲያውኑ እንተካለን።'
+    }
+  ] : [
     {
       q: 'Can I send the gift directly to the recipient?',
       a: 'Yes! During checkout, simply enter your recipient’s shipping address. We handle white-glove packaging, wax sealing, and doorstep delivery with live tracking.'
@@ -83,15 +108,15 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
           <div className="max-w-6xl mx-auto text-center relative z-10">
             <div className="inline-flex items-center gap-2 bg-[#E6D5B8]/70 border border-[#D8C6A8] text-[#8E6E2F] text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4 shadow-sm">
               <CheckCircle2 className="w-4 h-4 text-[#B8944A]" />
-              <span>Simple &amp; Seamless Gifting</span>
+              <span>{t('order.badge')}</span>
             </div>
 
             <h1 className="font-podium text-4xl sm:text-6xl font-extrabold uppercase tracking-tight text-[#241A15] mb-6 leading-tight">
-              How To Order Your Luxury MBM Gift Box
+              {t('order.title')}
             </h1>
 
             <p className="text-[#3A2A20] text-base sm:text-lg max-w-3xl mx-auto font-inter leading-relaxed mb-8">
-              Whether you choose one of our expert-curated ready-made hampers or craft your own personalized box item-by-item, our ordering process is fast, flexible, and effortless.
+              {t('order.subtitle')}
             </p>
 
             {/* Mode Selector Tabs */}
@@ -104,7 +129,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                     : 'text-[#756457] hover:text-[#241A15]'
                 }`}
               >
-                1. Ready-Made Packages
+                {t('order.tabPrepared')}
               </button>
               <button
                 onClick={() => setActiveTab('custom')}
@@ -114,7 +139,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                     : 'text-[#756457] hover:text-[#241A15]'
                 }`}
               >
-                2. Build Your Own Box
+                {t('order.tabCustom')}
               </button>
             </div>
           </div>
@@ -126,15 +151,15 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
             <div className="text-center mb-8">
               <div className="inline-flex items-center gap-2 bg-[#E6D5B8]/70 border border-[#D8C6A8] text-[#8E6E2F] text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-3 shadow-sm">
                 <Video className="w-4 h-4 text-[#8E6E2F]" />
-                <span>Video Walkthrough</span>
+                <span>{t('order.videoBadge')}</span>
               </div>
               <h2 className="font-podium text-2xl sm:text-4xl uppercase font-bold text-[#241A15] mb-2">
-                {activeTab === 'prepared' ? 'Ready-Made Package Video Guide' : 'Build Your Own Box Video Guide'}
+                {activeTab === 'prepared' ? t('order.videoTitlePrepared') : t('order.videoTitleCustom')}
               </h2>
               <p className="text-[#756457] text-xs sm:text-sm font-inter max-w-xl mx-auto">
                 {activeTab === 'prepared'
-                  ? 'Watch our quick video on how to select, customize, and order ready-made luxury gift packages.'
-                  : 'Watch our step-by-step video on how to handpick individual items and build a custom gift box.'}
+                  ? t('order.videoDescPrepared')
+                  : t('order.videoDescCustom')}
               </p>
             </div>
 
@@ -160,9 +185,9 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                 <div className="flex items-center gap-2 text-xs text-[#756457] font-inter">
                   <Play className="w-3.5 h-3.5 text-[#8E6E2F] fill-[#8E6E2F]" />
                   <span>
-                    Watching:{' '}
+                    {t('order.watching')}{' '}
                     <strong className="text-[#241A15]">
-                      {activeTab === 'prepared' ? 'Ready-Made Packages Guide' : 'Build Your Own Box Guide'}
+                      {activeTab === 'prepared' ? t('order.videoTitlePrepared') : t('order.videoTitleCustom')}
                     </strong>
                   </span>
                 </div>
@@ -177,7 +202,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                     }`}
                   >
                     <Gift className="w-3.5 h-3.5" />
-                    <span>Ready-Made Video</span>
+                    <span>{t('order.btnPreparedVideo')}</span>
                   </button>
                   <button
                     onClick={() => setActiveTab('custom')}
@@ -188,7 +213,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                     }`}
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Build Your Own Video</span>
+                    <span>{t('order.btnCustomVideo')}</span>
                   </button>
                   <a
                     href={activeTab === 'prepared' ? 'https://youtu.be/r8XkEdTg3FI' : 'https://youtu.be/WXRDOhnJYMk'}
@@ -210,12 +235,12 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
           <div className="max-w-6xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="font-podium text-3xl sm:text-5xl uppercase font-bold text-[#241A15] mb-4">
-                {activeTab === 'prepared' ? 'Ready-Made Package Ordering' : 'Custom Box Curation Steps'}
+                {activeTab === 'prepared' ? t('order.stepsTitlePrepared') : t('order.stepsTitleCustom')}
               </h2>
               <p className="text-[#756457] text-sm sm:text-base font-inter">
                 {activeTab === 'prepared'
-                  ? 'Follow these 3 easy steps to order pre-curated hampers.'
-                  : 'Follow these steps to handpick individual luxury gifts.'}
+                  ? t('order.stepsSubPrepared')
+                  : t('order.stepsSubCustom')}
               </p>
             </div>
 
@@ -234,19 +259,19 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                   </div>
 
                   <h3 className="font-podium text-2xl font-bold uppercase text-[#241A15] mb-3 group-hover:text-[#8E6E2F] transition-colors">
-                    {activeTab === 'prepared' ? 'Select Prepared Package' : 'Pick Your Items'}
+                    {activeTab === 'prepared' ? t('order.step1TitlePrepared') : t('order.step1TitleCustom')}
                   </h3>
 
                   <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed mb-4">
                     {activeTab === 'prepared'
-                      ? 'Browse our curated collections (Romantic, Birthday, Executive, Self-Care). Click "View Details" to see every item included.'
-                      : 'Switch to the "Build Your Own" tab in our shop. Browse chocolates, candles, crystal glasses, and leather goods and set quantities.'}
+                      ? t('order.step1DescPrepared')
+                      : t('order.step1DescCustom')}
                   </p>
                 </div>
 
                 <div className="pt-4 border-t border-[#D8C6A8]/40 text-xs text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Instant Live Price Calculation</span>
+                  <span>{t('order.step1Feature')}</span>
                 </div>
               </div>
 
@@ -263,17 +288,17 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                   </div>
 
                   <h3 className="font-podium text-2xl font-bold uppercase text-[#241A15] mb-3 group-hover:text-[#8E6E2F] transition-colors">
-                    Personal Note &amp; Wrap
+                    {t('order.step2Title')}
                   </h3>
 
                   <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed mb-4">
-                    Type your personal message for the recipient. We handwrite your note on heavy parchment paper and seal it with authentic red wax!
+                    {t('order.step2Desc')}
                   </p>
                 </div>
 
                 <div className="pt-4 border-t border-[#D8C6A8]/40 text-xs text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Wax Sealed Parchment Included</span>
+                  <span>{t('order.step2Feature')}</span>
                 </div>
               </div>
 
@@ -290,17 +315,17 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                   </div>
 
                   <h3 className="font-podium text-2xl font-bold uppercase text-[#241A15] mb-3 group-hover:text-[#8E6E2F] transition-colors">
-                    Express Tracked Shipping
+                    {t('order.step3Title')}
                   </h3>
 
                   <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed mb-4">
-                    Enter recipient address, pick your delivery date, and complete checkout. Receive SMS &amp; email updates as your box is dispatched.
+                    {t('order.step3Desc')}
                   </p>
                 </div>
 
                 <div className="pt-4 border-t border-[#D8C6A8]/40 text-xs text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Doorstep Delivery &amp; Tracking</span>
+                  <span>{t('order.step3Feature')}</span>
                 </div>
               </div>
             </div>
@@ -313,13 +338,13 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
             <div className="text-center max-w-2xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 bg-[#E6D5B8]/70 border border-[#D8C6A8] text-[#8E6E2F] text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-3 shadow-sm">
                 <FileText className="w-4 h-4 text-[#8E6E2F]" />
-                <span>Wax Sealed Note Customizer</span>
+                <span>{t('order.previewBadge')}</span>
               </div>
               <h2 className="font-podium text-3xl sm:text-5xl uppercase font-bold text-[#241A15] mb-3">
-                Preview Your Handwritten Card
+                {t('order.previewTitle')}
               </h2>
               <p className="text-[#756457] text-sm sm:text-base font-inter">
-                Test how your custom note will look when hand-transcribed onto parchment paper by our studio calligraphers.
+                {t('order.previewDesc')}
               </p>
             </div>
 
@@ -327,13 +352,13 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
               {/* Input Form */}
               <div>
                 <label className="block text-xs uppercase font-bold tracking-wider text-[#8E6E2F] mb-2">
-                  Type Your Message Below:
+                  {t('order.previewLabel')}
                 </label>
                 <textarea
                   value={previewNote}
                   onChange={(e) => setPreviewNote(e.target.value)}
                   maxLength={180}
-                  placeholder="Enter custom gift note message..."
+                  placeholder={t('order.previewPlaceholder')}
                   className="w-full bg-white/80 border border-[#D8C6A8] rounded-2xl p-4 text-sm text-[#241A15] focus:outline-none focus:border-[#B8944A] h-36 resize-none font-inter mb-3 shadow-inner"
                 />
                 <div className="flex items-center justify-between text-xs text-[#756457]">
@@ -354,7 +379,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                 </div>
 
                 <p className="font-serif italic text-base sm:text-lg leading-relaxed mb-6 text-[#241A15]">
-                  "{previewNote || 'Your note message here...'}"
+                  "{previewNote || (lang === 'am' ? 'የመልዕክትዎ ቃል እዚህ ይጻፋል...' : 'Your note message here...')}"
                 </p>
 
                 <div className="pt-4 border-t border-[#D8C6A8]/40 flex items-center justify-between text-[11px] font-inter text-[#8E6E2F] font-bold uppercase">
@@ -372,13 +397,13 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
             <div className="text-center mb-14">
               <div className="inline-flex items-center gap-2 text-[#8E6E2F] text-xs font-bold uppercase tracking-widest mb-2">
                 <HelpCircle className="w-4 h-4 text-[#8E6E2F]" />
-                <span>Got Questions?</span>
+                <span>{t('order.faqBadge')}</span>
               </div>
               <h2 className="font-podium text-3xl sm:text-5xl uppercase font-bold text-[#241A15] mb-3">
-                Frequently Asked Questions
+                {t('order.faqTitle')}
               </h2>
               <p className="text-[#756457] text-sm sm:text-base font-inter">
-                Everything you need to know about placing your gift order.
+                {t('order.faqSub')}
               </p>
             </div>
 
@@ -417,16 +442,16 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
         <section className="py-16 px-4 sm:px-8 lg:px-12 bg-gradient-to-r from-[#241A15] via-[#3A2A20] to-[#241A15] border-t border-[#D8C6A8]/30 text-center text-[#FBF8F2]">
           <div className="max-w-4xl mx-auto">
             <h2 className="font-podium text-3xl sm:text-5xl font-extrabold uppercase text-[#FBF8F2] mb-4">
-              Ready to Place Your Order?
+              {t('order.ctaTitle')}
             </h2>
             <p className="text-[#F7F1E7]/80 text-sm sm:text-base font-inter max-w-xl mx-auto mb-8">
-              Choose your favorite gift box or customize item-by-item today!
+              {t('order.ctaSub')}
             </p>
             <button
               onClick={() => onNavigate('/')}
               className="bg-[#E6D5B8] hover:bg-[#DCC39A] text-[#241A15] font-extrabold px-10 py-4 rounded-full text-sm uppercase tracking-widest transition-all cursor-pointer shadow-lg inline-flex items-center gap-2 transform hover:-translate-y-0.5"
             >
-              <span>Go to Gift Shop</span>
+              <span>{t('order.ctaBtn')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

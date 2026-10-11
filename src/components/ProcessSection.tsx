@@ -1,38 +1,41 @@
 import React from 'react';
 import { Gift, PenTool, Truck, Sparkles, CheckCircle2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ProcessSectionProps {
   onExplore?: () => void;
 }
 
 export const ProcessSection: React.FC<ProcessSectionProps> = ({ onExplore }) => {
+  const { t } = useLanguage();
+
   const steps = [
     {
       step: '01',
-      title: 'Curate or Build',
-      subtitle: 'Select from master-crafted packages or handpick bespoke items in our studio builder.',
+      title: t('process.step1Title'),
+      subtitle: t('process.step1Sub'),
       icon: Gift,
-      badge: 'Step 01 • Selection',
+      badge: t('process.step1Badge'),
       image: '/header_hero.jpg',
-      features: ['Curated gift themes', 'Custom item-by-item builder', 'Real-time price preview'],
+      features: [t('process.step1F1'), t('process.step1F2'), t('process.step1F3')],
     },
     {
       step: '02',
-      title: 'Wax-Sealed Note',
-      subtitle: 'Compose your heartfelt message hand-transcribed on heavy parchment and sealed with crimson wax.',
+      title: t('process.step2Title'),
+      subtitle: t('process.step2Sub'),
       icon: PenTool,
-      badge: 'Step 02 • Personalization',
-      image: '/about us page.jpg',
-      features: ['Handwritten calligraphy', 'Authentic royal wax seal', 'Luxury ribbon wrap'],
+      badge: t('process.step2Badge'),
+      image: '/images/handwritten-note.png',
+      features: [t('process.step2F1'), t('process.step2F2'), t('process.step2F3')],
     },
     {
       step: '03',
-      title: 'White-Glove Delivery',
-      subtitle: 'Dispatched with care, hand-delivered directly to the recipient door with live status updates.',
+      title: t('process.step3Title'),
+      subtitle: t('process.step3Sub'),
       icon: Truck,
-      badge: 'Step 03 • Fulfillment',
-      image: '/login img.png',
-      features: ['Tracked doorstep delivery', 'No invoices inside box', '100% delight guarantee'],
+      badge: t('process.step3Badge'),
+      image: '/images/step3-reveal.png',
+      features: [t('process.step3F1'), t('process.step3F2'), t('process.step3F3')],
     },
   ];
 
@@ -46,11 +49,11 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onExplore }) => 
         <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-20">
           <div className="inline-flex items-center gap-2 bg-[#E6D5B8]/40 border border-[#D8C6A8] text-[#8E6E2F] text-xs font-bold uppercase tracking-[0.25em] px-4 py-1.5 rounded-full mb-4 shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-[#8E6E2F]" />
-            <span>The Gifting Experience</span>
+            <span>{t('process.badge')}</span>
           </div>
 
           <h2 className="font-podium text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-[#241A15] leading-tight">
-            How It Works
+            {t('process.title')}
           </h2>
 
           <div className="flex items-center justify-center gap-3 mt-4">
@@ -60,7 +63,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onExplore }) => 
           </div>
 
           <p className="text-[#756457] text-sm sm:text-base font-inter leading-relaxed max-w-xl mx-auto mt-4">
-            Three seamless steps from your heart to their hands — designed to create unforgettable luxury unboxing memories.
+            {t('process.subtitle')}
           </p>
         </div>
 

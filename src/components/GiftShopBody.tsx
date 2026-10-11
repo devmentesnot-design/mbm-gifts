@@ -65,9 +65,31 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   onAddToCartCustom,
   onViewPackageDetail,
 }) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { buyerMarket, currency } = useMarket();
   const [mode, setMode] = useState<'pkg' | 'build'>('pkg');
+
+  const getCategoryLabel = (cat: string) => {
+    if (cat === 'All') return t('shop.all');
+    if (lang === 'am') {
+      const map: Record<string, string> = {
+        'Birthday': 'ልደት',
+        'Romance': 'ፍቅር',
+        'Luxury': 'ልዩ ቅንጦት',
+        'Corporate': 'የድርጅት',
+        'Anniversary': 'የጋብቻ አመት',
+        'Self-Care': 'የግል እንክብካቤ',
+        'Wedding': 'ሰርግ',
+        'Chocolates': 'ቸኮሌቶች',
+        'Candles': 'ሻማዎች',
+        'Accessories': 'መለዋወጫዎች',
+        'Leather Goods': 'የቆዳ እቃዎች',
+        'Glassware': 'ብርጭቆዎች',
+      };
+      return map[cat] || cat;
+    }
+    return cat;
+  };
 
   // Market Price Helpers
   const getPkgPrice = (pkg: PreparedPackage): number => {
@@ -545,7 +567,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 title="View Package Details"
               >
                 <Eye className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0 text-[#B8944A]" />
-                <span>Details</span>
+                <span>{t('shop.viewDetails')}</span>
               </button>
               <button
                 onClick={(e) => {
@@ -560,7 +582,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 title="Add to Cart"
               >
                 <ShoppingBag className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0 text-[#E6D5B8]" />
-                <span>Add</span>
+                <span>{t('shop.addToCart')}</span>
               </button>
             </div>
             {/* See all button at bottom of card — shown when in 'All' browse */}
@@ -841,13 +863,13 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div>
             <span className="text-[#8E6E2F] text-xs font-inter tracking-[0.25em] uppercase font-bold mb-2 block">
-              Gifting, made simple
+              {t('shop.simple')}
             </span>
             <h2 className="font-podium text-2xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-[#241A15]">
-              Find the right gift
+              {t('shop.heading')}
             </h2>
             <p className="text-[#756457] text-xs sm:text-sm max-w-md mt-2 sm:mt-3 font-inter">
-              Pick a ready-made package, or build your own box item by item.
+              {t('shop.subheading')}
             </p>
           </div>
         </div>
@@ -860,13 +882,13 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               onClick={() => { setMode('pkg'); setActiveCategory('All'); }}
               className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-extrabold font-inter uppercase tracking-wider transition-all cursor-pointer ${mode === 'pkg' ? 'bg-[#241A15] text-[#FBF8F2] shadow-sm' : 'text-[#756457] hover:text-[#241A15]'}`}
             >
-              Ready-made packages
+              {t('shop.modePkg')}
             </button>
             <button 
               onClick={() => { setMode('build'); setActiveCategory('All'); }}
               className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-extrabold font-inter uppercase tracking-wider transition-all cursor-pointer ${mode === 'build' ? 'bg-[#241A15] text-[#FBF8F2] shadow-sm' : 'text-[#756457] hover:text-[#241A15]'}`}
             >
-              Build your own
+              {t('shop.modeBuild')}
             </button>
           </div>
 
@@ -877,7 +899,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={`Search ${mode === 'pkg' ? 'packages, occasions, items...' : 'items, chocolates, accessories...'}`}
+              placeholder={mode === 'pkg' ? t('shop.searchPkg') : t('shop.searchBuild')}
               className="w-full bg-[#FBF8F2] border border-[#D8C6A8] rounded-full pl-9 pr-9 py-2.5 text-xs text-[#241A15] placeholder:text-[#756457]/60 focus:outline-none focus:border-[#B8944A] focus:ring-1 focus:ring-[#B8944A]/40 transition-all shadow-sm font-inter"
             />
             {searchTerm && (
@@ -901,14 +923,14 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           >
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-black font-inter uppercase tracking-[0.2em] text-[#8E6E2F]">
-                Categories
+                {t('shop.categories')}
               </span>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E6D5B8]/50 text-[#241A15] font-bold border border-[#D8C6A8]">
-                {activeCategory}
+                {getCategoryLabel(activeCategory)}
               </span>
             </div>
             <div className="flex items-center gap-1 text-xs font-bold text-[#8E6E2F]">
-              <span>{isMobileCategoryOpen ? 'Hide Menu' : 'Browse Categories'}</span>
+              <span>{isMobileCategoryOpen ? t('shop.hideMenu') : t('shop.browseCategories')}</span>
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobileCategoryOpen ? 'rotate-180' : ''}`} />
             </div>
           </button>
@@ -941,7 +963,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                           : 'bg-[#F7F1E7]/80 border-[#D8C6A8]/40 text-[#3A2A20] hover:border-[#B8944A]/50 hover:bg-[#E6D5B8]/40'
                       }`}
                     >
-                      <span className="truncate flex-1">{cat}</span>
+                      <span className="truncate flex-1">{getCategoryLabel(cat)}</span>
                       {hasSubs && (
                         <ChevronRight className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                       )}
@@ -989,7 +1011,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             <div className={`flex items-center mb-3 gap-2 ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
               {isSidebarOpen && (
                 <span className="text-[9px] font-black font-inter uppercase tracking-[0.22em] text-[#8E6E2F] whitespace-nowrap pl-1">
-                  Categories
+                  {t('shop.categories')}
                 </span>
               )}
               <button
@@ -1036,7 +1058,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                         : 'bg-[#F7F1E7]/80 border-[#D8C6A8]/40 text-[#3A2A20] hover:border-[#B8944A]/50 hover:bg-[#E6D5B8]/40'
                       }`}
                     >
-                      <span className="truncate flex-1">{cat}</span>
+                      <span className="truncate flex-1">{getCategoryLabel(cat)}</span>
                       {hasSubs && (
                         <ChevronRight className={`w-3 h-3 flex-shrink-0 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                       )}
@@ -1075,7 +1097,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             <div className="flex items-center justify-between border-b border-[#D8C6A8]/40 pb-3 mb-5">
               <span className="text-[11px] text-[#756457] font-inter hidden md:block">
                 {(mode === 'pkg' ? filteredPackages.length : filteredCustomItems.length)}{' '}
-                result{(mode === 'pkg' ? filteredPackages.length : filteredCustomItems.length) !== 1 ? 's' : ''}
+                {t('shop.results')}
               </span>
 
               {/* Sort Dropdown */}
@@ -1084,17 +1106,17 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   onClick={() => setIsSortOpen(!isSortOpen)}
                   className="flex items-center gap-1.5 sm:gap-2 bg-[#FBF8F2] border border-[#D8C6A8] hover:border-[#B8944A] text-[#241A15] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-[11px] font-bold font-inter uppercase tracking-wider transition-colors cursor-pointer shadow-sm"
                 >
-                  <span>Sort</span>
+                  <span>{lang === 'am' ? 'ደርድር' : 'Sort'}</span>
                   <ChevronDown className={`w-3.5 h-3.5 text-[#B8944A] transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {isSortOpen && (
                   <div className="absolute right-0 top-[calc(100%+8px)] w-48 bg-[#FBF8F2] border border-[#D8C6A8] rounded-2xl shadow-xl overflow-hidden font-inter text-sm backdrop-blur-xl z-40">
                     {[
-                      { id: 'popular', label: 'Popular' },
-                      { id: 'price-asc', label: 'Price: low to high' },
-                      { id: 'price-desc', label: 'Price: high to low' },
-                      { id: 'newest', label: 'Newest' }
+                      { id: 'popular', label: t('shop.sortFeatured') },
+                      { id: 'price-asc', label: t('shop.sortPriceAsc') },
+                      { id: 'price-desc', label: t('shop.sortPriceDesc') },
+                      { id: 'newest', label: lang === 'am' ? 'አዳዲስ' : 'Newest' }
                     ].map(opt => (
                       <button
                         key={opt.id}

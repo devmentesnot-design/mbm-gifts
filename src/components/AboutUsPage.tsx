@@ -55,15 +55,15 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
           <div className="max-w-6xl mx-auto text-center relative z-10">
             <div className="inline-flex items-center gap-2 bg-[#E6D5B8]/70 border border-[#D8C6A8] text-[#8E6E2F] text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4 shadow-sm">
               <Sparkles className="w-4 h-4 text-[#B8944A]" />
-              <span>{t('about.badge') || 'Artisanal Luxury Studio'}</span>
+              <span>{t('about.badge')}</span>
             </div>
 
             <h1 className="font-podium text-4xl sm:text-6xl font-extrabold uppercase tracking-tight text-[#241A15] mb-6 leading-tight">
-              Crafting Unforgettable Moments &amp; Luxury Gifts
+              {t('about.title')}
             </h1>
 
             <p className="text-[#3A2A20] text-base sm:text-lg max-w-3xl mx-auto font-inter leading-relaxed mb-8">
-              At MBM Gifts, we believe every present should tell a story. Handcrafted with passion, our luxury gift hampers combine elegance, premium artisan treats, and personalized calligraphy touches sealed with wax.
+              {t('about.subtitle')}
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4">
@@ -71,7 +71,7 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
                 onClick={() => onNavigate('/')}
                 className="bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] font-extrabold px-8 py-3.5 rounded-full text-xs sm:text-sm uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center gap-2 transform hover:-translate-y-0.5"
               >
-                <span>Explore Gift Collections</span>
+                <span>{t('about.exploreBtn')}</span>
                 <ArrowRight className="w-4 h-4 text-[#E6D5B8]" />
               </button>
 
@@ -79,7 +79,7 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
                 onClick={() => onNavigate('/how-to-order')}
                 className="luxury-satin-card hover:bg-white text-[#241A15] border border-[#D8C6A8] font-bold px-8 py-3.5 rounded-full text-xs sm:text-sm uppercase tracking-wider transition-all cursor-pointer shadow-sm"
               >
-                <span>How To Order Guide</span>
+                <span>{t('about.guideBtn')}</span>
               </button>
             </div>
           </div>
@@ -100,10 +100,10 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
                   <div className="absolute inset-0 bg-gradient-to-t from-[#241A15]/80 via-transparent to-transparent opacity-80" />
                   <div className="absolute bottom-6 left-6 right-6 p-4 bg-[#241A15]/85 backdrop-blur-md border border-[#D8C6A8]/30 rounded-2xl">
                     <p className="font-podium text-sm uppercase font-bold text-[#E6D5B8] mb-1">
-                      Est. 2024 — Addis Ababa &amp; Beyond
+                      {t('about.established')}
                     </p>
                     <p className="text-[#F7F1E7]/90 text-xs font-inter leading-relaxed">
-                      Every ribbon, wax seal, and item placement is executed by hand in our studio.
+                      {t('about.studioCraft')}
                     </p>
                   </div>
                 </div>
@@ -113,36 +113,30 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
               <div className="lg:col-span-6">
                 <div className="inline-flex items-center gap-2 text-[#8E6E2F] text-xs font-bold uppercase tracking-widest mb-2">
                   <Heart className="w-4 h-4 text-[#B8944A]" />
-                  <span>The MBM Vision</span>
+                  <span>{t('about.visionBadge')}</span>
                 </div>
                 <h2 className="font-podium text-3xl sm:text-5xl uppercase font-bold text-[#241A15] mb-6 leading-tight">
-                  Redefining The Art of Gifting
+                  {t('about.visionTitle')}
                 </h2>
                 <div className="space-y-4 text-[#3A2A20] text-sm sm:text-base font-inter leading-relaxed">
-                  <p>
-                    MBM Gifts started with a simple observation: standard gift boxes were predictable, mass-produced, and lacked soul. We envisioned a luxury atelier where every gift hamper feels like a personal work of art.
-                  </p>
-                  <p>
-                    Whether celebrating a milestone birthday, sending gratitude to corporate partners, or delighting someone special just because, we curate items that spark genuine emotion.
-                  </p>
-                  <p>
-                    From imported Swiss milk chocolate and organic botanical candles to full-grain Italian leather notebooks and hand-blown glassware, every component is rigorously tested for quality and aesthetic harmony.
-                  </p>
+                  <p>{t('about.visionP1')}</p>
+                  <p>{t('about.visionP2')}</p>
+                  <p>{t('about.visionP3')}</p>
                 </div>
 
                 {/* Stat Badges */}
                 <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-[#D8C6A8]/40 text-center">
                   <div className="luxury-satin-card border border-[#D8C6A8] rounded-2xl p-4 shadow-sm">
                     <div className="font-podium text-2xl sm:text-3xl font-extrabold text-[#241A15]">10k+</div>
-                    <div className="text-[10px] sm:text-xs text-[#756457] uppercase tracking-wider font-bold mt-1">Hampers Delivered</div>
+                    <div className="text-[10px] sm:text-xs text-[#756457] uppercase tracking-wider font-bold mt-1">{t('about.stat1')}</div>
                   </div>
                   <div className="luxury-satin-card border border-[#D8C6A8] rounded-2xl p-4 shadow-sm">
                     <div className="font-podium text-2xl sm:text-3xl font-extrabold text-[#241A15]">100%</div>
-                    <div className="text-[10px] sm:text-xs text-[#756457] uppercase tracking-wider font-bold mt-1">Hand Crafted</div>
+                    <div className="text-[10px] sm:text-xs text-[#756457] uppercase tracking-wider font-bold mt-1">{t('about.stat2')}</div>
                   </div>
                   <div className="luxury-satin-card border border-[#D8C6A8] rounded-2xl p-4 shadow-sm">
                     <div className="font-podium text-2xl sm:text-3xl font-extrabold text-[#241A15]">4.9/5</div>
-                    <div className="text-[10px] sm:text-xs text-[#756457] uppercase tracking-wider font-bold mt-1">Review Rating</div>
+                    <div className="text-[10px] sm:text-xs text-[#756457] uppercase tracking-wider font-bold mt-1">{t('about.stat3')}</div>
                   </div>
                 </div>
               </div>
@@ -156,13 +150,13 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
             <div className="text-center max-w-2xl mx-auto mb-14">
               <div className="inline-flex items-center gap-2 bg-[#E6D5B8]/70 border border-[#D8C6A8] text-[#8E6E2F] text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-3 shadow-sm">
                 <Award className="w-4 h-4 text-[#B8944A]" />
-                <span>Our Uncompromising Standards</span>
+                <span>{t('about.pillarsBadge')}</span>
               </div>
               <h2 className="font-podium text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#241A15] mb-4">
-                The 4 Pillars of MBM Studio
+                {t('about.pillarsTitle')}
               </h2>
               <p className="text-[#756457] text-sm sm:text-base font-inter leading-relaxed">
-                What sets MBM Gifts apart from ordinary gift services.
+                {t('about.pillarsSub')}
               </p>
             </div>
 
@@ -173,10 +167,10 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
                     <Gift className="w-6 h-6" />
                   </div>
                   <h3 className="font-podium text-xl font-bold uppercase text-[#241A15] mb-2 group-hover:text-[#8E6E2F] transition-colors">
-                    Curated Perfection
+                    {t('about.p1Title')}
                   </h3>
                   <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed">
-                    Items are carefully paired by color scheme, texture, fragrance, and taste to create a unified luxury experience.
+                    {t('about.p1Desc')}
                   </p>
                 </div>
               </div>
@@ -187,10 +181,10 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
                     <Feather className="w-6 h-6" />
                   </div>
                   <h3 className="font-podium text-xl font-bold uppercase text-[#241A15] mb-2 group-hover:text-[#8E6E2F] transition-colors">
-                    Wax Sealed Cards
+                    {t('about.p2Title')}
                   </h3>
                   <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed">
-                    Personal note calligraphy written on heavyweight parchment paper, sealed with authentic red sealing wax.
+                    {t('about.p2Desc')}
                   </p>
                 </div>
               </div>
@@ -201,10 +195,10 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
                     <ShieldCheck className="w-6 h-6" />
                   </div>
                   <h3 className="font-podium text-xl font-bold uppercase text-[#241A15] mb-2 group-hover:text-[#8E6E2F] transition-colors">
-                    Premium Sourcing
+                    {t('about.p3Title')}
                   </h3>
                   <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed">
-                    Only artisanal chocolates, organic botanical aromatherapy, and handcrafted accessories make it into our boxes.
+                    {t('about.p3Desc')}
                   </p>
                 </div>
               </div>
@@ -215,10 +209,10 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
                     <Globe className="w-6 h-6" />
                   </div>
                   <h3 className="font-podium text-xl font-bold uppercase text-[#241A15] mb-2 group-hover:text-[#8E6E2F] transition-colors">
-                    White-Glove Shipping
+                    {t('about.p4Title')}
                   </h3>
                   <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed">
-                    Temperature-monitored protective packaging ensuring pristine condition upon arrival at your recipient's door.
+                    {t('about.p4Desc')}
                   </p>
                 </div>
               </div>
@@ -232,13 +226,13 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
             <div className="text-center max-w-2xl mx-auto mb-14">
               <div className="inline-flex items-center gap-2 text-[#8E6E2F] text-xs font-bold uppercase tracking-widest mb-2">
                 <Package className="w-4 h-4 text-[#B8944A]" />
-                <span>Atelier Experience</span>
+                <span>{t('about.processBadge')}</span>
               </div>
               <h2 className="font-podium text-3xl sm:text-5xl uppercase font-bold text-[#241A15] mb-4">
-                How Your Gift Box Is Built
+                {t('about.processTitle')}
               </h2>
               <p className="text-[#756457] text-sm sm:text-base font-inter">
-                From component inspection to the final satin bow wrap.
+                {t('about.processSub')}
               </p>
             </div>
 
@@ -250,10 +244,10 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6">
-                  <div className="text-xs font-bold text-[#8E6E2F] uppercase tracking-wider mb-1">Step 01 — Selection</div>
-                  <h3 className="font-podium text-xl uppercase font-bold text-[#241A15] mb-2">Rigorous Quality Inspection</h3>
+                  <div className="text-xs font-bold text-[#8E6E2F] uppercase tracking-wider mb-1">{t('about.step1Badge')}</div>
+                  <h3 className="font-podium text-xl uppercase font-bold text-[#241A15] mb-2">{t('about.step1Title')}</h3>
                   <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed">
-                    Every product is checked for freshness, scent integrity, and flawlessness before placement into velvet-lined boxes.
+                    {t('about.step1Desc')}
                   </p>
                 </div>
               </div>
@@ -265,10 +259,10 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6">
-                  <div className="text-xs font-bold text-[#8E6E2F] uppercase tracking-wider mb-1">Step 02 — Personalization</div>
-                  <h3 className="font-podium text-xl uppercase font-bold text-[#241A15] mb-2">Calligraphy &amp; Stamp Seal</h3>
+                  <div className="text-xs font-bold text-[#8E6E2F] uppercase tracking-wider mb-1">{t('about.step2Badge')}</div>
+                  <h3 className="font-podium text-xl uppercase font-bold text-[#241A15] mb-2">{t('about.step2Title')}</h3>
                   <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed">
-                    Your personal message is handwritten using traditional dip-pen ink and sealed with melted wax for an authentic feel.
+                    {t('about.step2Desc')}
                   </p>
                 </div>
               </div>
@@ -280,10 +274,10 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6">
-                  <div className="text-xs font-bold text-[#8E6E2F] uppercase tracking-wider mb-1">Step 03 — Final Reveal</div>
-                  <h3 className="font-podium text-xl uppercase font-bold text-[#241A15] mb-2">Satin Bow &amp; Protection</h3>
+                  <div className="text-xs font-bold text-[#8E6E2F] uppercase tracking-wider mb-1">{t('about.step3Badge')}</div>
+                  <h3 className="font-podium text-xl uppercase font-bold text-[#241A15] mb-2">{t('about.step3Title')}</h3>
                   <p className="text-[#756457] text-xs sm:text-sm font-inter leading-relaxed">
-                    Finished with hand-tied double-satin ribbon and double-boxed for courier safety so the recipient receives perfection.
+                    {t('about.step3Desc')}
                   </p>
                 </div>
               </div>
@@ -295,16 +289,16 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
         <section className="py-16 px-4 sm:px-8 lg:px-12 bg-gradient-to-r from-[#241A15] via-[#3A2A20] to-[#241A15] border-t border-[#D8C6A8]/30 text-center text-[#FBF8F2]">
           <div className="max-w-4xl mx-auto">
             <h2 className="font-podium text-3xl sm:text-5xl font-extrabold uppercase text-[#FBF8F2] mb-4">
-              Ready to Send Joy Today?
+              {t('about.ctaTitle')}
             </h2>
             <p className="text-[#F7F1E7]/80 text-sm sm:text-base font-inter max-w-xl mx-auto mb-8">
-              Explore our ready-made hampers or create your own custom box item-by-item.
+              {t('about.ctaSub')}
             </p>
             <button
               onClick={() => onNavigate('/')}
               className="bg-[#E6D5B8] hover:bg-[#DCC39A] text-[#241A15] font-extrabold px-10 py-4 rounded-full text-sm uppercase tracking-widest transition-all cursor-pointer shadow-lg inline-flex items-center gap-2 transform hover:-translate-y-0.5"
             >
-              <span>Browse All Packages</span>
+              <span>{t('about.ctaBtn')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

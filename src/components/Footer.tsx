@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Gift, Send, Instagram, Facebook } from 'lucide-react';
 import { LegalModal } from './LegalModal';
-
+import { useLanguage } from '../context/LanguageContext';
 
 export const Footer: React.FC = () => {
+  const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | null>(null);
@@ -23,17 +24,17 @@ export const Footer: React.FC = () => {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="font-podium text-2xl uppercase font-bold text-[#FBF8F2] mb-1">
-              Join the MBM Inner Circle
+              {t('footer.newsletterTitle')}
             </h3>
             <p className="text-[#F7F1E7]/70 text-xs max-w-md">
-              Subscribe to receive 10% off your first gift order and access exclusive seasonal package releases.
+              {t('footer.newsletterSub')}
             </p>
           </div>
 
           <form onSubmit={handleSubscribe} className="w-full md:w-auto flex items-center gap-2">
             {subscribed ? (
               <div className="text-[#E6D5B8] font-bold text-xs uppercase tracking-wider bg-[#E6D5B8]/10 border border-[#D8C6A8]/40 px-6 py-3 rounded-xl">
-                ✓ You're subscribed! Use code MBM10 at checkout.
+                {t('footer.subscribed')}
               </div>
             ) : (
               <>
@@ -49,7 +50,7 @@ export const Footer: React.FC = () => {
                   type="submit"
                   className="bg-[#E6D5B8] hover:bg-[#DCC39A] text-[#241A15] font-extrabold px-6 py-3 text-xs tracking-widest uppercase rounded-xl flex items-center gap-1.5 transition-all flex-shrink-0 cursor-pointer shadow-sm"
                 >
-                  <span>JOIN</span>
+                  <span>{t('footer.newsletterBtn')}</span>
                   <Send className="w-3.5 h-3.5" />
                 </button>
               </>
@@ -70,7 +71,7 @@ export const Footer: React.FC = () => {
             />
           </div>
           <p className="text-[#F7F1E7]/70 leading-relaxed mb-4">
-            Curated luxury gift packages and bespoke custom box creations. Handcrafted with passion and wax-sealed for life's most cherished moments.
+            {t('footer.desc')}
           </p>
           <div className="flex items-center space-x-3 text-[#F7F1E7]/80">
             <a
@@ -118,33 +119,33 @@ export const Footer: React.FC = () => {
 
         <div>
           <div className="font-podium text-sm uppercase font-bold text-[#E6D5B8] mb-4 tracking-wider">
-            Gift Collections
+            {t('footer.collections')}
           </div>
           <ul className="space-y-2.5 text-[#F7F1E7]/70">
-            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">Prepared Packages</a></li>
-            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">Custom Gift Box Builder</a></li>
-            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">Luxury Champagne Edition</a></li>
-            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">Anniversary & Romance</a></li>
-            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">Corporate Executive Reserve</a></li>
+            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">{t('shop.modePkg')}</a></li>
+            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">{t('shop.customStudio')}</a></li>
+            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">Luxury Edition</a></li>
+            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">Anniversary &amp; Romance</a></li>
+            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">Corporate Executive</a></li>
           </ul>
         </div>
 
         <div>
           <div className="font-podium text-sm uppercase font-bold text-[#E6D5B8] mb-4 tracking-wider">
-            Customer Care
+            {t('footer.customerCare')}
           </div>
           <ul className="space-y-2.5 text-[#F7F1E7]/70">
-            <li><button onClick={() => setLegalModal('terms')} className="hover:text-[#E6D5B8] transition-colors text-left cursor-pointer">Terms of Service</button></li>
-            <li><button onClick={() => setLegalModal('privacy')} className="hover:text-[#E6D5B8] transition-colors text-left cursor-pointer">Privacy Policy</button></li>
-            <li><a href="/my-orders" className="hover:text-[#E6D5B8] transition-colors">Track Order Status</a></li>
-            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">Hand-Packed Guarantee</a></li>
-            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">Corporate Bulk Gifting</a></li>
+            <li><button onClick={() => setLegalModal('terms')} className="hover:text-[#E6D5B8] transition-colors text-left cursor-pointer">{t('footer.terms')}</button></li>
+            <li><button onClick={() => setLegalModal('privacy')} className="hover:text-[#E6D5B8] transition-colors text-left cursor-pointer">{t('footer.privacy')}</button></li>
+            <li><a href="/my-orders" className="hover:text-[#E6D5B8] transition-colors">{t('footer.trackOrder')}</a></li>
+            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">{t('footer.handPacked')}</a></li>
+            <li><a href="#packages" className="hover:text-[#E6D5B8] transition-colors">{t('footer.corporateBulk')}</a></li>
           </ul>
         </div>
 
         <div>
           <div className="font-podium text-sm uppercase font-bold text-[#E6D5B8] mb-4 tracking-wider">
-            Concierge Support
+            {t('footer.concierge')}
           </div>
           <div className="text-[#F7F1E7]/70 space-y-2">
             <div>Email: <a href="mailto:info@mbmgifts.app" className="text-[#FBF8F2] hover:text-[#E6D5B8] transition-colors font-medium">info@mbmgifts.app</a></div>
@@ -160,11 +161,11 @@ export const Footer: React.FC = () => {
 
       {/* Bottom Rights */}
       <div className="px-6 sm:px-10 lg:px-16 py-6 border-t border-[#D8C6A8]/20 flex flex-col sm:flex-row items-center justify-between text-[10px] text-[#F7F1E7]/50 uppercase tracking-widest gap-2">
-        <div>© {new Date().getFullYear()} MBM GIFTS INC. ALL RIGHTS RESERVED.</div>
+        <div>© {new Date().getFullYear()} MBM GIFTS INC. {t('footer.rights')}</div>
         <div className="flex items-center gap-4">
-          <button onClick={() => setLegalModal('terms')} className="hover:text-[#E6D5B8] transition-colors cursor-pointer">Terms of Service</button>
+          <button onClick={() => setLegalModal('terms')} className="hover:text-[#E6D5B8] transition-colors cursor-pointer">{t('footer.terms')}</button>
           <span>•</span>
-          <button onClick={() => setLegalModal('privacy')} className="hover:text-[#E6D5B8] transition-colors cursor-pointer">Privacy Policy</button>
+          <button onClick={() => setLegalModal('privacy')} className="hover:text-[#E6D5B8] transition-colors cursor-pointer">{t('footer.privacy')}</button>
         </div>
       </div>
 

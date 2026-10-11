@@ -55,22 +55,28 @@ export const Hero: React.FC<HeroProps> = ({
             {buyerMarket === 'INTERNATIONAL' && (
               <div className="inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full animate-fade-in shadow-sm">
                 <Truck className="w-3.5 h-3.5 text-emerald-600" />
-                <span>USD • Free Delivery</span>
+                <span>{t('hero.intlBadge')}</span>
               </div>
             )}
           </div>
 
           {/* Main Heading */}
           <h1 className="animate-fade-up-delay-1 font-podium font-black uppercase tracking-tight text-[2.1rem] sm:text-[2.6rem] lg:text-[2.4rem] xl:text-[2.95rem] leading-[1.05]">
-            <span className="block font-black" style={{ color: '#7A5C1E', textShadow: '0 1px 8px rgba(255,255,255,0.7)' }}>BESPOKE GIFTS</span>
-            <span className="block mt-0.5" style={{ color: '#1A1008', textShadow: '0 1px 6px rgba(255,255,255,0.5)' }}>FOR EVERY</span>
-            <span className="block" style={{ color: '#1A1008', textShadow: '0 1px 6px rgba(255,255,255,0.5)' }}>MILESTONE</span>
+            <span className="block font-black" style={{ color: '#7A5C1E', textShadow: '0 1px 8px rgba(255,255,255,0.7)' }}>
+              {t('hero.titleLine1')}
+            </span>
+            <span className="block mt-0.5" style={{ color: '#1A1008', textShadow: '0 1px 6px rgba(255,255,255,0.5)' }}>
+              {t('hero.titleLine2')}
+            </span>
+            <span className="block" style={{ color: '#1A1008', textShadow: '0 1px 6px rgba(255,255,255,0.5)' }}>
+              {t('hero.titleLine3')}
+            </span>
           </h1>
 
           {/* Subtext */}
           <p className="animate-fade-up-delay-2 mt-3 sm:mt-3.5 text-[#3A2A20]/90 text-[13px] sm:text-[14px] lg:text-[13px] xl:text-[14.5px] font-inter leading-relaxed max-w-[340px] xl:max-w-[380px]">
             {buyerMarket === 'INTERNATIONAL'
-              ? 'Ordering from abroad? Send luxury gift packages directly to loved ones in Ethiopia with complimentary VIP delivery.'
+              ? t('hero.subtitleIntl')
               : t('hero.subtitle')}
           </p>
 
@@ -87,8 +93,8 @@ export const Hero: React.FC<HeroProps> = ({
             <div className="flex items-center gap-2 border-l border-[#D8C6A8]/60 pl-3.5">
               <Award className="w-6 h-6 text-[#B8944A] flex-shrink-0" />
               <div className="text-[#756457] text-[10px] tracking-wider uppercase font-inter leading-tight">
-                <div className="font-semibold text-[#241A15]">Top-Rated</div>
-                <div>Studio</div>
+                <div className="font-semibold text-[#241A15]">{t('hero.topRated')}</div>
+                <div>{t('hero.studio')}</div>
               </div>
             </div>
           </div>
