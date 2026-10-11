@@ -146,8 +146,8 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                   className="w-full h-full"
                   src={
                     activeTab === 'prepared'
-                      ? 'https://www.youtube.com/embed/B8A1WE0SEKw?rel=0'
-                      : 'https://www.youtube.com/embed/fYNhoOMyRl8?rel=0'
+                      ? 'https://www.youtube.com/embed/r8XkEdTg3FI?rel=0'
+                      : 'https://www.youtube.com/embed/WXRDOhnJYMk?rel=0'
                   }
                   title={activeTab === 'prepared' ? 'How to Order Ready-Made Package' : 'How to Build Your Own Gift Box'}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -191,7 +191,7 @@ export const HowToOrderPage: React.FC<HowToOrderPageProps> = ({
                     <span>Build Your Own Video</span>
                   </button>
                   <a
-                    href={activeTab === 'prepared' ? 'https://youtu.be/B8A1WE0SEKw' : 'https://youtu.be/fYNhoOMyRl8'}
+                    href={activeTab === 'prepared' ? 'https://youtu.be/r8XkEdTg3FI' : 'https://youtu.be/WXRDOhnJYMk'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-1.5 rounded-lg bg-white/80 hover:bg-white border border-[#D8C6A8] text-[#756457] hover:text-[#241A15] transition-all text-xs"
