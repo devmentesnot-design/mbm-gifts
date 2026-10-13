@@ -85,6 +85,26 @@ export const PAYMENT_CONFIG: PaymentConfigType = {
       badge: 'BOA MOBILE',
       instructions: 'Transfer via Bank of Abyssinia mobile app or branch deposit.',
     },
+    {
+      id: 'dashen',
+      name: 'Dashen Bank',
+      accountType: 'Bank Transfer',
+      accountNumber: '5061107596011',
+      accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'BONTU ABERA',
+      logo: '/dashen-logo.png',
+      badge: 'DASHEN MOBILE',
+      instructions: 'Transfer via Dashen Bank mobile app or branch deposit and upload your receipt.',
+    },
+    {
+      id: 'awash',
+      name: 'Awash Bank',
+      accountType: 'Bank Transfer',
+      accountNumber: '013470124025600',
+      accountName: (import.meta as any).env?.VITE_PAYMENT_BUSINESS_NAME || 'BONTU ABERA',
+      logo: '/awash-logo.png',
+      badge: 'AWASH MOBILE',
+      instructions: 'Transfer via Awash Bank mobile app or branch deposit and upload your receipt.',
+    },
   ],
 
   instructions: {

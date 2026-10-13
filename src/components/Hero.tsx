@@ -39,29 +39,29 @@ export const Hero: React.FC<HeroProps> = ({
       />
 
       {/* Main Hero Container: Left Content & Right Promo Popup */}
-      <div className="w-full h-full px-5 sm:px-8 md:px-10 lg:px-14 xl:px-18 flex-1 flex flex-col lg:flex-row items-center justify-between z-10 py-5 lg:py-8 gap-4 lg:gap-6">
+      <div className="w-full h-full px-5 sm:px-8 md:px-10 lg:px-14 xl:px-18 flex-1 flex flex-col lg:flex-row items-center justify-between z-10 py-8 lg:py-8 gap-4 lg:gap-6">
 
         {/* ========================================================================= */}
         {/* LEFT COLUMN: HERO HEADLINE, CTAS, STATS (Strictly confined to left silk)   */}
         {/* ========================================================================= */}
         <div className="w-full lg:w-[33%] xl:w-[29%] lg:max-w-[350px] xl:max-w-[410px] flex flex-col justify-center">
           {/* Market-aware Badges */}
-          <div className="flex flex-wrap items-center gap-2 mb-2.5 sm:mb-3.5">
-            <div className="inline-flex items-center gap-1.5 bg-[#E6D5B8]/85 border border-[#D8C6A8] text-[#8E6E2F] text-[10px] sm:text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-[#B8944A]" />
+          <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-3.5">
+            <div className="inline-flex items-center gap-1.5 bg-[#E6D5B8]/85 border border-[#D8C6A8] text-[#8E6E2F] text-[11px] sm:text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 sm:px-3 sm:py-1.5 rounded-full shadow-sm">
+              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#B8944A]" />
               <span>{t('hero.badge')}</span>
             </div>
 
             {buyerMarket === 'INTERNATIONAL' && (
-              <div className="inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full animate-fade-in shadow-sm">
-                <Truck className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 text-[9px] sm:text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full animate-fade-in shadow-sm">
+                <Truck className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-600" />
                 <span>{t('hero.intlBadge')}</span>
               </div>
             )}
           </div>
 
           {/* Main Heading */}
-          <h1 className="animate-fade-up-delay-1 font-podium font-black uppercase tracking-tight text-[2.1rem] sm:text-[2.6rem] lg:text-[2.4rem] xl:text-[2.95rem] leading-[1.05]">
+          <h1 className="animate-fade-up-delay-1 font-podium font-black uppercase tracking-tight text-[2.5rem] sm:text-[2.6rem] lg:text-[2.4rem] xl:text-[2.95rem] leading-[1.08] sm:leading-[1.05]">
             <span className="block font-black" style={{ color: '#7A5C1E', textShadow: '0 1px 8px rgba(255,255,255,0.7)' }}>
               {t('hero.titleLine1')}
             </span>
@@ -73,24 +73,25 @@ export const Hero: React.FC<HeroProps> = ({
             </span>
           </h1>
 
-          {/* Subtext */}
-          <p className="animate-fade-up-delay-2 mt-3 sm:mt-3.5 text-[#3A2A20]/90 text-[13px] sm:text-[14px] lg:text-[13px] xl:text-[14.5px] font-inter leading-relaxed max-w-[340px] xl:max-w-[380px]">
+          {/* Subtext — hidden on mobile to reduce clutter */}
+          <p className="hidden sm:block animate-fade-up-delay-2 mt-3 sm:mt-3.5 text-[#3A2A20]/90 text-[13px] sm:text-[14px] lg:text-[13px] xl:text-[14.5px] font-inter leading-relaxed max-w-[340px] xl:max-w-[380px]">
             {buyerMarket === 'INTERNATIONAL'
               ? t('hero.subtitleIntl')
               : t('hero.subtitle')}
           </p>
 
           {/* CTA Row */}
-          <div className="animate-fade-up-delay-3 mt-4 sm:mt-5 flex items-center gap-3.5">
+          <div className="animate-fade-up-delay-3 mt-4 sm:mt-5 flex items-center gap-3">
             <button
               onClick={onExplorePackages}
-              className="group bg-gradient-to-r from-[#E6D5B8] via-[#F7F1E7] to-[#E6D5B8] hover:from-[#ecdcc2] hover:to-[#dfcaa8] text-[#241A15] border border-[#D8C6A8] px-6 sm:px-7 py-3 sm:py-3.5 text-[11px] sm:text-xs tracking-wider uppercase flex items-center gap-2 font-inter font-extrabold transition-all duration-300 cursor-pointer rounded-full shadow-md shadow-[#B8944A]/10 hover:shadow-lg transform hover:-translate-y-0.5"
+              className="group bg-gradient-to-r from-[#E6D5B8] via-[#F7F1E7] to-[#E6D5B8] hover:from-[#ecdcc2] hover:to-[#dfcaa8] text-[#241A15] border border-[#D8C6A8] px-7 sm:px-7 py-3.5 sm:py-3.5 text-[13px] sm:text-xs tracking-wider uppercase flex items-center gap-2 font-inter font-bold sm:font-extrabold transition-all duration-300 cursor-pointer rounded-full shadow-sm sm:shadow-md sm:shadow-[#B8944A]/10 hover:shadow-md transform hover:-translate-y-0.5"
             >
               <span>{t('hero.exploreBtn')}</span>
-              <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-[#B8944A]" />
+              <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-[#B8944A]" />
             </button>
 
-            <div className="flex items-center gap-2 border-l border-[#D8C6A8]/60 pl-3.5">
+            {/* TOP-RATED badge — desktop only */}
+            <div className="hidden sm:flex items-center gap-2 border-l border-[#D8C6A8]/60 pl-3.5">
               <Award className="w-6 h-6 text-[#B8944A] flex-shrink-0" />
               <div className="text-[#756457] text-[10px] tracking-wider uppercase font-inter leading-tight">
                 <div className="font-semibold text-[#241A15]">{t('hero.topRated')}</div>
@@ -99,8 +100,8 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
           </div>
 
-          {/* Compact Stats Bar (Confined strictly under button on left) */}
-          <div className="animate-fade-up-delay-4 mt-4.5 lg:mt-5 flex items-center gap-3.5 sm:gap-5 pt-3.5 border-t border-[#D8C6A8]/50 max-w-[330px]">
+          {/* Compact Stats Bar — desktop only to keep mobile clean */}
+          <div className="hidden sm:flex animate-fade-up-delay-4 mt-4.5 lg:mt-5 items-center gap-3.5 sm:gap-5 pt-3.5 border-t border-[#D8C6A8]/50 max-w-[330px]">
             <div>
               <div className="font-inter text-[#1A1008] text-[15px] lg:text-[17px] font-bold tracking-tight">
                 12,500+
