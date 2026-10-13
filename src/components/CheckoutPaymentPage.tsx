@@ -451,7 +451,7 @@ export const CheckoutPaymentPage: React.FC<CheckoutPaymentPageProps> = ({
                                   <img
                                     src={acc.logo}
                                     alt={acc.name}
-                                    className="h-6 w-auto max-w-[90px] object-contain rounded"
+                                    className={`w-auto object-contain rounded ${acc.id === 'awash' ? 'h-10 max-w-[120px]' : 'h-6 max-w-[90px]'}`}
                                     onError={(e) => {
                                       (e.currentTarget as HTMLImageElement).style.display = 'none';
                                       const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
