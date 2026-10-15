@@ -307,7 +307,7 @@ export const Reviews: React.FC = () => {
             gap: 20,
             padding: '12px 16px 24px',
             width: 'max-content',
-            animation: 'reviewsScroll 55s linear infinite',
+            animation: 'reviewsScroll 75s linear infinite',
           }}
         >
           {doubled.map((rev, idx) => (
