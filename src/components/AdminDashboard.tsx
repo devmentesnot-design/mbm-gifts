@@ -296,6 +296,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     requiresCustomInput: false,
     customInputType: 'text' as 'text' | 'image' | 'both',
     customInputLabel: '',
+    customizationSides: 'single' as 'single' | 'front_back',
+    frontCustomType: 'both' as 'text' | 'image' | 'both',
+    frontCustomLabel: '',
+    backCustomType: 'both' as 'text' | 'image' | 'both',
+    backCustomLabel: '',
+    backCustomOptional: true,
+    backCustomPrice: '',
+    backCustomPriceUsd: '',
     hasCustomUnit: false,
     customUnitName: 'kg',
     customUnitMin: '2',
@@ -326,6 +334,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     requiresCustomInput: false,
     customInputType: 'text' as 'text' | 'image' | 'both',
     customInputLabel: '',
+    customizationSides: 'single' as 'single' | 'front_back',
+    frontCustomType: 'both' as 'text' | 'image' | 'both',
+    frontCustomLabel: '',
+    backCustomType: 'both' as 'text' | 'image' | 'both',
+    backCustomLabel: '',
+    backCustomOptional: true,
+    backCustomPrice: '',
+    backCustomPriceUsd: '',
     hasCustomUnit: false,
     customUnitName: 'kg',
     customUnitMin: '2',
@@ -705,6 +721,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: pkg.requiresCustomInput || false,
         customInputType: (pkg.customInputType as 'text' | 'image' | 'both') || 'text',
         customInputLabel: pkg.customInputLabel || '',
+        customizationSides: pkg.customizationSides || 'single',
+        frontCustomType: pkg.frontCustomType || (pkg.customInputType as any) || 'both',
+        frontCustomLabel: pkg.frontCustomLabel || pkg.customInputLabel || '',
+        backCustomType: pkg.backCustomType || 'both',
+        backCustomLabel: pkg.backCustomLabel || '',
+        backCustomOptional: pkg.backCustomOptional ?? true,
+        backCustomPrice: pkg.backCustomPrice != null ? pkg.backCustomPrice.toString() : '',
+        backCustomPriceUsd: pkg.backCustomPriceUsd != null ? pkg.backCustomPriceUsd.toString() : '',
         hasCustomUnit: pkg.hasCustomUnit || false,
         customUnitName: pkg.customUnitName || 'kg',
         customUnitMin: pkg.customUnitMin != null ? pkg.customUnitMin.toString() : '2',
@@ -740,6 +764,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: false,
         customInputType: 'text',
         customInputLabel: '',
+        customizationSides: 'single',
+        frontCustomType: 'both',
+        frontCustomLabel: '',
+        backCustomType: 'both',
+        backCustomLabel: '',
+        backCustomOptional: true,
+        backCustomPrice: '',
+        backCustomPriceUsd: '',
         hasCustomUnit: false,
         customUnitName: 'kg',
         customUnitMin: '2',
@@ -814,6 +846,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               requiresCustomInput: pkgForm.requiresCustomInput,
               customInputType: pkgForm.customInputType,
               customInputLabel: pkgForm.customInputLabel,
+              customizationSides: pkgForm.customizationSides,
+              frontCustomType: pkgForm.frontCustomType,
+              frontCustomLabel: pkgForm.frontCustomLabel,
+              backCustomType: pkgForm.backCustomType,
+              backCustomLabel: pkgForm.backCustomLabel,
+              backCustomOptional: pkgForm.backCustomOptional,
+              backCustomPrice: pkgForm.backCustomPrice ? parseFloat(pkgForm.backCustomPrice) : undefined,
+              backCustomPriceUsd: pkgForm.backCustomPriceUsd ? parseFloat(pkgForm.backCustomPriceUsd) : undefined,
               hasCustomUnit: pkgForm.hasCustomUnit,
               customUnitName: pkgForm.hasCustomUnit ? (pkgForm.customUnitName || 'kg') : undefined,
               customUnitMin: pkgForm.hasCustomUnit && pkgForm.customUnitMin ? parseFloat(pkgForm.customUnitMin) : undefined,
@@ -843,6 +883,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: pkgForm.requiresCustomInput,
         customInputType: pkgForm.customInputType,
         customInputLabel: pkgForm.customInputLabel,
+        customizationSides: pkgForm.customizationSides,
+        frontCustomType: pkgForm.frontCustomType,
+        frontCustomLabel: pkgForm.frontCustomLabel,
+        backCustomType: pkgForm.backCustomType,
+        backCustomLabel: pkgForm.backCustomLabel,
+        backCustomOptional: pkgForm.backCustomOptional,
+        backCustomPrice: pkgForm.backCustomPrice ? parseFloat(pkgForm.backCustomPrice) : undefined,
+        backCustomPriceUsd: pkgForm.backCustomPriceUsd ? parseFloat(pkgForm.backCustomPriceUsd) : undefined,
         hasCustomUnit: pkgForm.hasCustomUnit,
         customUnitName: pkgForm.hasCustomUnit ? (pkgForm.customUnitName || 'kg') : undefined,
         customUnitMin: pkgForm.hasCustomUnit && pkgForm.customUnitMin ? parseFloat(pkgForm.customUnitMin) : undefined,
@@ -881,6 +929,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: item.requiresCustomInput || false,
         customInputType: (item.customInputType as 'text' | 'image' | 'both') || 'text',
         customInputLabel: item.customInputLabel || '',
+        customizationSides: item.customizationSides || 'single',
+        frontCustomType: item.frontCustomType || (item.customInputType as any) || 'both',
+        frontCustomLabel: item.frontCustomLabel || item.customInputLabel || '',
+        backCustomType: item.backCustomType || 'both',
+        backCustomLabel: item.backCustomLabel || '',
+        backCustomOptional: item.backCustomOptional ?? true,
+        backCustomPrice: item.backCustomPrice != null ? item.backCustomPrice.toString() : '',
+        backCustomPriceUsd: item.backCustomPriceUsd != null ? item.backCustomPriceUsd.toString() : '',
         hasCustomUnit: item.hasCustomUnit || false,
         customUnitName: item.customUnitName || 'kg',
         customUnitMin: item.customUnitMin != null ? item.customUnitMin.toString() : '2',
@@ -902,6 +958,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: false,
         customInputType: 'text',
         customInputLabel: '',
+        customizationSides: 'single',
+        frontCustomType: 'both',
+        frontCustomLabel: '',
+        backCustomType: 'both',
+        backCustomLabel: '',
+        backCustomOptional: true,
+        backCustomPrice: '',
+        backCustomPriceUsd: '',
         hasCustomUnit: false,
         customUnitName: 'kg',
         customUnitMin: '2',
@@ -932,6 +996,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               requiresCustomInput: itemForm.requiresCustomInput,
               customInputType: itemForm.customInputType,
               customInputLabel: itemForm.customInputLabel,
+              customizationSides: itemForm.customizationSides,
+              frontCustomType: itemForm.frontCustomType,
+              frontCustomLabel: itemForm.frontCustomLabel,
+              backCustomType: itemForm.backCustomType,
+              backCustomLabel: itemForm.backCustomLabel,
+              backCustomOptional: itemForm.backCustomOptional,
+              backCustomPrice: itemForm.backCustomPrice ? parseFloat(itemForm.backCustomPrice) : undefined,
+              backCustomPriceUsd: itemForm.backCustomPriceUsd ? parseFloat(itemForm.backCustomPriceUsd) : undefined,
               hasCustomUnit: itemForm.hasCustomUnit,
               customUnitName: itemForm.hasCustomUnit ? (itemForm.customUnitName || 'kg') : undefined,
               customUnitMin: itemForm.hasCustomUnit && itemForm.customUnitMin ? parseFloat(itemForm.customUnitMin) : undefined,
@@ -955,6 +1027,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         requiresCustomInput: itemForm.requiresCustomInput,
         customInputType: itemForm.customInputType,
         customInputLabel: itemForm.customInputLabel,
+        customizationSides: itemForm.customizationSides,
+        frontCustomType: itemForm.frontCustomType,
+        frontCustomLabel: itemForm.frontCustomLabel,
+        backCustomType: itemForm.backCustomType,
+        backCustomLabel: itemForm.backCustomLabel,
+        backCustomOptional: itemForm.backCustomOptional,
+        backCustomPrice: itemForm.backCustomPrice ? parseFloat(itemForm.backCustomPrice) : undefined,
+        backCustomPriceUsd: itemForm.backCustomPriceUsd ? parseFloat(itemForm.backCustomPriceUsd) : undefined,
         hasCustomUnit: itemForm.hasCustomUnit,
         customUnitName: itemForm.hasCustomUnit ? (itemForm.customUnitName || 'kg') : undefined,
         customUnitMin: itemForm.hasCustomUnit && itemForm.customUnitMin ? parseFloat(itemForm.customUnitMin) : undefined,
@@ -1532,9 +1612,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                           <td className="py-4 px-3 text-[#241A15]/80 font-medium">
                             <div>{ord.items.length} item{ord.items.length !== 1 ? 's' : ''}</div>
-                            {ord.items.some((it: any) => it.customerInputText || it.customerInputImageUrl) && (
-                              <span className="inline-flex items-center gap-1 text-[9px] font-bold text-purple-300 bg-purple-900/40 border border-purple-500/40 px-2 py-0.5 rounded-full mt-1">
-                                <Sparkles className="w-2.5 h-2.5 text-purple-400" />
+                            {ord.items.some((it: any) => it.customerInputText || it.customerInputImageUrl || it.frontInputText || it.frontInputImageUrl || it.backInputText || it.backInputImageUrl) && (
+                              <span className="inline-flex items-center gap-1 text-[9px] font-bold text-purple-700 bg-purple-100 border border-purple-300 px-2 py-0.5 rounded-full mt-1">
+                                <Sparkles className="w-2.5 h-2.5 text-purple-600" />
                                 <span>Customized</span>
                               </span>
                             )}
@@ -3524,59 +3604,247 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </span>
                       </label>
                       <p className="text-[11px] text-[#241A15]/60 ml-6.5 mt-0.5">
-                        Enable if the buyer must upload a photo or write custom text when adding this package to their cart.
+                        Enable if the buyer must upload photos or write custom text when adding this package to their cart.
                       </p>
                     </div>
                   </div>
 
                   {pkgForm.requiresCustomInput && (
-                    <div className="mt-4 pt-3 border-t border-[#D8C6A8]/40 grid grid-cols-1 md:grid-cols-2 gap-4 pl-6.5">
+                    <div className="mt-4 pt-3 border-t border-[#D8C6A8]/40 pl-6.5 space-y-4">
+                      {/* Sides Selector: Single Side vs Front & Back */}
                       <div>
                         <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
-                          What does the client need to provide?
+                          Customization Placement / Sides
                         </label>
-                        <div className="grid grid-cols-3 gap-2">
-                          {[
-                            { id: 'text', label: 'Text Only', icon: FileText },
-                            { id: 'image', label: 'Photo Upload', icon: Camera },
-                            { id: 'both', label: 'Photo & Text', icon: Sparkles },
-                          ].map((t) => {
-                            const Icon = t.icon;
-                            const isSelected = pkgForm.customInputType === t.id;
-                            return (
-                              <button
-                                key={t.id}
-                                type="button"
-                                onClick={() => setPkgForm({ ...pkgForm, customInputType: t.id as any })}
-                                className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
-                                  isSelected
-                                    ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
-                                    : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15] hover:border-white/30'
-                                }`}
-                              >
-                                <Icon className="w-3.5 h-3.5" />
-                                <span className="text-[10px] whitespace-nowrap">{t.label}</span>
-                              </button>
-                            );
-                          })}
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setPkgForm({ ...pkgForm, customizationSides: 'single' })}
+                            className={`p-2.5 rounded-lg border text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                              pkgForm.customizationSides === 'single'
+                                ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
+                                : 'bg-white/60 border-[#D8C6A8]/60 text-[#241A15]/70 hover:bg-white'
+                            }`}
+                          >
+                            <FileText className="w-4 h-4" />
+                            <span>Single Side Only</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPkgForm({ ...pkgForm, customizationSides: 'front_back' })}
+                            className={`p-2.5 rounded-lg border text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                              pkgForm.customizationSides === 'front_back'
+                                ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
+                                : 'bg-white/60 border-[#D8C6A8]/60 text-[#241A15]/70 hover:bg-white'
+                            }`}
+                          >
+                            <Layers className="w-4 h-4" />
+                            <span>Front & Back Sides (Multi-Side)</span>
+                          </button>
                         </div>
                       </div>
 
-                      <div>
-                        <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
-                          Prompt / Instruction Label for Client
-                        </label>
-                        <input
-                          type="text"
-                          value={pkgForm.customInputLabel}
-                          onChange={(e) => setPkgForm({ ...pkgForm, customInputLabel: e.target.value })}
-                          placeholder="e.g. Upload couple photo & enter anniversary date"
-                          className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
-                        />
-                        <span className="text-[10px] text-[#241A15]/40 block mt-1">
-                          This label is shown directly to the buyer when adding to cart.
-                        </span>
-                      </div>
+                      {/* If Single Side */}
+                      {pkgForm.customizationSides === 'single' ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                              What does the client provide?
+                            </label>
+                            <div className="grid grid-cols-3 gap-2">
+                              {[
+                                { id: 'text', label: 'Text Only', icon: FileText },
+                                { id: 'image', label: 'Photo Upload', icon: Camera },
+                                { id: 'both', label: 'Photo & Text', icon: Sparkles },
+                              ].map((t) => {
+                                const Icon = t.icon;
+                                const isSelected = pkgForm.customInputType === t.id;
+                                return (
+                                  <button
+                                    key={t.id}
+                                    type="button"
+                                    onClick={() => setPkgForm({ ...pkgForm, customInputType: t.id as any })}
+                                    className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                                      isSelected
+                                        ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
+                                        : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15] hover:border-white/30'
+                                    }`}
+                                  >
+                                    <Icon className="w-3.5 h-3.5" />
+                                    <span className="text-[10px] whitespace-nowrap">{t.label}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                              Prompt / Instruction Label for Client
+                            </label>
+                            <input
+                              type="text"
+                              value={pkgForm.customInputLabel}
+                              onChange={(e) => setPkgForm({ ...pkgForm, customInputLabel: e.target.value })}
+                              placeholder="e.g. Upload couple photo & enter anniversary date"
+                              className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
+                            />
+                            <span className="text-[10px] text-[#241A15]/40 block mt-1">
+                              This label is shown directly to the buyer when adding to cart.
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        /* Front & Back Multi-Side Configuration */
+                        <div className="space-y-4">
+                          {/* Front Side Section */}
+                          <div className="bg-white/80 border border-[#D8C6A8] rounded-xl p-3.5 space-y-3">
+                            <div className="flex items-center justify-between pb-2 border-b border-[#D8C6A8]/30">
+                              <span className="text-xs font-bold text-[#8E6E2F] uppercase tracking-wider flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                                Front Side Customization
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                                  Front Input Type
+                                </label>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {[
+                                    { id: 'text', label: 'Text Only', icon: FileText },
+                                    { id: 'image', label: 'Photo Upload', icon: Camera },
+                                    { id: 'both', label: 'Photo & Text', icon: Sparkles },
+                                  ].map((t) => {
+                                    const Icon = t.icon;
+                                    const isSelected = pkgForm.frontCustomType === t.id;
+                                    return (
+                                      <button
+                                        key={t.id}
+                                        type="button"
+                                        onClick={() => setPkgForm({ ...pkgForm, frontCustomType: t.id as any })}
+                                        className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                                          isSelected
+                                            ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
+                                            : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15]'
+                                        }`}
+                                      >
+                                        <Icon className="w-3.5 h-3.5" />
+                                        <span className="text-[10px]">{t.label}</span>
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                              <div>
+                                <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                                  Front Prompt / Instruction
+                                </label>
+                                <input
+                                  type="text"
+                                  value={pkgForm.frontCustomLabel}
+                                  onChange={(e) => setPkgForm({ ...pkgForm, frontCustomLabel: e.target.value })}
+                                  placeholder="e.g. Front print: Upload photo or logo"
+                                  className="w-full bg-white border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Back Side Section */}
+                          <div className="bg-white/80 border border-[#D8C6A8] rounded-xl p-3.5 space-y-3">
+                            <div className="flex items-center justify-between pb-2 border-b border-[#D8C6A8]/30">
+                              <span className="text-xs font-bold text-[#8E6E2F] uppercase tracking-wider flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-amber-600"></span>
+                                Back Side Customization
+                              </span>
+                              <label className="flex items-center gap-1.5 cursor-pointer text-xs font-medium text-[#241A15]/80">
+                                <input
+                                  type="checkbox"
+                                  checked={pkgForm.backCustomOptional}
+                                  onChange={(e) => setPkgForm({ ...pkgForm, backCustomOptional: e.target.checked })}
+                                  className="w-3.5 h-3.5 rounded text-amber-500 cursor-pointer"
+                                />
+                                <span className="text-[11px]">Optional for customer (can choose Front Only)</span>
+                              </label>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                                  Back Input Type
+                                </label>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {[
+                                    { id: 'text', label: 'Text Only', icon: FileText },
+                                    { id: 'image', label: 'Photo Upload', icon: Camera },
+                                    { id: 'both', label: 'Photo & Text', icon: Sparkles },
+                                  ].map((t) => {
+                                    const Icon = t.icon;
+                                    const isSelected = pkgForm.backCustomType === t.id;
+                                    return (
+                                      <button
+                                        key={t.id}
+                                        type="button"
+                                        onClick={() => setPkgForm({ ...pkgForm, backCustomType: t.id as any })}
+                                        className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                                          isSelected
+                                            ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
+                                            : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15]'
+                                        }`}
+                                      >
+                                        <Icon className="w-3.5 h-3.5" />
+                                        <span className="text-[10px]">{t.label}</span>
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                              <div>
+                                <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                                  Back Prompt / Instruction
+                                </label>
+                                <input
+                                  type="text"
+                                  value={pkgForm.backCustomLabel}
+                                  onChange={(e) => setPkgForm({ ...pkgForm, backCustomLabel: e.target.value })}
+                                  placeholder="e.g. Back print: Name, number or quote"
+                                  className="w-full bg-white border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
+                                />
+                              </div>
+                            </div>
+                            {/* Optional Extra Price for Back Print */}
+                            <div className="pt-2 border-t border-[#D8C6A8]/30 grid grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-[10px] uppercase text-[#8E6E2F] font-bold mb-1">
+                                  Extra Price for Back Print (ETB, 0 = Free)
+                                </label>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  value={pkgForm.backCustomPrice}
+                                  onChange={(e) => setPkgForm({ ...pkgForm, backCustomPrice: e.target.value })}
+                                  placeholder="0 (Free)"
+                                  className="w-full bg-white border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] uppercase text-[#8E6E2F] font-bold mb-1">
+                                  Extra Price USD ($)
+                                </label>
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  min="0"
+                                  value={pkgForm.backCustomPriceUsd}
+                                  onChange={(e) => setPkgForm({ ...pkgForm, backCustomPriceUsd: e.target.value })}
+                                  placeholder="0.00"
+                                  className="w-full bg-white border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -4165,53 +4433,241 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 {itemForm.requiresCustomInput && (
-                  <div className="space-y-3 pt-2 border-t border-[#D8C6A8]/40 pl-6.5">
+                  <div className="mt-3 pt-3 border-t border-[#D8C6A8]/40 pl-6.5 space-y-4">
+                    {/* Sides Selector: Single Side vs Front & Back */}
                     <div>
                       <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
-                        What does the client need to provide?
+                        Customization Placement / Sides
                       </label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {[
-                          { id: 'text', label: 'Text Only', icon: FileText },
-                          { id: 'image', label: 'Photo Upload', icon: Camera },
-                          { id: 'both', label: 'Photo & Text', icon: Sparkles },
-                        ].map((t) => {
-                          const Icon = t.icon;
-                          const isSelected = itemForm.customInputType === t.id;
-                          return (
-                            <button
-                              key={t.id}
-                              type="button"
-                              onClick={() => setItemForm({ ...itemForm, customInputType: t.id as any })}
-                              className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
-                                isSelected
-                                  ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
-                                  : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15] hover:border-white/30'
-                              }`}
-                            >
-                              <Icon className="w-3.5 h-3.5" />
-                              <span className="text-[10px] whitespace-nowrap">{t.label}</span>
-                            </button>
-                          );
-                        })}
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setItemForm({ ...itemForm, customizationSides: 'single' })}
+                          className={`p-2.5 rounded-lg border text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                            itemForm.customizationSides === 'single'
+                              ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
+                              : 'bg-white/60 border-[#D8C6A8]/60 text-[#241A15]/70 hover:bg-white'
+                          }`}
+                        >
+                          <FileText className="w-4 h-4" />
+                          <span>Single Side Only</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setItemForm({ ...itemForm, customizationSides: 'front_back' })}
+                          className={`p-2.5 rounded-lg border text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                            itemForm.customizationSides === 'front_back'
+                              ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
+                              : 'bg-white/60 border-[#D8C6A8]/60 text-[#241A15]/70 hover:bg-white'
+                          }`}
+                        >
+                          <Layers className="w-4 h-4" />
+                          <span>Front & Back Sides (T-Shirt, Mug, Notebook...)</span>
+                        </button>
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
-                        Prompt / Instruction Label for Client
-                      </label>
-                      <input
-                        type="text"
-                        value={itemForm.customInputLabel}
-                        onChange={(e) => setItemForm({ ...itemForm, customInputLabel: e.target.value })}
-                        placeholder="e.g. Enter name or message to print on mug"
-                        className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
-                      />
-                      <span className="text-[10px] text-[#241A15]/40 block mt-1">
-                        This instruction is shown to the buyer when adding this item to their custom box.
-                      </span>
-                    </div>
+                    {/* If Single Side */}
+                    {itemForm.customizationSides === 'single' ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                            What does the client provide?
+                          </label>
+                          <div className="grid grid-cols-3 gap-2">
+                            {[
+                              { id: 'text', label: 'Text Only', icon: FileText },
+                              { id: 'image', label: 'Photo Upload', icon: Camera },
+                              { id: 'both', label: 'Photo & Text', icon: Sparkles },
+                            ].map((t) => {
+                              const Icon = t.icon;
+                              const isSelected = itemForm.customInputType === t.id;
+                              return (
+                                <button
+                                  key={t.id}
+                                  type="button"
+                                  onClick={() => setItemForm({ ...itemForm, customInputType: t.id as any })}
+                                  className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
+                                      : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15] hover:border-white/30'
+                                  }`}
+                                >
+                                  <Icon className="w-3.5 h-3.5" />
+                                  <span className="text-[10px] whitespace-nowrap">{t.label}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                            Prompt / Instruction Label for Client
+                          </label>
+                          <input
+                            type="text"
+                            value={itemForm.customInputLabel}
+                            onChange={(e) => setItemForm({ ...itemForm, customInputLabel: e.target.value })}
+                            placeholder="e.g. Enter name or message to print on mug"
+                            className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
+                          />
+                          <span className="text-[10px] text-[#241A15]/40 block mt-1">
+                            This instruction is shown to the buyer when adding this item.
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      /* Front & Back Multi-Side Configuration */
+                      <div className="space-y-4">
+                        {/* Front Side Section */}
+                        <div className="bg-white/80 border border-[#D8C6A8] rounded-xl p-3.5 space-y-3">
+                          <div className="flex items-center justify-between pb-2 border-b border-[#D8C6A8]/30">
+                            <span className="text-xs font-bold text-[#8E6E2F] uppercase tracking-wider flex items-center gap-1.5">
+                              <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                              Front Side Customization
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                                Front Input Type
+                              </label>
+                              <div className="grid grid-cols-3 gap-2">
+                                {[
+                                  { id: 'text', label: 'Text Only', icon: FileText },
+                                  { id: 'image', label: 'Photo Upload', icon: Camera },
+                                  { id: 'both', label: 'Photo & Text', icon: Sparkles },
+                                ].map((t) => {
+                                  const Icon = t.icon;
+                                  const isSelected = itemForm.frontCustomType === t.id;
+                                  return (
+                                    <button
+                                      key={t.id}
+                                      type="button"
+                                      onClick={() => setItemForm({ ...itemForm, frontCustomType: t.id as any })}
+                                      className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                                        isSelected
+                                          ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
+                                          : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15]'
+                                      }`}
+                                    >
+                                      <Icon className="w-3.5 h-3.5" />
+                                      <span className="text-[10px]">{t.label}</span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                                Front Prompt / Instruction
+                              </label>
+                              <input
+                                type="text"
+                                value={itemForm.frontCustomLabel}
+                                onChange={(e) => setItemForm({ ...itemForm, frontCustomLabel: e.target.value })}
+                                placeholder="e.g. Front: Upload custom graphic or enter name"
+                                className="w-full bg-white border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Back Side Section */}
+                        <div className="bg-white/80 border border-[#D8C6A8] rounded-xl p-3.5 space-y-3">
+                          <div className="flex items-center justify-between pb-2 border-b border-[#D8C6A8]/30">
+                            <span className="text-xs font-bold text-[#8E6E2F] uppercase tracking-wider flex items-center gap-1.5">
+                              <span className="w-2 h-2 rounded-full bg-amber-600"></span>
+                              Back Side Customization
+                            </span>
+                            <label className="flex items-center gap-1.5 cursor-pointer text-xs font-medium text-[#241A15]/80">
+                              <input
+                                type="checkbox"
+                                checked={itemForm.backCustomOptional}
+                                onChange={(e) => setItemForm({ ...itemForm, backCustomOptional: e.target.checked })}
+                                className="w-3.5 h-3.5 rounded text-amber-500 cursor-pointer"
+                              />
+                              <span className="text-[11px]">Optional for customer (can choose Front Only)</span>
+                            </label>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                                Back Input Type
+                              </label>
+                              <div className="grid grid-cols-3 gap-2">
+                                {[
+                                  { id: 'text', label: 'Text Only', icon: FileText },
+                                  { id: 'image', label: 'Photo Upload', icon: Camera },
+                                  { id: 'both', label: 'Photo & Text', icon: Sparkles },
+                                ].map((t) => {
+                                  const Icon = t.icon;
+                                  const isSelected = itemForm.backCustomType === t.id;
+                                  return (
+                                    <button
+                                      key={t.id}
+                                      type="button"
+                                      onClick={() => setItemForm({ ...itemForm, backCustomType: t.id as any })}
+                                      className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                                        isSelected
+                                          ? 'bg-[#B8944A] text-white border-amber-400 shadow-md font-extrabold'
+                                          : 'bg-white/50 border-[#D8C6A8]/50 text-[#241A15]/70 hover:text-[#241A15]'
+                                      }`}
+                                    >
+                                      <Icon className="w-3.5 h-3.5" />
+                                      <span className="text-[10px]">{t.label}</span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1.5">
+                                Back Prompt / Instruction
+                              </label>
+                              <input
+                                type="text"
+                                value={itemForm.backCustomLabel}
+                                onChange={(e) => setItemForm({ ...itemForm, backCustomLabel: e.target.value })}
+                                placeholder="e.g. Back: Upload photo or player number"
+                                className="w-full bg-white border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
+                              />
+                            </div>
+                          </div>
+                          {/* Optional Extra Price for Back Print */}
+                          <div className="pt-2 border-t border-[#D8C6A8]/30 grid grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-[10px] uppercase text-[#8E6E2F] font-bold mb-1">
+                                Extra Price for Back Print (ETB, 0 = Free)
+                              </label>
+                              <input
+                                type="number"
+                                min="0"
+                                value={itemForm.backCustomPrice}
+                                onChange={(e) => setItemForm({ ...itemForm, backCustomPrice: e.target.value })}
+                                placeholder="0 (Free)"
+                                className="w-full bg-white border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] uppercase text-[#8E6E2F] font-bold mb-1">
+                                Extra Price USD ($)
+                              </label>
+                              <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value={itemForm.backCustomPriceUsd}
+                                onChange={(e) => setItemForm({ ...itemForm, backCustomPriceUsd: e.target.value })}
+                                placeholder="0.00"
+                                className="w-full bg-white border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -4844,8 +5300,100 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                              </div>
                              <div className="text-[11px] text-[#241A15]/60">Qty: {it.quantity} • {isPkg ? 'Ready-Made Package' : (singleObj?.category || 'Single Item')}</div>
 
-                             {/* Customer Customization Details (Text & Photo) */}
-                             {(it.customerInputText || it.customerInputImageUrl) && (
+                             {/* Customer Customization Details (Multi-side Front/Back or Single) */}
+                             {(it.customSidesSelected === 'front_and_back' || it.frontInputText || it.frontInputImageUrl || it.backInputText || it.backInputImageUrl) ? (
+                               <div className="mt-2.5 bg-[#F3EDE2] border border-[#D8C6A8] rounded-xl p-3 space-y-2.5 max-w-lg">
+                                 <div className="flex items-center justify-between">
+                                   <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                     <Sparkles className="w-3.5 h-3.5 text-[#8E6E2F]" />
+                                     <span>Client Customization Details ({it.customSidesSelected === 'front_and_back' ? 'Front & Back Sides' : 'Front Side Only'})</span>
+                                   </div>
+                                   {it.backSidePrice ? (
+                                     <span className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300">
+                                       +Back Print: {it.backSidePrice} ETB
+                                     </span>
+                                   ) : null}
+                                 </div>
+
+                                 {/* Front Side */}
+                                 <div className="bg-white/80 rounded-lg p-2.5 border border-[#D8C6A8]/60 space-y-1.5">
+                                   <span className="text-[10px] font-extrabold text-[#8E6E2F] uppercase tracking-wider block flex items-center gap-1">
+                                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Front Side
+                                   </span>
+                                   {(it.frontInputText || it.customerInputText) && (
+                                     <div className="text-[#241A15] text-xs bg-[#FAF6EE] rounded p-1.5 border border-[#D8C6A8]/40">
+                                       <span className="text-[#241A15]/60 font-semibold">Front Text: </span>
+                                       <span className="text-[#8E6E2F] font-medium font-mono">"{it.frontInputText || it.customerInputText}"</span>
+                                     </div>
+                                   )}
+                                   {(it.frontInputImageUrl || it.customerInputImageUrl) && (
+                                     <div className="pt-1 flex items-center gap-2">
+                                       <div className="w-12 h-12 rounded-lg overflow-hidden border border-[#D8C6A8] bg-white flex-shrink-0">
+                                         <img
+                                           src={it.frontInputImageUrl || it.customerInputImageUrl}
+                                           alt="Front Custom Photo"
+                                           className="w-full h-full object-cover"
+                                         />
+                                       </div>
+                                       <div>
+                                         <span className="text-[10px] text-[#241A15]/70 block">Front Uploaded Photo</span>
+                                         <a
+                                           href={it.frontInputImageUrl || it.customerInputImageUrl}
+                                           target="_blank"
+                                           rel="noreferrer"
+                                           className="text-[#8E6E2F] hover:underline text-[11px] font-bold inline-flex items-center gap-1"
+                                         >
+                                           <Eye className="w-3 h-3" /> View Front Image
+                                         </a>
+                                       </div>
+                                     </div>
+                                   )}
+                                 </div>
+
+                                 {/* Back Side */}
+                                 {(it.backInputText || it.backInputImageUrl) ? (
+                                   <div className="bg-white/80 rounded-lg p-2.5 border border-[#D8C6A8]/60 space-y-1.5">
+                                     <span className="text-[10px] font-extrabold text-[#8E6E2F] uppercase tracking-wider block flex items-center gap-1">
+                                       <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Back Side
+                                     </span>
+                                     {it.backInputText && (
+                                       <div className="text-[#241A15] text-xs bg-[#FAF6EE] rounded p-1.5 border border-[#D8C6A8]/40">
+                                         <span className="text-[#241A15]/60 font-semibold">Back Text: </span>
+                                         <span className="text-[#8E6E2F] font-medium font-mono">"{it.backInputText}"</span>
+                                       </div>
+                                     )}
+                                     {it.backInputImageUrl && (
+                                       <div className="pt-1 flex items-center gap-2">
+                                         <div className="w-12 h-12 rounded-lg overflow-hidden border border-[#D8C6A8] bg-white flex-shrink-0">
+                                           <img
+                                             src={it.backInputImageUrl}
+                                             alt="Back Custom Photo"
+                                             className="w-full h-full object-cover"
+                                           />
+                                         </div>
+                                         <div>
+                                           <span className="text-[10px] text-[#241A15]/70 block">Back Uploaded Photo</span>
+                                           <a
+                                             href={it.backInputImageUrl}
+                                             target="_blank"
+                                             rel="noreferrer"
+                                             className="text-[#8E6E2F] hover:underline text-[11px] font-bold inline-flex items-center gap-1"
+                                           >
+                                             <Eye className="w-3 h-3" /> View Back Image
+                                           </a>
+                                         </div>
+                                       </div>
+                                     )}
+                                   </div>
+                                 ) : (
+                                   it.customSidesSelected === 'front_only' && (
+                                     <div className="text-[10px] text-[#241A15]/50 italic">
+                                       * Customer chose Front Side Only.
+                                     </div>
+                                   )
+                                 )}
+                               </div>
+                             ) : (it.customerInputText || it.customerInputImageUrl) ? (
                                <div className="mt-2 bg-[#F3EDE2] border border-[#D8C6A8] rounded-lg p-2.5 space-y-1.5 max-w-md">
                                  <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-1">
                                    <Sparkles className="w-3 h-3 text-[#8E6E2F]" />
@@ -4880,7 +5428,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                    </div>
                                  )}
                                </div>
-                             )}
+                             ) : null}
                            </div>
                            <div className="font-bold text-[#8E6E2F] text-sm whitespace-nowrap">
                              {isUsd ? `$${(itemPrice * it.quantity).toFixed(2)} USD` : `${(itemPrice * it.quantity).toLocaleString()} ብር`}

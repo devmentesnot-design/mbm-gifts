@@ -410,7 +410,13 @@ export default function App() {
     customerInputImageUrl?: string,
     customUnitValue?: number,
     customUnitName?: string,
-    unitCalculatedPrice?: number
+    unitCalculatedPrice?: number,
+    customSidesSelected?: 'front_only' | 'front_and_back',
+    frontInputText?: string,
+    frontInputImageUrl?: string,
+    backInputText?: string,
+    backInputImageUrl?: string,
+    backSidePrice?: number
   ) => {
     const existingIndex = cartItems.findIndex(
       (item) =>
@@ -419,6 +425,11 @@ export default function App() {
         item.customNote === customNote &&
         item.customerInputText === customerInputText &&
         item.customerInputImageUrl === customerInputImageUrl &&
+        item.customSidesSelected === customSidesSelected &&
+        item.frontInputText === frontInputText &&
+        item.frontInputImageUrl === frontInputImageUrl &&
+        item.backInputText === backInputText &&
+        item.backInputImageUrl === backInputImageUrl &&
         item.customUnitValue === customUnitValue
     );
 
@@ -435,6 +446,12 @@ export default function App() {
         customNote,
         customerInputText,
         customerInputImageUrl,
+        customSidesSelected,
+        frontInputText,
+        frontInputImageUrl,
+        backInputText,
+        backInputImageUrl,
+        backSidePrice,
         customUnitValue,
         customUnitName,
         unitCalculatedPrice,
@@ -456,6 +473,12 @@ export default function App() {
     totalPrice?: number;
     customerInputText?: string;
     customerInputImageUrl?: string;
+    customSidesSelected?: 'front_only' | 'front_and_back';
+    frontInputText?: string;
+    frontInputImageUrl?: string;
+    backInputText?: string;
+    backInputImageUrl?: string;
+    backSidePrice?: number;
     customUnitValue?: number;
     customUnitName?: string;
     unitCalculatedPrice?: number;
@@ -484,6 +507,11 @@ export default function App() {
            ('selectedItems' in ci && ci.selectedItems?.length === 1 && ci.selectedItems[0]?.id === item.id)) &&
           ci.customerInputText === customBox.customerInputText &&
           ci.customerInputImageUrl === customBox.customerInputImageUrl &&
+          ci.customSidesSelected === customBox.customSidesSelected &&
+          ci.frontInputText === customBox.frontInputText &&
+          ci.frontInputImageUrl === customBox.frontInputImageUrl &&
+          ci.backInputText === customBox.backInputText &&
+          ci.backInputImageUrl === customBox.backInputImageUrl &&
           ci.customUnitValue === customBox.customUnitValue
       );
 
@@ -501,6 +529,12 @@ export default function App() {
           customNote: customBox.cardMessage,
           customerInputText: customBox.customerInputText,
           customerInputImageUrl: customBox.customerInputImageUrl,
+          customSidesSelected: customBox.customSidesSelected,
+          frontInputText: customBox.frontInputText,
+          frontInputImageUrl: customBox.frontInputImageUrl,
+          backInputText: customBox.backInputText,
+          backInputImageUrl: customBox.backInputImageUrl,
+          backSidePrice: customBox.backSidePrice,
           customUnitValue: customBox.customUnitValue,
           customUnitName: customBox.customUnitName,
           unitCalculatedPrice: customBox.unitCalculatedPrice,

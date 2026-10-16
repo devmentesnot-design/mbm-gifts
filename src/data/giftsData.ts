@@ -47,8 +47,17 @@ export interface PreparedPackage {
   popularFor: string;
   // Customer input requirement fields
   requiresCustomInput?: boolean;            // If true, customer must provide input when ordering
-  customInputType?: 'text' | 'image' | 'both'; // What kind of input is needed
+  customInputType?: 'text' | 'image' | 'both'; // What kind of input is needed (single-side or default)
   customInputLabel?: string;                // Prompt shown to customer (e.g. "Enter name to print")
+  // Multi-Side Customization (Front & Back)
+  customizationSides?: 'single' | 'front_back'; // 'single' (default) or 'front_back'
+  frontCustomType?: 'text' | 'image' | 'both';
+  frontCustomLabel?: string;
+  backCustomType?: 'text' | 'image' | 'both';
+  backCustomLabel?: string;
+  backCustomOptional?: boolean;             // If true, buyer can choose Front Only or Front & Back
+  backCustomPrice?: number;                 // Optional extra print cost for back in ETB
+  backCustomPriceUsd?: number;              // Optional extra print cost for back in USD
   // Scalable unit / measurement fields (e.g. Cake by KG, Flowers by Stems, Chocolates by Pcs)
   hasCustomUnit?: boolean;
   customUnitName?: string;                  // e.g. 'kg', 'stems', 'pieces', 'servings', 'g'
@@ -71,6 +80,15 @@ export interface CustomBoxOption {
   requiresCustomInput?: boolean;
   customInputType?: 'text' | 'image' | 'both';
   customInputLabel?: string;
+  // Multi-Side Customization (Front & Back)
+  customizationSides?: 'single' | 'front_back';
+  frontCustomType?: 'text' | 'image' | 'both';
+  frontCustomLabel?: string;
+  backCustomType?: 'text' | 'image' | 'both';
+  backCustomLabel?: string;
+  backCustomOptional?: boolean;
+  backCustomPrice?: number;
+  backCustomPriceUsd?: number;
   // Scalable unit / measurement fields (e.g. Cake by KG, Flowers by Stems, Chocolates by Pcs)
   hasCustomUnit?: boolean;
   customUnitName?: string;
@@ -124,6 +142,14 @@ export const getStoredPackages = async (): Promise<PreparedPackage[]> => {
       requiresCustomInput: item.requires_custom_input || false,
       customInputType: item.custom_input_type || 'text',
       customInputLabel: item.custom_input_label || '',
+      customizationSides: item.customization_sides || 'single',
+      frontCustomType: item.front_custom_type || item.custom_input_type || 'both',
+      frontCustomLabel: item.front_custom_label || item.custom_input_label || '',
+      backCustomType: item.back_custom_type || 'both',
+      backCustomLabel: item.back_custom_label || '',
+      backCustomOptional: item.back_custom_optional ?? true,
+      backCustomPrice: item.back_custom_price != null ? Number(item.back_custom_price) : undefined,
+      backCustomPriceUsd: item.back_custom_price_usd != null ? Number(item.back_custom_price_usd) : undefined,
       hasCustomUnit: item.has_custom_unit || false,
       customUnitName: item.custom_unit_name || 'kg',
       customUnitMin: item.custom_unit_min != null ? Number(item.custom_unit_min) : 1,
@@ -149,52 +175,8 @@ export const saveStoredPackages = async (packages: PreparedPackage[]) => {
     return;
   }
 
-  try {
-    const formatted = packages.map(p => ({
-      id: p.id,
-      name: p.name,
-      category: p.category,
-      price: p.price,
-      price_usd: p.price_usd ?? null,
-      rating: p.rating,
-      reviews_count: p.reviewsCount,
-      badge: p.badge || null,
-      description: p.shortDesc,
-      image: p.image,
-      items_included: p.itemsIncluded,
-      items_included_detailed: p.itemsIncludedDetailed,
-      popular_for: p.popularFor,
-      requires_custom_input: p.requiresCustomInput || false,
-      custom_input_type: p.customInputType || 'text',
-      custom_input_label: p.customInputLabel || '',
-      has_custom_unit: p.hasCustomUnit || false,
-      custom_unit_name: p.customUnitName || 'kg',
-      custom_unit_min: p.customUnitMin ?? 1,
-      custom_unit_step: p.customUnitStep ?? 1,
-      custom_unit_max: p.customUnitMax ?? 50,
-      custom_unit_price_per_unit: p.customUnitPricePerUnit ?? null,
-      custom_unit_price_per_unit_usd: p.customUnitPricePerUnitUsd ?? null
-    }));
-    
-    const { error } = await supabase.from('prepared_packages').upsert(formatted, { onConflict: 'id' });
-    
-    if (error) {
-      console.error('❌ Supabase save error:', error);
-      throw error;
-    }
-    
-    console.log('✅ Saved', packages.length, 'packages to Supabase successfully');
-  } catch (err) {
-    console.error('❌ Failed to save to Supabase:', err);
-    throw err;
-  }
-};
-
-export const saveSinglePackage = async (p: PreparedPackage) => {
-  console.log('💾 Saving single package to Supabase:', p.id);
-  if (!isSupabaseConfigured) return;
-  try {
-    const formatted = {
+  const formatPkg = (p: PreparedPackage, includeMultiSides = true) => {
+    const base: any = {
       id: p.id,
       name: p.name,
       category: p.category,
@@ -219,10 +201,98 @@ export const saveSinglePackage = async (p: PreparedPackage) => {
       custom_unit_price_per_unit: p.customUnitPricePerUnit ?? null,
       custom_unit_price_per_unit_usd: p.customUnitPricePerUnitUsd ?? null
     };
+    if (includeMultiSides) {
+      base.customization_sides = p.customizationSides || 'single';
+      base.front_custom_type = p.frontCustomType || p.customInputType || 'both';
+      base.front_custom_label = p.frontCustomLabel || p.customInputLabel || '';
+      base.back_custom_type = p.backCustomType || 'both';
+      base.back_custom_label = p.backCustomLabel || '';
+      base.back_custom_optional = p.backCustomOptional ?? true;
+      base.back_custom_price = p.backCustomPrice ?? null;
+      base.back_custom_price_usd = p.backCustomPriceUsd ?? null;
+    }
+    return base;
+  };
+
+  try {
+    const formatted = packages.map(p => formatPkg(p, true));
+    const { error } = await supabase.from('prepared_packages').upsert(formatted, { onConflict: 'id' });
+    
+    if (error) {
+      // If table doesn't have the new multi-side columns yet, retry with base columns
+      if (error.message?.includes('column') || (error as any).code === '42703' || (error as any).code === 'PGRST204') {
+        console.warn('⚠️ Multi-side customization columns not found in database. Retrying without new columns. (Run MULTI_SIDE_CUSTOMIZATION_MIGRATION.sql in Supabase)');
+        const fallbackFormatted = packages.map(p => formatPkg(p, false));
+        const { error: fallbackError } = await supabase.from('prepared_packages').upsert(fallbackFormatted, { onConflict: 'id' });
+        if (fallbackError) throw fallbackError;
+      } else {
+        throw error;
+      }
+    }
+    
+    console.log('✅ Saved', packages.length, 'packages to Supabase successfully');
+  } catch (err) {
+    console.error('❌ Failed to save to Supabase:', err);
+    throw err;
+  }
+};
+
+export const saveSinglePackage = async (p: PreparedPackage) => {
+  console.log('💾 Saving single package to Supabase:', p.id);
+  if (!isSupabaseConfigured) return;
+  try {
+    const formatted: any = {
+      id: p.id,
+      name: p.name,
+      category: p.category,
+      price: p.price,
+      price_usd: p.price_usd ?? null,
+      rating: p.rating,
+      reviews_count: p.reviewsCount,
+      badge: p.badge || null,
+      description: p.shortDesc,
+      image: p.image,
+      items_included: p.itemsIncluded,
+      items_included_detailed: p.itemsIncludedDetailed,
+      popular_for: p.popularFor,
+      requires_custom_input: p.requiresCustomInput || false,
+      custom_input_type: p.customInputType || 'text',
+      custom_input_label: p.customInputLabel || '',
+      customization_sides: p.customizationSides || 'single',
+      front_custom_type: p.frontCustomType || p.customInputType || 'both',
+      front_custom_label: p.frontCustomLabel || p.customInputLabel || '',
+      back_custom_type: p.backCustomType || 'both',
+      back_custom_label: p.backCustomLabel || '',
+      back_custom_optional: p.backCustomOptional ?? true,
+      back_custom_price: p.backCustomPrice ?? null,
+      back_custom_price_usd: p.backCustomPriceUsd ?? null,
+      has_custom_unit: p.hasCustomUnit || false,
+      custom_unit_name: p.customUnitName || 'kg',
+      custom_unit_min: p.customUnitMin ?? 1,
+      custom_unit_step: p.customUnitStep ?? 1,
+      custom_unit_max: p.customUnitMax ?? 50,
+      custom_unit_price_per_unit: p.customUnitPricePerUnit ?? null,
+      custom_unit_price_per_unit_usd: p.customUnitPricePerUnitUsd ?? null
+    };
+
     const { error } = await supabase.from('prepared_packages').upsert([formatted], { onConflict: 'id' });
     if (error) {
-      console.error('❌ Error saving single package:', error);
-      throw error;
+      if (error.message?.includes('column') || (error as any).code === '42703' || (error as any).code === 'PGRST204') {
+        console.warn('⚠️ Multi-side customization columns missing in Supabase. Saving base package data.');
+        const fallback = { ...formatted };
+        delete fallback.customization_sides;
+        delete fallback.front_custom_type;
+        delete fallback.front_custom_label;
+        delete fallback.back_custom_type;
+        delete fallback.back_custom_label;
+        delete fallback.back_custom_optional;
+        delete fallback.back_custom_price;
+        delete fallback.back_custom_price_usd;
+        const { error: fallbackError } = await supabase.from('prepared_packages').upsert([fallback], { onConflict: 'id' });
+        if (fallbackError) throw fallbackError;
+      } else {
+        throw error;
+      }
     }
     console.log('✅ Saved single package to Supabase successfully:', p.name);
   } catch (err) {
@@ -261,6 +331,14 @@ export const getStoredCustomItems = async (): Promise<CustomBoxOption[]> => {
       requiresCustomInput: item.requires_custom_input || false,
       customInputType: item.custom_input_type || 'text',
       customInputLabel: item.custom_input_label || '',
+      customizationSides: item.customization_sides || 'single',
+      frontCustomType: item.front_custom_type || item.custom_input_type || 'both',
+      frontCustomLabel: item.front_custom_label || item.custom_input_label || '',
+      backCustomType: item.back_custom_type || 'both',
+      backCustomLabel: item.back_custom_label || '',
+      backCustomOptional: item.back_custom_optional ?? true,
+      backCustomPrice: item.back_custom_price != null ? Number(item.back_custom_price) : undefined,
+      backCustomPriceUsd: item.back_custom_price_usd != null ? Number(item.back_custom_price_usd) : undefined,
       hasCustomUnit: item.has_custom_unit || false,
       customUnitName: item.custom_unit_name || 'kg',
       customUnitMin: item.custom_unit_min != null ? Number(item.custom_unit_min) : 1,
@@ -286,46 +364,8 @@ export const saveStoredCustomItems = async (items: CustomBoxOption[]) => {
     throw new Error('Supabase not configured - cannot save custom items');
   }
 
-  try {
-    const formatted = items.map(item => ({
-      id: item.id,
-      name: item.name,
-      category: item.category,
-      price: item.price,
-      price_usd: item.price_usd ?? null,
-      image: item.image,
-      description: item.description,
-      requires_custom_input: item.requiresCustomInput || false,
-      custom_input_type: item.customInputType || 'text',
-      custom_input_label: item.customInputLabel || '',
-      has_custom_unit: item.hasCustomUnit || false,
-      custom_unit_name: item.customUnitName || 'kg',
-      custom_unit_min: item.customUnitMin ?? 1,
-      custom_unit_step: item.customUnitStep ?? 1,
-      custom_unit_max: item.customUnitMax ?? 50,
-      custom_unit_price_per_unit: item.customUnitPricePerUnit ?? null,
-      custom_unit_price_per_unit_usd: item.customUnitPricePerUnitUsd ?? null
-    }));
-    
-    const { error } = await supabase.from('custom_box_options').upsert(formatted, { onConflict: 'id' });
-    
-    if (error) {
-      console.error('❌ Supabase save error:', error);
-      throw error;
-    }
-    
-    console.log('✅ Saved', items.length, 'custom items to Supabase successfully');
-  } catch (err) {
-    console.error('❌ Failed to save to Supabase:', err);
-    throw err;
-  }
-};
-
-export const saveSingleCustomItem = async (item: CustomBoxOption) => {
-  console.log('💾 Saving single custom item to Supabase:', item.id);
-  if (!isSupabaseConfigured) return;
-  try {
-    const formatted = {
+  const formatItem = (item: CustomBoxOption, includeMultiSides = true) => {
+    const base: any = {
       id: item.id,
       name: item.name,
       category: item.category,
@@ -344,10 +384,91 @@ export const saveSingleCustomItem = async (item: CustomBoxOption) => {
       custom_unit_price_per_unit: item.customUnitPricePerUnit ?? null,
       custom_unit_price_per_unit_usd: item.customUnitPricePerUnitUsd ?? null
     };
+    if (includeMultiSides) {
+      base.customization_sides = item.customizationSides || 'single';
+      base.front_custom_type = item.frontCustomType || item.customInputType || 'both';
+      base.front_custom_label = item.frontCustomLabel || item.customInputLabel || '';
+      base.back_custom_type = item.backCustomType || 'both';
+      base.back_custom_label = item.backCustomLabel || '';
+      base.back_custom_optional = item.backCustomOptional ?? true;
+      base.back_custom_price = item.backCustomPrice ?? null;
+      base.back_custom_price_usd = item.backCustomPriceUsd ?? null;
+    }
+    return base;
+  };
+
+  try {
+    const formatted = items.map(item => formatItem(item, true));
+    const { error } = await supabase.from('custom_box_options').upsert(formatted, { onConflict: 'id' });
+    
+    if (error) {
+      if (error.message?.includes('column') || (error as any).code === '42703' || (error as any).code === 'PGRST204') {
+        console.warn('⚠️ Multi-side customization columns not found in database. Retrying without new columns.');
+        const fallbackFormatted = items.map(item => formatItem(item, false));
+        const { error: fallbackError } = await supabase.from('custom_box_options').upsert(fallbackFormatted, { onConflict: 'id' });
+        if (fallbackError) throw fallbackError;
+      } else {
+        throw error;
+      }
+    }
+    
+    console.log('✅ Saved', items.length, 'custom items to Supabase successfully');
+  } catch (err) {
+    console.error('❌ Failed to save to Supabase:', err);
+    throw err;
+  }
+};
+
+export const saveSingleCustomItem = async (item: CustomBoxOption) => {
+  console.log('💾 Saving single custom item to Supabase:', item.id);
+  if (!isSupabaseConfigured) return;
+  try {
+    const formatted: any = {
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      price: item.price,
+      price_usd: item.price_usd ?? null,
+      image: item.image,
+      description: item.description,
+      requires_custom_input: item.requiresCustomInput || false,
+      custom_input_type: item.customInputType || 'text',
+      custom_input_label: item.customInputLabel || '',
+      customization_sides: item.customizationSides || 'single',
+      front_custom_type: item.frontCustomType || item.customInputType || 'both',
+      front_custom_label: item.frontCustomLabel || item.customInputLabel || '',
+      back_custom_type: item.backCustomType || 'both',
+      back_custom_label: item.backCustomLabel || '',
+      back_custom_optional: item.backCustomOptional ?? true,
+      back_custom_price: item.backCustomPrice ?? null,
+      back_custom_price_usd: item.backCustomPriceUsd ?? null,
+      has_custom_unit: item.hasCustomUnit || false,
+      custom_unit_name: item.customUnitName || 'kg',
+      custom_unit_min: item.customUnitMin ?? 1,
+      custom_unit_step: item.customUnitStep ?? 1,
+      custom_unit_max: item.customUnitMax ?? 50,
+      custom_unit_price_per_unit: item.customUnitPricePerUnit ?? null,
+      custom_unit_price_per_unit_usd: item.customUnitPricePerUnitUsd ?? null
+    };
+
     const { error } = await supabase.from('custom_box_options').upsert([formatted], { onConflict: 'id' });
     if (error) {
-      console.error('❌ Error saving single custom item:', error);
-      throw error;
+      if (error.message?.includes('column') || (error as any).code === '42703' || (error as any).code === 'PGRST204') {
+        console.warn('⚠️ Multi-side customization columns missing in Supabase. Saving base custom item data.');
+        const fallback = { ...formatted };
+        delete fallback.customization_sides;
+        delete fallback.front_custom_type;
+        delete fallback.front_custom_label;
+        delete fallback.back_custom_type;
+        delete fallback.back_custom_label;
+        delete fallback.back_custom_optional;
+        delete fallback.back_custom_price;
+        delete fallback.back_custom_price_usd;
+        const { error: fallbackError } = await supabase.from('custom_box_options').upsert([fallback], { onConflict: 'id' });
+        if (fallbackError) throw fallbackError;
+      } else {
+        throw error;
+      }
     }
     console.log('✅ Saved single custom item to Supabase successfully:', item.name);
   } catch (err) {

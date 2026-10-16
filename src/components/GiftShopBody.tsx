@@ -26,6 +26,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useMarket } from '../context/MarketContext';
 import { formatPrice } from '../utils/currency';
 import { uploadToCloudinary } from '../utils/cloudinary';
+import { MultiSideCustomizationSection } from './MultiSideCustomizationSection';
 
 interface GiftShopBodyProps {
   packages?: PreparedPackage[];
@@ -39,7 +40,13 @@ interface GiftShopBodyProps {
     customerInputImageUrl?: string,
     customUnitValue?: number,
     customUnitName?: string,
-    unitCalculatedPrice?: number
+    unitCalculatedPrice?: number,
+    customSidesSelected?: 'front_only' | 'front_and_back',
+    frontInputText?: string,
+    frontInputImageUrl?: string,
+    backInputText?: string,
+    backInputImageUrl?: string,
+    backSidePrice?: number
   ) => void;
   onAddToCartCustom: (customBox: {
     boxStyle?: CustomBoxOption;
@@ -49,6 +56,12 @@ interface GiftShopBodyProps {
     totalPrice?: number;
     customerInputText?: string;
     customerInputImageUrl?: string;
+    customSidesSelected?: 'front_only' | 'front_and_back';
+    frontInputText?: string;
+    frontInputImageUrl?: string;
+    backInputText?: string;
+    backInputImageUrl?: string;
+    backSidePrice?: number;
     customUnitValue?: number;
     customUnitName?: string;
     unitCalculatedPrice?: number;
@@ -134,13 +147,70 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   const [giftNote, setGiftNote] = useState<string>('');
 
   // Customer Customization State (for modals & direct add prompts)
-  const [clientCustomText, setClientCustomText] = useState<string>('');
-  const [clientCustomImageUrl, setClientCustomImageUrl] = useState<string>('');
-  const [isUploadingClientPhoto, setIsUploadingClientPhoto] = useState<boolean>(false);
+  const [customSidesSelected, setCustomSidesSelected] = useState<'front_only' | 'front_and_back'>('front_only');
+  const [frontCustomText, setFrontCustomText] = useState<string>('');
+  const [frontCustomImageUrl, setFrontCustomImageUrl] = useState<string>('');
+  const [backCustomText, setBackCustomText] = useState<string>('');
+  const [backCustomImageUrl, setBackCustomImageUrl] = useState<string>('');
   const [customPromptTarget, setCustomPromptTarget] = useState<{
     pkg?: PreparedPackage;
     item?: CustomBoxOption;
   } | null>(null);
+
+  const resetCustomizationState = (target?: PreparedPackage | CustomBoxOption | null) => {
+    if (target?.customizationSides === 'front_back' && target.backCustomOptional === false) {
+      setCustomSidesSelected('front_and_back');
+    } else {
+      setCustomSidesSelected('front_only');
+    }
+    setFrontCustomText('');
+    setFrontCustomImageUrl('');
+    setBackCustomText('');
+    setBackCustomImageUrl('');
+  };
+
+  const validateCustomizationInputs = (target: PreparedPackage | CustomBoxOption): boolean => {
+    if (!target.requiresCustomInput) return true;
+
+    if (target.customizationSides === 'front_back') {
+      const frontType = target.frontCustomType || target.customInputType || 'text';
+      const backType = target.backCustomType || 'text';
+      const frontPrompt = target.frontCustomLabel || target.customInputLabel || 'Front side';
+      const backPrompt = target.backCustomLabel || 'Back side';
+
+      if ((frontType === 'text' || frontType === 'both') && !frontCustomText.trim()) {
+        alert(`Please fill in required front text: ${frontPrompt}`);
+        return false;
+      }
+      if ((frontType === 'image' || frontType === 'both') && !frontCustomImageUrl) {
+        alert('Please upload your front photo.');
+        return false;
+      }
+
+      if (customSidesSelected === 'front_and_back') {
+        if ((backType === 'text' || backType === 'both') && !backCustomText.trim()) {
+          alert(`Please fill in required back text: ${backPrompt}`);
+          return false;
+        }
+        if ((backType === 'image' || backType === 'both') && !backCustomImageUrl) {
+          alert('Please upload your back photo.');
+          return false;
+        }
+      }
+      return true;
+    }
+
+    const inputType = target.customInputType || 'text';
+    if ((inputType === 'text' || inputType === 'both') && !frontCustomText.trim()) {
+      alert(`Please fill in required custom text: ${target.customInputLabel || 'Custom text'}`);
+      return false;
+    }
+    if ((inputType === 'image' || inputType === 'both') && !frontCustomImageUrl) {
+      alert('Please upload your custom photo before adding to cart.');
+      return false;
+    }
+    return true;
+  };
 
   // Custom Build State (Cart)
   const [customCart, setCustomCart] = useState<Record<string, number>>({});
@@ -377,55 +447,41 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     return result;
   }, [dynamicCategories, customItems, categories]);
 
-  const handleClientPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setIsUploadingClientPhoto(true);
-    try {
-      const url = await uploadToCloudinary(file);
-      setClientCustomImageUrl(url);
-    } catch (err: any) {
-      alert('Photo Upload Failed: ' + (err?.message || 'Please try again'));
-    } finally {
-      setIsUploadingClientPhoto(false);
-    }
-  };
-
   const handleModalAdd = () => {
     if (selectedModalPkg) {
-      if (selectedModalPkg.requiresCustomInput) {
-        if (
-          (selectedModalPkg.customInputType === 'text' || selectedModalPkg.customInputType === 'both') &&
-          !clientCustomText.trim()
-        ) {
-          alert(`Please fill in required custom text: ${selectedModalPkg.customInputLabel || 'Custom text'}`);
-          return;
-        }
-        if (
-          (selectedModalPkg.customInputType === 'image' || selectedModalPkg.customInputType === 'both') &&
-          !clientCustomImageUrl
-        ) {
-          alert('Please upload your custom photo before adding to cart.');
-          return;
-        }
-      }
-      const unitCalculatedPrice = selectedModalPkg.hasCustomUnit
+      if (!validateCustomizationInputs(selectedModalPkg)) return;
+
+      const isMulti = selectedModalPkg.customizationSides === 'front_back';
+      const backPrice = (isMulti && customSidesSelected === 'front_and_back')
+        ? (currency === 'USD' ? (selectedModalPkg.backCustomPriceUsd || 0) : (selectedModalPkg.backCustomPrice || 0))
+        : 0;
+
+      const baseUnitCalculated = selectedModalPkg.hasCustomUnit
         ? calculateCustomUnitPrice(selectedModalPkg, modalUnitValue, currency)
+        : undefined;
+
+      const unitCalculatedPrice = baseUnitCalculated != null
+        ? baseUnitCalculated + backPrice
         : undefined;
 
       onAddToCartPrepared(
         selectedModalPkg,
         giftNote,
-        clientCustomText,
-        clientCustomImageUrl,
+        frontCustomText,
+        frontCustomImageUrl,
         selectedModalPkg.hasCustomUnit ? modalUnitValue : undefined,
         selectedModalPkg.hasCustomUnit ? (selectedModalPkg.customUnitName || 'kg') : undefined,
-        unitCalculatedPrice
+        unitCalculatedPrice,
+        isMulti ? customSidesSelected : undefined,
+        isMulti ? frontCustomText : undefined,
+        isMulti ? frontCustomImageUrl : undefined,
+        isMulti && customSidesSelected === 'front_and_back' ? backCustomText : undefined,
+        isMulti && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined,
+        backPrice
       );
       setSelectedModalPkg(null);
       setGiftNote('');
-      setClientCustomText('');
-      setClientCustomImageUrl('');
+      resetCustomizationState();
     }
   };
 
@@ -502,6 +558,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     } else {
       setSelectedModalPkg(pkg);
       setModalUnitValue(pkg.hasCustomUnit ? (pkg.customUnitMin || 1) : 1);
+      resetCustomizationState(pkg);
     }
   };
 
@@ -677,6 +734,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   const openCustomItemModal = (item: CustomBoxOption) => {
     setSelectedCustomItemModal(item);
     setModalUnitValue(item.hasCustomUnit ? (item.customUnitMin || 1) : 1);
+    resetCustomizationState(item);
   };
 
   // Helper: renders a single custom item card
@@ -753,8 +811,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   if (item.hasCustomUnit) {
                     openCustomItemModal(item);
                   } else if (item.requiresCustomInput && (!customCart[item.id] || customCart[item.id] === 0)) {
-                    setClientCustomText('');
-                    setClientCustomImageUrl('');
+                    resetCustomizationState(item);
                     setCustomPromptTarget({ item });
                   } else {
                     handleCustomQtyChange(item.id, 1);
@@ -1266,82 +1323,20 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
                   {/* Client Customization Requirement Section */}
                   {selectedModalPkg.requiresCustomInput && (
-                    <div className="mb-6 bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
-                      <div className="flex items-center gap-2 text-[#8E6E2F] font-bold uppercase text-xs tracking-wider border-b border-[#D8C6A8]/40 pb-2">
-                        <Sparkles className="w-4 h-4 text-[#B8944A]" />
-                        <span>{selectedModalPkg.customInputLabel || 'Required Customization Details'}</span>
-                      </div>
-
-                      {/* Photo Upload */}
-                      {(selectedModalPkg.customInputType === 'image' || selectedModalPkg.customInputType === 'both') && (
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-2 flex items-center justify-between">
-                            <span className="flex items-center gap-1.5">
-                              <Camera className="w-3.5 h-3.5 text-[#B8944A]" />
-                              <span>Upload Your Custom Photo <span className="text-red-500">*</span></span>
-                            </span>
-                            <span className="text-[10px] text-[#756457] font-normal">PNG, JPG up to 10MB</span>
-                          </label>
-
-                          {clientCustomImageUrl ? (
-                            <div className="flex items-center gap-3 bg-white border border-emerald-500/40 rounded-xl p-3">
-                              <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-[#FAF6EE] flex-shrink-0">
-                                <img src={clientCustomImageUrl} alt="Uploaded preview" className="w-full h-full object-cover" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <span className="text-emerald-700 text-xs font-bold flex items-center gap-1">
-                                  <Check className="w-3.5 h-3.5" /> Photo Attached
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={() => setClientCustomImageUrl('')}
-                                  className="text-red-600 hover:text-red-700 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
-                                >
-                                  <X className="w-3 h-3" /> Remove & Change
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#D8C6A8] hover:border-[#B8944A] rounded-xl p-3.5 cursor-pointer bg-white/80 hover:bg-white transition-all text-center">
-                              {isUploadingClientPhoto ? (
-                                <div className="flex items-center gap-2 text-[#8E6E2F] text-xs font-bold py-1.5">
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                  <span>Uploading photo...</span>
-                                </div>
-                              ) : (
-                                <>
-                                  <Upload className="w-5 h-5 text-[#B8944A] mb-1" />
-                                  <span className="text-xs font-bold text-[#241A15]">Click to Upload Photo</span>
-                                </>
-                              )}
-                              <input
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                disabled={isUploadingClientPhoto}
-                                onChange={handleClientPhotoUpload}
-                              />
-                            </label>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Custom Text */}
-                      {(selectedModalPkg.customInputType === 'text' || selectedModalPkg.customInputType === 'both') && (
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center gap-1.5">
-                            <FileText className="w-3.5 h-3.5 text-[#B8944A]" />
-                            <span>Custom Text / Message <span className="text-red-500">*</span></span>
-                          </label>
-                          <textarea
-                            value={clientCustomText}
-                            onChange={(e) => setClientCustomText(e.target.value)}
-                            placeholder="Enter the custom name, date, or message to print/engrave..."
-                            className="w-full bg-white border border-[#D8C6A8] rounded-xl p-2.5 text-xs text-[#241A15] placeholder:text-[#756457]/50 focus:outline-none focus:border-[#B8944A] h-16 resize-none font-inter"
-                          />
-                        </div>
-                      )}
-                    </div>
+                    <MultiSideCustomizationSection
+                      item={selectedModalPkg}
+                      customSidesSelected={customSidesSelected}
+                      onChangeCustomSidesSelected={setCustomSidesSelected}
+                      frontText={frontCustomText}
+                      onChangeFrontText={setFrontCustomText}
+                      frontImageUrl={frontCustomImageUrl}
+                      onChangeFrontImageUrl={setFrontCustomImageUrl}
+                      backText={backCustomText}
+                      onChangeBackText={setBackCustomText}
+                      backImageUrl={backCustomImageUrl}
+                      onChangeBackImageUrl={setBackCustomImageUrl}
+                      currency={currency}
+                    />
                   )}
 
                 </div>
@@ -1353,9 +1348,12 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   <ShoppingBag className="w-5 h-5 text-[#E6D5B8]" />
                   <span>
                     ADD PACKAGE TO CART — {formatPrice(
-                      selectedModalPkg.hasCustomUnit
+                      (selectedModalPkg.hasCustomUnit
                         ? calculateCustomUnitPrice(selectedModalPkg, modalUnitValue, currency)
-                        : getPkgPrice(selectedModalPkg),
+                        : getPkgPrice(selectedModalPkg)) +
+                        (selectedModalPkg.customizationSides === 'front_back' && customSidesSelected === 'front_and_back'
+                          ? (currency === 'USD' ? (selectedModalPkg.backCustomPriceUsd || 0) : (selectedModalPkg.backCustomPrice || 0))
+                          : 0),
                       currency
                     )}
                     {selectedModalPkg.hasCustomUnit ? ` (${modalUnitValue} ${selectedModalPkg.customUnitName || 'kg'})` : ''}
@@ -1523,84 +1521,20 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
                   {/* Client Customization Section if item requires custom input */}
                   {selectedCustomItemModal.requiresCustomInput && (
-                    <div className="bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 sm:p-5 mb-5 space-y-4 shadow-sm">
-                      <div className="flex items-center gap-1.5 text-[#8E6E2F] text-xs font-bold uppercase tracking-wider">
-                        <Sparkles className="w-4 h-4 text-[#B8944A]" />
-                        <span>{selectedCustomItemModal.customInputLabel || 'Required Customization Details'}</span>
-                      </div>
-
-                      {/* Photo Upload */}
-                      {(selectedCustomItemModal.customInputType === 'image' || selectedCustomItemModal.customInputType === 'both') && (
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-2 flex items-center justify-between">
-                            <span className="flex items-center gap-1.5">
-                              <Camera className="w-3.5 h-3.5 text-[#B8944A]" />
-                              <span>Upload Your Custom Photo <span className="text-red-500">*</span></span>
-                            </span>
-                            <span className="text-[10px] text-[#756457] font-normal">PNG, JPG up to 10MB</span>
-                          </label>
-
-                          {clientCustomImageUrl ? (
-                            <div className="flex items-center gap-3 bg-white border border-emerald-500/40 rounded-xl p-3">
-                              <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-[#FAF6EE] flex-shrink-0">
-                                <img src={clientCustomImageUrl} alt="Uploaded preview" className="w-full h-full object-cover" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <span className="text-emerald-700 text-xs font-bold flex items-center gap-1">
-                                  <Check className="w-3.5 h-3.5" /> Photo Attached
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={() => setClientCustomImageUrl('')}
-                                  className="text-red-600 hover:text-red-700 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
-                                >
-                                  <X className="w-3 h-3" /> Remove & Change
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#D8C6A8] hover:border-[#B8944A] rounded-xl p-3.5 cursor-pointer bg-white/80 hover:bg-white transition-all text-center">
-                              {isUploadingClientPhoto ? (
-                                <div className="flex items-center gap-2 text-[#8E6E2F] text-xs font-bold py-1.5">
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                  <span>Uploading photo...</span>
-                                </div>
-                              ) : (
-                                <>
-                                  <Upload className="w-5 h-5 text-[#B8944A] mb-1" />
-                                  <span className="text-xs font-bold text-[#241A15]">Click to Choose Photo</span>
-                                  <span className="text-[10px] text-[#756457] mt-0.5">High resolution recommended</span>
-                                </>
-                              )}
-                              <input
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                disabled={isUploadingClientPhoto}
-                                onChange={handleClientPhotoUpload}
-                              />
-                            </label>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Text Input */}
-                      {(selectedCustomItemModal.customInputType === 'text' || selectedCustomItemModal.customInputType === 'both') && (
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center gap-1.5">
-                            <PenTool className="w-3.5 h-3.5 text-[#B8944A]" />
-                            <span>Custom Text / Message <span className="text-red-500">*</span></span>
-                          </label>
-                          <input
-                            type="text"
-                            value={clientCustomText}
-                            onChange={(e) => setClientCustomText(e.target.value)}
-                            placeholder="Enter the name, date, or message to be custom printed/engraved..."
-                            className="w-full bg-white border border-[#D8C6A8] rounded-xl p-3 text-xs text-[#241A15] placeholder:text-[#756457]/50 focus:border-[#B8944A] focus:outline-none transition-colors"
-                          />
-                        </div>
-                      )}
-                    </div>
+                    <MultiSideCustomizationSection
+                      item={selectedCustomItemModal}
+                      customSidesSelected={customSidesSelected}
+                      onChangeCustomSidesSelected={setCustomSidesSelected}
+                      frontText={frontCustomText}
+                      onChangeFrontText={setFrontCustomText}
+                      frontImageUrl={frontCustomImageUrl}
+                      onChangeFrontImageUrl={setFrontCustomImageUrl}
+                      backText={backCustomText}
+                      onChangeBackText={setBackCustomText}
+                      backImageUrl={backCustomImageUrl}
+                      onChangeBackImageUrl={setBackCustomImageUrl}
+                      currency={currency}
+                    />
                   )}
 
                   {!selectedCustomItemModal.requiresCustomInput && !selectedCustomItemModal.hasCustomUnit && (
@@ -1622,50 +1556,51 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     <button
                       onClick={() => {
                         if (selectedCustomItemModal.requiresCustomInput) {
-                          if (
-                            (selectedCustomItemModal.customInputType === 'text' || selectedCustomItemModal.customInputType === 'both') &&
-                            !clientCustomText.trim()
-                          ) {
-                            alert(`Please fill in required custom text: ${selectedCustomItemModal.customInputLabel || 'Custom text'}`);
-                            return;
-                          }
-                          if (
-                            (selectedCustomItemModal.customInputType === 'image' || selectedCustomItemModal.customInputType === 'both') &&
-                            !clientCustomImageUrl
-                          ) {
-                            alert('Please upload your photo before adding to cart.');
-                            return;
-                          }
+                          if (!validateCustomizationInputs(selectedCustomItemModal)) return;
                         }
 
-                        const calculatedItemTotal = selectedCustomItemModal.hasCustomUnit
+                        const isMulti = selectedCustomItemModal.customizationSides === 'front_back';
+                        const backPrice = (isMulti && customSidesSelected === 'front_and_back')
+                          ? (currency === 'USD' ? (selectedCustomItemModal.backCustomPriceUsd || 0) : (selectedCustomItemModal.backCustomPrice || 0))
+                          : 0;
+
+                        const baseItemTotal = selectedCustomItemModal.hasCustomUnit
                           ? calculateCustomUnitPrice(selectedCustomItemModal, modalUnitValue, currency)
                           : getItemPrice(selectedCustomItemModal);
+                        const calculatedItemTotal = baseItemTotal + backPrice;
 
                         onAddToCartCustom({
                           selectedItems: [selectedCustomItemModal],
                           cardMessage: '',
                           ribbonColor: 'Gold Satin Ribbon',
                           totalPrice: calculatedItemTotal,
-                          customerInputText: clientCustomText,
-                          customerInputImageUrl: clientCustomImageUrl,
+                          customerInputText: frontCustomText,
+                          customerInputImageUrl: frontCustomImageUrl,
+                          customSidesSelected: isMulti ? customSidesSelected : undefined,
+                          frontInputText: isMulti ? frontCustomText : undefined,
+                          frontInputImageUrl: isMulti ? frontCustomImageUrl : undefined,
+                          backInputText: isMulti && customSidesSelected === 'front_and_back' ? backCustomText : undefined,
+                          backInputImageUrl: isMulti && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined,
+                          backSidePrice: backPrice,
                           customUnitValue: selectedCustomItemModal.hasCustomUnit ? modalUnitValue : undefined,
                           customUnitName: selectedCustomItemModal.hasCustomUnit ? (selectedCustomItemModal.customUnitName || 'kg') : undefined,
                           unitCalculatedPrice: selectedCustomItemModal.hasCustomUnit ? calculatedItemTotal : undefined,
                         });
 
                         setSelectedCustomItemModal(null);
-                        setClientCustomText('');
-                        setClientCustomImageUrl('');
+                        resetCustomizationState();
                       }}
                       className="w-full bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center justify-center gap-2"
                     >
                       <ShoppingBag className="w-4 h-4 text-[#E6D5B8]" />
                       <span>
                         Add Item to Cart — {formatPrice(
-                          selectedCustomItemModal.hasCustomUnit
+                          (selectedCustomItemModal.hasCustomUnit
                             ? calculateCustomUnitPrice(selectedCustomItemModal, modalUnitValue, currency)
-                            : getItemPrice(selectedCustomItemModal),
+                            : getItemPrice(selectedCustomItemModal)) +
+                            (selectedCustomItemModal.customizationSides === 'front_back' && customSidesSelected === 'front_and_back'
+                              ? (currency === 'USD' ? (selectedCustomItemModal.backCustomPriceUsd || 0) : (selectedCustomItemModal.backCustomPrice || 0))
+                              : 0),
                           currency
                         )}
                         {selectedCustomItemModal.hasCustomUnit ? ` (${modalUnitValue} ${selectedCustomItemModal.customUnitName || 'kg'})` : ''}
@@ -1760,87 +1695,27 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               </div>
             </div>
 
-            {/* Prompt Instruction Label */}
-            <div className="bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 sm:p-5 space-y-4 mb-5 shadow-sm">
-              <p className="text-[#3A2A20] text-xs font-semibold leading-relaxed">
-                {customPromptTarget.pkg?.customInputLabel ||
-                  customPromptTarget.item?.customInputLabel ||
-                  'Please provide your custom photo or text to customize this gift.'}
-              </p>
-
-              {/* Photo Upload */}
-              {((customPromptTarget.pkg?.customInputType === 'image' || customPromptTarget.pkg?.customInputType === 'both') ||
-                (customPromptTarget.item?.customInputType === 'image' || customPromptTarget.item?.customInputType === 'both')) && (
-                <div>
-                  <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-2 flex items-center justify-between">
-                    <span className="flex items-center gap-1.5">
-                      <Camera className="w-3.5 h-3.5 text-[#B8944A]" />
-                      <span>Upload Your Photo <span className="text-red-500">*</span></span>
-                    </span>
-                    <span className="text-[10px] text-[#756457] font-normal">PNG, JPG up to 10MB</span>
-                  </label>
-
-                  {clientCustomImageUrl ? (
-                    <div className="flex items-center gap-3 bg-white border border-emerald-500/40 rounded-xl p-3">
-                      <div className="w-14 h-14 rounded-lg overflow-hidden border border-emerald-400/40 bg-[#FAF6EE] flex-shrink-0">
-                        <img src={clientCustomImageUrl} alt="Uploaded preview" className="w-full h-full object-cover" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-emerald-700 text-xs font-bold flex items-center gap-1">
-                          <Check className="w-3.5 h-3.5" /> Photo Uploaded
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setClientCustomImageUrl('')}
-                          className="text-red-600 hover:text-red-700 text-[11px] font-bold mt-0.5 flex items-center gap-1 cursor-pointer"
-                        >
-                          <X className="w-3 h-3" /> Remove & Re-upload
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#D8C6A8] hover:border-[#B8944A] rounded-xl p-4 cursor-pointer bg-white/80 hover:bg-white transition-all text-center">
-                      {isUploadingClientPhoto ? (
-                        <div className="flex items-center gap-2 text-[#8E6E2F] text-xs font-bold py-1.5">
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          <span>Uploading your photo...</span>
-                        </div>
-                      ) : (
-                        <>
-                          <Upload className="w-6 h-6 text-[#B8944A] mb-1" />
-                          <span className="text-xs font-bold text-[#241A15]">Click to Choose Photo</span>
-                          <span className="text-[10px] text-[#756457] mt-0.5">High quality recommended</span>
-                        </>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        disabled={isUploadingClientPhoto}
-                        onChange={handleClientPhotoUpload}
-                      />
-                    </label>
-                  )}
-                </div>
-              )}
-
-              {/* Custom Text */}
-              {((customPromptTarget.pkg?.customInputType === 'text' || customPromptTarget.pkg?.customInputType === 'both') ||
-                (customPromptTarget.item?.customInputType === 'text' || customPromptTarget.item?.customInputType === 'both')) && (
-                <div>
-                  <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center gap-1.5">
-                    <FileText className="w-3.5 h-3.5 text-[#B8944A]" />
-                    <span>Custom Text / Message <span className="text-red-500">*</span></span>
-                  </label>
-                  <textarea
-                    value={clientCustomText}
-                    onChange={(e) => setClientCustomText(e.target.value)}
-                    placeholder="Type the exact name, date, or inscription..."
-                    className="w-full bg-white border border-[#D8C6A8] rounded-xl p-3 text-xs text-[#241A15] placeholder:text-[#756457]/50 focus:outline-none focus:border-[#B8944A] h-20 resize-none font-inter"
-                  />
-                </div>
-              )}
-            </div>
+            {/* Prompt Customization Section */}
+            {(() => {
+              const targetObj = customPromptTarget.pkg || customPromptTarget.item;
+              if (!targetObj) return null;
+              return (
+                <MultiSideCustomizationSection
+                  item={targetObj}
+                  customSidesSelected={customSidesSelected}
+                  onChangeCustomSidesSelected={setCustomSidesSelected}
+                  frontText={frontCustomText}
+                  onChangeFrontText={setFrontCustomText}
+                  frontImageUrl={frontCustomImageUrl}
+                  onChangeFrontImageUrl={setFrontCustomImageUrl}
+                  backText={backCustomText}
+                  onChangeBackText={setBackCustomText}
+                  backImageUrl={backCustomImageUrl}
+                  onChangeBackImageUrl={setBackCustomImageUrl}
+                  currency={currency}
+                />
+              );
+            })()}
 
             {/* Actions */}
             <div className="flex items-center gap-2.5">
@@ -1848,8 +1723,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 type="button"
                 onClick={() => {
                   setCustomPromptTarget(null);
-                  setClientCustomText('');
-                  setClientCustomImageUrl('');
+                  resetCustomizationState();
                 }}
                 className="flex-1 py-3 rounded-xl bg-[#FAF6EE] hover:bg-[#E6D5B8]/50 border border-[#D8C6A8] text-[#3A2A20] font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
@@ -1861,32 +1735,48 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   const targetObj = customPromptTarget.pkg || customPromptTarget.item;
                   if (!targetObj) return;
 
-                  const inputType = targetObj.customInputType || 'text';
-                  if ((inputType === 'text' || inputType === 'both') && !clientCustomText.trim()) {
-                    alert(`Please provide the required custom text: ${targetObj.customInputLabel || 'Custom text'}`);
-                    return;
-                  }
-                  if ((inputType === 'image' || inputType === 'both') && !clientCustomImageUrl) {
-                    alert('Please upload your photo.');
-                    return;
-                  }
+                  if (!validateCustomizationInputs(targetObj)) return;
+
+                  const isMulti = targetObj.customizationSides === 'front_back';
+                  const backPrice = (isMulti && customSidesSelected === 'front_and_back')
+                    ? (currency === 'USD' ? (targetObj.backCustomPriceUsd || 0) : (targetObj.backCustomPrice || 0))
+                    : 0;
 
                   if (customPromptTarget.pkg) {
-                    onAddToCartPrepared(customPromptTarget.pkg, '', clientCustomText, clientCustomImageUrl);
+                    onAddToCartPrepared(
+                      customPromptTarget.pkg,
+                      '',
+                      frontCustomText,
+                      frontCustomImageUrl,
+                      undefined,
+                      undefined,
+                      undefined,
+                      isMulti ? customSidesSelected : undefined,
+                      isMulti ? frontCustomText : undefined,
+                      isMulti ? frontCustomImageUrl : undefined,
+                      isMulti && customSidesSelected === 'front_and_back' ? backCustomText : undefined,
+                      isMulti && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined,
+                      backPrice
+                    );
                   } else if (customPromptTarget.item) {
                     onAddToCartCustom({
                       selectedItems: [customPromptTarget.item],
                       cardMessage: '',
                       ribbonColor: 'Gold Satin Ribbon',
-                      totalPrice: getItemPrice(customPromptTarget.item),
-                      customerInputText: clientCustomText,
-                      customerInputImageUrl: clientCustomImageUrl,
+                      totalPrice: getItemPrice(customPromptTarget.item) + backPrice,
+                      customerInputText: frontCustomText,
+                      customerInputImageUrl: frontCustomImageUrl,
+                      customSidesSelected: isMulti ? customSidesSelected : undefined,
+                      frontInputText: isMulti ? frontCustomText : undefined,
+                      frontInputImageUrl: isMulti ? frontCustomImageUrl : undefined,
+                      backInputText: isMulti && customSidesSelected === 'front_and_back' ? backCustomText : undefined,
+                      backInputImageUrl: isMulti && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined,
+                      backSidePrice: backPrice,
                     });
                   }
 
                   setCustomPromptTarget(null);
-                  setClientCustomText('');
-                  setClientCustomImageUrl('');
+                  resetCustomizationState();
                 }}
                 className="flex-[2] py-3 rounded-xl bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] border border-[#241A15] font-extrabold text-xs uppercase tracking-wider shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
               >

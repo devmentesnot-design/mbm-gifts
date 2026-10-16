@@ -28,6 +28,7 @@ import {
   Plus
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { MultiSideCustomizationSection } from './MultiSideCustomizationSection';
 
 interface PackageDetailPageProps {
   packageData: PreparedPackage;
@@ -45,7 +46,13 @@ interface PackageDetailPageProps {
     customerInputImageUrl?: string,
     customUnitValue?: number,
     customUnitName?: string,
-    unitCalculatedPrice?: number
+    unitCalculatedPrice?: number,
+    customSidesSelected?: 'front_only' | 'front_and_back',
+    frontInputText?: string,
+    frontInputImageUrl?: string,
+    backInputText?: string,
+    backInputImageUrl?: string,
+    backSidePrice?: number
   ) => void;
 }
 
@@ -64,9 +71,18 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   const { buyerMarket, currency } = useMarket();
   const [addedToast, setAddedToast] = useState(false);
   const [giftNote, setGiftNote] = useState('');
-  const [clientCustomText, setClientCustomText] = useState('');
-  const [clientCustomImageUrl, setClientCustomImageUrl] = useState('');
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  const defaultSides = (packageData.customizationSides === 'front_back' && packageData.backCustomOptional === false) ? 'front_and_back' : 'front_only';
+  const [customSidesSelected, setCustomSidesSelected] = useState<'front_only' | 'front_and_back'>(defaultSides);
+  const [frontCustomText, setFrontCustomText] = useState('');
+  const [frontCustomImageUrl, setFrontCustomImageUrl] = useState('');
+  const [backCustomText, setBackCustomText] = useState('');
+  const [backCustomImageUrl, setBackCustomImageUrl] = useState('');
+
+  const isMultiSide = packageData.customizationSides === 'front_back';
+  const backSideExtraPrice = (isMultiSide && customSidesSelected === 'front_and_back')
+    ? (currency === 'USD' ? (packageData.backCustomPriceUsd || 0) : (packageData.backCustomPrice || 0))
+    : 0;
 
   // Scalable unit state (e.g. 2 kg minimum, stepper)
   const initialUnitVal = packageData.hasCustomUnit ? (packageData.customUnitMin || 1) : 1;
@@ -112,30 +128,60 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
 
   const handleAddToCart = () => {
     if (packageData.requiresCustomInput) {
-      if (
-        (packageData.customInputType === 'text' || packageData.customInputType === 'both') &&
-        !clientCustomText.trim()
-      ) {
-        alert(`Please fill in the required field: ${packageData.customInputLabel || 'Custom text'}`);
-        return;
-      }
-      if (
-        (packageData.customInputType === 'image' || packageData.customInputType === 'both') &&
-        !clientCustomImageUrl
-      ) {
-        alert('Please upload your photo before adding to cart.');
-        return;
+      if (isMultiSide) {
+        const frontType = packageData.frontCustomType || packageData.customInputType || 'text';
+        const backType = packageData.backCustomType || 'text';
+        const frontPrompt = packageData.frontCustomLabel || packageData.customInputLabel || 'Front side';
+        const backPrompt = packageData.backCustomLabel || 'Back side';
+
+        if ((frontType === 'text' || frontType === 'both') && !frontCustomText.trim()) {
+          alert(`Please fill in required front text: ${frontPrompt}`);
+          return;
+        }
+        if ((frontType === 'image' || frontType === 'both') && !frontCustomImageUrl) {
+          alert('Please upload your front photo.');
+          return;
+        }
+
+        if (customSidesSelected === 'front_and_back') {
+          if ((backType === 'text' || backType === 'both') && !backCustomText.trim()) {
+            alert(`Please fill in required back text: ${backPrompt}`);
+            return;
+          }
+          if ((backType === 'image' || backType === 'both') && !backCustomImageUrl) {
+            alert('Please upload your back photo.');
+            return;
+          }
+        }
+      } else {
+        const inputType = packageData.customInputType || 'text';
+        if ((inputType === 'text' || inputType === 'both') && !frontCustomText.trim()) {
+          alert(`Please fill in the required field: ${packageData.customInputLabel || 'Custom text'}`);
+          return;
+        }
+        if ((inputType === 'image' || inputType === 'both') && !frontCustomImageUrl) {
+          alert('Please upload your photo before adding to cart.');
+          return;
+        }
       }
     }
+
+    const calculatedWithBack = currentCalculatedPrice + backSideExtraPrice;
 
     onAddToCartPrepared(
       packageData,
       giftNote,
-      clientCustomText,
-      clientCustomImageUrl,
+      frontCustomText,
+      frontCustomImageUrl,
       packageData.hasCustomUnit ? selectedUnitValue : undefined,
       packageData.hasCustomUnit ? (packageData.customUnitName || 'kg') : undefined,
-      packageData.hasCustomUnit ? currentCalculatedPrice : undefined
+      packageData.hasCustomUnit ? calculatedWithBack : undefined,
+      isMultiSide ? customSidesSelected : undefined,
+      isMultiSide ? frontCustomText : undefined,
+      isMultiSide ? frontCustomImageUrl : undefined,
+      isMultiSide && customSidesSelected === 'front_and_back' ? backCustomText : undefined,
+      isMultiSide && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined,
+      backSideExtraPrice
     );
     setAddedToast(true);
     setTimeout(() => setAddedToast(false), 3000);
@@ -338,83 +384,20 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
 
                   {/* Client Customization Requirement Section */}
                   {packageData.requiresCustomInput && (
-                    <div className="mb-6 bg-[#F5EFE6]/90 border border-[#D8C6A8] rounded-2xl p-5 shadow-sm space-y-4">
-                      <div className="flex items-center gap-2 text-[#241A15] font-bold uppercase text-xs tracking-wider border-b border-[#D8C6A8]/60 pb-2">
-                        <Sparkles className="w-4 h-4 text-[#B8944A]" />
-                        <span>{packageData.customInputLabel || 'Required Customization Details'}</span>
-                      </div>
-
-                      {/* Photo Upload if required */}
-                      {(packageData.customInputType === 'image' || packageData.customInputType === 'both') && (
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-2 flex items-center justify-between">
-                            <span className="flex items-center gap-1.5">
-                              <Camera className="w-3.5 h-3.5 text-[#B8944A]" />
-                              <span>Upload Your Custom Photo <span className="text-rose-600">*</span></span>
-                            </span>
-                            <span className="text-[10px] text-[#756457] font-normal">PNG, JPG up to 10MB</span>
-                          </label>
-
-                          {clientCustomImageUrl ? (
-                            <div className="flex items-center gap-3 bg-white/80 border border-emerald-500/40 rounded-xl p-3 shadow-sm">
-                              <div className="w-16 h-16 rounded-lg overflow-hidden border border-emerald-400/40 bg-white flex-shrink-0">
-                                <img src={clientCustomImageUrl} alt="Uploaded preview" className="w-full h-full object-cover" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <span className="text-emerald-700 text-xs font-bold flex items-center gap-1">
-                                  <Check className="w-3.5 h-3.5" /> Photo Uploaded Successfully
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={() => setClientCustomImageUrl('')}
-                                  className="text-rose-600 hover:text-rose-700 text-[11px] font-bold mt-1 flex items-center gap-1 cursor-pointer"
-                                >
-                                  <X className="w-3 h-3" /> Remove & Upload Different
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#D8C6A8] hover:border-[#B8944A] rounded-xl p-4 cursor-pointer bg-[#FAF6EF]/70 hover:bg-white transition-all text-center">
-                              {isUploadingImage ? (
-                                <div className="flex items-center gap-2 text-[#B8944A] text-xs font-bold py-2">
-                                  <Loader2 className="w-5 h-5 animate-spin" />
-                                  <span>Uploading photo...</span>
-                                </div>
-                              ) : (
-                                <>
-                                  <Upload className="w-6 h-6 text-[#B8944A] mb-1" />
-                                  <span className="text-xs font-bold text-[#241A15]">Click to Upload Client Photo</span>
-                                  <span className="text-[10px] text-[#756457] mt-0.5">High resolution recommended</span>
-                                </>
-                              )}
-                              <input
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                disabled={isUploadingImage}
-                                onChange={handlePhotoUpload}
-                              />
-                            </label>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Custom Text input if required */}
-                      {(packageData.customInputType === 'text' || packageData.customInputType === 'both') && (
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center gap-1.5">
-                            <FileText className="w-3.5 h-3.5 text-[#B8944A]" />
-                            <span>Custom Text / Message <span className="text-rose-600">*</span></span>
-                          </label>
-                          <textarea
-                            value={clientCustomText}
-                            onChange={(e) => setClientCustomText(e.target.value)}
-                            placeholder="Enter the name, date, or message to be custom printed/engraved..."
-                            className="w-full bg-white/90 border border-[#D8C6A8] rounded-xl p-3 text-xs text-[#241A15] placeholder-[#756457]/60 focus:outline-none focus:border-[#B8944A] h-20 resize-none font-inter shadow-inner"
-                          />
-                        </div>
-                      )}
-                    </div>
+                    <MultiSideCustomizationSection
+                      item={packageData}
+                      customSidesSelected={customSidesSelected}
+                      onChangeCustomSidesSelected={setCustomSidesSelected}
+                      frontText={frontCustomText}
+                      onChangeFrontText={setFrontCustomText}
+                      frontImageUrl={frontCustomImageUrl}
+                      onChangeFrontImageUrl={setFrontCustomImageUrl}
+                      backText={backCustomText}
+                      onChangeBackText={setBackCustomText}
+                      backImageUrl={backCustomImageUrl}
+                      onChangeBackImageUrl={setBackCustomImageUrl}
+                      currency={currency}
+                    />
                   )}
 
                 </div>
@@ -427,7 +410,7 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                   >
                     <ShoppingBag className="w-5 h-5 text-[#B8944A] stroke-[2.5]" />
                     <span>
-                      ADD PACKAGE TO CART — {formatPrice(currentCalculatedPrice, currency)}
+                      ADD PACKAGE TO CART — {formatPrice(currentCalculatedPrice + backSideExtraPrice, currency)}
                       {packageData.hasCustomUnit ? ` (${selectedUnitValue} ${packageData.customUnitName || 'kg'})` : ''}
                     </span>
                   </button>

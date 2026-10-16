@@ -13,6 +13,12 @@ export interface CartItemPrepared {
   customNote?: string;
   customerInputText?: string;     // Customer-provided text (e.g. name to print)
   customerInputImageUrl?: string; // Cloudinary URL of customer-uploaded image
+  customSidesSelected?: 'front_only' | 'front_and_back'; // Chosen customization sides
+  frontInputText?: string;
+  frontInputImageUrl?: string;
+  backInputText?: string;
+  backInputImageUrl?: string;
+  backSidePrice?: number;
   customUnitValue?: number;       // Selected unit value (e.g. 2.5, 3 kg)
   customUnitName?: string;        // Unit label (e.g. 'kg', 'stems', 'pieces')
   unitCalculatedPrice?: number;   // Unit price calculated from customUnitValue
@@ -27,6 +33,12 @@ export interface CartItemSingle {
   customNote?: string;
   customerInputText?: string;     // Customer-provided text (e.g. name to print)
   customerInputImageUrl?: string; // Cloudinary URL of customer-uploaded image
+  customSidesSelected?: 'front_only' | 'front_and_back';
+  frontInputText?: string;
+  frontInputImageUrl?: string;
+  backInputText?: string;
+  backInputImageUrl?: string;
+  backSidePrice?: number;
   customUnitValue?: number;       // Selected unit value (e.g. 2.5, 3 kg)
   customUnitName?: string;        // Unit label (e.g. 'kg', 'stems', 'pieces')
   unitCalculatedPrice?: number;   // Unit price calculated from customUnitValue
@@ -45,6 +57,12 @@ export interface CartItemCustom {
   customNote?: string;
   customerInputText?: string;     // Customer-provided text per item
   customerInputImageUrl?: string; // Cloudinary URL of customer-uploaded image
+  customSidesSelected?: 'front_only' | 'front_and_back';
+  frontInputText?: string;
+  frontInputImageUrl?: string;
+  backInputText?: string;
+  backInputImageUrl?: string;
+  backSidePrice?: number;
   customUnitValue?: number;       // Selected unit value (e.g. 2.5, 3 kg)
   customUnitName?: string;        // Unit label (e.g. 'kg', 'stems', 'pieces')
   unitCalculatedPrice?: number;   // Unit price calculated from customUnitValue
