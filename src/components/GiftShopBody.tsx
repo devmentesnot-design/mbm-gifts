@@ -1661,8 +1661,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             <button
               onClick={() => {
                 setCustomPromptTarget(null);
-                setClientCustomText('');
-                setClientCustomImageUrl('');
+                setFrontCustomText('');
+                setFrontCustomImageUrl('');
               }}
               className="absolute top-4 right-4 text-[#756457] hover:text-[#241A15] p-2 rounded-full bg-[#E6D5B8]/40 hover:bg-[#E6D5B8]/80 transition-all cursor-pointer z-20"
               title="Close modal"

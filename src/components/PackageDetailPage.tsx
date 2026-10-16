@@ -78,6 +78,7 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   const [frontCustomImageUrl, setFrontCustomImageUrl] = useState('');
   const [backCustomText, setBackCustomText] = useState('');
   const [backCustomImageUrl, setBackCustomImageUrl] = useState('');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const isMultiSide = packageData.customizationSides === 'front_back';
   const backSideExtraPrice = (isMultiSide && customSidesSelected === 'front_and_back')
@@ -193,7 +194,7 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
     setIsUploadingImage(true);
     try {
       const url = await uploadToCloudinary(file);
-      setClientCustomImageUrl(url);
+      setFrontCustomImageUrl(url);
     } catch (err: any) {
       alert('Failed to upload image: ' + (err?.message || 'Please try again'));
     } finally {
