@@ -416,7 +416,8 @@ export default function App() {
     frontInputImageUrl?: string,
     backInputText?: string,
     backInputImageUrl?: string,
-    backSidePrice?: number
+    backSidePrice?: number,
+    selectedSize?: string
   ) => {
     const existingIndex = cartItems.findIndex(
       (item) =>
@@ -430,7 +431,8 @@ export default function App() {
         item.frontInputImageUrl === frontInputImageUrl &&
         item.backInputText === backInputText &&
         item.backInputImageUrl === backInputImageUrl &&
-        item.customUnitValue === customUnitValue
+        item.customUnitValue === customUnitValue &&
+        item.selectedSize === selectedSize
     );
 
     if (existingIndex > -1) {
@@ -455,6 +457,7 @@ export default function App() {
         customUnitValue,
         customUnitName,
         unitCalculatedPrice,
+        selectedSize,
       };
       setCartItems([...cartItems, newItem]);
     }
@@ -482,6 +485,7 @@ export default function App() {
     customUnitValue?: number;
     customUnitName?: string;
     unitCalculatedPrice?: number;
+    selectedSize?: string;
   }) => {
     if (!customBox.selectedItems || customBox.selectedItems.length === 0) return;
 
@@ -499,7 +503,7 @@ export default function App() {
     let currentList = [...cartItems];
 
     itemCounts.forEach(({ item, qty }) => {
-      // Check if this single item already exists in cart with same customization & unit value
+      // Check if this single item already exists in cart with same customization & unit value & size
       const existingIdx = currentList.findIndex(
         (ci) =>
           ci.type !== 'package' &&
@@ -512,7 +516,8 @@ export default function App() {
           ci.frontInputImageUrl === customBox.frontInputImageUrl &&
           ci.backInputText === customBox.backInputText &&
           ci.backInputImageUrl === customBox.backInputImageUrl &&
-          ci.customUnitValue === customBox.customUnitValue
+          ci.customUnitValue === customBox.customUnitValue &&
+          ci.selectedSize === customBox.selectedSize
       );
 
       if (existingIdx > -1) {
@@ -538,6 +543,7 @@ export default function App() {
           customUnitValue: customBox.customUnitValue,
           customUnitName: customBox.customUnitName,
           unitCalculatedPrice: customBox.unitCalculatedPrice,
+          selectedSize: customBox.selectedSize,
         };
         currentList.push(newItem);
       }

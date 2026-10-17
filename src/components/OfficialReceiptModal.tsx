@@ -195,6 +195,11 @@ export const OfficialReceiptModal: React.FC<OfficialReceiptModalProps> = ({
                       <td className="py-2 px-2">
                         <div className="font-bold text-slate-800 text-xs">
                           {title}
+                          {it.selectedSize && (
+                            <span className="ml-1.5 inline-block px-1.5 py-0.5 rounded bg-slate-900 text-white font-bold text-[10px]">
+                              Size: {it.selectedSize}
+                            </span>
+                          )}
                           {it.customUnitValue != null && (
                             <span className="ml-1.5 inline-block px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-semibold text-[10px]">
                               {it.customUnitValue} {it.customUnitName || 'kg'}

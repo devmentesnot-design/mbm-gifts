@@ -31,6 +31,13 @@ export interface PackageItemDetail {
   description: string;
 }
 
+// Size option for clothing / items with multiple sizes (S, M, L, XL...)
+export interface SizeOption {
+  label: string;           // e.g. 'S', 'M', 'L', 'XL', 'XXL'
+  priceAdjustment?: number;    // Extra ETB cost for this size (0 = same price)
+  priceAdjustmentUsd?: number; // Extra USD cost for this size
+}
+
 export interface PreparedPackage {
   id: string;
   name: string;
@@ -66,6 +73,9 @@ export interface PreparedPackage {
   customUnitMax?: number;                   // Maximum value (e.g. 10 or 50)
   customUnitPricePerUnit?: number;          // Explicit price per unit in ETB (optional)
   customUnitPricePerUnitUsd?: number;       // Explicit price per unit in USD (optional)
+  // Size options (e.g. S, M, L, XL for clothing)
+  hasSizeOptions?: boolean;
+  sizeOptions?: SizeOption[];               // Available sizes defined by admin
 }
 
 export interface CustomBoxOption {
@@ -97,6 +107,9 @@ export interface CustomBoxOption {
   customUnitMax?: number;
   customUnitPricePerUnit?: number;
   customUnitPricePerUnitUsd?: number;
+  // Size options (e.g. S, M, L, XL for clothing)
+  hasSizeOptions?: boolean;
+  sizeOptions?: SizeOption[];
 }
 
 // Fallback initial data in case DB is empty or fails
@@ -156,7 +169,11 @@ export const getStoredPackages = async (): Promise<PreparedPackage[]> => {
       customUnitStep: item.custom_unit_step != null ? Number(item.custom_unit_step) : 1,
       customUnitMax: item.custom_unit_max != null ? Number(item.custom_unit_max) : 50,
       customUnitPricePerUnit: item.custom_unit_price_per_unit != null ? Number(item.custom_unit_price_per_unit) : undefined,
-      customUnitPricePerUnitUsd: item.custom_unit_price_per_unit_usd != null ? Number(item.custom_unit_price_per_unit_usd) : undefined
+      customUnitPricePerUnitUsd: item.custom_unit_price_per_unit_usd != null ? Number(item.custom_unit_price_per_unit_usd) : undefined,
+      hasSizeOptions: item.has_size_options || false,
+      sizeOptions: Array.isArray(item.size_options)
+        ? item.size_options
+        : (typeof item.size_options === 'string' ? JSON.parse(item.size_options) : [])
     }));
     
     console.log('✅ Loaded', mapped.length, 'packages from Supabase');
@@ -175,7 +192,7 @@ export const saveStoredPackages = async (packages: PreparedPackage[]) => {
     return;
   }
 
-  const formatPkg = (p: PreparedPackage, includeMultiSides = true) => {
+  const formatPkg = (p: PreparedPackage, includeExtra = true) => {
     const base: any = {
       id: p.id,
       name: p.name,
@@ -201,7 +218,7 @@ export const saveStoredPackages = async (packages: PreparedPackage[]) => {
       custom_unit_price_per_unit: p.customUnitPricePerUnit ?? null,
       custom_unit_price_per_unit_usd: p.customUnitPricePerUnitUsd ?? null
     };
-    if (includeMultiSides) {
+    if (includeExtra) {
       base.customization_sides = p.customizationSides || 'single';
       base.front_custom_type = p.frontCustomType || p.customInputType || 'both';
       base.front_custom_label = p.frontCustomLabel || p.customInputLabel || '';
@@ -210,6 +227,8 @@ export const saveStoredPackages = async (packages: PreparedPackage[]) => {
       base.back_custom_optional = p.backCustomOptional ?? true;
       base.back_custom_price = p.backCustomPrice ?? null;
       base.back_custom_price_usd = p.backCustomPriceUsd ?? null;
+      base.has_size_options = p.hasSizeOptions || false;
+      base.size_options = p.sizeOptions || [];
     }
     return base;
   };
@@ -219,9 +238,9 @@ export const saveStoredPackages = async (packages: PreparedPackage[]) => {
     const { error } = await supabase.from('prepared_packages').upsert(formatted, { onConflict: 'id' });
     
     if (error) {
-      // If table doesn't have the new multi-side columns yet, retry with base columns
+      // If table doesn't have the new multi-side or size columns yet, retry with base columns
       if (error.message?.includes('column') || (error as any).code === '42703' || (error as any).code === 'PGRST204') {
-        console.warn('⚠️ Multi-side customization columns not found in database. Retrying without new columns. (Run MULTI_SIDE_CUSTOMIZATION_MIGRATION.sql in Supabase)');
+        console.warn('⚠️ Extra customization columns not found in database. Retrying without new columns. (Run SIZE_OPTIONS_MIGRATION.sql in Supabase)');
         const fallbackFormatted = packages.map(p => formatPkg(p, false));
         const { error: fallbackError } = await supabase.from('prepared_packages').upsert(fallbackFormatted, { onConflict: 'id' });
         if (fallbackError) throw fallbackError;
@@ -345,7 +364,11 @@ export const getStoredCustomItems = async (): Promise<CustomBoxOption[]> => {
       customUnitStep: item.custom_unit_step != null ? Number(item.custom_unit_step) : 1,
       customUnitMax: item.custom_unit_max != null ? Number(item.custom_unit_max) : 50,
       customUnitPricePerUnit: item.custom_unit_price_per_unit != null ? Number(item.custom_unit_price_per_unit) : undefined,
-      customUnitPricePerUnitUsd: item.custom_unit_price_per_unit_usd != null ? Number(item.custom_unit_price_per_unit_usd) : undefined
+      customUnitPricePerUnitUsd: item.custom_unit_price_per_unit_usd != null ? Number(item.custom_unit_price_per_unit_usd) : undefined,
+      hasSizeOptions: item.has_size_options || false,
+      sizeOptions: Array.isArray(item.size_options)
+        ? item.size_options
+        : (typeof item.size_options === 'string' ? JSON.parse(item.size_options) : [])
     }));
     
     console.log('✅ Loaded', mapped.length, 'custom items from Supabase');
@@ -364,7 +387,7 @@ export const saveStoredCustomItems = async (items: CustomBoxOption[]) => {
     throw new Error('Supabase not configured - cannot save custom items');
   }
 
-  const formatItem = (item: CustomBoxOption, includeMultiSides = true) => {
+  const formatItem = (item: CustomBoxOption, includeExtra = true) => {
     const base: any = {
       id: item.id,
       name: item.name,
@@ -384,7 +407,7 @@ export const saveStoredCustomItems = async (items: CustomBoxOption[]) => {
       custom_unit_price_per_unit: item.customUnitPricePerUnit ?? null,
       custom_unit_price_per_unit_usd: item.customUnitPricePerUnitUsd ?? null
     };
-    if (includeMultiSides) {
+    if (includeExtra) {
       base.customization_sides = item.customizationSides || 'single';
       base.front_custom_type = item.frontCustomType || item.customInputType || 'both';
       base.front_custom_label = item.frontCustomLabel || item.customInputLabel || '';
@@ -393,6 +416,8 @@ export const saveStoredCustomItems = async (items: CustomBoxOption[]) => {
       base.back_custom_optional = item.backCustomOptional ?? true;
       base.back_custom_price = item.backCustomPrice ?? null;
       base.back_custom_price_usd = item.backCustomPriceUsd ?? null;
+      base.has_size_options = item.hasSizeOptions || false;
+      base.size_options = item.sizeOptions || [];
     }
     return base;
   };
@@ -403,7 +428,7 @@ export const saveStoredCustomItems = async (items: CustomBoxOption[]) => {
     
     if (error) {
       if (error.message?.includes('column') || (error as any).code === '42703' || (error as any).code === 'PGRST204') {
-        console.warn('⚠️ Multi-side customization columns not found in database. Retrying without new columns.');
+        console.warn('⚠️ Extra customization columns not found in database. Retrying without new columns.');
         const fallbackFormatted = items.map(item => formatItem(item, false));
         const { error: fallbackError } = await supabase.from('custom_box_options').upsert(fallbackFormatted, { onConflict: 'id' });
         if (fallbackError) throw fallbackError;

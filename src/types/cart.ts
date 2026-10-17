@@ -22,6 +22,8 @@ export interface CartItemPrepared {
   customUnitValue?: number;       // Selected unit value (e.g. 2.5, 3 kg)
   customUnitName?: string;        // Unit label (e.g. 'kg', 'stems', 'pieces')
   unitCalculatedPrice?: number;   // Unit price calculated from customUnitValue
+  selectedSize?: string;          // Selected size label (e.g. 'M', 'XL')
+  sizePriceAdjustment?: number;   // Extra price for selected size
 }
 
 export interface CartItemSingle {
@@ -42,6 +44,8 @@ export interface CartItemSingle {
   customUnitValue?: number;       // Selected unit value (e.g. 2.5, 3 kg)
   customUnitName?: string;        // Unit label (e.g. 'kg', 'stems', 'pieces')
   unitCalculatedPrice?: number;   // Unit price calculated from customUnitValue
+  selectedSize?: string;
+  sizePriceAdjustment?: number;
 }
 
 export interface CartItemCustom {
@@ -66,6 +70,8 @@ export interface CartItemCustom {
   customUnitValue?: number;       // Selected unit value (e.g. 2.5, 3 kg)
   customUnitName?: string;        // Unit label (e.g. 'kg', 'stems', 'pieces')
   unitCalculatedPrice?: number;   // Unit price calculated from customUnitValue
+  selectedSize?: string;
+  sizePriceAdjustment?: number;
 }
 
 export type CartItem = CartItemPrepared | CartItemCustom | CartItemSingle;

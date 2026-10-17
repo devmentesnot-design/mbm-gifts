@@ -311,6 +311,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     customUnitMax: '10',
     customUnitPricePerUnit: '',
     customUnitPricePerUnitUsd: '',
+    hasSizeOptions: false,
+    sizeOptionsInput: '',  // comma-separated input: 'S, M, L, XL'
   });
   // Sub-items inside the package detailed form
   const [pkgSubItems, setPkgSubItems] = useState<PackageItemDetail[]>([]);
@@ -349,6 +351,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     customUnitMax: '10',
     customUnitPricePerUnit: '',
     customUnitPricePerUnitUsd: '',
+    hasSizeOptions: false,
+    sizeOptionsInput: '',  // comma-separated input: 'S, M, L, XL'
   });
 
   // Category Modal & Sub-navbar Filter State
@@ -736,6 +740,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         customUnitMax: pkg.customUnitMax != null ? pkg.customUnitMax.toString() : '10',
         customUnitPricePerUnit: pkg.customUnitPricePerUnit != null ? pkg.customUnitPricePerUnit.toString() : '',
         customUnitPricePerUnitUsd: pkg.customUnitPricePerUnitUsd != null ? pkg.customUnitPricePerUnitUsd.toString() : '',
+        hasSizeOptions: pkg.hasSizeOptions || false,
+        sizeOptionsInput: pkg.sizeOptions ? pkg.sizeOptions.map(s => s.label).join(', ') : '',
       });
 
       // Load existing detailed items if available, or convert string array
@@ -779,6 +785,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         customUnitMax: '10',
         customUnitPricePerUnit: '',
         customUnitPricePerUnitUsd: '',
+        hasSizeOptions: false,
+        sizeOptionsInput: '',
       });
       setPkgSubItems([]);
     }
@@ -861,6 +869,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               customUnitMax: pkgForm.hasCustomUnit && pkgForm.customUnitMax ? parseFloat(pkgForm.customUnitMax) : undefined,
               customUnitPricePerUnit: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnit ? parseFloat(pkgForm.customUnitPricePerUnit) : undefined,
               customUnitPricePerUnitUsd: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnitUsd ? parseFloat(pkgForm.customUnitPricePerUnitUsd) : undefined,
+              hasSizeOptions: pkgForm.hasSizeOptions,
+              sizeOptions: pkgForm.hasSizeOptions && pkgForm.sizeOptionsInput
+                ? pkgForm.sizeOptionsInput.split(',').map((s) => s.trim()).filter(Boolean).map((label) => ({ label }))
+                : undefined,
             }
           : p
       );
@@ -898,6 +910,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         customUnitMax: pkgForm.hasCustomUnit && pkgForm.customUnitMax ? parseFloat(pkgForm.customUnitMax) : undefined,
         customUnitPricePerUnit: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnit ? parseFloat(pkgForm.customUnitPricePerUnit) : undefined,
         customUnitPricePerUnitUsd: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnitUsd ? parseFloat(pkgForm.customUnitPricePerUnitUsd) : undefined,
+        hasSizeOptions: pkgForm.hasSizeOptions,
+        sizeOptions: pkgForm.hasSizeOptions && pkgForm.sizeOptionsInput
+          ? pkgForm.sizeOptionsInput.split(',').map((s) => s.trim()).filter(Boolean).map((label) => ({ label }))
+          : undefined,
       };
       onSavePackages([newPkg, ...packages]);
     }
@@ -944,6 +960,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         customUnitMax: item.customUnitMax != null ? item.customUnitMax.toString() : '10',
         customUnitPricePerUnit: item.customUnitPricePerUnit != null ? item.customUnitPricePerUnit.toString() : '',
         customUnitPricePerUnitUsd: item.customUnitPricePerUnitUsd != null ? item.customUnitPricePerUnitUsd.toString() : '',
+        hasSizeOptions: item.hasSizeOptions || false,
+        sizeOptionsInput: item.sizeOptions ? item.sizeOptions.map(s => s.label).join(', ') : '',
       });
     } else {
       setEditingItem(null);
@@ -973,6 +991,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         customUnitMax: '10',
         customUnitPricePerUnit: '',
         customUnitPricePerUnitUsd: '',
+        hasSizeOptions: false,
+        sizeOptionsInput: '',
       });
     }
     setItemModalOpen(true);
@@ -981,6 +1001,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const handleSaveItemSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!itemForm.name || !itemForm.price) return;
+
+    const parsedSizeOptions = itemForm.hasSizeOptions && itemForm.sizeOptionsInput
+      ? itemForm.sizeOptionsInput.split(',').map((s) => s.trim()).filter(Boolean).map((label) => ({ label }))
+      : undefined;
 
     if (editingItem) {
       const updated = customItems.map((i) =>
@@ -1011,6 +1035,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               customUnitMax: itemForm.hasCustomUnit && itemForm.customUnitMax ? parseFloat(itemForm.customUnitMax) : undefined,
               customUnitPricePerUnit: itemForm.hasCustomUnit && itemForm.customUnitPricePerUnit ? parseFloat(itemForm.customUnitPricePerUnit) : undefined,
               customUnitPricePerUnitUsd: itemForm.hasCustomUnit && itemForm.customUnitPricePerUnitUsd ? parseFloat(itemForm.customUnitPricePerUnitUsd) : undefined,
+              hasSizeOptions: itemForm.hasSizeOptions,
+              sizeOptions: parsedSizeOptions,
             }
           : i
       );
@@ -1042,6 +1068,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         customUnitMax: itemForm.hasCustomUnit && itemForm.customUnitMax ? parseFloat(itemForm.customUnitMax) : undefined,
         customUnitPricePerUnit: itemForm.hasCustomUnit && itemForm.customUnitPricePerUnit ? parseFloat(itemForm.customUnitPricePerUnit) : undefined,
         customUnitPricePerUnitUsd: itemForm.hasCustomUnit && itemForm.customUnitPricePerUnitUsd ? parseFloat(itemForm.customUnitPricePerUnitUsd) : undefined,
+        hasSizeOptions: itemForm.hasSizeOptions,
+        sizeOptions: parsedSizeOptions,
       };
       onSaveCustomItems([...customItems, newItem]);
     }
@@ -3960,6 +3988,94 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
                   )}
                 </div>
+
+                {/* ── SIZE OPTIONS (S, M, L, XL, Shoe Sizes, etc.) ── */}
+                <div className="bg-[#FAF6EE]/80 border border-[#D8C6A8]/60 rounded-xl p-4 space-y-3">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={pkgForm.hasSizeOptions}
+                      onChange={(e) => setPkgForm({ ...pkgForm, hasSizeOptions: e.target.checked })}
+                      className="w-4 h-4 rounded text-[#B8944A] accent-[#B8944A] focus:ring-[#B8944A]"
+                    />
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#241A15]">
+                      Enable Size Selection (e.g. S, M, L, XL, Shoe Sizes)
+                    </span>
+                  </label>
+
+                  {pkgForm.hasSizeOptions && (
+                    <div className="pl-6 space-y-3 pt-1 border-l-2 border-[#B8944A]/40 ml-2">
+                      <p className="text-[11px] text-[#241A15]/60">
+                        Customers will choose their size before adding this package to their cart.
+                      </p>
+
+                      <div>
+                        <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
+                          Available Sizes (Comma-separated)
+                        </label>
+                        <input
+                          type="text"
+                          value={pkgForm.sizeOptionsInput}
+                          onChange={(e) => setPkgForm({ ...pkgForm, sizeOptionsInput: e.target.value })}
+                          placeholder="e.g. S, M, L, XL, XXL or 38, 39, 40, 41, 42"
+                          className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none font-medium"
+                        />
+                      </div>
+
+                      {/* Quick Presets */}
+                      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                        <span className="text-[10px] uppercase font-bold text-[#8E6E2F] mr-1">Presets:</span>
+                        <button
+                          type="button"
+                          onClick={() => setPkgForm({ ...pkgForm, sizeOptionsInput: 'S, M, L, XL, XXL' })}
+                          className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#E6D5B8]/40 hover:bg-[#D8C6A8] text-[#241A15] border border-[#D8C6A8] transition-colors cursor-pointer"
+                        >
+                          S, M, L, XL, XXL
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPkgForm({ ...pkgForm, sizeOptionsInput: 'XS, S, M, L, XL' })}
+                          className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#E6D5B8]/40 hover:bg-[#D8C6A8] text-[#241A15] border border-[#D8C6A8] transition-colors cursor-pointer"
+                        >
+                          XS, S, M, L, XL
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPkgForm({ ...pkgForm, sizeOptionsInput: '38, 39, 40, 41, 42, 43, 44' })}
+                          className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#E6D5B8]/40 hover:bg-[#D8C6A8] text-[#241A15] border border-[#D8C6A8] transition-colors cursor-pointer"
+                        >
+                          Shoes (38-44)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPkgForm({ ...pkgForm, sizeOptionsInput: 'One Size' })}
+                          className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#E6D5B8]/40 hover:bg-[#D8C6A8] text-[#241A15] border border-[#D8C6A8] transition-colors cursor-pointer"
+                        >
+                          One Size
+                        </button>
+                      </div>
+
+                      {/* Live Size Preview */}
+                      {pkgForm.sizeOptionsInput.trim() && (
+                        <div className="pt-2">
+                          <span className="text-[10px] uppercase tracking-wider text-[#8E6E2F] font-bold block mb-1.5">
+                            Customer View Preview:
+                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {pkgForm.sizeOptionsInput.split(',').map((s) => s.trim()).filter(Boolean).map((sz, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#241A15] text-[#FAF6EE] shadow-sm border border-[#3A2A20]"
+                              >
+                                {sz}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* SECTION 2: Detailed Sub-Items Manager (Individual Images & Descriptions) */}
@@ -4782,6 +4898,94 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 )}
               </div>
 
+              {/* ── SIZE OPTIONS (S, M, L, XL, Shoe Sizes, etc.) ── */}
+              <div className="bg-[#FAF6EE]/80 border border-[#D8C6A8]/60 rounded-xl p-4 space-y-3">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={itemForm.hasSizeOptions}
+                    onChange={(e) => setItemForm({ ...itemForm, hasSizeOptions: e.target.checked })}
+                    className="w-4 h-4 rounded text-[#B8944A] accent-[#B8944A] focus:ring-[#B8944A]"
+                  />
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#241A15]">
+                    Enable Size Selection (e.g. S, M, L, XL, Shoe Sizes)
+                  </span>
+                </label>
+
+                {itemForm.hasSizeOptions && (
+                  <div className="pl-6 space-y-3 pt-1 border-l-2 border-[#B8944A]/40 ml-2">
+                    <p className="text-[11px] text-[#241A15]/60">
+                      Customers will choose their size before adding this item to their box or cart.
+                    </p>
+
+                    <div>
+                      <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
+                        Available Sizes (Comma-separated)
+                      </label>
+                      <input
+                        type="text"
+                        value={itemForm.sizeOptionsInput}
+                        onChange={(e) => setItemForm({ ...itemForm, sizeOptionsInput: e.target.value })}
+                        placeholder="e.g. S, M, L, XL, XXL or 38, 39, 40, 41, 42"
+                        className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] placeholder:text-[#241A15]/30 focus:border-amber-400 focus:outline-none font-medium"
+                      />
+                    </div>
+
+                    {/* Quick Presets */}
+                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                      <span className="text-[10px] uppercase font-bold text-[#8E6E2F] mr-1">Presets:</span>
+                      <button
+                        type="button"
+                        onClick={() => setItemForm({ ...itemForm, sizeOptionsInput: 'S, M, L, XL, XXL' })}
+                        className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#E6D5B8]/40 hover:bg-[#D8C6A8] text-[#241A15] border border-[#D8C6A8] transition-colors cursor-pointer"
+                      >
+                        S, M, L, XL, XXL
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setItemForm({ ...itemForm, sizeOptionsInput: 'XS, S, M, L, XL' })}
+                        className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#E6D5B8]/40 hover:bg-[#D8C6A8] text-[#241A15] border border-[#D8C6A8] transition-colors cursor-pointer"
+                      >
+                        XS, S, M, L, XL
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setItemForm({ ...itemForm, sizeOptionsInput: '38, 39, 40, 41, 42, 43, 44' })}
+                        className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#E6D5B8]/40 hover:bg-[#D8C6A8] text-[#241A15] border border-[#D8C6A8] transition-colors cursor-pointer"
+                      >
+                        Shoes (38-44)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setItemForm({ ...itemForm, sizeOptionsInput: 'One Size' })}
+                        className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#E6D5B8]/40 hover:bg-[#D8C6A8] text-[#241A15] border border-[#D8C6A8] transition-colors cursor-pointer"
+                      >
+                        One Size
+                      </button>
+                    </div>
+
+                    {/* Live Size Preview */}
+                    {itemForm.sizeOptionsInput.trim() && (
+                      <div className="pt-2">
+                        <span className="text-[10px] uppercase tracking-wider text-[#8E6E2F] font-bold block mb-1.5">
+                          Customer View Preview:
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {itemForm.sizeOptionsInput.split(',').map((s) => s.trim()).filter(Boolean).map((sz, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#241A15] text-[#FAF6EE] shadow-sm border border-[#3A2A20]"
+                            >
+                              {sz}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <div className="pt-4 border-t border-[#D8C6A8]/40 flex justify-end gap-2">
                 <button
                   type="button"
@@ -5292,6 +5496,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                            <div className="flex-1 min-w-0">
                              <div className="font-bold text-[#241A15] text-sm flex items-center flex-wrap gap-2">
                                <span>{title}</span>
+                               {it.selectedSize && (
+                                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#241A15] text-[#FAF6EE] border border-[#3A2A20] shadow-sm">
+                                   Size: {it.selectedSize}
+                                 </span>
+                               )}
                                {it.customUnitValue != null && (
                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-[#8E6E2F] border border-amber-400/30">
                                    Size / Portion: {it.customUnitValue} {it.customUnitName || 'kg'}

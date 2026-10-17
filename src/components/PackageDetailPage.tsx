@@ -52,7 +52,8 @@ interface PackageDetailPageProps {
     frontInputImageUrl?: string,
     backInputText?: string,
     backInputImageUrl?: string,
-    backSidePrice?: number
+    backSidePrice?: number,
+    selectedSize?: string
   ) => void;
 }
 
@@ -88,6 +89,11 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   // Scalable unit state (e.g. 2 kg minimum, stepper)
   const initialUnitVal = packageData.hasCustomUnit ? (packageData.customUnitMin || 1) : 1;
   const [selectedUnitValue, setSelectedUnitValue] = useState<number>(initialUnitVal);
+  const [selectedSize, setSelectedSize] = useState<string>(
+    packageData.hasSizeOptions && packageData.sizeOptions && packageData.sizeOptions.length > 0
+      ? packageData.sizeOptions[0].label
+      : ''
+  );
 
   const getPkgPrice = (pkg: PreparedPackage): number => {
     if (buyerMarket === 'INTERNATIONAL') {
@@ -182,7 +188,8 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
       isMultiSide ? frontCustomImageUrl : undefined,
       isMultiSide && customSidesSelected === 'front_and_back' ? backCustomText : undefined,
       isMultiSide && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined,
-      backSideExtraPrice
+      backSideExtraPrice,
+      packageData.hasSizeOptions ? selectedSize : undefined
     );
     setAddedToast(true);
     setTimeout(() => setAddedToast(false), 3000);
@@ -379,6 +386,39 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                             <Plus className="w-4 h-4" />
                           </button>
                         </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Size Selection Section if package has size options (e.g. S, M, L, XL) */}
+                  {packageData.hasSizeOptions && packageData.sizeOptions && packageData.sizeOptions.length > 0 && (
+                    <div className="mb-6 bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 shadow-sm space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-[#8E6E2F] font-bold uppercase text-xs tracking-wider">
+                          <Sparkles className="w-4 h-4 text-[#B8944A]" />
+                          <span>Select Your Size</span>
+                        </div>
+                        {selectedSize && (
+                          <span className="text-xs font-bold text-[#241A15]">
+                            Size: <span className="text-[#8E6E2F] font-extrabold">{selectedSize}</span>
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {packageData.sizeOptions.map((sz, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setSelectedSize(sz.label)}
+                            className={`px-4 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                              selectedSize === sz.label
+                                ? 'bg-[#241A15] text-[#FAF6EE] border-[#241A15] shadow-md ring-2 ring-[#B8944A]/50 scale-105'
+                                : 'bg-white/90 hover:bg-[#E6D5B8]/40 text-[#241A15] border-[#D8C6A8]'
+                            }`}
+                          >
+                            {sz.label}
+                          </button>
+                        ))}
                       </div>
                     </div>
                   )}

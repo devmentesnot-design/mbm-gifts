@@ -46,7 +46,8 @@ interface GiftShopBodyProps {
     frontInputImageUrl?: string,
     backInputText?: string,
     backInputImageUrl?: string,
-    backSidePrice?: number
+    backSidePrice?: number,
+    selectedSize?: string
   ) => void;
   onAddToCartCustom: (customBox: {
     boxStyle?: CustomBoxOption;
@@ -65,6 +66,7 @@ interface GiftShopBodyProps {
     customUnitValue?: number;
     customUnitName?: string;
     unitCalculatedPrice?: number;
+    selectedSize?: string;
   }) => void;
   onViewPackageDetail?: (pkgId: string) => void;
 }
@@ -147,6 +149,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   const [giftNote, setGiftNote] = useState<string>('');
 
   // Customer Customization State (for modals & direct add prompts)
+  const [selectedSize, setSelectedSize] = useState<string>('');
   const [customSidesSelected, setCustomSidesSelected] = useState<'front_only' | 'front_and_back'>('front_only');
   const [frontCustomText, setFrontCustomText] = useState<string>('');
   const [frontCustomImageUrl, setFrontCustomImageUrl] = useState<string>('');
@@ -167,6 +170,11 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     setFrontCustomImageUrl('');
     setBackCustomText('');
     setBackCustomImageUrl('');
+    if (target?.hasSizeOptions && target.sizeOptions && target.sizeOptions.length > 0) {
+      setSelectedSize(target.sizeOptions[0].label);
+    } else {
+      setSelectedSize('');
+    }
   };
 
   const validateCustomizationInputs = (target: PreparedPackage | CustomBoxOption): boolean => {
@@ -477,7 +485,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
         isMulti ? frontCustomImageUrl : undefined,
         isMulti && customSidesSelected === 'front_and_back' ? backCustomText : undefined,
         isMulti && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined,
-        backPrice
+        backPrice,
+        selectedModalPkg.hasSizeOptions ? selectedSize : undefined
       );
       setSelectedModalPkg(null);
       setGiftNote('');
@@ -597,6 +606,11 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 Customizable
               </span>
             )}
+            {pkg.hasSizeOptions && pkg.sizeOptions && pkg.sizeOptions.length > 0 && (
+              <span className="absolute bottom-1.5 left-1.5 bg-[#241A15]/90 text-[#FAF6EE] text-[8px] sm:text-[9px] font-inter font-bold px-1.5 py-0.5 rounded border border-[#3A2A20] z-10 shadow-sm">
+                Sizes: {pkg.sizeOptions.map(s => s.label).join(', ')}
+              </span>
+            )}
           </div>
         </div>
         <div className="p-2 sm:p-4 pt-0 flex-1 flex flex-col justify-between">
@@ -629,7 +643,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (pkg.hasCustomUnit || pkg.requiresCustomInput) {
+                  if (pkg.hasCustomUnit || pkg.requiresCustomInput || (pkg.hasSizeOptions && pkg.sizeOptions && pkg.sizeOptions.length > 0)) {
                     handlePackageClick(pkg);
                   } else {
                     onAddToCartPrepared(pkg);
@@ -767,6 +781,11 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               Customizable
             </span>
           )}
+          {item.hasSizeOptions && item.sizeOptions && item.sizeOptions.length > 0 && (
+            <span className="absolute bottom-1.5 left-1.5 bg-[#241A15]/90 text-[#FAF6EE] text-[8px] sm:text-[9px] font-inter font-bold px-1.5 py-0.5 rounded border border-[#3A2A20] z-10 shadow-sm">
+              Sizes: {item.sizeOptions.map(s => s.label).join(', ')}
+            </span>
+          )}
           <div className="absolute inset-0 bg-[#241A15]/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <span className="bg-[#FBF8F2]/95 text-[#241A15] border border-[#D8C6A8] text-[9px] sm:text-[11px] font-bold uppercase tracking-wider px-2 sm:px-3 py-1 sm:py-1.5 rounded-full flex items-center gap-1 shadow-md backdrop-blur-sm">
               <Eye className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#B8944A]" />
@@ -808,7 +827,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               <span className="w-5 sm:w-7 text-center text-xs sm:text-sm font-bold text-[#241A15] font-inter">{qty}</span>
               <button
                 onClick={() => {
-                  if (item.hasCustomUnit) {
+                  if (item.hasCustomUnit || (item.hasSizeOptions && item.sizeOptions && item.sizeOptions.length > 0)) {
                     openCustomItemModal(item);
                   } else if (item.requiresCustomInput && (!customCart[item.id] || customCart[item.id] === 0)) {
                     resetCustomizationState(item);
@@ -1321,6 +1340,39 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     </div>
                   )}
 
+                  {/* Size Selection Section if package has size options (e.g. S, M, L, XL) */}
+                  {selectedModalPkg.hasSizeOptions && selectedModalPkg.sizeOptions && selectedModalPkg.sizeOptions.length > 0 && (
+                    <div className="mb-5 bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 shadow-sm space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-[#8E6E2F] font-bold uppercase text-xs tracking-wider">
+                          <Sparkles className="w-4 h-4 text-[#B8944A]" />
+                          <span>Select Your Size</span>
+                        </div>
+                        {selectedSize && (
+                          <span className="text-xs font-bold text-[#241A15]">
+                            Size: <span className="text-[#8E6E2F] font-extrabold">{selectedSize}</span>
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {selectedModalPkg.sizeOptions.map((sz, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setSelectedSize(sz.label)}
+                            className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                              selectedSize === sz.label
+                                ? 'bg-[#241A15] text-[#FAF6EE] border-[#241A15] shadow-md ring-2 ring-[#B8944A]/50 scale-105'
+                                : 'bg-white/80 hover:bg-[#E6D5B8]/40 text-[#241A15] border-[#D8C6A8]'
+                            }`}
+                          >
+                            {sz.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Client Customization Requirement Section */}
                   {selectedModalPkg.requiresCustomInput && (
                     <MultiSideCustomizationSection
@@ -1519,6 +1571,39 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     </div>
                   )}
 
+                  {/* Size Selection Section if item has size options (e.g. S, M, L, XL or Shoe Sizes) */}
+                  {selectedCustomItemModal.hasSizeOptions && selectedCustomItemModal.sizeOptions && selectedCustomItemModal.sizeOptions.length > 0 && (
+                    <div className="mb-5 bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 shadow-sm space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-[#8E6E2F] font-bold uppercase text-xs tracking-wider">
+                          <Sparkles className="w-4 h-4 text-[#B8944A]" />
+                          <span>Select Your Size</span>
+                        </div>
+                        {selectedSize && (
+                          <span className="text-xs font-bold text-[#241A15]">
+                            Size: <span className="text-[#8E6E2F] font-extrabold">{selectedSize}</span>
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {selectedCustomItemModal.sizeOptions.map((sz, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setSelectedSize(sz.label)}
+                            className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                              selectedSize === sz.label
+                                ? 'bg-[#241A15] text-[#FAF6EE] border-[#241A15] shadow-md ring-2 ring-[#B8944A]/50 scale-105'
+                                : 'bg-white/80 hover:bg-[#E6D5B8]/40 text-[#241A15] border-[#D8C6A8]'
+                            }`}
+                          >
+                            {sz.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Client Customization Section if item requires custom input */}
                   {selectedCustomItemModal.requiresCustomInput && (
                     <MultiSideCustomizationSection
@@ -1537,7 +1622,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     />
                   )}
 
-                  {!selectedCustomItemModal.requiresCustomInput && !selectedCustomItemModal.hasCustomUnit && (
+                  {!selectedCustomItemModal.requiresCustomInput && !selectedCustomItemModal.hasCustomUnit && !selectedCustomItemModal.hasSizeOptions && (
                     <div className="bg-[#FAF6EE] border border-[#D8C6A8]/50 rounded-xl p-3 mb-6 text-xs text-[#3A2A20] font-inter space-y-1">
                       <div className="flex items-center gap-2 text-[#8E6E2F] font-bold uppercase text-[11px] tracking-wider">
                         <Sparkles className="w-4 h-4 text-[#B8944A]" />
@@ -1552,7 +1637,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
                 {/* Add to Cart Controls */}
                 <div className="pt-4 border-t border-[#D8C6A8]/40 flex items-center justify-between gap-3">
-                  {(selectedCustomItemModal.requiresCustomInput || selectedCustomItemModal.hasCustomUnit) ? (
+                  {(selectedCustomItemModal.requiresCustomInput || selectedCustomItemModal.hasCustomUnit || (selectedCustomItemModal.hasSizeOptions && selectedCustomItemModal.sizeOptions && selectedCustomItemModal.sizeOptions.length > 0)) ? (
                     <button
                       onClick={() => {
                         if (selectedCustomItemModal.requiresCustomInput) {
@@ -1585,6 +1670,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                           customUnitValue: selectedCustomItemModal.hasCustomUnit ? modalUnitValue : undefined,
                           customUnitName: selectedCustomItemModal.hasCustomUnit ? (selectedCustomItemModal.customUnitName || 'kg') : undefined,
                           unitCalculatedPrice: selectedCustomItemModal.hasCustomUnit ? calculatedItemTotal : undefined,
+                          selectedSize: selectedCustomItemModal.hasSizeOptions ? selectedSize : undefined,
                         });
 
                         setSelectedCustomItemModal(null);
@@ -1700,20 +1786,54 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               const targetObj = customPromptTarget.pkg || customPromptTarget.item;
               if (!targetObj) return null;
               return (
-                <MultiSideCustomizationSection
-                  item={targetObj}
-                  customSidesSelected={customSidesSelected}
-                  onChangeCustomSidesSelected={setCustomSidesSelected}
-                  frontText={frontCustomText}
-                  onChangeFrontText={setFrontCustomText}
-                  frontImageUrl={frontCustomImageUrl}
-                  onChangeFrontImageUrl={setFrontCustomImageUrl}
-                  backText={backCustomText}
-                  onChangeBackText={setBackCustomText}
-                  backImageUrl={backCustomImageUrl}
-                  onChangeBackImageUrl={setBackCustomImageUrl}
-                  currency={currency}
-                />
+                <div className="space-y-4">
+                  {targetObj.hasSizeOptions && targetObj.sizeOptions && targetObj.sizeOptions.length > 0 && (
+                    <div className="bg-[#FAF6EE] border border-[#D8C6A8] rounded-xl p-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] uppercase tracking-wider text-[#8E6E2F] font-bold flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-[#B8944A]" />
+                          Select Size
+                        </span>
+                        {selectedSize && (
+                          <span className="text-[11px] font-bold text-[#241A15]">
+                            Size: <span className="text-[#8E6E2F] font-extrabold">{selectedSize}</span>
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {targetObj.sizeOptions.map((sz, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setSelectedSize(sz.label)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
+                              selectedSize === sz.label
+                                ? 'bg-[#241A15] text-[#FAF6EE] border-[#241A15] shadow-sm'
+                                : 'bg-white/80 hover:bg-[#E6D5B8]/40 text-[#241A15] border-[#D8C6A8]'
+                            }`}
+                          >
+                            {sz.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <MultiSideCustomizationSection
+                    item={targetObj}
+                    customSidesSelected={customSidesSelected}
+                    onChangeCustomSidesSelected={setCustomSidesSelected}
+                    frontText={frontCustomText}
+                    onChangeFrontText={setFrontCustomText}
+                    frontImageUrl={frontCustomImageUrl}
+                    onChangeFrontImageUrl={setFrontCustomImageUrl}
+                    backText={backCustomText}
+                    onChangeBackText={setBackCustomText}
+                    backImageUrl={backCustomImageUrl}
+                    onChangeBackImageUrl={setBackCustomImageUrl}
+                    currency={currency}
+                  />
+                </div>
               );
             })()}
 
@@ -1756,7 +1876,8 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                       isMulti ? frontCustomImageUrl : undefined,
                       isMulti && customSidesSelected === 'front_and_back' ? backCustomText : undefined,
                       isMulti && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined,
-                      backPrice
+                      backPrice,
+                      customPromptTarget.pkg.hasSizeOptions ? selectedSize : undefined
                     );
                   } else if (customPromptTarget.item) {
                     onAddToCartCustom({
@@ -1772,6 +1893,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                       backInputText: isMulti && customSidesSelected === 'front_and_back' ? backCustomText : undefined,
                       backInputImageUrl: isMulti && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined,
                       backSidePrice: backPrice,
+                      selectedSize: customPromptTarget.item.hasSizeOptions ? selectedSize : undefined,
                     });
                   }
 

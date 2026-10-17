@@ -418,9 +418,15 @@ export const CartPage: React.FC<CartPageProps> = ({
                               <div className="text-xs text-[#756457] mt-1">
                                 {itemSubtitle}
                               </div>
+                              {item.selectedSize && (
+                                <div className="inline-flex items-center gap-1.5 mt-1.5 mr-2 px-2.5 py-0.5 rounded-md bg-[#241A15] text-[#FAF6EE] text-[11px] font-semibold shadow-sm">
+                                  <span className="text-[#E6D5B8]">Size:</span>
+                                  <span className="font-extrabold">{item.selectedSize}</span>
+                                </div>
+                              )}
                               {item.customUnitValue != null && (
                                 <div className="inline-flex items-center gap-1.5 mt-1.5 px-2.5 py-0.5 rounded-md bg-[#B8944A]/10 border border-[#B8944A]/30 text-[#B8944A] text-[11px] font-semibold">
-                                  <span>Selected Portion / Size:</span>
+                                  <span>Selected Portion:</span>
                                   <span className="font-bold text-[#241A15]">{item.customUnitValue} {item.customUnitName || 'kg'}</span>
                                 </div>
                               )}
