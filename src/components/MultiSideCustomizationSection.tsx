@@ -79,14 +79,28 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
   // --------------------------------------------------------------------------
   if (!isMultiSide) {
     const inputType = item.customInputType || 'text';
-    const label = item.customInputLabel || 'Required Customization Details';
+    const label = item.customInputLabel || (inputType === 'both' ? 'Customization Details' : 'Required Customization Details');
 
     return (
       <div className="bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 sm:p-5 mb-5 space-y-4 shadow-sm">
-        <div className="flex items-center gap-1.5 text-[#8E6E2F] text-xs font-bold uppercase tracking-wider border-b border-[#D8C6A8]/40 pb-2">
-          <Sparkles className="w-4 h-4 text-[#B8944A]" />
-          <span>{label}</span>
+        <div className="flex flex-wrap items-center justify-between gap-1.5 border-b border-[#D8C6A8]/40 pb-2">
+          <div className="flex items-center gap-1.5 text-[#8E6E2F] text-xs font-bold uppercase tracking-wider">
+            <Sparkles className="w-4 h-4 text-[#B8944A]" />
+            <span>{label}</span>
+          </div>
+          {inputType === 'both' && (
+            <span className="text-[10px] text-[#8E6E2F] font-semibold bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
+              Photo, text, or both
+            </span>
+          )}
         </div>
+
+        {inputType === 'both' && (
+          <div className="text-[11px] text-[#7A5B18] bg-amber-50/90 border border-amber-200/80 rounded-xl px-3 py-2 flex items-center gap-2">
+            <span className="text-sm">💡</span>
+            <span>You can provide a <strong>photo</strong>, <strong>text</strong>, or <strong>both</strong>. At least one is required.</span>
+          </div>
+        )}
 
         {/* Photo Upload */}
         {(inputType === 'image' || inputType === 'both') && (
@@ -94,7 +108,15 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
             <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-2 flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <Camera className="w-3.5 h-3.5 text-[#B8944A]" />
-                <span>Upload Custom Photo <span className="text-red-500">*</span></span>
+                <span>
+                  Upload Custom Photo
+                  {inputType === 'image' && <span className="text-red-500 ml-1">*</span>}
+                  {inputType === 'both' && (
+                    <span className="text-[10px] text-[#756457] font-medium lowercase ml-1.5 tracking-normal">
+                      (photo or text)
+                    </span>
+                  )}
+                </span>
               </span>
               <span className="text-[10px] text-[#756457] font-normal">PNG, JPG up to 10MB</span>
             </label>
@@ -148,7 +170,15 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
           <div>
             <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center gap-1.5">
               <FileText className="w-3.5 h-3.5 text-[#B8944A]" />
-              <span>Custom Text / Inscription <span className="text-red-500">*</span></span>
+              <span>
+                Custom Text / Inscription
+                {inputType === 'text' && <span className="text-red-500 ml-1">*</span>}
+                {inputType === 'both' && (
+                  <span className="text-[10px] text-[#756457] font-medium lowercase ml-1.5 tracking-normal">
+                    (photo or text)
+                  </span>
+                )}
+              </span>
             </label>
             <textarea
               value={frontText}
@@ -173,13 +203,13 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
   const isFrontComplete = (
     (frontType === 'text' ? !!frontText.trim() : true) &&
     (frontType === 'image' ? !!frontImageUrl : true) &&
-    (frontType === 'both' ? (!!frontText.trim() && !!frontImageUrl) : true)
+    (frontType === 'both' ? (!!frontText.trim() || !!frontImageUrl) : true)
   );
 
   const isBackComplete = (
     (backType === 'text' ? !!backText.trim() : true) &&
     (backType === 'image' ? !!backImageUrl : true) &&
-    (backType === 'both' ? (!!backText.trim() && !!backImageUrl) : true)
+    (backType === 'both' ? (!!backText.trim() || !!backImageUrl) : true)
   );
 
   return (
@@ -288,9 +318,16 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
               {frontPrompt}
             </span>
             <span className="text-[10px] text-[#756457]">
-              {frontType === 'both' ? 'Photo & Text required' : frontType === 'image' ? 'Photo required' : 'Text required'}
+              {frontType === 'both' ? 'Photo, text, or both' : frontType === 'image' ? 'Photo required' : 'Text required'}
             </span>
           </div>
+
+          {frontType === 'both' && (
+            <div className="text-[11px] text-[#7A5B18] bg-amber-50/90 border border-amber-200/80 rounded-xl px-3 py-2 flex items-center gap-2">
+              <span className="text-sm">💡</span>
+              <span>You can provide a <strong>photo</strong>, <strong>text</strong>, or <strong>both</strong> for the front side.</span>
+            </div>
+          )}
 
           {/* Front Photo */}
           {(frontType === 'image' || frontType === 'both') && (
@@ -298,7 +335,15 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
               <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
                   <Camera className="w-3.5 h-3.5 text-[#B8944A]" />
-                  <span>Front Photo / Logo <span className="text-red-500">*</span></span>
+                  <span>
+                    Front Photo / Logo
+                    {frontType === 'image' && <span className="text-red-500 ml-1">*</span>}
+                    {frontType === 'both' && (
+                      <span className="text-[10px] text-[#756457] font-medium lowercase ml-1.5 tracking-normal">
+                        (photo or text)
+                      </span>
+                    )}
+                  </span>
                 </span>
                 <span className="text-[10px] text-[#756457] font-normal">PNG, JPG up to 10MB</span>
               </label>
@@ -351,7 +396,15 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
             <div>
               <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center gap-1.5">
                 <FileText className="w-3.5 h-3.5 text-[#B8944A]" />
-                <span>Front Custom Text / Message <span className="text-red-500">*</span></span>
+                <span>
+                  Front Custom Text / Message
+                  {frontType === 'text' && <span className="text-red-500 ml-1">*</span>}
+                  {frontType === 'both' && (
+                    <span className="text-[10px] text-[#756457] font-medium lowercase ml-1.5 tracking-normal">
+                      (photo or text)
+                    </span>
+                  )}
+                </span>
               </label>
               <textarea
                 value={frontText}
@@ -385,9 +438,16 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
               {backPrompt}
             </span>
             <span className="text-[10px] text-[#756457]">
-              {backType === 'both' ? 'Photo & Text required' : backType === 'image' ? 'Photo required' : 'Text required'}
+              {backType === 'both' ? 'Photo, text, or both' : backType === 'image' ? 'Photo required' : 'Text required'}
             </span>
           </div>
+
+          {backType === 'both' && (
+            <div className="text-[11px] text-[#7A5B18] bg-amber-50/90 border border-amber-200/80 rounded-xl px-3 py-2 flex items-center gap-2">
+              <span className="text-sm">💡</span>
+              <span>You can provide a <strong>photo</strong>, <strong>text</strong>, or <strong>both</strong> for the back side.</span>
+            </div>
+          )}
 
           {/* Back Photo */}
           {(backType === 'image' || backType === 'both') && (
@@ -395,7 +455,15 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
               <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
                   <Camera className="w-3.5 h-3.5 text-[#B8944A]" />
-                  <span>Back Photo / Graphic <span className="text-red-500">*</span></span>
+                  <span>
+                    Back Photo / Graphic
+                    {backType === 'image' && <span className="text-red-500 ml-1">*</span>}
+                    {backType === 'both' && (
+                      <span className="text-[10px] text-[#756457] font-medium lowercase ml-1.5 tracking-normal">
+                        (photo or text)
+                      </span>
+                    )}
+                  </span>
                 </span>
                 <span className="text-[10px] text-[#756457] font-normal">PNG, JPG up to 10MB</span>
               </label>
@@ -448,7 +516,15 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
             <div>
               <label className="block text-xs uppercase tracking-wider text-[#3A2A20] font-bold mb-1.5 flex items-center gap-1.5">
                 <FileText className="w-3.5 h-3.5 text-[#B8944A]" />
-                <span>Back Custom Text / Name / Number <span className="text-red-500">*</span></span>
+                <span>
+                  Back Custom Text / Name / Number
+                  {backType === 'text' && <span className="text-red-500 ml-1">*</span>}
+                  {backType === 'both' && (
+                    <span className="text-[10px] text-[#756457] font-medium lowercase ml-1.5 tracking-normal">
+                      (photo or text)
+                    </span>
+                  )}
+                </span>
               </label>
               <textarea
                 value={backText}
