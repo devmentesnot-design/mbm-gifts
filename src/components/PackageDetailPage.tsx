@@ -141,33 +141,45 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
         const frontPrompt = packageData.frontCustomLabel || packageData.customInputLabel || 'Front side';
         const backPrompt = packageData.backCustomLabel || 'Back side';
 
-        if ((frontType === 'text' || frontType === 'both') && !frontCustomText.trim()) {
+        if (frontType === 'text' && !frontCustomText.trim()) {
           alert(`Please fill in required front text: ${frontPrompt}`);
           return;
         }
-        if ((frontType === 'image' || frontType === 'both') && !frontCustomImageUrl) {
+        if (frontType === 'image' && !frontCustomImageUrl) {
           alert('Please upload your front photo.');
+          return;
+        }
+        if (frontType === 'both' && !frontCustomText.trim() && !frontCustomImageUrl) {
+          alert(`Please provide at least a text or photo for the front side: ${frontPrompt}`);
           return;
         }
 
         if (customSidesSelected === 'front_and_back') {
-          if ((backType === 'text' || backType === 'both') && !backCustomText.trim()) {
+          if (backType === 'text' && !backCustomText.trim()) {
             alert(`Please fill in required back text: ${backPrompt}`);
             return;
           }
-          if ((backType === 'image' || backType === 'both') && !backCustomImageUrl) {
+          if (backType === 'image' && !backCustomImageUrl) {
             alert('Please upload your back photo.');
+            return;
+          }
+          if (backType === 'both' && !backCustomText.trim() && !backCustomImageUrl) {
+            alert(`Please provide at least a text or photo for the back side: ${backPrompt}`);
             return;
           }
         }
       } else {
         const inputType = packageData.customInputType || 'text';
-        if ((inputType === 'text' || inputType === 'both') && !frontCustomText.trim()) {
+        if (inputType === 'text' && !frontCustomText.trim()) {
           alert(`Please fill in the required field: ${packageData.customInputLabel || 'Custom text'}`);
           return;
         }
-        if ((inputType === 'image' || inputType === 'both') && !frontCustomImageUrl) {
+        if (inputType === 'image' && !frontCustomImageUrl) {
           alert('Please upload your photo before adding to cart.');
+          return;
+        }
+        if (inputType === 'both' && !frontCustomText.trim() && !frontCustomImageUrl) {
+          alert(`Please provide at least a text or photo for: ${packageData.customInputLabel || 'customization'}`);
           return;
         }
       }
