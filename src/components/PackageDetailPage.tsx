@@ -33,6 +33,7 @@ import { MultiSideCustomizationSection } from './MultiSideCustomizationSection';
 interface PackageDetailPageProps {
   packageData: PreparedPackage;
   allPackages: PreparedPackage[];
+  customItems?: CustomBoxOption[];
   session: any;
   cartItems: CartItem[];
   onOpenCart: () => void;
@@ -60,6 +61,7 @@ interface PackageDetailPageProps {
 export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   packageData,
   allPackages,
+  customItems = [],
   session,
   cartItems,
   onOpenCart,
@@ -73,7 +75,39 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   const [addedToast, setAddedToast] = useState(false);
   const [giftNote, setGiftNote] = useState('');
 
-  const defaultSides = (packageData.customizationSides === 'front_back' && packageData.backCustomOptional === false) ? 'front_and_back' : 'front_only';
+  // Auto-detect if any included item in this package requires client customization (e.g. Photo Frame)
+  const effectivePackage = React.useMemo(() => {
+    if (packageData.requiresCustomInput) return packageData;
+    const items = packageData.itemsIncludedDetailed && packageData.itemsIncludedDetailed.length > 0
+      ? packageData.itemsIncludedDetailed.map(i => i.name)
+      : (packageData.itemsIncluded || []);
+    const pool = (customItems && customItems.length > 0) ? customItems : CUSTOM_ITEMS;
+    const match = pool.find(ci =>
+      ci.requiresCustomInput &&
+      items.some(itemName => itemName && ci.name && (
+        itemName.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
+        itemName.toLowerCase().includes(ci.name.toLowerCase()) ||
+        ci.name.toLowerCase().includes(itemName.toLowerCase())
+      ))
+    );
+    if (!match) return packageData;
+    return {
+      ...packageData,
+      requiresCustomInput: true,
+      customInputType: packageData.customInputType || match.customInputType || 'both',
+      customInputLabel: packageData.customInputLabel || match.customInputLabel || `Customization for ${match.name}`,
+      customizationSides: packageData.customizationSides || match.customizationSides || 'single',
+      frontCustomType: packageData.frontCustomType || match.frontCustomType || match.customInputType || 'both',
+      frontCustomLabel: packageData.frontCustomLabel || match.frontCustomLabel || match.customInputLabel || `Front for ${match.name}`,
+      backCustomType: packageData.backCustomType || match.backCustomType || 'both',
+      backCustomLabel: packageData.backCustomLabel || match.backCustomLabel || '',
+      backCustomOptional: packageData.backCustomOptional ?? match.backCustomOptional ?? true,
+      backCustomPrice: packageData.backCustomPrice ?? match.backCustomPrice,
+      backCustomPriceUsd: packageData.backCustomPriceUsd ?? match.backCustomPriceUsd,
+    };
+  }, [packageData, customItems]);
+
+  const defaultSides = (effectivePackage.customizationSides === 'front_back' && effectivePackage.backCustomOptional === false) ? 'front_and_back' : 'front_only';
   const [customSidesSelected, setCustomSidesSelected] = useState<'front_only' | 'front_and_back'>(defaultSides);
   const [frontCustomText, setFrontCustomText] = useState('');
   const [frontCustomImageUrl, setFrontCustomImageUrl] = useState('');
@@ -81,17 +115,17 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   const [backCustomImageUrl, setBackCustomImageUrl] = useState('');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
-  const isMultiSide = packageData.customizationSides === 'front_back';
+  const isMultiSide = effectivePackage.customizationSides === 'front_back';
   const backSideExtraPrice = (isMultiSide && customSidesSelected === 'front_and_back')
-    ? (currency === 'USD' ? (packageData.backCustomPriceUsd || 0) : (packageData.backCustomPrice || 0))
+    ? (currency === 'USD' ? (effectivePackage.backCustomPriceUsd || 0) : (effectivePackage.backCustomPrice || 0))
     : 0;
 
   // Scalable unit state (e.g. 2 kg minimum, stepper)
-  const initialUnitVal = packageData.hasCustomUnit ? (packageData.customUnitMin || 1) : 1;
+  const initialUnitVal = effectivePackage.hasCustomUnit ? (effectivePackage.customUnitMin || 1) : 1;
   const [selectedUnitValue, setSelectedUnitValue] = useState<number>(initialUnitVal);
   const [selectedSize, setSelectedSize] = useState<string>(
-    packageData.hasSizeOptions && packageData.sizeOptions && packageData.sizeOptions.length > 0
-      ? packageData.sizeOptions[0].label
+    effectivePackage.hasSizeOptions && effectivePackage.sizeOptions && effectivePackage.sizeOptions.length > 0
+      ? effectivePackage.sizeOptions[0].label
       : ''
   );
 
@@ -134,12 +168,12 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
     : getPkgPrice(packageData);
 
   const handleAddToCart = () => {
-    if (packageData.requiresCustomInput) {
+    if (effectivePackage.requiresCustomInput) {
       if (isMultiSide) {
-        const frontType = packageData.frontCustomType || packageData.customInputType || 'text';
-        const backType = packageData.backCustomType || 'text';
-        const frontPrompt = packageData.frontCustomLabel || packageData.customInputLabel || 'Front side';
-        const backPrompt = packageData.backCustomLabel || 'Back side';
+        const frontType = effectivePackage.frontCustomType || effectivePackage.customInputType || 'text';
+        const backType = effectivePackage.backCustomType || 'text';
+        const frontPrompt = effectivePackage.frontCustomLabel || effectivePackage.customInputLabel || 'Front side';
+        const backPrompt = effectivePackage.backCustomLabel || 'Back side';
 
         if (frontType === 'text' && !frontCustomText.trim()) {
           alert(`Please fill in required front text: ${frontPrompt}`);
@@ -169,9 +203,9 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
           }
         }
       } else {
-        const inputType = packageData.customInputType || 'text';
+        const inputType = effectivePackage.customInputType || 'text';
         if (inputType === 'text' && !frontCustomText.trim()) {
-          alert(`Please fill in the required field: ${packageData.customInputLabel || 'Custom text'}`);
+          alert(`Please fill in the required field: ${effectivePackage.customInputLabel || 'Custom text'}`);
           return;
         }
         if (inputType === 'image' && !frontCustomImageUrl) {
@@ -179,7 +213,7 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
           return;
         }
         if (inputType === 'both' && !frontCustomText.trim() && !frontCustomImageUrl) {
-          alert(`Please provide at least a text or photo for: ${packageData.customInputLabel || 'customization'}`);
+          alert(`Please provide at least a text or photo for: ${effectivePackage.customInputLabel || 'customization'}`);
           return;
         }
       }
@@ -188,20 +222,20 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
     const calculatedWithBack = currentCalculatedPrice + backSideExtraPrice;
 
     onAddToCartPrepared(
-      packageData,
+      effectivePackage,
       giftNote,
       frontCustomText,
       frontCustomImageUrl,
-      packageData.hasCustomUnit ? selectedUnitValue : undefined,
-      packageData.hasCustomUnit ? (packageData.customUnitName || 'kg') : undefined,
-      packageData.hasCustomUnit ? calculatedWithBack : undefined,
+      effectivePackage.hasCustomUnit ? selectedUnitValue : undefined,
+      effectivePackage.hasCustomUnit ? (effectivePackage.customUnitName || 'kg') : undefined,
+      effectivePackage.hasCustomUnit ? calculatedWithBack : undefined,
       isMultiSide ? customSidesSelected : undefined,
       isMultiSide ? frontCustomText : undefined,
       isMultiSide ? frontCustomImageUrl : undefined,
       isMultiSide && customSidesSelected === 'front_and_back' ? backCustomText : undefined,
       isMultiSide && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined,
       backSideExtraPrice,
-      packageData.hasSizeOptions ? selectedSize : undefined
+      effectivePackage.hasSizeOptions ? selectedSize : undefined
     );
     setAddedToast(true);
     setTimeout(() => setAddedToast(false), 3000);
@@ -436,9 +470,9 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                   )}
 
                   {/* Client Customization Requirement Section */}
-                  {packageData.requiresCustomInput && (
+                  {effectivePackage.requiresCustomInput && (
                     <MultiSideCustomizationSection
-                      item={packageData}
+                      item={effectivePackage}
                       customSidesSelected={customSidesSelected}
                       onChangeCustomSidesSelected={setCustomSidesSelected}
                       frontText={frontCustomText}

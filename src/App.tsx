@@ -788,6 +788,7 @@ export default function App() {
         <PackageDetailPage
           packageData={pkgData}
           allPackages={packages}
+          customItems={customItems}
           session={session}
           cartItems={cartItems}
           onOpenCart={handleNavigateToCart}

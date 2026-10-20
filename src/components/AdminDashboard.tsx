@@ -824,6 +824,81 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       };
       return updated;
     });
+
+    // Auto-enable client customization if selected item requires customization
+    if (item.requiresCustomInput) {
+      setPkgForm((prev) => ({
+        ...prev,
+        requiresCustomInput: true,
+        customInputType: prev.requiresCustomInput ? prev.customInputType : (item.customInputType || 'both'),
+        customInputLabel: prev.customInputLabel || item.customInputLabel || `Customization for ${item.name}`,
+        customizationSides: prev.customizationSides === 'front_back' ? 'front_back' : (item.customizationSides || 'single'),
+        frontCustomType: prev.frontCustomType || item.frontCustomType || item.customInputType || 'both',
+        frontCustomLabel: prev.frontCustomLabel || item.frontCustomLabel || item.customInputLabel || `Front for ${item.name}`,
+        backCustomType: prev.backCustomType || item.backCustomType || 'both',
+        backCustomLabel: prev.backCustomLabel || item.backCustomLabel || '',
+        backCustomOptional: prev.backCustomOptional ?? item.backCustomOptional ?? true,
+        backCustomPrice: prev.backCustomPrice || (item.backCustomPrice ? item.backCustomPrice.toString() : ''),
+        backCustomPriceUsd: prev.backCustomPriceUsd || (item.backCustomPriceUsd ? item.backCustomPriceUsd.toString() : ''),
+      }));
+    }
+
+    // Auto-enable size selection if selected item has sizes and package does not yet
+    if (item.hasSizeOptions && item.sizeOptions && item.sizeOptions.length > 0) {
+      setPkgForm((prev) => {
+        if (!prev.hasSizeOptions || !prev.sizeOptionsInput) {
+          return {
+            ...prev,
+            hasSizeOptions: true,
+            sizeOptionsInput: item.sizeOptions!.map((s) => s.label).join(', '),
+          };
+        }
+        return prev;
+      });
+    }
+  };
+
+  const handleAddCustomItemToPackage = (item: CustomBoxOption) => {
+    setPkgSubItems((prev) => [
+      ...prev,
+      {
+        name: item.name,
+        image: item.image || '',
+        description: item.description || '',
+      },
+    ]);
+
+    // Auto-enable client customization if selected item requires customization
+    if (item.requiresCustomInput) {
+      setPkgForm((prev) => ({
+        ...prev,
+        requiresCustomInput: true,
+        customInputType: prev.requiresCustomInput ? prev.customInputType : (item.customInputType || 'both'),
+        customInputLabel: prev.customInputLabel || item.customInputLabel || `Customization for ${item.name}`,
+        customizationSides: prev.customizationSides === 'front_back' ? 'front_back' : (item.customizationSides || 'single'),
+        frontCustomType: prev.frontCustomType || item.frontCustomType || item.customInputType || 'both',
+        frontCustomLabel: prev.frontCustomLabel || item.frontCustomLabel || item.customInputLabel || `Front for ${item.name}`,
+        backCustomType: prev.backCustomType || item.backCustomType || 'both',
+        backCustomLabel: prev.backCustomLabel || item.backCustomLabel || '',
+        backCustomOptional: prev.backCustomOptional ?? item.backCustomOptional ?? true,
+        backCustomPrice: prev.backCustomPrice || (item.backCustomPrice ? item.backCustomPrice.toString() : ''),
+        backCustomPriceUsd: prev.backCustomPriceUsd || (item.backCustomPriceUsd ? item.backCustomPriceUsd.toString() : ''),
+      }));
+    }
+
+    // Auto-enable size selection if selected item has sizes and package does not yet
+    if (item.hasSizeOptions && item.sizeOptions && item.sizeOptions.length > 0) {
+      setPkgForm((prev) => {
+        if (!prev.hasSizeOptions || !prev.sizeOptionsInput) {
+          return {
+            ...prev,
+            hasSizeOptions: true,
+            sizeOptionsInput: item.sizeOptions!.map((s) => s.label).join(', '),
+          };
+        }
+        return prev;
+      });
+    }
   };
 
   const handleRemoveSubItem = (index: number) => {
@@ -835,6 +910,44 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (!pkgForm.name || !pkgForm.price) return;
 
     const itemsNamesArray = pkgSubItems.map((item) => item.name || 'Luxury Gift Item').filter(Boolean);
+
+    // Auto-detect if any included item in this package requires client customization
+    const autoCustomItem = customItems.find((ci) =>
+      ci.requiresCustomInput &&
+      pkgSubItems.some((sub) => sub.name && (
+        sub.name.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
+        sub.name.toLowerCase().includes(ci.name.toLowerCase()) ||
+        ci.name.toLowerCase().includes(sub.name.toLowerCase())
+      ))
+    );
+
+    const effectiveRequiresCustomInput = pkgForm.requiresCustomInput || !!autoCustomItem;
+    const effectiveCustomInputType = pkgForm.requiresCustomInput
+      ? pkgForm.customInputType
+      : (autoCustomItem?.customInputType || 'both');
+    const effectiveCustomInputLabel = pkgForm.customInputLabel || autoCustomItem?.customInputLabel || (autoCustomItem ? `Customization for ${autoCustomItem.name}` : '');
+    const effectiveCustomizationSides = pkgForm.customizationSides || autoCustomItem?.customizationSides || 'single';
+    const effectiveFrontCustomType = pkgForm.frontCustomType || autoCustomItem?.frontCustomType || autoCustomItem?.customInputType || 'both';
+    const effectiveFrontCustomLabel = pkgForm.frontCustomLabel || autoCustomItem?.frontCustomLabel || autoCustomItem?.customInputLabel || (autoCustomItem ? `Front for ${autoCustomItem.name}` : '');
+    const effectiveBackCustomType = pkgForm.backCustomType || autoCustomItem?.backCustomType || 'both';
+    const effectiveBackCustomLabel = pkgForm.backCustomLabel || autoCustomItem?.backCustomLabel || '';
+    const effectiveBackCustomOptional = pkgForm.backCustomOptional ?? autoCustomItem?.backCustomOptional ?? true;
+    const effectiveBackCustomPrice = pkgForm.backCustomPrice ? parseFloat(pkgForm.backCustomPrice) : autoCustomItem?.backCustomPrice;
+    const effectiveBackCustomPriceUsd = pkgForm.backCustomPriceUsd ? parseFloat(pkgForm.backCustomPriceUsd) : autoCustomItem?.backCustomPriceUsd;
+
+    // Auto-detect if any included item has size options
+    const autoSizeItem = customItems.find((ci) =>
+      ci.hasSizeOptions && ci.sizeOptions && ci.sizeOptions.length > 0 &&
+      pkgSubItems.some((sub) => sub.name && (
+        sub.name.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
+        sub.name.toLowerCase().includes(ci.name.toLowerCase()) ||
+        ci.name.toLowerCase().includes(sub.name.toLowerCase())
+      ))
+    );
+    const effectiveHasSizeOptions = pkgForm.hasSizeOptions || !!autoSizeItem;
+    const effectiveSizeOptions = (pkgForm.hasSizeOptions && pkgForm.sizeOptionsInput)
+      ? pkgForm.sizeOptionsInput.split(',').map((s) => s.trim()).filter(Boolean).map((label) => ({ label }))
+      : autoSizeItem?.sizeOptions;
 
     if (editingPkg) {
       const updated = packages.map((p) =>
@@ -851,17 +964,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               badge: pkgForm.badge || undefined,
               itemsIncluded: itemsNamesArray,
               itemsIncludedDetailed: pkgSubItems,
-              requiresCustomInput: pkgForm.requiresCustomInput,
-              customInputType: pkgForm.customInputType,
-              customInputLabel: pkgForm.customInputLabel,
-              customizationSides: pkgForm.customizationSides,
-              frontCustomType: pkgForm.frontCustomType,
-              frontCustomLabel: pkgForm.frontCustomLabel,
-              backCustomType: pkgForm.backCustomType,
-              backCustomLabel: pkgForm.backCustomLabel,
-              backCustomOptional: pkgForm.backCustomOptional,
-              backCustomPrice: pkgForm.backCustomPrice ? parseFloat(pkgForm.backCustomPrice) : undefined,
-              backCustomPriceUsd: pkgForm.backCustomPriceUsd ? parseFloat(pkgForm.backCustomPriceUsd) : undefined,
+              requiresCustomInput: effectiveRequiresCustomInput,
+              customInputType: effectiveCustomInputType,
+              customInputLabel: effectiveCustomInputLabel,
+              customizationSides: effectiveCustomizationSides,
+              frontCustomType: effectiveFrontCustomType,
+              frontCustomLabel: effectiveFrontCustomLabel,
+              backCustomType: effectiveBackCustomType,
+              backCustomLabel: effectiveBackCustomLabel,
+              backCustomOptional: effectiveBackCustomOptional,
+              backCustomPrice: effectiveBackCustomPrice,
+              backCustomPriceUsd: effectiveBackCustomPriceUsd,
               hasCustomUnit: pkgForm.hasCustomUnit,
               customUnitName: pkgForm.hasCustomUnit ? (pkgForm.customUnitName || 'kg') : undefined,
               customUnitMin: pkgForm.hasCustomUnit && pkgForm.customUnitMin ? parseFloat(pkgForm.customUnitMin) : undefined,
@@ -869,10 +982,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               customUnitMax: pkgForm.hasCustomUnit && pkgForm.customUnitMax ? parseFloat(pkgForm.customUnitMax) : undefined,
               customUnitPricePerUnit: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnit ? parseFloat(pkgForm.customUnitPricePerUnit) : undefined,
               customUnitPricePerUnitUsd: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnitUsd ? parseFloat(pkgForm.customUnitPricePerUnitUsd) : undefined,
-              hasSizeOptions: pkgForm.hasSizeOptions,
-              sizeOptions: pkgForm.hasSizeOptions && pkgForm.sizeOptionsInput
-                ? pkgForm.sizeOptionsInput.split(',').map((s) => s.trim()).filter(Boolean).map((label) => ({ label }))
-                : undefined,
+              hasSizeOptions: effectiveHasSizeOptions,
+              sizeOptions: effectiveSizeOptions,
             }
           : p
       );
@@ -892,17 +1003,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         itemsIncluded: itemsNamesArray,
         itemsIncludedDetailed: pkgSubItems,
         popularFor: pkgForm.popularFor,
-        requiresCustomInput: pkgForm.requiresCustomInput,
-        customInputType: pkgForm.customInputType,
-        customInputLabel: pkgForm.customInputLabel,
-        customizationSides: pkgForm.customizationSides,
-        frontCustomType: pkgForm.frontCustomType,
-        frontCustomLabel: pkgForm.frontCustomLabel,
-        backCustomType: pkgForm.backCustomType,
-        backCustomLabel: pkgForm.backCustomLabel,
-        backCustomOptional: pkgForm.backCustomOptional,
-        backCustomPrice: pkgForm.backCustomPrice ? parseFloat(pkgForm.backCustomPrice) : undefined,
-        backCustomPriceUsd: pkgForm.backCustomPriceUsd ? parseFloat(pkgForm.backCustomPriceUsd) : undefined,
+        requiresCustomInput: effectiveRequiresCustomInput,
+        customInputType: effectiveCustomInputType,
+        customInputLabel: effectiveCustomInputLabel,
+        customizationSides: effectiveCustomizationSides,
+        frontCustomType: effectiveFrontCustomType,
+        frontCustomLabel: effectiveFrontCustomLabel,
+        backCustomType: effectiveBackCustomType,
+        backCustomLabel: effectiveBackCustomLabel,
+        backCustomOptional: effectiveBackCustomOptional,
+        backCustomPrice: effectiveBackCustomPrice,
+        backCustomPriceUsd: effectiveBackCustomPriceUsd,
         hasCustomUnit: pkgForm.hasCustomUnit,
         customUnitName: pkgForm.hasCustomUnit ? (pkgForm.customUnitName || 'kg') : undefined,
         customUnitMin: pkgForm.hasCustomUnit && pkgForm.customUnitMin ? parseFloat(pkgForm.customUnitMin) : undefined,
@@ -910,10 +1021,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         customUnitMax: pkgForm.hasCustomUnit && pkgForm.customUnitMax ? parseFloat(pkgForm.customUnitMax) : undefined,
         customUnitPricePerUnit: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnit ? parseFloat(pkgForm.customUnitPricePerUnit) : undefined,
         customUnitPricePerUnitUsd: pkgForm.hasCustomUnit && pkgForm.customUnitPricePerUnitUsd ? parseFloat(pkgForm.customUnitPricePerUnitUsd) : undefined,
-        hasSizeOptions: pkgForm.hasSizeOptions,
-        sizeOptions: pkgForm.hasSizeOptions && pkgForm.sizeOptionsInput
-          ? pkgForm.sizeOptionsInput.split(',').map((s) => s.trim()).filter(Boolean).map((label) => ({ label }))
-          : undefined,
+        hasSizeOptions: effectiveHasSizeOptions,
+        sizeOptions: effectiveSizeOptions,
       };
       onSavePackages([newPkg, ...packages]);
     }
@@ -3634,6 +3743,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <p className="text-[11px] text-[#241A15]/60 ml-6.5 mt-0.5">
                         Enable if the buyer must upload photos or write custom text when adding this package to their cart.
                       </p>
+                      {(() => {
+                        const customizableSubItems = pkgSubItems.map((sub) => {
+                          return customItems.find(
+                            (i) => i.name.toLowerCase().trim() === sub.name.toLowerCase().trim() && i.requiresCustomInput
+                          );
+                        }).filter(Boolean);
+
+                        if (customizableSubItems.length > 0) {
+                          return (
+                            <div className="ml-6.5 mt-2.5 p-2.5 rounded-lg bg-amber-500/10 border border-amber-400/50 text-xs text-[#8E6E2F] flex items-center gap-2">
+                              <Sparkles className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                              <span>
+                                <strong>Auto-customization active:</strong> Included item{customizableSubItems.length > 1 ? 's' : ''} (<strong>{customizableSubItems.map((c) => c?.name).join(', ')}</strong>) require client input. Buyers will automatically be prompted to upload photos / enter text!
+                              </span>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })()}
                     </div>
                   </div>
 
@@ -4230,21 +4358,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                           {item.price ? `${item.price.toLocaleString()} ETB` : '0 ETB'}
                                           {item.price_usd ? ` / $${item.price_usd}` : ''}
                                         </span>
+                                        {item.requiresCustomInput && (
+                                          <span className="text-amber-800 font-bold bg-amber-100/90 border border-amber-300 px-1.5 py-0.2 rounded flex items-center gap-0.5">
+                                            <Sparkles className="w-2.5 h-2.5 text-amber-600" />
+                                            Customizable
+                                          </span>
+                                        )}
                                       </div>
                                     </div>
                                   </div>
                                   <button
                                     type="button"
-                                    onClick={() => {
-                                      setPkgSubItems((prev) => [
-                                        ...prev,
-                                        {
-                                          name: item.name,
-                                          image: item.image || '',
-                                          description: item.description || '',
-                                        },
-                                      ]);
-                                    }}
+                                    onClick={() => handleAddCustomItemToPackage(item)}
                                     className="bg-[#B8944A] hover:bg-[#D9A514] text-white px-2.5 py-1 rounded text-[11px] font-bold flex items-center gap-1 flex-shrink-0 cursor-pointer shadow transition-all"
                                   >
                                     <Plus className="w-3 h-3" />
@@ -4277,10 +4402,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             );
                             if (!match) return null;
                             return (
-                              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
-                                Item Cost: {match.price ? `${match.price.toLocaleString()} ETB` : '0 ETB'}
-                                {match.price_usd ? ` ($${match.price_usd})` : ''}
-                              </span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                                  Item Cost: {match.price ? `${match.price.toLocaleString()} ETB` : '0 ETB'}
+                                  {match.price_usd ? ` ($${match.price_usd})` : ''}
+                                </span>
+                                {match.requiresCustomInput && (
+                                  <span className="text-[10px] font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded flex items-center gap-1">
+                                    <Sparkles className="w-3 h-3 text-amber-600" />
+                                    Customizable
+                                  </span>
+                                )}
+                              </div>
                             );
                           })()}
                         </div>

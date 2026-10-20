@@ -177,14 +177,50 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     }
   };
 
-  const validateCustomizationInputs = (target: PreparedPackage | CustomBoxOption): boolean => {
-    if (!target.requiresCustomInput) return true;
+  // Helper: auto-detect if a package contains any sub-item that requires client customization
+  const getEffectivePkg = (pkg: PreparedPackage): PreparedPackage => {
+    if (pkg.requiresCustomInput) return pkg;
+    const items = pkg.itemsIncludedDetailed && pkg.itemsIncludedDetailed.length > 0
+      ? pkg.itemsIncludedDetailed.map(i => i.name)
+      : (pkg.itemsIncluded || []);
+    const pool = (customItems && customItems.length > 0) ? customItems : CUSTOM_ITEMS;
+    const match = pool.find(ci =>
+      ci.requiresCustomInput &&
+      items.some(itemName => itemName && ci.name && (
+        itemName.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
+        itemName.toLowerCase().includes(ci.name.toLowerCase()) ||
+        ci.name.toLowerCase().includes(itemName.toLowerCase())
+      ))
+    );
+    if (!match) return pkg;
+    return {
+      ...pkg,
+      requiresCustomInput: true,
+      customInputType: pkg.customInputType || match.customInputType || 'both',
+      customInputLabel: pkg.customInputLabel || match.customInputLabel || `Customization for ${match.name}`,
+      customizationSides: pkg.customizationSides || match.customizationSides || 'single',
+      frontCustomType: pkg.frontCustomType || match.frontCustomType || match.customInputType || 'both',
+      frontCustomLabel: pkg.frontCustomLabel || match.frontCustomLabel || match.customInputLabel || `Front for ${match.name}`,
+      backCustomType: pkg.backCustomType || match.backCustomType || 'both',
+      backCustomLabel: pkg.backCustomLabel || match.backCustomLabel || '',
+      backCustomOptional: pkg.backCustomOptional ?? match.backCustomOptional ?? true,
+      backCustomPrice: pkg.backCustomPrice ?? match.backCustomPrice,
+      backCustomPriceUsd: pkg.backCustomPriceUsd ?? match.backCustomPriceUsd,
+    };
+  };
 
-    if (target.customizationSides === 'front_back') {
-      const frontType = target.frontCustomType || target.customInputType || 'text';
-      const backType = target.backCustomType || 'text';
-      const frontPrompt = target.frontCustomLabel || target.customInputLabel || 'Front side';
-      const backPrompt = target.backCustomLabel || 'Back side';
+  const validateCustomizationInputs = (target: PreparedPackage | CustomBoxOption): boolean => {
+    const effectiveTarget = ('category' in target && (target as any).itemsIncluded)
+      ? getEffectivePkg(target as PreparedPackage)
+      : target;
+
+    if (!effectiveTarget.requiresCustomInput) return true;
+
+    if (effectiveTarget.customizationSides === 'front_back') {
+      const frontType = effectiveTarget.frontCustomType || effectiveTarget.customInputType || 'text';
+      const backType = effectiveTarget.backCustomType || 'text';
+      const frontPrompt = effectiveTarget.frontCustomLabel || effectiveTarget.customInputLabel || 'Front side';
+      const backPrompt = effectiveTarget.backCustomLabel || 'Back side';
 
       // For 'both': customer must provide at least one of text OR image (not both required)
       if (frontType === 'text' && !frontCustomText.trim()) {
@@ -575,17 +611,19 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   };
 
   const handlePackageClick = (pkg: PreparedPackage) => {
+    const effectivePkg = getEffectivePkg(pkg);
     if (onViewPackageDetail) {
-      onViewPackageDetail(pkg.id);
+      onViewPackageDetail(effectivePkg.id);
     } else {
-      setSelectedModalPkg(pkg);
-      setModalUnitValue(pkg.hasCustomUnit ? (pkg.customUnitMin || 1) : 1);
-      resetCustomizationState(pkg);
+      setSelectedModalPkg(effectivePkg);
+      setModalUnitValue(effectivePkg.hasCustomUnit ? (effectivePkg.customUnitMin || 1) : 1);
+      resetCustomizationState(effectivePkg);
     }
   };
 
   // Helper: renders a single package card
   const renderPkgCard = (pkg: PreparedPackage, targetCategory?: string) => {
+    const effectivePkg = getEffectivePkg(pkg);
     const cats = pkg.category?.split(',').map(c => c.trim()).filter(Boolean) || [];
     const primaryCategory = targetCategory || cats[0] || (pkg.category ?? '');
     const routeCategory = targetCategory || cats[0] || primaryCategory;
@@ -614,7 +652,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 From {pkg.customUnitMin || 1} {pkg.customUnitName || 'kg'}
               </span>
             )}
-            {pkg.requiresCustomInput && !pkg.hasCustomUnit && (
+            {effectivePkg.requiresCustomInput && !pkg.hasCustomUnit && (
               <span className="absolute bottom-1.5 right-1.5 bg-[#E6D5B8]/90 text-[#3A2A20] text-[8px] sm:text-[9px] font-inter font-semibold px-1.5 py-0.5 rounded border border-[#D8C6A8] z-10 shadow-sm">
                 Customizable
               </span>
@@ -656,7 +694,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (pkg.hasCustomUnit || pkg.requiresCustomInput || (pkg.hasSizeOptions && pkg.sizeOptions && pkg.sizeOptions.length > 0)) {
+                  if (effectivePkg.hasCustomUnit || effectivePkg.requiresCustomInput || (effectivePkg.hasSizeOptions && effectivePkg.sizeOptions && effectivePkg.sizeOptions.length > 0)) {
                     handlePackageClick(pkg);
                   } else {
                     onAddToCartPrepared(pkg);
