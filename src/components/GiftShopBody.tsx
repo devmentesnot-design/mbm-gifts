@@ -639,19 +639,19 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
             </p>
           </div>
           <div className="pt-2 sm:pt-3 mt-auto border-t border-[#D8C6A8]/40 z-20">
-            <div className="flex items-center justify-between gap-1 mb-1.5 sm:mb-2.5">
+            <div className="flex items-center justify-between gap-1 mb-2 sm:mb-2.5">
               <span className="text-sm sm:text-2xl font-extrabold font-inter text-[#7A5C1E] tracking-tight">
                 {formatPrice(getPkgPrice(pkg), currency)}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row items-stretch gap-1 sm:gap-2">
+            <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
               <button
                 onClick={(e) => { e.stopPropagation(); handlePackageClick(pkg); }}
-                className="flex-1 bg-[#E6D5B8]/40 hover:bg-[#E6D5B8]/80 text-[#3A2A20] border border-[#D8C6A8] hover:border-[#B8944A] px-1.5 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer shadow-sm"
+                className="group/qv relative overflow-hidden bg-white/95 hover:bg-gradient-to-b hover:from-white hover:to-[#FAF6EE] text-[#3A2A20] hover:text-[#241A15] border border-[#D8C6A8]/80 hover:border-[#B8944A] px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_2px_8px_-2px_rgba(184,148,74,0.12)] hover:shadow-[0_4px_12px_-2px_rgba(184,148,74,0.25)] hover:-translate-y-0.5 active:translate-y-0"
                 title="View Package Details"
               >
-                <Eye className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0 text-[#B8944A]" />
-                <span>{t('shop.viewDetails')}</span>
+                <Eye className="w-3.5 sm:w-4 h-3.5 sm:h-4 flex-shrink-0 text-[#B8944A] group-hover/qv:scale-110 transition-transform duration-300" />
+                <span className="truncate">{t('shop.viewDetails')}</span>
               </button>
               <button
                 onClick={(e) => {
@@ -662,21 +662,22 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     onAddToCartPrepared(pkg);
                   }
                 }}
-                className="flex-1 bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] border border-[#241A15] font-bold px-1.5 sm:px-3 py-1 sm:py-2 text-[9px] sm:text-xs font-inter uppercase tracking-wider rounded-md sm:rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer shadow-sm hover:shadow-md"
+                className="group/cart relative overflow-hidden bg-gradient-to-r from-[#241A15] via-[#2F2119] to-[#241A15] hover:from-[#3A2A20] hover:via-[#332219] hover:to-[#241A15] text-[#FBF8F2] border border-[#3A2A20] hover:border-[#B8944A]/80 font-bold px-2 sm:px-3 py-2 sm:py-2.5 text-[9px] sm:text-xs font-inter uppercase tracking-wider rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_4px_14px_-2px_rgba(36,26,21,0.35)] hover:shadow-[0_6px_20px_-2px_rgba(184,148,74,0.35)] hover:-translate-y-0.5 active:translate-y-0"
                 title="Add to Cart"
               >
-                <ShoppingBag className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0 text-[#E6D5B8]" />
-                <span>{t('shop.addToCart')}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/cart:translate-x-full transition-transform duration-700 ease-out pointer-events-none" />
+                <ShoppingBag className="w-3.5 sm:w-4 h-3.5 sm:h-4 flex-shrink-0 text-[#E6D5B8] group-hover/cart:text-amber-300 group-hover/cart:scale-110 transition-all duration-300" />
+                <span className="truncate">{t('shop.addToCart')}</span>
               </button>
             </div>
             {/* See all button at bottom of card — shown when in 'All' browse */}
             {activeCategory === 'All' && routeCategory && (
               <button
                 onClick={(e) => { e.stopPropagation(); setActiveCategory(routeCategory); }}
-                className="group/sa mt-2 w-full flex items-center justify-center gap-1.5 py-1 text-[10px] sm:text-xs text-[#8E6E2F] hover:text-[#241A15] font-inter font-bold uppercase tracking-wider border border-[#D8C6A8]/50 hover:border-[#B8944A] rounded-md transition-all cursor-pointer bg-[#E6D5B8]/30 hover:bg-[#E6D5B8]/60"
+                className="group/sa mt-2 sm:mt-2.5 w-full flex items-center justify-center gap-1.5 py-1.5 px-3 text-[10px] sm:text-xs text-[#8E6E2F] hover:text-[#241A15] font-inter font-bold uppercase tracking-wider rounded-xl transition-all duration-200 cursor-pointer bg-gradient-to-r from-[#FAF6EE] via-[#F3EAD8] to-[#FAF6EE] hover:from-[#F3EAD8] hover:to-[#EADEC6] border border-[#D8C6A8]/70 hover:border-[#B8944A] shadow-2xs hover:shadow-xs"
               >
                 <span>See all {routeCategory}</span>
-                <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform text-[#B8944A]" />
+                <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-1 transition-transform text-[#B8944A]" />
               </button>
             )}
           </div>
@@ -824,20 +825,20 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <button
               onClick={() => openCustomItemModal(item)}
-              className="flex-1 bg-[#E6D5B8]/40 hover:bg-[#E6D5B8]/80 text-[#3A2A20] border border-[#D8C6A8] hover:border-[#B8944A] px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap shadow-sm"
+              className="flex-1 group/qv relative overflow-hidden bg-white/95 hover:bg-gradient-to-b hover:from-white hover:to-[#FAF6EE] text-[#3A2A20] hover:text-[#241A15] border border-[#D8C6A8]/80 hover:border-[#B8944A] px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-inter font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap shadow-[0_2px_8px_-2px_rgba(184,148,74,0.12)] hover:shadow-[0_4px_12px_-2px_rgba(184,148,74,0.25)] hover:-translate-y-0.5 active:translate-y-0"
               title="View Item Details"
             >
-              <Eye className="w-3 sm:w-4 h-3 sm:h-4 text-[#B8944A]" />
-              <span className="hidden sm:inline">Details</span>
+              <Eye className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-[#B8944A] group-hover/qv:scale-110 transition-transform duration-300" />
+              <span>Details</span>
             </button>
-            <div className="flex items-center border border-[#D8C6A8] rounded-md sm:rounded-lg overflow-hidden bg-[#FBF8F2]">
-              <button onClick={() => handleCustomQtyChange(item.id, -1)} className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-[#3A2A20] hover:bg-[#E6D5B8]/50 transition-colors cursor-pointer" title="Decrease quantity">
+            <div className="flex items-center border border-[#D8C6A8]/80 rounded-xl overflow-hidden bg-white/95 shadow-[0_2px_8px_-2px_rgba(184,148,74,0.12)]">
+              <button onClick={() => handleCustomQtyChange(item.id, -1)} className="w-7 sm:w-8 h-8 sm:h-9 flex items-center justify-center text-[#3A2A20] hover:bg-[#FAF6EE] hover:text-[#B8944A] transition-colors cursor-pointer" title="Decrease quantity">
                 <Minus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
               </button>
-              <span className="w-5 sm:w-7 text-center text-xs sm:text-sm font-bold text-[#241A15] font-inter">{qty}</span>
+              <span className="w-6 sm:w-8 text-center text-xs sm:text-sm font-bold text-[#241A15] font-inter">{qty}</span>
               <button
                 onClick={() => {
                   if (item.hasCustomUnit || (item.hasSizeOptions && item.sizeOptions && item.sizeOptions.length > 0)) {
@@ -849,7 +850,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                     handleCustomQtyChange(item.id, 1);
                   }
                 }}
-                className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-[#3A2A20] hover:bg-[#E6D5B8]/50 transition-colors cursor-pointer"
+                className="w-7 sm:w-8 h-8 sm:h-9 flex items-center justify-center bg-[#241A15] text-[#FAF6EE] hover:bg-[#3A2A20] hover:text-[#B8944A] transition-colors cursor-pointer"
                 title="Increase quantity"
               >
                 <Plus className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
@@ -860,10 +861,10 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
           {activeCategory === 'All' && routeCategory && (
             <button
               onClick={(e) => { e.stopPropagation(); setActiveCategory(routeCategory); }}
-              className="group/sa mt-2 w-full flex items-center justify-center gap-1.5 py-1 text-[10px] sm:text-xs text-[#8E6E2F] hover:text-[#241A15] font-inter font-bold uppercase tracking-wider border border-[#D8C6A8]/50 hover:border-[#B8944A] rounded-md transition-all cursor-pointer bg-[#E6D5B8]/30 hover:bg-[#E6D5B8]/60"
+              className="group/sa mt-2 sm:mt-2.5 w-full flex items-center justify-center gap-1.5 py-1.5 px-3 text-[10px] sm:text-xs text-[#8E6E2F] hover:text-[#241A15] font-inter font-bold uppercase tracking-wider rounded-xl transition-all duration-200 cursor-pointer bg-gradient-to-r from-[#FAF6EE] via-[#F3EAD8] to-[#FAF6EE] hover:from-[#F3EAD8] hover:to-[#EADEC6] border border-[#D8C6A8]/70 hover:border-[#B8944A] shadow-2xs hover:shadow-xs"
             >
               <span>See all {routeCategory}</span>
-              <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-0.5 transition-transform text-[#B8944A]" />
+              <ArrowRight className="w-3 h-3 group-hover/sa:translate-x-1 transition-transform text-[#B8944A]" />
             </button>
           )}
         </div>
