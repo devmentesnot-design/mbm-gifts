@@ -4099,6 +4099,64 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </button>
                 </div>
 
+                {/* Live Sub-Items Price Calculator (Admin Only) */}
+                {(() => {
+                  const calculatedSubItemsTotalETB = pkgSubItems.reduce((sum, sub) => {
+                    const match = customItems.find(
+                      (i) => i.name.toLowerCase().trim() === sub.name.toLowerCase().trim()
+                    );
+                    return sum + (match ? (Number(match.price) || 0) : 0);
+                  }, 0);
+                  const calculatedSubItemsTotalUSD = pkgSubItems.reduce((sum, sub) => {
+                    const match = customItems.find(
+                      (i) => i.name.toLowerCase().trim() === sub.name.toLowerCase().trim()
+                    );
+                    return sum + (match ? (Number(match.price_usd) || 0) : 0);
+                  }, 0);
+
+                  if (pkgSubItems.length === 0) return null;
+
+                  return (
+                    <div className="bg-gradient-to-r from-amber-500/10 via-[#FAF6EE] to-amber-500/10 border border-amber-400/40 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-[#8E6E2F] flex items-center justify-center font-bold text-sm">
+                          💰
+                        </div>
+                        <div>
+                          <div className="text-[10px] uppercase tracking-wider font-bold text-[#8E6E2F]">
+                            Total Inventory Items Cost (Admin Calculator)
+                          </div>
+                          <div className="text-sm font-extrabold text-[#241A15] flex flex-wrap items-center gap-2">
+                            <span>{calculatedSubItemsTotalETB.toLocaleString()} ETB</span>
+                            {calculatedSubItemsTotalUSD > 0 && (
+                              <span className="text-xs text-[#756457] font-semibold">
+                                (${calculatedSubItemsTotalUSD.toFixed(2)} USD)
+                              </span>
+                            )}
+                            <span className="text-[10px] text-emerald-700 font-medium bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
+                              Hidden from buyers
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPkgForm((prev: any) => ({
+                            ...prev,
+                            price: calculatedSubItemsTotalETB.toString(),
+                            ...(calculatedSubItemsTotalUSD > 0 ? { price_usd: calculatedSubItemsTotalUSD.toFixed(2) } : {}),
+                          }));
+                        }}
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#241A15] hover:bg-[#3A2A20] text-[#FAF6EE] hover:text-amber-300 transition-all cursor-pointer shadow-sm flex items-center gap-1.5"
+                        title="Copy this total into the Package Price fields above"
+                      >
+                        <span>Apply as Package Price</span>
+                      </button>
+                    </div>
+                  );
+                })()}
+
                 {/* Quick Search & Add from Inventory Bar */}
                 <div className="bg-white/60 border border-amber-400/30 rounded-xl p-3 space-y-2">
                   <div className="flex items-center gap-2">
@@ -4166,7 +4224,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     )}
                                     <div className="truncate text-left">
                                       <p className="text-xs font-semibold text-[#241A15] truncate">{item.name}</p>
-                                      <p className="text-[10px] text-[#8E6E2F]/80 truncate">{item.category}</p>
+                                      <div className="flex items-center gap-1.5 text-[10px]">
+                                        <span className="text-[#8E6E2F]/80 truncate">{item.category}</span>
+                                        <span className="text-emerald-700 font-extrabold bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                                          {item.price ? `${item.price.toLocaleString()} ETB` : '0 ETB'}
+                                          {item.price_usd ? ` / $${item.price_usd}` : ''}
+                                        </span>
+                                      </div>
                                     </div>
                                   </div>
                                   <button
@@ -4203,17 +4267,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className="bg-white/60 border border-[#D8C6A8]/50 rounded-xl p-4 relative space-y-3"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#8E6E2F] bg-amber-400/10 px-2.5 py-0.5 rounded border border-amber-400/30">
-                          Included Item #{index + 1}
-                        </span>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveSubItem(index)}
-                            className="text-red-600 hover:text-red-800 text-xs font-bold flex items-center gap-1"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                            <span>Remove</span>
-                          </button>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-[#8E6E2F] bg-amber-400/10 px-2.5 py-0.5 rounded border border-amber-400/30">
+                            Included Item #{index + 1}
+                          </span>
+                          {(() => {
+                            const match = customItems.find(
+                              (i) => i.name.toLowerCase().trim() === subItem.name.toLowerCase().trim()
+                            );
+                            if (!match) return null;
+                            return (
+                              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                                Item Cost: {match.price ? `${match.price.toLocaleString()} ETB` : '0 ETB'}
+                                {match.price_usd ? ` ($${match.price_usd})` : ''}
+                              </span>
+                            );
+                          })()}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSubItem(index)}
+                          className="text-red-600 hover:text-red-800 text-xs font-bold flex items-center gap-1 cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Remove</span>
+                        </button>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -4241,7 +4319,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <option value="">-- Select from Single Items --</option>
                             {customItems.map((item) => (
                               <option key={item.id} value={item.name}>
-                                {item.name}
+                                {item.name} — {item.price ? `${item.price.toLocaleString()} ETB` : '0 ETB'}
+                                {item.price_usd ? ` ($${item.price_usd})` : ''}
                               </option>
                             ))}
                             <option value="__custom__">+ Enter Custom Item Name</option>
