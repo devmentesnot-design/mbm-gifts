@@ -78,17 +78,20 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   // Auto-detect if any included item in this package requires client customization (e.g. Photo Frame)
   const effectivePackage = React.useMemo(() => {
     if (packageData.requiresCustomInput) return packageData;
-    const items = packageData.itemsIncludedDetailed && packageData.itemsIncludedDetailed.length > 0
-      ? packageData.itemsIncludedDetailed.map(i => i.name)
+    const detailed = packageData.itemsIncludedDetailed || [];
+    const items = detailed.length > 0
+      ? detailed.map(i => i.name)
       : (packageData.itemsIncluded || []);
     const pool = (customItems && customItems.length > 0) ? customItems : CUSTOM_ITEMS;
     const match = pool.find(ci =>
-      ci.requiresCustomInput &&
-      items.some(itemName => itemName && ci.name && (
-        itemName.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
-        itemName.toLowerCase().includes(ci.name.toLowerCase()) ||
-        ci.name.toLowerCase().includes(itemName.toLowerCase())
-      ))
+      ci.requiresCustomInput && (
+        detailed.some(d => d.customItemId && d.customItemId === ci.id) ||
+        items.some(itemName => itemName && ci.name && (
+          itemName.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
+          itemName.toLowerCase().includes(ci.name.toLowerCase()) ||
+          ci.name.toLowerCase().includes(itemName.toLowerCase())
+        ))
+      )
     );
     if (!match) return packageData;
     return {

@@ -180,17 +180,20 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
   // Helper: auto-detect if a package contains any sub-item that requires client customization
   const getEffectivePkg = (pkg: PreparedPackage): PreparedPackage => {
     if (pkg.requiresCustomInput) return pkg;
-    const items = pkg.itemsIncludedDetailed && pkg.itemsIncludedDetailed.length > 0
-      ? pkg.itemsIncludedDetailed.map(i => i.name)
+    const detailed = pkg.itemsIncludedDetailed || [];
+    const items = detailed.length > 0
+      ? detailed.map(i => i.name)
       : (pkg.itemsIncluded || []);
     const pool = (customItems && customItems.length > 0) ? customItems : CUSTOM_ITEMS;
     const match = pool.find(ci =>
-      ci.requiresCustomInput &&
-      items.some(itemName => itemName && ci.name && (
-        itemName.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
-        itemName.toLowerCase().includes(ci.name.toLowerCase()) ||
-        ci.name.toLowerCase().includes(itemName.toLowerCase())
-      ))
+      ci.requiresCustomInput && (
+        detailed.some(d => d.customItemId && d.customItemId === ci.id) ||
+        items.some(itemName => itemName && ci.name && (
+          itemName.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
+          itemName.toLowerCase().includes(ci.name.toLowerCase()) ||
+          ci.name.toLowerCase().includes(itemName.toLowerCase())
+        ))
+      )
     );
     if (!match) return pkg;
     return {

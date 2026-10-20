@@ -26,9 +26,13 @@ export const DEFAULT_CATEGORIES: GiftCategory[] = [];
 export const DEFAULT_GIFT_BOXES: GiftBoxStyle[] = [];
 
 export interface PackageItemDetail {
+  id?: string;
+  customItemId?: string;
   name: string;
   image: string;
   description: string;
+  price?: number;
+  price_usd?: number;
 }
 
 // Size option for clothing / items with multiple sizes (S, M, L, XL...)

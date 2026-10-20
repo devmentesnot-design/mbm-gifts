@@ -746,13 +746,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       // Load existing detailed items if available, or convert string array
       if (pkg.itemsIncludedDetailed && pkg.itemsIncludedDetailed.length > 0) {
-        setPkgSubItems([...pkg.itemsIncludedDetailed]);
+        const enriched = pkg.itemsIncludedDetailed.map((sub) => {
+          const match = (sub.customItemId && customItems.find((ci) => ci.id === sub.customItemId)) ||
+            (sub.price != null && customItems.find((ci) => ci.name.toLowerCase().trim() === sub.name.toLowerCase().trim() && Number(ci.price) === Number(sub.price))) ||
+            customItems.find((ci) => ci.name.toLowerCase().trim() === sub.name.toLowerCase().trim());
+          return {
+            ...sub,
+            customItemId: sub.customItemId || match?.id,
+            price: sub.price ?? match?.price,
+            price_usd: sub.price_usd ?? match?.price_usd,
+          };
+        });
+        setPkgSubItems(enriched);
       } else {
-        const initialDetails: PackageItemDetail[] = pkg.itemsIncluded.map((name) => ({
-          name,
-          description: 'Handcrafted luxury component included inside package.',
-          image: pkg.image,
-        }));
+        const initialDetails: PackageItemDetail[] = pkg.itemsIncluded.map((name) => {
+          const match = customItems.find((ci) => ci.name.toLowerCase().trim() === name.toLowerCase().trim());
+          return {
+            customItemId: match?.id,
+            name,
+            description: 'Handcrafted luxury component included inside package.',
+            image: match?.image || pkg.image,
+            price: match?.price,
+            price_usd: match?.price_usd,
+          };
+        });
         setPkgSubItems(initialDetails);
       }
     } else {
@@ -805,7 +822,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     ]);
   };
 
-  const handleUpdateSubItem = (index: number, field: keyof PackageItemDetail, value: string) => {
+  const handleUpdateSubItem = (index: number, field: keyof PackageItemDetail, value: any) => {
     setPkgSubItems((prev) => {
       const updated = [...prev];
       updated[index] = { ...updated[index], [field]: value };
@@ -818,9 +835,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       const updated = [...prev];
       updated[index] = {
         ...updated[index],
+        customItemId: item.id,
         name: item.name,
         image: item.image || '',
         description: item.description || '',
+        price: item.price,
+        price_usd: item.price_usd,
       };
       return updated;
     });
@@ -862,9 +882,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setPkgSubItems((prev) => [
       ...prev,
       {
+        customItemId: item.id,
         name: item.name,
         image: item.image || '',
         description: item.description || '',
+        price: item.price,
+        price_usd: item.price_usd,
       },
     ]);
 
@@ -914,11 +937,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     // Auto-detect if any included item in this package requires client customization
     const autoCustomItem = customItems.find((ci) =>
       ci.requiresCustomInput &&
-      pkgSubItems.some((sub) => sub.name && (
-        sub.name.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
-        sub.name.toLowerCase().includes(ci.name.toLowerCase()) ||
-        ci.name.toLowerCase().includes(sub.name.toLowerCase())
-      ))
+      pkgSubItems.some((sub) =>
+        (sub.customItemId && sub.customItemId === ci.id) ||
+        (sub.name && (
+          sub.name.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
+          sub.name.toLowerCase().includes(ci.name.toLowerCase()) ||
+          ci.name.toLowerCase().includes(sub.name.toLowerCase())
+        ))
+      )
     );
 
     const effectiveRequiresCustomInput = pkgForm.requiresCustomInput || !!autoCustomItem;
@@ -938,11 +964,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     // Auto-detect if any included item has size options
     const autoSizeItem = customItems.find((ci) =>
       ci.hasSizeOptions && ci.sizeOptions && ci.sizeOptions.length > 0 &&
-      pkgSubItems.some((sub) => sub.name && (
-        sub.name.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
-        sub.name.toLowerCase().includes(ci.name.toLowerCase()) ||
-        ci.name.toLowerCase().includes(sub.name.toLowerCase())
-      ))
+      pkgSubItems.some((sub) =>
+        (sub.customItemId && sub.customItemId === ci.id) ||
+        (sub.name && (
+          sub.name.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
+          sub.name.toLowerCase().includes(ci.name.toLowerCase()) ||
+          ci.name.toLowerCase().includes(sub.name.toLowerCase())
+        ))
+      )
     );
     const effectiveHasSizeOptions = pkgForm.hasSizeOptions || !!autoSizeItem;
     const effectiveSizeOptions = (pkgForm.hasSizeOptions && pkgForm.sizeOptionsInput)
@@ -3745,9 +3774,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </p>
                       {(() => {
                         const customizableSubItems = pkgSubItems.map((sub) => {
-                          return customItems.find(
-                            (i) => i.name.toLowerCase().trim() === sub.name.toLowerCase().trim() && i.requiresCustomInput
-                          );
+                          return (sub.customItemId && customItems.find((i) => i.id === sub.customItemId && i.requiresCustomInput)) ||
+                            customItems.find((i) => i.name.toLowerCase().trim() === sub.name.toLowerCase().trim() && i.requiresCustomInput);
                         }).filter(Boolean);
 
                         if (customizableSubItems.length > 0) {
@@ -4230,16 +4258,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 {/* Live Sub-Items Price Calculator (Admin Only) */}
                 {(() => {
                   const calculatedSubItemsTotalETB = pkgSubItems.reduce((sum, sub) => {
-                    const match = customItems.find(
-                      (i) => i.name.toLowerCase().trim() === sub.name.toLowerCase().trim()
-                    );
-                    return sum + (match ? (Number(match.price) || 0) : 0);
+                    const match = (sub.customItemId && customItems.find((i) => i.id === sub.customItemId)) ||
+                      (sub.price != null && customItems.find((i) => i.name.toLowerCase().trim() === sub.name.toLowerCase().trim() && Number(i.price) === Number(sub.price))) ||
+                      customItems.find((i) => i.name.toLowerCase().trim() === sub.name.toLowerCase().trim());
+                    const price = sub.price != null ? Number(sub.price) : (match ? (Number(match.price) || 0) : 0);
+                    return sum + price;
                   }, 0);
                   const calculatedSubItemsTotalUSD = pkgSubItems.reduce((sum, sub) => {
-                    const match = customItems.find(
-                      (i) => i.name.toLowerCase().trim() === sub.name.toLowerCase().trim()
-                    );
-                    return sum + (match ? (Number(match.price_usd) || 0) : 0);
+                    const match = (sub.customItemId && customItems.find((i) => i.id === sub.customItemId)) ||
+                      (sub.price_usd != null && customItems.find((i) => i.name.toLowerCase().trim() === sub.name.toLowerCase().trim() && Number(i.price_usd) === Number(sub.price_usd))) ||
+                      customItems.find((i) => i.name.toLowerCase().trim() === sub.name.toLowerCase().trim());
+                    const priceUsd = sub.price_usd != null ? Number(sub.price_usd) : (match ? (Number(match.price_usd) || 0) : 0);
+                    return sum + priceUsd;
                   }, 0);
 
                   if (pkgSubItems.length === 0) return null;
@@ -4331,7 +4361,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {matches.map((item) => {
                               const isAlreadyAdded = pkgSubItems.some(
-                                (sub) => sub.name.toLowerCase() === item.name.toLowerCase()
+                                (sub) => (sub.customItemId ? sub.customItemId === item.id : (sub.name.toLowerCase() === item.name.toLowerCase() && (sub.price != null ? Number(sub.price) === Number(item.price) : false)))
                               );
                               return (
                                 <div
@@ -4397,17 +4427,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             Included Item #{index + 1}
                           </span>
                           {(() => {
-                            const match = customItems.find(
-                              (i) => i.name.toLowerCase().trim() === subItem.name.toLowerCase().trim()
-                            );
-                            if (!match) return null;
+                            const match = (subItem.customItemId && customItems.find((i) => i.id === subItem.customItemId)) ||
+                              (subItem.price != null && customItems.find((i) => i.name.toLowerCase().trim() === subItem.name.toLowerCase().trim() && Number(i.price) === Number(subItem.price))) ||
+                              customItems.find((i) => i.name.toLowerCase().trim() === subItem.name.toLowerCase().trim());
+                            const effectivePrice = subItem.price != null ? subItem.price : match?.price;
+                            const effectivePriceUsd = subItem.price_usd != null ? subItem.price_usd : match?.price_usd;
+                            if (effectivePrice == null && !match) return null;
                             return (
                               <div className="flex items-center gap-1.5">
                                 <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
-                                  Item Cost: {match.price ? `${match.price.toLocaleString()} ETB` : '0 ETB'}
-                                  {match.price_usd ? ` ($${match.price_usd})` : ''}
+                                  Item Cost: {effectivePrice != null ? `${effectivePrice.toLocaleString()} ETB` : '0 ETB'}
+                                  {effectivePriceUsd ? ` ($${effectivePriceUsd})` : ''}
                                 </span>
-                                {match.requiresCustomInput && (
+                                {match?.requiresCustomInput && (
                                   <span className="text-[10px] font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded flex items-center gap-1">
                                     <Sparkles className="w-3 h-3 text-amber-600" />
                                     Customizable
@@ -4433,32 +4465,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             Item Name <span className="text-red-600">*</span>
                           </label>
                           <select
-                            value={customItems.some((i) => i.name === subItem.name) ? subItem.name : (subItem.name ? '__custom__' : '')}
+                            value={
+                              subItem.customItemId ||
+                              (subItem.name
+                                ? (customItems.find((i) => i.name.toLowerCase().trim() === subItem.name.toLowerCase().trim() && (subItem.price != null ? Number(i.price) === Number(subItem.price) : true))?.id || '__custom__')
+                                : '')
+                            }
                             onChange={(e) => {
                               const val = e.target.value;
                               if (val === '__custom__') {
                                 handleUpdateSubItem(index, 'name', '__custom__');
+                                handleUpdateSubItem(index, 'customItemId', '');
                               } else if (val) {
-                                const selectedItem = customItems.find((item) => item.name === val);
+                                const selectedItem = customItems.find((item) => item.id === val);
                                 if (selectedItem) {
                                   handleSelectCustomItemForSubItem(index, selectedItem);
                                 }
                               } else {
                                 handleUpdateSubItem(index, 'name', '');
+                                handleUpdateSubItem(index, 'customItemId', '');
                               }
                             }}
                             className="w-full bg-white/80 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#241A15] focus:border-amber-400 focus:outline-none cursor-pointer"
                           >
                             <option value="">-- Select from Single Items --</option>
                             {customItems.map((item) => (
-                              <option key={item.id} value={item.name}>
+                              <option key={item.id} value={item.id}>
                                 {item.name} — {item.price ? `${item.price.toLocaleString()} ETB` : '0 ETB'}
                                 {item.price_usd ? ` ($${item.price_usd})` : ''}
                               </option>
                             ))}
                             <option value="__custom__">+ Enter Custom Item Name</option>
                           </select>
-                          {(!customItems.some((i) => i.name === subItem.name) || subItem.name === '__custom__') && (
+                          {((!subItem.customItemId && !customItems.some((i) => i.name === subItem.name)) || subItem.name === '__custom__') && (
                             <input
                               type="text"
                               value={subItem.name === '__custom__' ? '' : subItem.name}
