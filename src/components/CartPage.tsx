@@ -479,32 +479,77 @@ export const CartPage: React.FC<CartPageProps> = ({
                           )}
 
                         {/* Customer-provided Customization (Photo / Custom Text) */}
-                        {(item.customerInputText || item.customerInputImageUrl) && (
+                        {(item.customerInputText || item.customerInputImageUrl || (item as any).subItemCustomizations) && (
                           <div className="mt-2.5 bg-[#F7F1E7] border border-[#D8C6A8]/50 rounded-xl p-2.5 space-y-1.5">
                             <div className="text-[10px] text-[#B8944A] font-bold uppercase tracking-wider flex items-center gap-1">
                               <Sparkles className="w-3 h-3 text-[#B8944A]" />
                               <span>Your Customization</span>
                             </div>
-                            {item.customerInputText && (
-                              <div className="text-xs text-[#3A2A20]">
-                                <span className="text-[#756457]">Custom Text: </span>
-                                <span className="font-mono text-[#B8944A] font-medium">"{item.customerInputText}"</span>
+                            {(item as any).subItemCustomizations ? (
+                              // Multi-item customizations: show each item separately
+                              <div className="space-y-2">
+                                {Object.values((item as any).subItemCustomizations as Record<string, any>).map((sub: any, subIdx: number) => (
+                                  <div key={sub.itemId || subIdx} className="bg-white/60 border border-[#D8C6A8]/40 rounded-lg p-2">
+                                    <div className="text-[10px] font-bold text-[#8E6E2F] uppercase tracking-wide mb-1">
+                                      {sub.itemName || `Item ${subIdx + 1}`}
+                                    </div>
+                                    {sub.frontText && (
+                                      <div className="text-xs text-[#3A2A20]">
+                                        <span className="text-[#756457]">{sub.customSidesSelected === 'front_and_back' ? 'Front: ' : 'Text: '}</span>
+                                        <span className="font-mono text-[#B8944A] font-medium">"{sub.frontText}"</span>
+                                      </div>
+                                    )}
+                                    {sub.backText && (
+                                      <div className="text-xs text-[#3A2A20]">
+                                        <span className="text-[#756457]">Back: </span>
+                                        <span className="font-mono text-[#B8944A] font-medium">"{sub.backText}"</span>
+                                      </div>
+                                    )}
+                                    {sub.frontImageUrl && (
+                                      <div className="flex items-center gap-2 pt-1">
+                                        <div className="w-8 h-8 rounded overflow-hidden border border-[#D8C6A8]/50 bg-[#FBF8F2] flex-shrink-0">
+                                          <img src={sub.frontImageUrl} alt="Custom Photo" className="w-full h-full object-cover" />
+                                        </div>
+                                        <span className="text-[10px] text-[#756457]">Photo Attached</span>
+                                      </div>
+                                    )}
+                                    {sub.backImageUrl && (
+                                      <div className="flex items-center gap-2 pt-1">
+                                        <div className="w-8 h-8 rounded overflow-hidden border border-[#D8C6A8]/50 bg-[#FBF8F2] flex-shrink-0">
+                                          <img src={sub.backImageUrl} alt="Back Photo" className="w-full h-full object-cover" />
+                                        </div>
+                                        <span className="text-[10px] text-[#756457]">Back Photo</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
                               </div>
-                            )}
-                            {item.customerInputImageUrl && (
-                              <div className="flex items-center gap-2 pt-0.5">
-                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-[#D8C6A8]/50 bg-[#FBF8F2] flex-shrink-0">
-                                  <img
-                                    src={item.customerInputImageUrl}
-                                    alt="Custom Photo"
-                                    className="w-full h-full object-cover"
-                                  />
-                                </div>
-                                <span className="text-[11px] text-[#756457]">Custom Photo Attached</span>
-                              </div>
+                            ) : (
+                              // Single customization
+                              <>
+                                {item.customerInputText && (
+                                  <div className="text-xs text-[#3A2A20]">
+                                    <span className="text-[#756457]">Custom Text: </span>
+                                    <span className="font-mono text-[#B8944A] font-medium">"{item.customerInputText}"</span>
+                                  </div>
+                                )}
+                                {item.customerInputImageUrl && (
+                                  <div className="flex items-center gap-2 pt-0.5">
+                                    <div className="w-10 h-10 rounded-lg overflow-hidden border border-[#D8C6A8]/50 bg-[#FBF8F2] flex-shrink-0">
+                                      <img
+                                        src={item.customerInputImageUrl}
+                                        alt="Custom Photo"
+                                        className="w-full h-full object-cover"
+                                      />
+                                    </div>
+                                    <span className="text-[11px] text-[#756457]">Custom Photo Attached</span>
+                                  </div>
+                                )}
+                              </>
                             )}
                           </div>
                         )}
+
 
                         <div className="flex items-center justify-between mt-4">
                           <div className="flex items-center border border-[#D8C6A8] rounded-full bg-[#F7F1E7]">

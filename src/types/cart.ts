@@ -24,6 +24,7 @@ export interface CartItemPrepared {
   unitCalculatedPrice?: number;   // Unit price calculated from customUnitValue
   selectedSize?: string;          // Selected size label (e.g. 'M', 'XL')
   sizePriceAdjustment?: number;   // Extra price for selected size
+  subItemCustomizations?: Record<string, any>; // Multi-item customization details
 }
 
 export interface CartItemSingle {

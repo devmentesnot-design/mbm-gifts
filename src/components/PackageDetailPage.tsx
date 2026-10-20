@@ -54,7 +54,8 @@ interface PackageDetailPageProps {
     backInputText?: string,
     backInputImageUrl?: string,
     backSidePrice?: number,
-    selectedSize?: string
+    selectedSize?: string,
+    subItemCustomizations?: Record<string, any>
   ) => void;
 }
 
@@ -75,41 +76,145 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   const [addedToast, setAddedToast] = useState(false);
   const [giftNote, setGiftNote] = useState('');
 
+  // Find all included items that require client customization
+  const customizableSubItems = React.useMemo(() => {
+    const detailed = packageData.itemsIncludedDetailed || [];
+    const pool = (customItems && customItems.length > 0) ? customItems : CUSTOM_ITEMS;
+    const list: Array<{
+      id: string;
+      subItemName: string;
+      subItemImage?: string;
+      subItemDescription?: string;
+      subItemIndex: number;
+      config: CustomBoxOption;
+    }> = [];
+
+    if (detailed.length > 0) {
+      detailed.forEach((sub, idx) => {
+        // 1st priority: sub-item has its own requiresCustomInput flag (saved by admin)
+        // 2nd priority: match against the pool by customItemId or name
+        let ci: CustomBoxOption | undefined;
+
+        if (sub.customItemId) {
+          ci = pool.find(c => c.id === sub.customItemId);
+        }
+        if (!ci) {
+          ci = pool.find(c =>
+            (sub.name && c.name && sub.name.toLowerCase().trim() === c.name.toLowerCase().trim()) ||
+            (sub.name && c.name && sub.name.toLowerCase().includes(c.name.toLowerCase())) ||
+            (sub.name && c.name && c.name.toLowerCase().includes(sub.name.toLowerCase()))
+          );
+        }
+
+        // Determine if this sub-item requires customization:
+        // - by its own persisted flag (new packages), or
+        // - by its pool match having requiresCustomInput (existing packages)
+        const needsCustom = sub.requiresCustomInput || (ci && ci.requiresCustomInput);
+        if (!needsCustom) return;
+
+        // Build a config: prefer the pool entry, fall back to synthetic config from sub-item flags
+        const config: CustomBoxOption = ci
+          ? {
+              ...ci,
+              // Allow sub-item flags to override pool values when present
+              requiresCustomInput: true,
+              customInputType: sub.customInputType || ci.customInputType,
+              customInputLabel: sub.customInputLabel || ci.customInputLabel,
+              customizationSides: sub.customizationSides || ci.customizationSides,
+              frontCustomType: sub.frontCustomType || ci.frontCustomType,
+              frontCustomLabel: sub.frontCustomLabel || ci.frontCustomLabel,
+              backCustomType: sub.backCustomType || ci.backCustomType,
+              backCustomLabel: sub.backCustomLabel || ci.backCustomLabel,
+              backCustomOptional: sub.backCustomOptional ?? ci.backCustomOptional,
+              backCustomPrice: sub.backCustomPrice ?? ci.backCustomPrice,
+              backCustomPriceUsd: sub.backCustomPriceUsd ?? ci.backCustomPriceUsd,
+            }
+          : {
+              // Synthetic fallback when item isn't in pool (e.g. deleted custom item)
+              id: sub.customItemId || `synthetic-${idx}`,
+              name: sub.name,
+              image: sub.image || '',
+              description: sub.description || '',
+              category: '',
+              price: sub.price || 0,
+              price_usd: sub.price_usd,
+              requiresCustomInput: true,
+              customInputType: sub.customInputType || 'both',
+              customInputLabel: sub.customInputLabel || `Personalization for ${sub.name}`,
+              customizationSides: sub.customizationSides || 'single',
+              frontCustomType: sub.frontCustomType || sub.customInputType || 'both',
+              frontCustomLabel: sub.frontCustomLabel || sub.customInputLabel || '',
+              backCustomType: sub.backCustomType || 'both',
+              backCustomLabel: sub.backCustomLabel || '',
+              backCustomOptional: sub.backCustomOptional ?? true,
+              backCustomPrice: sub.backCustomPrice,
+              backCustomPriceUsd: sub.backCustomPriceUsd,
+              hasCustomUnit: false,
+              customUnitName: 'kg',
+              customUnitMin: 1,
+              customUnitStep: 1,
+              customUnitMax: 50,
+              hasSizeOptions: false,
+            };
+
+        list.push({
+          id: sub.customItemId || `sub-${idx}-${config.id}`,
+          subItemName: sub.name || config.name,
+          subItemImage: sub.image || config.image,
+          subItemDescription: sub.description || config.description,
+          subItemIndex: idx,
+          config,
+        });
+      });
+    } else if (packageData.itemsIncluded && packageData.itemsIncluded.length > 0) {
+      packageData.itemsIncluded.forEach((name, idx) => {
+        const ci = pool.find(c => c.requiresCustomInput && (
+          (c.name && name.toLowerCase().trim() === c.name.toLowerCase().trim()) ||
+          (c.name && name.toLowerCase().includes(c.name.toLowerCase())) ||
+          (c.name && c.name.toLowerCase().includes(name.toLowerCase()))
+        ));
+        if (ci) {
+          list.push({
+            id: `sub-${idx}-${ci.id}`,
+            subItemName: name,
+            subItemImage: ci.image,
+            subItemDescription: ci.description,
+            subItemIndex: idx,
+            config: ci,
+          });
+        }
+      });
+    }
+
+    return list;
+  }, [packageData, customItems]);
+
+
+  const isMultiCustomizable = customizableSubItems.length > 1;
+
   // Auto-detect if any included item in this package requires client customization (e.g. Photo Frame)
   const effectivePackage = React.useMemo(() => {
     if (packageData.requiresCustomInput) return packageData;
-    const detailed = packageData.itemsIncludedDetailed || [];
-    const items = detailed.length > 0
-      ? detailed.map(i => i.name)
-      : (packageData.itemsIncluded || []);
-    const pool = (customItems && customItems.length > 0) ? customItems : CUSTOM_ITEMS;
-    const match = pool.find(ci =>
-      ci.requiresCustomInput && (
-        detailed.some(d => d.customItemId && d.customItemId === ci.id) ||
-        items.some(itemName => itemName && ci.name && (
-          itemName.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
-          itemName.toLowerCase().includes(ci.name.toLowerCase()) ||
-          ci.name.toLowerCase().includes(itemName.toLowerCase())
-        ))
-      )
-    );
-    if (!match) return packageData;
+    if (customizableSubItems.length === 0) return packageData;
+
+    const firstMatch = customizableSubItems[0].config;
     return {
       ...packageData,
       requiresCustomInput: true,
-      customInputType: packageData.customInputType || match.customInputType || 'both',
-      customInputLabel: packageData.customInputLabel || match.customInputLabel || `Customization for ${match.name}`,
-      customizationSides: packageData.customizationSides || match.customizationSides || 'single',
-      frontCustomType: packageData.frontCustomType || match.frontCustomType || match.customInputType || 'both',
-      frontCustomLabel: packageData.frontCustomLabel || match.frontCustomLabel || match.customInputLabel || `Front for ${match.name}`,
-      backCustomType: packageData.backCustomType || match.backCustomType || 'both',
-      backCustomLabel: packageData.backCustomLabel || match.backCustomLabel || '',
-      backCustomOptional: packageData.backCustomOptional ?? match.backCustomOptional ?? true,
-      backCustomPrice: packageData.backCustomPrice ?? match.backCustomPrice,
-      backCustomPriceUsd: packageData.backCustomPriceUsd ?? match.backCustomPriceUsd,
+      customInputType: packageData.customInputType || firstMatch.customInputType || 'both',
+      customInputLabel: packageData.customInputLabel || firstMatch.customInputLabel || `Customization for ${firstMatch.name}`,
+      customizationSides: packageData.customizationSides || firstMatch.customizationSides || 'single',
+      frontCustomType: packageData.frontCustomType || firstMatch.frontCustomType || firstMatch.customInputType || 'both',
+      frontCustomLabel: packageData.frontCustomLabel || firstMatch.frontCustomLabel || firstMatch.customInputLabel || `Front for ${firstMatch.name}`,
+      backCustomType: packageData.backCustomType || firstMatch.backCustomType || 'both',
+      backCustomLabel: packageData.backCustomLabel || firstMatch.backCustomLabel || '',
+      backCustomOptional: packageData.backCustomOptional ?? firstMatch.backCustomOptional ?? true,
+      backCustomPrice: packageData.backCustomPrice ?? firstMatch.backCustomPrice,
+      backCustomPriceUsd: packageData.backCustomPriceUsd ?? firstMatch.backCustomPriceUsd,
     };
-  }, [packageData, customItems]);
+  }, [packageData, customizableSubItems]);
 
+  // Single-item default customization state
   const defaultSides = (effectivePackage.customizationSides === 'front_back' && effectivePackage.backCustomOptional === false) ? 'front_and_back' : 'front_only';
   const [customSidesSelected, setCustomSidesSelected] = useState<'front_only' | 'front_and_back'>(defaultSides);
   const [frontCustomText, setFrontCustomText] = useState('');
@@ -118,10 +223,70 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
   const [backCustomImageUrl, setBackCustomImageUrl] = useState('');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
-  const isMultiSide = effectivePackage.customizationSides === 'front_back';
-  const backSideExtraPrice = (isMultiSide && customSidesSelected === 'front_and_back')
-    ? (currency === 'USD' ? (effectivePackage.backCustomPriceUsd || 0) : (effectivePackage.backCustomPrice || 0))
-    : 0;
+  // Multi-item customization state (when package has >= 2 customizable sub-items)
+  const [subItemCustomStates, setSubItemCustomStates] = useState<Record<string, {
+    customSidesSelected: 'front_only' | 'front_and_back';
+    frontText: string;
+    frontImageUrl: string;
+    backText: string;
+    backImageUrl: string;
+  }>>({});
+
+  const getSubItemCustomState = (itemId: string, cfg: CustomBoxOption) => {
+    return subItemCustomStates[itemId] || {
+      customSidesSelected: (cfg.customizationSides === 'front_back' && cfg.backCustomOptional === false) ? 'front_and_back' : 'front_only',
+      frontText: '',
+      frontImageUrl: '',
+      backText: '',
+      backImageUrl: '',
+    };
+  };
+
+  const updateSubItemCustomState = (itemId: string, partial: Partial<{
+    customSidesSelected: 'front_only' | 'front_and_back';
+    frontText: string;
+    frontImageUrl: string;
+    backText: string;
+    backImageUrl: string;
+  }>, cfg: CustomBoxOption) => {
+    setSubItemCustomStates(prev => {
+      const current = prev[itemId] || {
+        customSidesSelected: (cfg.customizationSides === 'front_back' && cfg.backCustomOptional === false) ? 'front_and_back' : 'front_only',
+        frontText: '',
+        frontImageUrl: '',
+        backText: '',
+        backImageUrl: '',
+      };
+      return {
+        ...prev,
+        [itemId]: { ...current, ...partial }
+      };
+    });
+  };
+
+  const isMultiSide = isMultiCustomizable ? false : effectivePackage.customizationSides === 'front_back';
+
+  // Calculate extra price for optional back sides across all customizable items
+  const totalBackSideExtraPrice = React.useMemo(() => {
+    if (isMultiCustomizable) {
+      return customizableSubItems.reduce((sum, item) => {
+        if (item.config.customizationSides !== 'front_back') return sum;
+        const state = subItemCustomStates[item.id];
+        const isBack = state ? state.customSidesSelected === 'front_and_back' : false;
+        if (isBack) {
+          const price = currency === 'USD' ? (item.config.backCustomPriceUsd || 0) : (item.config.backCustomPrice || 0);
+          return sum + price;
+        }
+        return sum;
+      }, 0);
+    } else {
+      return (isMultiSide && customSidesSelected === 'front_and_back')
+        ? (currency === 'USD' ? (effectivePackage.backCustomPriceUsd || 0) : (effectivePackage.backCustomPrice || 0))
+        : 0;
+    }
+  }, [isMultiCustomizable, customizableSubItems, subItemCustomStates, isMultiSide, customSidesSelected, currency, effectivePackage]);
+
+  const backSideExtraPrice = totalBackSideExtraPrice;
 
   // Scalable unit state (e.g. 2 kg minimum, stepper)
   const initialUnitVal = effectivePackage.hasCustomUnit ? (effectivePackage.customUnitMin || 1) : 1;
@@ -172,73 +337,186 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
 
   const handleAddToCart = () => {
     if (effectivePackage.requiresCustomInput) {
-      if (isMultiSide) {
-        const frontType = effectivePackage.frontCustomType || effectivePackage.customInputType || 'text';
-        const backType = effectivePackage.backCustomType || 'text';
-        const frontPrompt = effectivePackage.frontCustomLabel || effectivePackage.customInputLabel || 'Front side';
-        const backPrompt = effectivePackage.backCustomLabel || 'Back side';
+      if (isMultiCustomizable) {
+        for (const item of customizableSubItems) {
+          const state = getSubItemCustomState(item.id, item.config);
+          const cfg = item.config;
+          const isItemMulti = cfg.customizationSides === 'front_back';
 
-        if (frontType === 'text' && !frontCustomText.trim()) {
-          alert(`Please fill in required front text: ${frontPrompt}`);
-          return;
-        }
-        if (frontType === 'image' && !frontCustomImageUrl) {
-          alert('Please upload your front photo.');
-          return;
-        }
-        if (frontType === 'both' && !frontCustomText.trim() && !frontCustomImageUrl) {
-          alert(`Please provide at least a text or photo for the front side: ${frontPrompt}`);
-          return;
-        }
+          if (isItemMulti) {
+            const frontType = cfg.frontCustomType || cfg.customInputType || 'text';
+            const backType = cfg.backCustomType || 'text';
+            const frontPrompt = cfg.frontCustomLabel || cfg.customInputLabel || 'Front side';
+            const backPrompt = cfg.backCustomLabel || 'Back side';
 
-        if (customSidesSelected === 'front_and_back') {
-          if (backType === 'text' && !backCustomText.trim()) {
-            alert(`Please fill in required back text: ${backPrompt}`);
-            return;
-          }
-          if (backType === 'image' && !backCustomImageUrl) {
-            alert('Please upload your back photo.');
-            return;
-          }
-          if (backType === 'both' && !backCustomText.trim() && !backCustomImageUrl) {
-            alert(`Please provide at least a text or photo for the back side: ${backPrompt}`);
-            return;
+            if (frontType === 'text' && !state.frontText.trim()) {
+              alert(`Please fill in required front text for "${item.subItemName}": ${frontPrompt}`);
+              return;
+            }
+            if (frontType === 'image' && !state.frontImageUrl) {
+              alert(`Please upload front photo for "${item.subItemName}".`);
+              return;
+            }
+            if (frontType === 'both' && !state.frontText.trim() && !state.frontImageUrl) {
+              alert(`Please provide a photo or text for "${item.subItemName}" (${frontPrompt}).`);
+              return;
+            }
+
+            if (state.customSidesSelected === 'front_and_back') {
+              if (backType === 'text' && !state.backText.trim()) {
+                alert(`Please fill in required back text for "${item.subItemName}": ${backPrompt}`);
+                return;
+              }
+              if (backType === 'image' && !state.backImageUrl) {
+                alert(`Please upload back photo for "${item.subItemName}".`);
+                return;
+              }
+              if (backType === 'both' && !state.backText.trim() && !state.backImageUrl) {
+                alert(`Please provide a photo or text for back side of "${item.subItemName}".`);
+                return;
+              }
+            }
+          } else {
+            const inputType = cfg.customInputType || 'text';
+            if (inputType === 'text' && !state.frontText.trim()) {
+              alert(`Please fill in the required customization for "${item.subItemName}": ${cfg.customInputLabel || 'Custom text'}`);
+              return;
+            }
+            if (inputType === 'image' && !state.frontImageUrl) {
+              alert(`Please upload photo for "${item.subItemName}".`);
+              return;
+            }
+            if (inputType === 'both' && !state.frontText.trim() && !state.frontImageUrl) {
+              alert(`Please provide at least a photo or text for "${item.subItemName}".`);
+              return;
+            }
           }
         }
       } else {
-        const inputType = effectivePackage.customInputType || 'text';
-        if (inputType === 'text' && !frontCustomText.trim()) {
-          alert(`Please fill in the required field: ${effectivePackage.customInputLabel || 'Custom text'}`);
-          return;
-        }
-        if (inputType === 'image' && !frontCustomImageUrl) {
-          alert('Please upload your photo before adding to cart.');
-          return;
-        }
-        if (inputType === 'both' && !frontCustomText.trim() && !frontCustomImageUrl) {
-          alert(`Please provide at least a text or photo for: ${effectivePackage.customInputLabel || 'customization'}`);
-          return;
+        const targetConfig = customizableSubItems[0]?.config || effectivePackage;
+        const targetMulti = targetConfig.customizationSides === 'front_back';
+        if (targetMulti) {
+          const frontType = targetConfig.frontCustomType || targetConfig.customInputType || 'text';
+          const backType = targetConfig.backCustomType || 'text';
+          const frontPrompt = targetConfig.frontCustomLabel || targetConfig.customInputLabel || 'Front side';
+          const backPrompt = targetConfig.backCustomLabel || 'Back side';
+
+          if (frontType === 'text' && !frontCustomText.trim()) {
+            alert(`Please fill in required front text: ${frontPrompt}`);
+            return;
+          }
+          if (frontType === 'image' && !frontCustomImageUrl) {
+            alert('Please upload your front photo.');
+            return;
+          }
+          if (frontType === 'both' && !frontCustomText.trim() && !frontCustomImageUrl) {
+            alert(`Please provide at least a text or photo for the front side: ${frontPrompt}`);
+            return;
+          }
+
+          if (customSidesSelected === 'front_and_back') {
+            if (backType === 'text' && !backCustomText.trim()) {
+              alert(`Please fill in required back text: ${backPrompt}`);
+              return;
+            }
+            if (backType === 'image' && !backCustomImageUrl) {
+              alert('Please upload your back photo.');
+              return;
+            }
+            if (backType === 'both' && !backCustomText.trim() && !backCustomImageUrl) {
+              alert(`Please provide at least a text or photo for the back side: ${backPrompt}`);
+              return;
+            }
+          }
+        } else {
+          const inputType = targetConfig.customInputType || 'text';
+          if (inputType === 'text' && !frontCustomText.trim()) {
+            alert(`Please fill in the required field: ${targetConfig.customInputLabel || 'Custom text'}`);
+            return;
+          }
+          if (inputType === 'image' && !frontCustomImageUrl) {
+            alert('Please upload your photo before adding to cart.');
+            return;
+          }
+          if (inputType === 'both' && !frontCustomText.trim() && !frontCustomImageUrl) {
+            alert(`Please provide at least a text or photo for: ${targetConfig.customInputLabel || 'customization'}`);
+            return;
+          }
         }
       }
     }
 
-    const calculatedWithBack = currentCalculatedPrice + backSideExtraPrice;
+    let finalCustomerInputText = frontCustomText;
+    let finalCustomerInputImageUrl = frontCustomImageUrl;
+    let finalFrontInputText = isMultiSide ? frontCustomText : undefined;
+    let finalFrontInputImageUrl = isMultiSide ? frontCustomImageUrl : undefined;
+    let finalBackInputText = isMultiSide && customSidesSelected === 'front_and_back' ? backCustomText : undefined;
+    let finalBackInputImageUrl = isMultiSide && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined;
+    let subItemCustomizationsRecord: Record<string, any> | undefined = undefined;
+
+    if (isMultiCustomizable) {
+      const summaryParts: string[] = [];
+      const record: Record<string, any> = {};
+
+      customizableSubItems.forEach((item) => {
+        const state = getSubItemCustomState(item.id, item.config);
+        const parts: string[] = [];
+        if (state.frontText.trim()) {
+          parts.push(state.customSidesSelected === 'front_and_back' ? `Front: "${state.frontText.trim()}"` : `"${state.frontText.trim()}"`);
+        }
+        if (state.frontImageUrl) {
+          parts.push('[Photo Attached]');
+        }
+        if (state.customSidesSelected === 'front_and_back') {
+          if (state.backText.trim()) parts.push(`Back: "${state.backText.trim()}"`);
+          if (state.backImageUrl) parts.push('[Back Photo Attached]');
+        }
+
+        summaryParts.push(`${item.subItemName}: ${parts.join(', ') || 'Customized'}`);
+
+        record[item.id] = {
+          itemId: item.id,
+          itemName: item.subItemName,
+          customSidesSelected: state.customSidesSelected,
+          frontText: state.frontText,
+          frontImageUrl: state.frontImageUrl,
+          backText: state.backText,
+          backImageUrl: state.backImageUrl,
+          inputText: state.frontText,
+          imageUrl: state.frontImageUrl || state.backImageUrl,
+        };
+      });
+
+      finalCustomerInputText = summaryParts.join(' | ');
+      finalFrontInputText = finalCustomerInputText;
+      finalCustomerInputImageUrl = customizableSubItems
+        .map(i => {
+          const s = getSubItemCustomState(i.id, i.config);
+          return s.frontImageUrl || s.backImageUrl;
+        })
+        .find(Boolean) || '';
+      finalFrontInputImageUrl = finalCustomerInputImageUrl;
+      subItemCustomizationsRecord = record;
+    }
+
+    const calculatedWithBack = currentCalculatedPrice + totalBackSideExtraPrice;
 
     onAddToCartPrepared(
       effectivePackage,
       giftNote,
-      frontCustomText,
-      frontCustomImageUrl,
+      finalCustomerInputText,
+      finalCustomerInputImageUrl,
       effectivePackage.hasCustomUnit ? selectedUnitValue : undefined,
       effectivePackage.hasCustomUnit ? (effectivePackage.customUnitName || 'kg') : undefined,
       effectivePackage.hasCustomUnit ? calculatedWithBack : undefined,
       isMultiSide ? customSidesSelected : undefined,
-      isMultiSide ? frontCustomText : undefined,
-      isMultiSide ? frontCustomImageUrl : undefined,
-      isMultiSide && customSidesSelected === 'front_and_back' ? backCustomText : undefined,
-      isMultiSide && customSidesSelected === 'front_and_back' ? backCustomImageUrl : undefined,
-      backSideExtraPrice,
-      effectivePackage.hasSizeOptions ? selectedSize : undefined
+      finalFrontInputText,
+      finalFrontInputImageUrl,
+      finalBackInputText,
+      finalBackInputImageUrl,
+      totalBackSideExtraPrice,
+      effectivePackage.hasSizeOptions ? selectedSize : undefined,
+      subItemCustomizationsRecord
     );
     setAddedToast(true);
     setTimeout(() => setAddedToast(false), 3000);
@@ -474,20 +752,73 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
 
                   {/* Client Customization Requirement Section */}
                   {effectivePackage.requiresCustomInput && (
-                    <MultiSideCustomizationSection
-                      item={effectivePackage}
-                      customSidesSelected={customSidesSelected}
-                      onChangeCustomSidesSelected={setCustomSidesSelected}
-                      frontText={frontCustomText}
-                      onChangeFrontText={setFrontCustomText}
-                      frontImageUrl={frontCustomImageUrl}
-                      onChangeFrontImageUrl={setFrontCustomImageUrl}
-                      backText={backCustomText}
-                      onChangeBackText={setBackCustomText}
-                      backImageUrl={backCustomImageUrl}
-                      onChangeBackImageUrl={setBackCustomImageUrl}
-                      currency={currency}
-                    />
+                    isMultiCustomizable ? (
+                      <div className="space-y-4 mb-5">
+                        <div className="bg-amber-500/10 border border-amber-400/40 rounded-xl p-3 flex items-center gap-2.5">
+                          <Sparkles className="w-4 h-4 text-[#B8944A] flex-shrink-0" />
+                          <div className="text-xs text-[#8E6E2F]">
+                            <span className="font-bold uppercase tracking-wider block">
+                              Customization Required ({customizableSubItems.length} Items Inside)
+                            </span>
+                            <span className="text-[11px] text-[#241A15]/70">
+                              Please provide personalization details for each customizable gift component below:
+                            </span>
+                          </div>
+                        </div>
+
+                        {customizableSubItems.map((subItem) => {
+                          const state = getSubItemCustomState(subItem.id, subItem.config);
+                          return (
+                            <MultiSideCustomizationSection
+                              key={subItem.id}
+                              item={subItem.config}
+                              itemName={subItem.subItemName}
+                              itemImage={subItem.subItemImage}
+                              itemBadge={`Item #${subItem.subItemIndex + 1}`}
+                              customSidesSelected={state.customSidesSelected}
+                              onChangeCustomSidesSelected={(sides) =>
+                                updateSubItemCustomState(subItem.id, { customSidesSelected: sides }, subItem.config)
+                              }
+                              frontText={state.frontText}
+                              onChangeFrontText={(txt) =>
+                                updateSubItemCustomState(subItem.id, { frontText: txt }, subItem.config)
+                              }
+                              frontImageUrl={state.frontImageUrl}
+                              onChangeFrontImageUrl={(url) =>
+                                updateSubItemCustomState(subItem.id, { frontImageUrl: url }, subItem.config)
+                              }
+                              backText={state.backText}
+                              onChangeBackText={(txt) =>
+                                updateSubItemCustomState(subItem.id, { backText: txt }, subItem.config)
+                              }
+                              backImageUrl={state.backImageUrl}
+                              onChangeBackImageUrl={(url) =>
+                                updateSubItemCustomState(subItem.id, { backImageUrl: url }, subItem.config)
+                              }
+                              currency={currency}
+                            />
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <MultiSideCustomizationSection
+                        item={customizableSubItems[0]?.config || effectivePackage}
+                        itemName={customizableSubItems[0]?.subItemName}
+                        itemImage={customizableSubItems[0]?.subItemImage}
+                        itemBadge={customizableSubItems[0] ? `Item #${customizableSubItems[0].subItemIndex + 1}` : undefined}
+                        customSidesSelected={customSidesSelected}
+                        onChangeCustomSidesSelected={setCustomSidesSelected}
+                        frontText={frontCustomText}
+                        onChangeFrontText={setFrontCustomText}
+                        frontImageUrl={frontCustomImageUrl}
+                        onChangeFrontImageUrl={setFrontCustomImageUrl}
+                        backText={backCustomText}
+                        onChangeBackText={setBackCustomText}
+                        backImageUrl={backCustomImageUrl}
+                        onChangeBackImageUrl={setBackCustomImageUrl}
+                        currency={currency}
+                      />
+                    )
                   )}
 
                 </div>

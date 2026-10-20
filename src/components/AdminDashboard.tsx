@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { PreparedPackage, CustomBoxOption, GiftCategory, GiftBoxStyle, DEFAULT_CATEGORIES, DEFAULT_GIFT_BOXES, PackageItemDetail, getStoredCategories, saveStoredCategories, deleteStoredCategory, getStoredGiftBoxes, saveStoredGiftBoxes, deleteStoredGiftBox, deleteStoredPackage, deleteStoredCustomItem, updatePaymentVerificationInDb } from '../data/giftsData';
 import { Order, OrderStatus, PaymentStatus } from '../types/cart';
 import { uploadToCloudinary } from '../utils/cloudinary';
@@ -154,7 +154,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         });
       }
     } catch (err: any) {
-      console.error('❌ Error approving payment:', err);
+      console.error('âŒ Error approving payment:', err);
       alert('Failed to approve payment: ' + (err?.message || 'Database error'));
     } finally {
       setIsProcessingPaymentAction(false);
@@ -197,7 +197,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setRejectingPaymentOrder(null);
       setRejectionReasonInput('');
     } catch (err: any) {
-      console.error('❌ Error rejecting payment:', err);
+      console.error('âŒ Error rejecting payment:', err);
       alert('Failed to reject payment: ' + (err?.message || 'Database error'));
     } finally {
       setIsProcessingPaymentAction(false);
@@ -227,7 +227,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       const filtered = giftBoxes.filter((b) => !deletedBoxIds.current.has(b.id));
       setGiftBoxesList(filtered);
     } else if (!giftBoxes || giftBoxes.length === 0) {
-      // Only do a DB fetch if we have NO deleted IDs pending — otherwise keep current list
+      // Only do a DB fetch if we have NO deleted IDs pending â€” otherwise keep current list
       if (deletedBoxIds.current.size === 0) {
         getStoredGiftBoxes().then(boxes => {
           if (boxes && boxes.length > 0) setGiftBoxesList(boxes);
@@ -421,7 +421,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
   };
 
-  // Helper Analytics — ETB (Birr) & USD (Dollar) calculated separately
+  // Helper Analytics â€” ETB (Birr) & USD (Dollar) calculated separately
   const etbOrders = orders.filter((o) => o.currency !== 'USD' && o.buyerMarket !== 'INTERNATIONAL');
   const usdOrders = orders.filter((o) => o.currency === 'USD' || o.buyerMarket === 'INTERNATIONAL');
 
@@ -492,13 +492,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       .join(', ');
   };
 
-  const ADMIN_PAGE_SIZE = 20; // 5 rows × 4 cols
+  const ADMIN_PAGE_SIZE = 20; // 5 rows Ã— 4 cols
 
   // Reset pagination on filter or search change
   useEffect(() => { setPkgPage(1); }, [pkgCategoryFilter, pkgSearchTerm]);
   useEffect(() => { setItemPage(1); }, [itemCategoryFilter, itemSearchTerm]);
 
-  // Filtered Orders (ONLY from approvedOrders — unapproved orders stay in Payment Verification)
+  // Filtered Orders (ONLY from approvedOrders â€” unapproved orders stay in Payment Verification)
   const filteredOrders = approvedOrders.filter((o) => {
     const matchesSearch =
       o.id.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
@@ -519,7 +519,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     return matchesSearch && matchesStatus;
   });
 
-  // Customer List (Derived from Orders) — with separate ETB and USD tracking
+  // Customer List (Derived from Orders) â€” with separate ETB and USD tracking
   const customersMap = new Map<string, {
     fullName: string;
     email: string;
@@ -755,6 +755,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             customItemId: sub.customItemId || match?.id,
             price: sub.price ?? match?.price,
             price_usd: sub.price_usd ?? match?.price_usd,
+            // Persist customization flags from pool match if not already stored on sub-item
+            requiresCustomInput: sub.requiresCustomInput ?? match?.requiresCustomInput ?? false,
+            customInputType: sub.customInputType ?? match?.customInputType,
+            customInputLabel: sub.customInputLabel ?? match?.customInputLabel,
+            customizationSides: sub.customizationSides ?? match?.customizationSides,
+            frontCustomType: sub.frontCustomType ?? match?.frontCustomType,
+            frontCustomLabel: sub.frontCustomLabel ?? match?.frontCustomLabel,
+            backCustomType: sub.backCustomType ?? match?.backCustomType,
+            backCustomLabel: sub.backCustomLabel ?? match?.backCustomLabel,
+            backCustomOptional: sub.backCustomOptional ?? match?.backCustomOptional,
+            backCustomPrice: sub.backCustomPrice ?? match?.backCustomPrice,
+            backCustomPriceUsd: sub.backCustomPriceUsd ?? match?.backCustomPriceUsd,
           };
         });
         setPkgSubItems(enriched);
@@ -768,10 +780,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             image: match?.image || pkg.image,
             price: match?.price,
             price_usd: match?.price_usd,
+            requiresCustomInput: match?.requiresCustomInput ?? false,
+            customInputType: match?.customInputType,
+            customInputLabel: match?.customInputLabel,
+            customizationSides: match?.customizationSides,
+            frontCustomType: match?.frontCustomType,
+            frontCustomLabel: match?.frontCustomLabel,
+            backCustomType: match?.backCustomType,
+            backCustomLabel: match?.backCustomLabel,
+            backCustomOptional: match?.backCustomOptional,
+            backCustomPrice: match?.backCustomPrice,
+            backCustomPriceUsd: match?.backCustomPriceUsd,
           };
         });
         setPkgSubItems(initialDetails);
       }
+
     } else {
       setEditingPkg(null);
       const defaultCategory = packageCategories.length > 0 ? packageCategories[0].name : 'Luxury';
@@ -841,11 +865,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         description: item.description || '',
         price: item.price,
         price_usd: item.price_usd,
+        // Persist customization flags on the sub-item so PackageDetailPage
+        // can detect ALL customizable items without relying on name-matching
+        requiresCustomInput: item.requiresCustomInput || false,
+        customInputType: item.customInputType,
+        customInputLabel: item.customInputLabel,
+        customizationSides: item.customizationSides,
+        frontCustomType: item.frontCustomType,
+        frontCustomLabel: item.frontCustomLabel,
+        backCustomType: item.backCustomType,
+        backCustomLabel: item.backCustomLabel,
+        backCustomOptional: item.backCustomOptional,
+        backCustomPrice: item.backCustomPrice,
+        backCustomPriceUsd: item.backCustomPriceUsd,
       };
       return updated;
     });
 
-    // Auto-enable client customization if selected item requires customization
+    // Auto-enable client customization at package level if selected item requires it
     if (item.requiresCustomInput) {
       setPkgForm((prev) => ({
         ...prev,
@@ -888,10 +925,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         description: item.description || '',
         price: item.price,
         price_usd: item.price_usd,
+        // Persist customization flags on the sub-item
+        requiresCustomInput: item.requiresCustomInput || false,
+        customInputType: item.customInputType,
+        customInputLabel: item.customInputLabel,
+        customizationSides: item.customizationSides,
+        frontCustomType: item.frontCustomType,
+        frontCustomLabel: item.frontCustomLabel,
+        backCustomType: item.backCustomType,
+        backCustomLabel: item.backCustomLabel,
+        backCustomOptional: item.backCustomOptional,
+        backCustomPrice: item.backCustomPrice,
+        backCustomPriceUsd: item.backCustomPriceUsd,
       },
     ]);
 
-    // Auto-enable client customization if selected item requires customization
+    // Auto-enable client customization at package level if selected item requires it
     if (item.requiresCustomInput) {
       setPkgForm((prev) => ({
         ...prev,
@@ -1447,7 +1496,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </button>
               </div>
 
-              {/* Stats Cards — Dollar and Birr calculated separately */}
+              {/* Stats Cards â€” Dollar and Birr calculated separately */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg">
                   <div>
@@ -1457,7 +1506,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <span className="font-podium text-xl sm:text-2xl text-[#8E6E2F] font-bold">
                           {totalRevenueETB.toLocaleString()}
                         </span>
-                        <span className="text-xs text-[#8E6E2F]/80 font-bold">ETB (ብር)</span>
+                        <span className="text-xs text-[#8E6E2F]/80 font-bold">ETB (á‰¥áˆ­)</span>
                       </div>
                       <div className="flex items-baseline gap-1.5">
                         <span className="font-podium text-base sm:text-lg text-emerald-600 font-bold">
@@ -1480,7 +1529,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
                     <div className="text-[10px] text-[#241A15]/60 font-semibold mt-1 flex items-center gap-1.5">
                       <span className="text-[#8E6E2F]">{etbOrders.length} ETB</span>
-                      <span>•</span>
+                      <span>â€¢</span>
                       <span className="text-emerald-600">{usdOrders.length} USD</span>
                     </div>
                     <span className="text-[10px] text-[#8E6E2F]/90 font-medium block mt-0.5">
@@ -1574,7 +1623,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <td className="py-3 px-3 font-bold text-[#8E6E2F]">
                             {ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL'
                               ? `$${ord.total.toFixed(2)} USD`
-                              : `${ord.total.toLocaleString()} ብር`}
+                              : `${ord.total.toLocaleString()} á‰¥áˆ­`}
                           </td>
                           <td className="py-3 px-3">
                             <span
@@ -1659,7 +1708,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     onClick={() => setActiveTab('payments')}
                     className="px-3.5 py-1.5 rounded-xl bg-[#B8944A] text-white font-bold text-xs uppercase tracking-wider hover:bg-amber-300 transition-all cursor-pointer whitespace-nowrap shadow"
                   >
-                    Review Payments ({pendingPaymentsCount}) →
+                    Review Payments ({pendingPaymentsCount}) â†’
                   </button>
                 </div>
               )}
@@ -1727,7 +1776,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <td className="py-4 px-3">
                             <div className="font-bold text-[#8E6E2F] font-podium text-sm">{ord.id}</div>
                             <span className="text-[10px] text-[#241A15]/50 block mt-0.5">
-                              {ord.buyerMarket === 'INTERNATIONAL' ? '🌍 Diaspora' : '🇪🇹 Local'}
+                              {ord.buyerMarket === 'INTERNATIONAL' ? 'ðŸŒ Diaspora' : 'ðŸ‡ªðŸ‡¹ Local'}
                             </span>
                           </td>
 
@@ -1758,7 +1807,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       ? 'bg-amber-400/15 text-[#8E6E2F] border border-amber-400/30'
                                       : 'bg-[#E6D5B8]/30 text-[#241A15]/60 border border-[#D8C6A8]/60'
                                   }`}>
-                                    {ord.customer.shipMode === 'recipient' ? '📦 Ship to Recipient' : '🏠 Ship to Me'}
+                                    {ord.customer.shipMode === 'recipient' ? 'ðŸ“¦ Ship to Recipient' : 'ðŸ  Ship to Me'}
                                   </span>
                                 )}
                                 {ord.customer.giftRecipientName && ord.customer.giftRecipientName !== ord.customer.fullName && (
@@ -1790,7 +1839,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <div className="font-bold text-[#8E6E2F] text-sm">
                               {ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL'
                                 ? `$${ord.total.toFixed(2)} USD`
-                                : `${ord.total.toLocaleString()} ብር`}
+                                : `${ord.total.toLocaleString()} á‰¥áˆ­`}
                             </div>
                             <span className="text-[10px] text-[#241A15]/40 block">
                               {ord.paymentMethod?.replace('Manual Payment ', '') || 'Transfer'}
@@ -2348,7 +2397,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/70 hover:border-[#B8944A]/50 hover:text-[#241A15]'
                           }`}
                         >
-                          <span className="truncate">↳ {sub}</span>
+                          <span className="truncate">â†³ {sub}</span>
                           <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                             {subCount}
                           </span>
@@ -2497,14 +2546,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     disabled={safePage === 1}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                   >
-                    <span>‹</span> Prev
+                    <span>â€¹</span> Prev
                   </button>
                   <div className="flex items-center gap-1">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
                       const isActive = p === safePage;
                       const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
                       if (!show) {
-                        if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#241A15]/30 text-xs px-1">…</span>;
+                        if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#241A15]/30 text-xs px-1">â€¦</span>;
                         return null;
                       }
                       return (
@@ -2521,13 +2570,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     disabled={safePage === totalPages}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                   >
-                    Next <span>›</span>
+                    Next <span>â€º</span>
                   </button>
                 </div>
               )}
               {totalPages > 1 && (
                 <p className="text-center text-[11px] text-[#241A15]/40 mt-2 font-inter">
-                  Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}–{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} packages · Page {safePage} of {totalPages}
+                  Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}â€“{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} packages Â· Page {safePage} of {totalPages}
                 </p>
               )}
             </div>
@@ -2634,7 +2683,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/60 hover:border-[#B8944A]/50 hover:text-[#241A15] hover:bg-[#E6D5B8]/40'
                           }`}
                         >
-                          <span className="truncate">↳ {sub}</span>
+                          <span className="truncate">â†³ {sub}</span>
                           <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                             {subCount}
                           </span>
@@ -2773,7 +2822,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/70 hover:border-[#B8944A]/50 hover:text-[#241A15]'
                                     }`}
                                   >
-                                    <span className="truncate">↳ {sub}</span>
+                                    <span className="truncate">â†³ {sub}</span>
                                     <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                                       {subCount}
                                     </span>
@@ -2912,14 +2961,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               disabled={safePage === 1}
                               className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                             >
-                              <span>‹</span> Prev
+                              <span>â€¹</span> Prev
                             </button>
                             <div className="flex items-center gap-1">
                               {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
                                 const isActive = p === safePage;
                                 const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
                                 if (!show) {
-                                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#241A15]/30 text-xs px-1">…</span>;
+                                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#241A15]/30 text-xs px-1">â€¦</span>;
                                   return null;
                                 }
                                 return (
@@ -2936,13 +2985,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               disabled={safePage === totalPages}
                               className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                             >
-                              Next <span>›</span>
+                              Next <span>â€º</span>
                             </button>
                           </div>
                         )}
                         {totalPages > 1 && (
                           <p className="text-center text-[11px] text-[#241A15]/40 mt-2 font-inter">
-                            Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}–{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} items · Page {safePage} of {totalPages}
+                            Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}â€“{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} items Â· Page {safePage} of {totalPages}
                           </p>
                         )}
                       </div>
@@ -3049,7 +3098,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/60 hover:border-[#B8944A]/50 hover:text-[#241A15] hover:bg-[#E6D5B8]/40'
                                     }`}
                                   >
-                                    <span className="truncate">↳ {sub}</span>
+                                    <span className="truncate">â†³ {sub}</span>
                                     <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                                       {subCount}
                                     </span>
@@ -3234,7 +3283,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
                       <h3 className="font-podium text-lg uppercase font-bold text-[#241A15]">{box.name}</h3>
                       <div className="text-xs text-[#8E6E2F] font-bold mt-1">
-                        {box.dimensions} • {box.color}
+                        {box.dimensions} â€¢ {box.color}
                       </div>
                       <p className="text-[#241A15]/60 text-xs font-inter mt-2 line-clamp-2">{box.description}</p>
                     </div>
@@ -3309,7 +3358,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <td className="py-4 px-3 text-right font-bold text-xs space-y-0.5">
                           {c.totalSpentETB > 0 && (
                             <div className="text-[#8E6E2F] font-bold text-sm">
-                              {c.totalSpentETB.toLocaleString()} <span className="text-[10px] text-[#8E6E2F]/80 font-normal">ብር</span>
+                              {c.totalSpentETB.toLocaleString()} <span className="text-[10px] text-[#8E6E2F]/80 font-normal">á‰¥áˆ­</span>
                             </div>
                           )}
                           {c.totalSpentUSD > 0 && (
@@ -3318,7 +3367,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </div>
                           )}
                           {c.totalSpentETB === 0 && c.totalSpentUSD === 0 && (
-                            <div className="text-[#241A15]/40">0 ብር</div>
+                            <div className="text-[#241A15]/40">0 á‰¥áˆ­</div>
                           )}
                         </td>
                       </tr>
@@ -3611,7 +3660,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               const selectedList = pkgForm.category.split(',').map((s) => s.trim()).filter(Boolean);
                               return (
                                 <div key={`sub-${c.id}`} className="pl-2 border-l border-amber-400/20">
-                                  <span className="text-[10px] text-[#B8944A]/70 font-bold uppercase tracking-wider">{c.name} ↳</span>
+                                  <span className="text-[10px] text-[#B8944A]/70 font-bold uppercase tracking-wider">{c.name} â†³</span>
                                   <div className="flex flex-wrap gap-1 mt-1">
                                     {c.subcategories!.map((sub) => {
                                       const subKey = `${c.name} > ${sub}`;
@@ -3636,7 +3685,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                               : 'bg-white/60 text-[#241A15]/60 border border-[#D8C6A8]/40 hover:border-amber-300/40 hover:text-[#241A15]'
                                           }`}
                                         >
-                                          {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-[#241A15]/30">↳</span>}
+                                          {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-[#241A15]/30">â†³</span>}
                                           <span>{sub}</span>
                                         </button>
                                       );
@@ -3657,7 +3706,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#8E6E2F] font-bold focus:border-amber-400 focus:outline-none"
                       />
                       <p className="text-[10px] text-[#241A15]/50">
-                        💡 Click badges above to toggle multiple categories, or type custom comma-separated category names.
+                        ðŸ’¡ Click badges above to toggle multiple categories, or type custom comma-separated category names.
                       </p>
                     </div>
                   </div>
@@ -3666,7 +3715,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
-                      Local Price (ETB / ብር) <span className="text-red-600">*</span>
+                      Local Price (ETB / á‰¥áˆ­) <span className="text-red-600">*</span>
                     </label>
                     <input
                       type="number"
@@ -4145,7 +4194,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   )}
                 </div>
 
-                {/* ── SIZE OPTIONS (S, M, L, XL, Shoe Sizes, etc.) ── */}
+                {/* â”€â”€ SIZE OPTIONS (S, M, L, XL, Shoe Sizes, etc.) â”€â”€ */}
                 <div className="bg-[#FAF6EE]/80 border border-[#D8C6A8]/60 rounded-xl p-4 space-y-3">
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input
@@ -4278,7 +4327,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <div className="bg-gradient-to-r from-amber-500/10 via-[#FAF6EE] to-amber-500/10 border border-amber-400/40 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-xs">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-[#8E6E2F] flex items-center justify-center font-bold text-sm">
-                          💰
+                          ðŸ’°
                         </div>
                         <div>
                           <div className="text-[10px] uppercase tracking-wider font-bold text-[#8E6E2F]">
@@ -4491,7 +4540,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <option value="">-- Select from Single Items --</option>
                             {customItems.map((item) => (
                               <option key={item.id} value={item.id}>
-                                {item.name} — {item.price ? `${item.price.toLocaleString()} ETB` : '0 ETB'}
+                                {item.name} â€” {item.price ? `${item.price.toLocaleString()} ETB` : '0 ETB'}
                                 {item.price_usd ? ` ($${item.price_usd})` : ''}
                               </option>
                             ))}
@@ -4661,7 +4710,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             const selectedList = itemForm.category.split(',').map((s) => s.trim()).filter(Boolean);
                             return (
                               <div key={`sub-${c.id}`} className="pl-2 border-l border-amber-400/20">
-                                <span className="text-[10px] text-[#B8944A]/70 font-bold uppercase tracking-wider">{c.name} ↳</span>
+                                <span className="text-[10px] text-[#B8944A]/70 font-bold uppercase tracking-wider">{c.name} â†³</span>
                                 <div className="flex flex-wrap gap-1 mt-1">
                                   {c.subcategories!.map((sub) => {
                                     const subKey = `${c.name} > ${sub}`;
@@ -4686,7 +4735,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             : 'bg-white/60 text-[#241A15]/60 border border-[#D8C6A8]/40 hover:border-amber-300/40 hover:text-[#241A15]'
                                         }`}
                                       >
-                                        {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-[#241A15]/30">↳</span>}
+                                        {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-[#241A15]/30">â†³</span>}
                                         <span>{sub}</span>
                                       </button>
                                     );
@@ -4707,14 +4756,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#8E6E2F] font-bold focus:border-amber-400 focus:outline-none"
                     />
                     <p className="text-[10px] text-[#241A15]/50">
-                      💡 Click badges above to toggle multiple categories, or type custom comma-separated category names.
+                      ðŸ’¡ Click badges above to toggle multiple categories, or type custom comma-separated category names.
                     </p>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
-                    Local Price (ETB / ብር) <span className="text-red-600">*</span>
+                    Local Price (ETB / á‰¥áˆ­) <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="number"
@@ -5149,7 +5198,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 )}
               </div>
 
-              {/* ── SIZE OPTIONS (S, M, L, XL, Shoe Sizes, etc.) ── */}
+              {/* â”€â”€ SIZE OPTIONS (S, M, L, XL, Shoe Sizes, etc.) â”€â”€ */}
               <div className="bg-[#FAF6EE]/80 border border-[#D8C6A8]/60 rounded-xl p-4 space-y-3">
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
@@ -5584,7 +5633,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              {/* ─── DELIVERY SCHEDULE SECTION ─── */}
+              {/* â”€â”€â”€ DELIVERY SCHEDULE SECTION â”€â”€â”€ */}
               {(() => {
                 const od = selectedOrderDetails;
                 const rawDate = od.customer?.deliveryDate || od.deliveryDate;
@@ -5600,8 +5649,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     : 'text-[#241A15]/50 bg-[#F7F1E7] border-[#D8C6A8]/50';
 
                 const statusDot =
-                  schedStatus === 'Scheduled' ? '🟢' :
-                  schedStatus === 'Awaiting Customer Confirmation' ? '🟡' : '⚫';
+                  schedStatus === 'Scheduled' ? 'ðŸŸ¢' :
+                  schedStatus === 'Awaiting Customer Confirmation' ? 'ðŸŸ¡' : 'âš«';
 
                 return (
                   <div className="bg-[#F3EDE2] border border-[#D8C6A8] rounded-xl p-4 space-y-3">
@@ -5758,7 +5807,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                  </span>
                                )}
                              </div>
-                             <div className="text-[11px] text-[#241A15]/60">Qty: {it.quantity} • {isPkg ? 'Ready-Made Package' : (singleObj?.category || 'Single Item')}</div>
+                             <div className="text-[11px] text-[#241A15]/60">Qty: {it.quantity} â€¢ {isPkg ? 'Ready-Made Package' : (singleObj?.category || 'Single Item')}</div>
 
                              {/* Customer Customization Details (Multi-side Front/Back or Single) */}
                              {(it.customSidesSelected === 'front_and_back' || it.frontInputText || it.frontInputImageUrl || it.backInputText || it.backInputImageUrl) ? (
@@ -5853,7 +5902,53 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                    )
                                  )}
                                </div>
-                             ) : (it.customerInputText || it.customerInputImageUrl) ? (
+                             ) : (it as any).subItemCustomizations ? ( "__SUBITEM_PLACEHOLDER__" ) : (it as any).subItemCustomizations ? (
+                                <div className="mt-2.5 bg-[#F3EDE2] border border-[#D8C6A8] rounded-xl p-3 space-y-2.5 max-w-lg">
+                                  <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                    <Sparkles className="w-3.5 h-3.5 text-[#8E6E2F]" />
+                                    <span>Client Customization ({Object.keys((it as any).subItemCustomizations).length} Items)</span>
+                                  </div>
+                                  {Object.values((it as any).subItemCustomizations as Record<string, any>).map((sub: any, subIdx: number) => (
+                                    <div key={sub.itemId || subIdx} className="bg-white/80 rounded-lg p-2.5 border border-[#D8C6A8]/60 space-y-1.5">
+                                      <div className="text-[10px] font-extrabold text-[#8E6E2F] uppercase tracking-wider flex items-center gap-1">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
+                                        {sub.itemName || `Item ${subIdx + 1}`}
+                                        {sub.customSidesSelected === 'front_and_back' && (
+                                          <span className="ml-1 text-[9px] bg-amber-100 text-amber-700 border border-amber-300 px-1.5 py-0.5 rounded-full">Front & Back</span>
+                                        )}
+                                      </div>
+                                      {sub.frontText && (
+                                        <div className="text-[#241A15] text-xs bg-[#FAF6EE] rounded p-1.5 border border-[#D8C6A8]/40">
+                                          <span className="text-[#241A15]/60 font-semibold">{sub.customSidesSelected === 'front_and_back' ? 'Front: ' : 'Text: '}</span>
+                                          <span className="text-[#8E6E2F] font-medium font-mono">"{sub.frontText}"</span>
+                                        </div>
+                                      )}
+                                      {sub.backText && (
+                                        <div className="text-[#241A15] text-xs bg-[#FAF6EE] rounded p-1.5 border border-[#D8C6A8]/40">
+                                          <span className="text-[#241A15]/60 font-semibold">Back: </span>
+                                          <span className="text-[#8E6E2F] font-medium font-mono">"{sub.backText}"</span>
+                                        </div>
+                                      )}
+                                      {sub.frontImageUrl && (
+                                        <div className="pt-1 flex items-center gap-2">
+                                          <div className="w-12 h-12 rounded-lg overflow-hidden border border-[#D8C6A8] bg-white flex-shrink-0">
+                                            <img src={sub.frontImageUrl} alt="Front Photo" className="w-full h-full object-cover" />
+                                          </div>
+                                          <a href={sub.frontImageUrl} target="_blank" rel="noreferrer" className="text-[#8E6E2F] hover:underline text-[11px] font-bold inline-flex items-center gap-1"><Eye className="w-3 h-3" /> View Front</a>
+                                        </div>
+                                      )}
+                                      {sub.backImageUrl && (
+                                        <div className="pt-1 flex items-center gap-2">
+                                          <div className="w-12 h-12 rounded-lg overflow-hidden border border-[#D8C6A8] bg-white flex-shrink-0">
+                                            <img src={sub.backImageUrl} alt="Back Photo" className="w-full h-full object-cover" />
+                                          </div>
+                                          <a href={sub.backImageUrl} target="_blank" rel="noreferrer" className="text-[#8E6E2F] hover:underline text-[11px] font-bold inline-flex items-center gap-1"><Eye className="w-3 h-3" /> View Back</a>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (it.customerInputText || it.customerInputImageUrl) ? (
                                <div className="mt-2 bg-[#F3EDE2] border border-[#D8C6A8] rounded-lg p-2.5 space-y-1.5 max-w-md">
                                  <div className="text-[10px] text-[#8E6E2F] font-bold uppercase tracking-wider flex items-center gap-1">
                                    <Sparkles className="w-3 h-3 text-[#8E6E2F]" />
@@ -5891,7 +5986,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                              ) : null}
                            </div>
                            <div className="font-bold text-[#8E6E2F] text-sm whitespace-nowrap">
-                             {isUsd ? `$${(itemPrice * it.quantity).toFixed(2)} USD` : `${(itemPrice * it.quantity).toLocaleString()} ብር`}
+                             {isUsd ? `$${(itemPrice * it.quantity).toFixed(2)} USD` : `${(itemPrice * it.quantity).toLocaleString()} á‰¥áˆ­`}
                            </div>
                          </div>
                        </div>
@@ -5908,7 +6003,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="text-[#241A15]/70">Buyer Market:</span>
                   <span className="text-[#8E6E2F] font-bold">
-                    {selectedOrderDetails.buyerMarket === 'INTERNATIONAL' ? '🌍 International (Abroad / USD)' : '🇪🇹 Local (Ethiopia / ETB)'}
+                    {selectedOrderDetails.buyerMarket === 'INTERNATIONAL' ? 'ðŸŒ International (Abroad / USD)' : 'ðŸ‡ªðŸ‡¹ Local (Ethiopia / ETB)'}
                   </span>
                 </div>
 
@@ -6084,7 +6179,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   Reject Payment for Order {rejectingPaymentOrder.id}
                 </h3>
                 <span className="text-xs text-[#241A15]/60">
-                  Customer: {rejectingPaymentOrder.customer.fullName} • {formatPrice(rejectingPaymentOrder.total, rejectingPaymentOrder.currency || 'ETB')}
+                  Customer: {rejectingPaymentOrder.customer.fullName} â€¢ {formatPrice(rejectingPaymentOrder.total, rejectingPaymentOrder.currency || 'ETB')}
                 </span>
               </div>
             </div>
@@ -6211,3 +6306,4 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     </div>
   );
 };
+

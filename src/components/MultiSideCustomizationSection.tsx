@@ -7,6 +7,9 @@ import { formatPrice } from '../utils/currency';
 
 export interface MultiSideCustomizationSectionProps {
   item: PreparedPackage | CustomBoxOption;
+  itemName?: string;
+  itemImage?: string;
+  itemBadge?: string;
   customSidesSelected: 'front_only' | 'front_and_back';
   onChangeCustomSidesSelected: (sides: 'front_only' | 'front_and_back') => void;
   // Front side
@@ -24,6 +27,9 @@ export interface MultiSideCustomizationSectionProps {
 
 export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSectionProps> = ({
   item,
+  itemName,
+  itemImage,
+  itemBadge,
   customSidesSelected,
   onChangeCustomSidesSelected,
   frontText,
@@ -83,6 +89,27 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
 
     return (
       <div className="bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 sm:p-5 mb-5 space-y-4 shadow-sm">
+        {(itemName || itemImage) && (
+          <div className="flex items-center gap-3 pb-3 border-b border-[#D8C6A8]/50">
+            {itemImage ? (
+              <img src={itemImage} alt={itemName} className="w-12 h-12 rounded-xl object-cover border border-[#D8C6A8] flex-shrink-0 shadow-xs" />
+            ) : (
+              <div className="w-12 h-12 rounded-xl bg-[#E6D5B8]/40 border border-[#D8C6A8] flex items-center justify-center text-xs font-bold text-[#8E6E2F]">
+                🎁
+              </div>
+            )}
+            <div className="min-w-0 flex-1">
+              {itemBadge && (
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#8E6E2F] bg-amber-400/15 border border-amber-400/30 px-2 py-0.5 rounded-full inline-block mb-0.5">
+                  {itemBadge}
+                </span>
+              )}
+              <h4 className="text-sm font-bold text-[#241A15] truncate">
+                {itemName}
+              </h4>
+            </div>
+          </div>
+        )}
         <div className="flex flex-wrap items-center justify-between gap-1.5 border-b border-[#D8C6A8]/40 pb-2">
           <div className="flex items-center gap-1.5 text-[#8E6E2F] text-xs font-bold uppercase tracking-wider">
             <Sparkles className="w-4 h-4 text-[#B8944A]" />
@@ -214,6 +241,27 @@ export const MultiSideCustomizationSection: React.FC<MultiSideCustomizationSecti
 
   return (
     <div className="bg-[#FAF6EE] border border-[#D8C6A8] rounded-2xl p-4 sm:p-5 mb-5 space-y-4 shadow-sm">
+      {(itemName || itemImage) && (
+        <div className="flex items-center gap-3 pb-3 border-b border-[#D8C6A8]/50">
+          {itemImage ? (
+            <img src={itemImage} alt={itemName} className="w-12 h-12 rounded-xl object-cover border border-[#D8C6A8] flex-shrink-0 shadow-xs" />
+          ) : (
+            <div className="w-12 h-12 rounded-xl bg-[#E6D5B8]/40 border border-[#D8C6A8] flex items-center justify-center text-xs font-bold text-[#8E6E2F]">
+              🎁
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            {itemBadge && (
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#8E6E2F] bg-amber-400/15 border border-amber-400/30 px-2 py-0.5 rounded-full inline-block mb-0.5">
+                {itemBadge}
+              </span>
+            )}
+            <h4 className="text-sm font-bold text-[#241A15] truncate">
+              {itemName}
+            </h4>
+          </div>
+        </div>
+      )}
       {/* Title */}
       <div className="flex items-center justify-between border-b border-[#D8C6A8]/40 pb-2.5">
         <div className="flex items-center gap-1.5 text-[#8E6E2F] text-xs font-bold uppercase tracking-wider">

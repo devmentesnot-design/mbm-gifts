@@ -33,6 +33,18 @@ export interface PackageItemDetail {
   description: string;
   price?: number;
   price_usd?: number;
+  // Per-item customization flags (mirrors CustomBoxOption fields)
+  requiresCustomInput?: boolean;
+  customInputType?: 'text' | 'image' | 'both';
+  customInputLabel?: string;
+  customizationSides?: 'single' | 'front_back';
+  frontCustomType?: 'text' | 'image' | 'both';
+  frontCustomLabel?: string;
+  backCustomType?: 'text' | 'image' | 'both';
+  backCustomLabel?: string;
+  backCustomOptional?: boolean;
+  backCustomPrice?: number;
+  backCustomPriceUsd?: number;
 }
 
 // Size option for clothing / items with multiple sizes (S, M, L, XL...)

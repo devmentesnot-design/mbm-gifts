@@ -417,7 +417,8 @@ export default function App() {
     backInputText?: string,
     backInputImageUrl?: string,
     backSidePrice?: number,
-    selectedSize?: string
+    selectedSize?: string,
+    subItemCustomizations?: Record<string, any>
   ) => {
     const existingIndex = cartItems.findIndex(
       (item) =>
@@ -458,6 +459,7 @@ export default function App() {
         customUnitName,
         unitCalculatedPrice,
         selectedSize,
+        subItemCustomizations,
       };
       setCartItems([...cartItems, newItem]);
     }
