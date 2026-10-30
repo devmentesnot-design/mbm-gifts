@@ -154,7 +154,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         });
       }
     } catch (err: any) {
-      console.error('âŒ Error approving payment:', err);
+      console.error('❌ Error approving payment:', err);
       alert('Failed to approve payment: ' + (err?.message || 'Database error'));
     } finally {
       setIsProcessingPaymentAction(false);
@@ -197,7 +197,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setRejectingPaymentOrder(null);
       setRejectionReasonInput('');
     } catch (err: any) {
-      console.error('âŒ Error rejecting payment:', err);
+      console.error('❌ Error rejecting payment:', err);
       alert('Failed to reject payment: ' + (err?.message || 'Database error'));
     } finally {
       setIsProcessingPaymentAction(false);
@@ -227,7 +227,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       const filtered = giftBoxes.filter((b) => !deletedBoxIds.current.has(b.id));
       setGiftBoxesList(filtered);
     } else if (!giftBoxes || giftBoxes.length === 0) {
-      // Only do a DB fetch if we have NO deleted IDs pending â€” otherwise keep current list
+      // Only do a DB fetch if we have NO deleted IDs pending — otherwise keep current list
       if (deletedBoxIds.current.size === 0) {
         getStoredGiftBoxes().then(boxes => {
           if (boxes && boxes.length > 0) setGiftBoxesList(boxes);
@@ -421,7 +421,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
   };
 
-  // Helper Analytics â€” ETB (Birr) & USD (Dollar) calculated separately
+  // Helper Analytics — ETB (Birr) & USD (Dollar) calculated separately
   const etbOrders = orders.filter((o) => o.currency !== 'USD' && o.buyerMarket !== 'INTERNATIONAL');
   const usdOrders = orders.filter((o) => o.currency === 'USD' || o.buyerMarket === 'INTERNATIONAL');
 
@@ -492,13 +492,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       .join(', ');
   };
 
-  const ADMIN_PAGE_SIZE = 20; // 5 rows Ã— 4 cols
+  const ADMIN_PAGE_SIZE = 20; // 5 rows × 4 cols
 
   // Reset pagination on filter or search change
   useEffect(() => { setPkgPage(1); }, [pkgCategoryFilter, pkgSearchTerm]);
   useEffect(() => { setItemPage(1); }, [itemCategoryFilter, itemSearchTerm]);
 
-  // Filtered Orders (ONLY from approvedOrders â€” unapproved orders stay in Payment Verification)
+  // Filtered Orders (ONLY from approvedOrders — unapproved orders stay in Payment Verification)
   const filteredOrders = approvedOrders.filter((o) => {
     const matchesSearch =
       o.id.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
@@ -519,7 +519,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     return matchesSearch && matchesStatus;
   });
 
-  // Customer List (Derived from Orders) â€” with separate ETB and USD tracking
+  // Customer List (Derived from Orders) — with separate ETB and USD tracking
   const customersMap = new Map<string, {
     fullName: string;
     email: string;
@@ -1496,7 +1496,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </button>
               </div>
 
-              {/* Stats Cards â€” Dollar and Birr calculated separately */}
+              {/* Stats Cards — Dollar and Birr calculated separately */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-white border border-[#D8C6A8]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg">
                   <div>
@@ -1506,7 +1506,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <span className="font-podium text-xl sm:text-2xl text-[#8E6E2F] font-bold">
                           {totalRevenueETB.toLocaleString()}
                         </span>
-                        <span className="text-xs text-[#8E6E2F]/80 font-bold">ETB (á‰¥áˆ­)</span>
+                        <span className="text-xs text-[#8E6E2F]/80 font-bold">ብር (ETB)</span>
                       </div>
                       <div className="flex items-baseline gap-1.5">
                         <span className="font-podium text-base sm:text-lg text-emerald-600 font-bold">
@@ -1528,8 +1528,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       {totalOrdersCount}
                     </div>
                     <div className="text-[10px] text-[#241A15]/60 font-semibold mt-1 flex items-center gap-1.5">
-                      <span className="text-[#8E6E2F]">{etbOrders.length} ETB</span>
-                      <span>â€¢</span>
+                      <span className="text-[#8E6E2F]">{etbOrders.length} ብር (Local)</span>
+                      <span>•</span>
                       <span className="text-emerald-600">{usdOrders.length} USD</span>
                     </div>
                     <span className="text-[10px] text-[#8E6E2F]/90 font-medium block mt-0.5">
@@ -1549,7 +1549,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <span className="font-podium text-lg sm:text-xl text-[#8E6E2F] font-bold">
                           {avgOrderValueETB.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </span>
-                        <span className="text-xs text-[#8E6E2F]/80 font-bold">ETB</span>
+                        <span className="text-xs text-[#8E6E2F]/80 font-bold">ብር</span>
                       </div>
                       <div className="flex items-baseline gap-1.5">
                         <span className="font-podium text-sm sm:text-base text-emerald-600 font-bold">
@@ -1623,7 +1623,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <td className="py-3 px-3 font-bold text-[#8E6E2F]">
                             {ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL'
                               ? `$${ord.total.toFixed(2)} USD`
-                              : `${ord.total.toLocaleString()} á‰¥áˆ­`}
+                              : `${ord.total.toLocaleString()} ብር`}
                           </td>
                           <td className="py-3 px-3">
                             <span
@@ -1708,7 +1708,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     onClick={() => setActiveTab('payments')}
                     className="px-3.5 py-1.5 rounded-xl bg-[#B8944A] text-white font-bold text-xs uppercase tracking-wider hover:bg-amber-300 transition-all cursor-pointer whitespace-nowrap shadow"
                   >
-                    Review Payments ({pendingPaymentsCount}) â†’
+                    Review Payments ({pendingPaymentsCount}) →
                   </button>
                 </div>
               )}
@@ -1776,7 +1776,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <td className="py-4 px-3">
                             <div className="font-bold text-[#8E6E2F] font-podium text-sm">{ord.id}</div>
                             <span className="text-[10px] text-[#241A15]/50 block mt-0.5">
-                              {ord.buyerMarket === 'INTERNATIONAL' ? 'ðŸŒ Diaspora' : 'ðŸ‡ªðŸ‡¹ Local'}
+                              {ord.buyerMarket === 'INTERNATIONAL' ? '🌍 Diaspora' : '🇪🇹 Local'}
                             </span>
                           </td>
 
@@ -1807,7 +1807,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       ? 'bg-amber-400/15 text-[#8E6E2F] border border-amber-400/30'
                                       : 'bg-[#E6D5B8]/30 text-[#241A15]/60 border border-[#D8C6A8]/60'
                                   }`}>
-                                    {ord.customer.shipMode === 'recipient' ? 'ðŸ“¦ Ship to Recipient' : 'ðŸ  Ship to Me'}
+                                    {ord.customer.shipMode === 'recipient' ? '📦 Ship to Recipient' : '🏠 Ship to Me'}
                                   </span>
                                 )}
                                 {ord.customer.giftRecipientName && ord.customer.giftRecipientName !== ord.customer.fullName && (
@@ -1839,7 +1839,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <div className="font-bold text-[#8E6E2F] text-sm">
                               {ord.currency === 'USD' || ord.buyerMarket === 'INTERNATIONAL'
                                 ? `$${ord.total.toFixed(2)} USD`
-                                : `${ord.total.toLocaleString()} á‰¥áˆ­`}
+                                : `${ord.total.toLocaleString()} ብር`}
                             </div>
                             <span className="text-[10px] text-[#241A15]/40 block">
                               {ord.paymentMethod?.replace('Manual Payment ', '') || 'Transfer'}
@@ -2132,7 +2132,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <div>
                                   <span className="text-[#241A15]/50 text-[10px] uppercase block">Expected Amount:</span>
                                   <span className="font-podium text-base font-bold text-[#8E6E2F]">
-                                    {isUsd ? `$${ord.total.toFixed(2)} USD` : `${ord.total.toLocaleString()} ETB`}
+                                    {isUsd ? `$${ord.total.toFixed(2)} USD` : `${ord.total.toLocaleString()} ብር`}
                                   </span>
                                 </div>
                                 <div>
@@ -2397,7 +2397,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/70 hover:border-[#B8944A]/50 hover:text-[#241A15]'
                           }`}
                         >
-                          <span className="truncate">â†³ {sub}</span>
+                          <span className="truncate">↳ {sub}</span>
                           <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                             {subCount}
                           </span>
@@ -2498,7 +2498,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <div className="pt-4 mt-4 border-t border-[#D8C6A8]/40">
                           <div className="flex items-center justify-between">
                             <div className="flex flex-col gap-0.5">
-                              <span className="font-bold text-[#8E6E2F] text-lg">ETB {pkg.price.toFixed(2)}</span>
+                              <span className="font-bold text-[#8E6E2F] text-lg">{pkg.price.toLocaleString()} ብር</span>
                               {pkg.price_usd && pkg.price_usd > 0 && (
                                 <span className="text-[#241A15]/50 text-xs">USD ${pkg.price_usd.toFixed(2)}</span>
                               )}
@@ -2546,14 +2546,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     disabled={safePage === 1}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                   >
-                    <span>â€¹</span> Prev
+                    <span>‹</span> Prev
                   </button>
                   <div className="flex items-center gap-1">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
                       const isActive = p === safePage;
                       const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
                       if (!show) {
-                        if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#241A15]/30 text-xs px-1">â€¦</span>;
+                        if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#241A15]/30 text-xs px-1">…</span>;
                         return null;
                       }
                       return (
@@ -2570,13 +2570,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     disabled={safePage === totalPages}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                   >
-                    Next <span>â€º</span>
+                    Next <span>›</span>
                   </button>
                 </div>
               )}
               {totalPages > 1 && (
                 <p className="text-center text-[11px] text-[#241A15]/40 mt-2 font-inter">
-                  Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}â€“{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} packages Â· Page {safePage} of {totalPages}
+                  Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}–{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} packages · Page {safePage} of {totalPages}
                 </p>
               )}
             </div>
@@ -2683,7 +2683,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/60 hover:border-[#B8944A]/50 hover:text-[#241A15] hover:bg-[#E6D5B8]/40'
                           }`}
                         >
-                          <span className="truncate">â†³ {sub}</span>
+                          <span className="truncate">↳ {sub}</span>
                           <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                             {subCount}
                           </span>
@@ -2822,7 +2822,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/70 hover:border-[#B8944A]/50 hover:text-[#241A15]'
                                     }`}
                                   >
-                                    <span className="truncate">â†³ {sub}</span>
+                                    <span className="truncate">↳ {sub}</span>
                                     <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                                       {subCount}
                                     </span>
@@ -2915,7 +2915,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   <div className="pt-4 mt-4 border-t border-[#D8C6A8]/40">
                                     <div className="flex items-center justify-between">
                                       <div className="flex flex-col gap-0.5">
-                                        <span className="font-bold text-[#8E6E2F] text-lg">ETB {item.price.toFixed(2)}</span>
+                                        <span className="font-bold text-[#8E6E2F] text-lg">{item.price.toLocaleString()} ብር</span>
                                         {item.price_usd && item.price_usd > 0 && (
                                           <span className="text-[#241A15]/50 text-xs">USD ${item.price_usd.toFixed(2)}</span>
                                         )}
@@ -2961,14 +2961,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               disabled={safePage === 1}
                               className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                             >
-                              <span>â€¹</span> Prev
+                              <span>‹</span> Prev
                             </button>
                             <div className="flex items-center gap-1">
                               {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
                                 const isActive = p === safePage;
                                 const show = p === 1 || p === totalPages || Math.abs(p - safePage) <= 1;
                                 if (!show) {
-                                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#241A15]/30 text-xs px-1">â€¦</span>;
+                                  if (p === safePage - 2 || p === safePage + 2) return <span key={p} className="text-[#241A15]/30 text-xs px-1">…</span>;
                                   return null;
                                 }
                                 return (
@@ -2985,13 +2985,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               disabled={safePage === totalPages}
                               className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-white/60 border-[#D8C6A8]/50 text-[#241A15]/70 hover:border-amber-400/50 hover:text-[#8E6E2F]"
                             >
-                              Next <span>â€º</span>
+                              Next <span>›</span>
                             </button>
                           </div>
                         )}
                         {totalPages > 1 && (
                           <p className="text-center text-[11px] text-[#241A15]/40 mt-2 font-inter">
-                            Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}â€“{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} items Â· Page {safePage} of {totalPages}
+                            Showing {(safePage - 1) * ADMIN_PAGE_SIZE + 1}–{Math.min(safePage * ADMIN_PAGE_SIZE, displayList.length)} of {displayList.length} items · Page {safePage} of {totalPages}
                           </p>
                         )}
                       </div>
@@ -3098,7 +3098,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         : 'bg-[#F7F1E7]/60 border-[#D8C6A8]/30 text-[#241A15]/60 hover:border-[#B8944A]/50 hover:text-[#241A15] hover:bg-[#E6D5B8]/40'
                                     }`}
                                   >
-                                    <span className="truncate">â†³ {sub}</span>
+                                    <span className="truncate">↳ {sub}</span>
                                     <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${isSubActive ? 'bg-[#241A15] text-[#E6D5B8]' : 'bg-white/60 text-[#241A15]/60'}`}>
                                       {subCount}
                                     </span>
@@ -3283,14 +3283,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
                       <h3 className="font-podium text-lg uppercase font-bold text-[#241A15]">{box.name}</h3>
                       <div className="text-xs text-[#8E6E2F] font-bold mt-1">
-                        {box.dimensions} â€¢ {box.color}
+                        {box.dimensions} • {box.color}
                       </div>
                       <p className="text-[#241A15]/60 text-xs font-inter mt-2 line-clamp-2">{box.description}</p>
                     </div>
 
                     <div className="pt-4 mt-4 border-t border-[#D8C6A8]/40 flex items-center justify-between">
                       <span className="font-bold text-[#8E6E2F] text-lg">
-                        {box.price === 0 ? 'Complimentary' : `+$${box.price.toFixed(2)}`}
+                        {box.price === 0 ? 'Complimentary' : `+${box.price.toLocaleString()} ብር`}
                       </span>
                       <div className="flex items-center gap-2">
                         <button
@@ -3358,7 +3358,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <td className="py-4 px-3 text-right font-bold text-xs space-y-0.5">
                           {c.totalSpentETB > 0 && (
                             <div className="text-[#8E6E2F] font-bold text-sm">
-                              {c.totalSpentETB.toLocaleString()} <span className="text-[10px] text-[#8E6E2F]/80 font-normal">á‰¥áˆ­</span>
+                              {c.totalSpentETB.toLocaleString()} <span className="text-[10px] text-[#8E6E2F]/80 font-normal">ብር</span>
                             </div>
                           )}
                           {c.totalSpentUSD > 0 && (
@@ -3367,7 +3367,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </div>
                           )}
                           {c.totalSpentETB === 0 && c.totalSpentUSD === 0 && (
-                            <div className="text-[#241A15]/40">0 á‰¥áˆ­</div>
+                            <div className="text-[#241A15]/40">0 ብር</div>
                           )}
                         </td>
                       </tr>
@@ -3660,7 +3660,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               const selectedList = pkgForm.category.split(',').map((s) => s.trim()).filter(Boolean);
                               return (
                                 <div key={`sub-${c.id}`} className="pl-2 border-l border-amber-400/20">
-                                  <span className="text-[10px] text-[#B8944A]/70 font-bold uppercase tracking-wider">{c.name} â†³</span>
+                                  <span className="text-[10px] text-[#B8944A]/70 font-bold uppercase tracking-wider">{c.name} ↳</span>
                                   <div className="flex flex-wrap gap-1 mt-1">
                                     {c.subcategories!.map((sub) => {
                                       const subKey = `${c.name} > ${sub}`;
@@ -3685,7 +3685,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                               : 'bg-white/60 text-[#241A15]/60 border border-[#D8C6A8]/40 hover:border-amber-300/40 hover:text-[#241A15]'
                                           }`}
                                         >
-                                          {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-[#241A15]/30">â†³</span>}
+                                          {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-[#241A15]/30">↳</span>}
                                           <span>{sub}</span>
                                         </button>
                                       );
@@ -3706,7 +3706,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#8E6E2F] font-bold focus:border-amber-400 focus:outline-none"
                       />
                       <p className="text-[10px] text-[#241A15]/50">
-                        ðŸ’¡ Click badges above to toggle multiple categories, or type custom comma-separated category names.
+                        💡 Click badges above to toggle multiple categories, or type custom comma-separated category names.
                       </p>
                     </div>
                   </div>
@@ -3715,7 +3715,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
-                      Local Price (ETB / á‰¥áˆ­) <span className="text-red-600">*</span>
+                      Local Price (ብር / ETB) <span className="text-red-600">*</span>
                     </label>
                     <input
                       type="number"
@@ -4049,7 +4049,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <div className="pt-2 border-t border-[#D8C6A8]/30 grid grid-cols-2 gap-3">
                               <div>
                                 <label className="block text-[10px] uppercase text-[#8E6E2F] font-bold mb-1">
-                                  Extra Price for Back Print (ETB, 0 = Free)
+                                  Extra Price for Back Print (ብር, 0 = Free)
                                 </label>
                                 <input
                                   type="number"
@@ -4165,7 +4165,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                       <div>
                         <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
-                          Price per Unit ETB (Optional)
+                          Price per Unit (ብር / ETB - Optional)
                         </label>
                         <input
                           type="number"
@@ -4194,7 +4194,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   )}
                 </div>
 
-                {/* â”€â”€ SIZE OPTIONS (S, M, L, XL, Shoe Sizes, etc.) â”€â”€ */}
+                {/* ── SIZE OPTIONS (S, M, L, XL, Shoe Sizes, etc.) ── */}
                 <div className="bg-[#FAF6EE]/80 border border-[#D8C6A8]/60 rounded-xl p-4 space-y-3">
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input
@@ -4327,14 +4327,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <div className="bg-gradient-to-r from-amber-500/10 via-[#FAF6EE] to-amber-500/10 border border-amber-400/40 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-xs">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-[#8E6E2F] flex items-center justify-center font-bold text-sm">
-                          ðŸ’°
+                          💰
                         </div>
                         <div>
                           <div className="text-[10px] uppercase tracking-wider font-bold text-[#8E6E2F]">
                             Total Inventory Items Cost (Admin Calculator)
                           </div>
                           <div className="text-sm font-extrabold text-[#241A15] flex flex-wrap items-center gap-2">
-                            <span>{calculatedSubItemsTotalETB.toLocaleString()} ETB</span>
+                            <span>{calculatedSubItemsTotalETB.toLocaleString()} ብር</span>
                             {calculatedSubItemsTotalUSD > 0 && (
                               <span className="text-xs text-[#756457] font-semibold">
                                 (${calculatedSubItemsTotalUSD.toFixed(2)} USD)
@@ -4434,7 +4434,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       <div className="flex items-center gap-1.5 text-[10px]">
                                         <span className="text-[#8E6E2F]/80 truncate">{item.category}</span>
                                         <span className="text-emerald-700 font-extrabold bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
-                                          {item.price ? `${item.price.toLocaleString()} ETB` : '0 ETB'}
+                                          {item.price ? `${item.price.toLocaleString()} ብር` : '0 ብር'}
                                           {item.price_usd ? ` / $${item.price_usd}` : ''}
                                         </span>
                                         {item.requiresCustomInput && (
@@ -4485,7 +4485,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             return (
                               <div className="flex items-center gap-1.5">
                                 <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
-                                  Item Cost: {effectivePrice != null ? `${effectivePrice.toLocaleString()} ETB` : '0 ETB'}
+                                  Item Cost: {effectivePrice != null ? `${effectivePrice.toLocaleString()} ብር` : '0 ብር'}
                                   {effectivePriceUsd ? ` ($${effectivePriceUsd})` : ''}
                                 </span>
                                 {match?.requiresCustomInput && (
@@ -4540,7 +4540,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <option value="">-- Select from Single Items --</option>
                             {customItems.map((item) => (
                               <option key={item.id} value={item.id}>
-                                {item.name} â€” {item.price ? `${item.price.toLocaleString()} ETB` : '0 ETB'}
+                                {item.name} — {item.price ? `${item.price.toLocaleString()} ብር` : '0 ብር'}
                                 {item.price_usd ? ` ($${item.price_usd})` : ''}
                               </option>
                             ))}
@@ -4710,7 +4710,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             const selectedList = itemForm.category.split(',').map((s) => s.trim()).filter(Boolean);
                             return (
                               <div key={`sub-${c.id}`} className="pl-2 border-l border-amber-400/20">
-                                <span className="text-[10px] text-[#B8944A]/70 font-bold uppercase tracking-wider">{c.name} â†³</span>
+                                <span className="text-[10px] text-[#B8944A]/70 font-bold uppercase tracking-wider">{c.name} ↳</span>
                                 <div className="flex flex-wrap gap-1 mt-1">
                                   {c.subcategories!.map((sub) => {
                                     const subKey = `${c.name} > ${sub}`;
@@ -4735,7 +4735,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             : 'bg-white/60 text-[#241A15]/60 border border-[#D8C6A8]/40 hover:border-amber-300/40 hover:text-[#241A15]'
                                         }`}
                                       >
-                                        {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-[#241A15]/30">â†³</span>}
+                                        {isSubSelected ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : <span className="text-[#241A15]/30">↳</span>}
                                         <span>{sub}</span>
                                       </button>
                                     );
@@ -4756,14 +4756,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       className="w-full bg-white/70 border border-[#D8C6A8]/60 rounded-lg p-2 text-xs text-[#8E6E2F] font-bold focus:border-amber-400 focus:outline-none"
                     />
                     <p className="text-[10px] text-[#241A15]/50">
-                      ðŸ’¡ Click badges above to toggle multiple categories, or type custom comma-separated category names.
+                      💡 Click badges above to toggle multiple categories, or type custom comma-separated category names.
                     </p>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">
-                    Local Price (ETB / á‰¥áˆ­) <span className="text-red-600">*</span>
+                    Local Price (ብር / ETB) <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="number"
@@ -5055,7 +5055,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <div className="pt-2 border-t border-[#D8C6A8]/30 grid grid-cols-2 gap-3">
                             <div>
                               <label className="block text-[10px] uppercase text-[#8E6E2F] font-bold mb-1">
-                                Extra Price for Back Print (ETB, 0 = Free)
+                                Extra Price for Back Print (ብር, 0 = Free)
                               </label>
                               <input
                                 type="number"
@@ -5169,7 +5169,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     <div>
                       <label className="block text-[11px] uppercase text-[#8E6E2F] font-bold mb-1">
-                        Price per Unit ETB (Optional)
+                        Price per Unit (ብር / ETB - Optional)
                       </label>
                       <input
                         type="number"
@@ -5198,7 +5198,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 )}
               </div>
 
-              {/* â”€â”€ SIZE OPTIONS (S, M, L, XL, Shoe Sizes, etc.) â”€â”€ */}
+              {/* ── SIZE OPTIONS (S, M, L, XL, Shoe Sizes, etc.) ── */}
               <div className="bg-[#FAF6EE]/80 border border-[#D8C6A8]/60 rounded-xl p-4 space-y-3">
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
@@ -5365,7 +5365,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Local Price (ETB)</label>
+                  <label className="block text-xs uppercase text-[#8E6E2F] font-bold mb-1">Local Price (ብር / ETB)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -5560,7 +5560,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       >
                         <div className="truncate pr-2">
                           <div className="truncate">{pkg.name}</div>
-                          <div className="text-[10px] text-[#241A15]/50">${pkg.price.toFixed(2)}</div>
+                          <div className="text-[10px] text-[#241A15]/50">{pkg.price.toLocaleString()} ብር</div>
                         </div>
                         {isSelected && <Check className="w-4 h-4 text-[#8E6E2F] flex-shrink-0" />}
                       </div>
@@ -5633,7 +5633,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              {/* â”€â”€â”€ DELIVERY SCHEDULE SECTION â”€â”€â”€ */}
+              {/* ─── DELIVERY SCHEDULE SECTION ─── */}
               {(() => {
                 const od = selectedOrderDetails;
                 const rawDate = od.customer?.deliveryDate || od.deliveryDate;
@@ -5649,8 +5649,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     : 'text-[#241A15]/50 bg-[#F7F1E7] border-[#D8C6A8]/50';
 
                 const statusDot =
-                  schedStatus === 'Scheduled' ? 'ðŸŸ¢' :
-                  schedStatus === 'Awaiting Customer Confirmation' ? 'ðŸŸ¡' : 'âš«';
+                  schedStatus === 'Scheduled' ? '🟢' :
+                  schedStatus === 'Awaiting Customer Confirmation' ? '🟡' : '⚫';
 
                 return (
                   <div className="bg-[#F3EDE2] border border-[#D8C6A8] rounded-xl p-4 space-y-3">
@@ -5737,7 +5737,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <div className="text-[#241A15] font-semibold">{selectedOrderDetails.giftBoxStyle}</div>
                     <div className="text-[#8E6E2F] font-bold">
                       {selectedOrderDetails.giftBoxPrice
-                        ? `+${selectedOrderDetails.currency === 'USD' ? '$' : ''}${selectedOrderDetails.giftBoxPrice.toFixed(2)} ${selectedOrderDetails.currency || 'ETB'}`
+                        ? `+${selectedOrderDetails.currency === 'USD' || selectedOrderDetails.buyerMarket === 'INTERNATIONAL' ? `$${selectedOrderDetails.giftBoxPrice.toFixed(2)} USD` : `${selectedOrderDetails.giftBoxPrice.toLocaleString()} ብር`}`
                         : 'Free'}
                     </div>
                   </div>
@@ -5807,7 +5807,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                  </span>
                                )}
                              </div>
-                             <div className="text-[11px] text-[#241A15]/60">Qty: {it.quantity} â€¢ {isPkg ? 'Ready-Made Package' : (singleObj?.category || 'Single Item')}</div>
+                             <div className="text-[11px] text-[#241A15]/60">Qty: {it.quantity} • {isPkg ? 'Ready-Made Package' : (singleObj?.category || 'Single Item')}</div>
 
                              {/* Customer Customization Details (Multi-side Front/Back or Single) */}
                              {(it.customSidesSelected === 'front_and_back' || it.frontInputText || it.frontInputImageUrl || it.backInputText || it.backInputImageUrl) ? (
@@ -5819,7 +5819,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                    </div>
                                    {it.backSidePrice ? (
                                      <span className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300">
-                                       +Back Print: {it.backSidePrice} ETB
+                                       +Back Print: {it.backSidePrice} ብር
                                      </span>
                                    ) : null}
                                  </div>
@@ -5986,7 +5986,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                              ) : null}
                            </div>
                            <div className="font-bold text-[#8E6E2F] text-sm whitespace-nowrap">
-                             {isUsd ? `$${(itemPrice * it.quantity).toFixed(2)} USD` : `${(itemPrice * it.quantity).toLocaleString()} á‰¥áˆ­`}
+                             {isUsd ? `$${(itemPrice * it.quantity).toFixed(2)} USD` : `${(itemPrice * it.quantity).toLocaleString()} ብር`}
                            </div>
                          </div>
                        </div>
@@ -6003,7 +6003,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="text-[#241A15]/70">Buyer Market:</span>
                   <span className="text-[#8E6E2F] font-bold">
-                    {selectedOrderDetails.buyerMarket === 'INTERNATIONAL' ? 'ðŸŒ International (Abroad / USD)' : 'ðŸ‡ªðŸ‡¹ Local (Ethiopia / ETB)'}
+                    {selectedOrderDetails.buyerMarket === 'INTERNATIONAL' ? '🌍 International (Abroad / USD)' : '🇪🇹 Local (Ethiopia / ETB)'}
                   </span>
                 </div>
 
@@ -6148,7 +6148,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="flex items-center justify-between bg-white/80 rounded-xl p-4 border border-[#D8C6A8]/40 text-sm font-bold">
                 <span>Total Amount:</span>
                 <span className="text-[#8E6E2F] text-lg">
-                  {selectedOrderDetails.currency === 'USD' ? '$' : ''}{selectedOrderDetails.total.toFixed(2)} {selectedOrderDetails.currency || (selectedOrderDetails.buyerMarket === 'INTERNATIONAL' ? 'USD' : 'ETB')}
+                  {selectedOrderDetails.currency === 'USD' || selectedOrderDetails.buyerMarket === 'INTERNATIONAL' ? `$${selectedOrderDetails.total.toFixed(2)} USD` : `${selectedOrderDetails.total.toLocaleString()} ብር`}
                 </span>
               </div>
             </div>
@@ -6179,7 +6179,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   Reject Payment for Order {rejectingPaymentOrder.id}
                 </h3>
                 <span className="text-xs text-[#241A15]/60">
-                  Customer: {rejectingPaymentOrder.customer.fullName} â€¢ {formatPrice(rejectingPaymentOrder.total, rejectingPaymentOrder.currency || 'ETB')}
+                  Customer: {rejectingPaymentOrder.customer.fullName} • {formatPrice(rejectingPaymentOrder.total, (rejectingPaymentOrder.currency || 'ETB') as any)}
                 </span>
               </div>
             </div>
