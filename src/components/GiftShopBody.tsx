@@ -212,6 +212,32 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
     };
   };
 
+  // Helper: returns true only when the package actually has sub-items that need customization.
+  // Used to prevent showing the customization box when requiresCustomInput is set on the
+  // package-level DB record but no concrete customizable sub-items were detected.
+  const pkgHasCustomizableSubItems = (pkg: PreparedPackage): boolean => {
+    const pool = (customItems && customItems.length > 0) ? customItems : CUSTOM_ITEMS;
+    const detailed = pkg.itemsIncludedDetailed || [];
+    if (detailed.length > 0) {
+      return detailed.some(sub => {
+        if (sub.requiresCustomInput) return true;
+        const ci = sub.customItemId
+          ? pool.find(c => c.id === sub.customItemId)
+          : pool.find(c => sub.name && c.name && sub.name.toLowerCase().trim() === c.name.toLowerCase().trim());
+        return ci ? !!ci.requiresCustomInput : false;
+      });
+    }
+    // Fall back to itemsIncluded name matching
+    const names = pkg.itemsIncluded || [];
+    return names.some(name =>
+      pool.some(ci => ci.requiresCustomInput && ci.name && (
+        name.toLowerCase().trim() === ci.name.toLowerCase().trim() ||
+        name.toLowerCase().includes(ci.name.toLowerCase()) ||
+        ci.name.toLowerCase().includes(name.toLowerCase())
+      ))
+    );
+  };
+
   const validateCustomizationInputs = (target: PreparedPackage | CustomBoxOption): boolean => {
     const effectiveTarget = ('category' in target && (target as any).itemsIncluded)
       ? getEffectivePkg(target as PreparedPackage)
@@ -509,7 +535,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
 
   const handleModalAdd = () => {
     if (selectedModalPkg) {
-      if (!validateCustomizationInputs(selectedModalPkg)) return;
+      if (pkgHasCustomizableSubItems(selectedModalPkg) && !validateCustomizationInputs(selectedModalPkg)) return;
 
       const isMulti = selectedModalPkg.customizationSides === 'front_back';
       const backPrice = (isMulti && customSidesSelected === 'front_and_back')
@@ -655,7 +681,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                 From {pkg.customUnitMin || 1} {pkg.customUnitName || 'kg'}
               </span>
             )}
-            {effectivePkg.requiresCustomInput && !pkg.hasCustomUnit && (
+            {effectivePkg.requiresCustomInput && !pkg.hasCustomUnit && pkgHasCustomizableSubItems(effectivePkg) && (
               <span className="absolute bottom-1.5 right-1.5 bg-[#E6D5B8]/90 text-[#3A2A20] text-[8px] sm:text-[9px] font-inter font-semibold px-1.5 py-0.5 rounded border border-[#D8C6A8] z-10 shadow-sm">
                 Customizable
               </span>
@@ -1429,7 +1455,7 @@ export const GiftShopBody: React.FC<GiftShopBodyProps> = ({
                   )}
 
                   {/* Client Customization Requirement Section */}
-                  {selectedModalPkg.requiresCustomInput && (
+                  {selectedModalPkg.requiresCustomInput && pkgHasCustomizableSubItems(selectedModalPkg) && (
                     <MultiSideCustomizationSection
                       item={selectedModalPkg}
                       customSidesSelected={customSidesSelected}

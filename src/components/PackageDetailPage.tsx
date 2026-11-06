@@ -336,7 +336,7 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
     : getPkgPrice(packageData);
 
   const handleAddToCart = () => {
-    if (effectivePackage.requiresCustomInput) {
+    if (effectivePackage.requiresCustomInput && customizableSubItems.length > 0) {
       if (isMultiCustomizable) {
         for (const item of customizableSubItems) {
           const state = getSubItemCustomState(item.id, item.config);
@@ -751,7 +751,7 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({
                   )}
 
                   {/* Client Customization Requirement Section */}
-                  {effectivePackage.requiresCustomInput && (
+                  {effectivePackage.requiresCustomInput && customizableSubItems.length > 0 && (
                     isMultiCustomizable ? (
                       <div className="space-y-4 mb-5">
                         <div className="bg-amber-500/10 border border-amber-400/40 rounded-xl p-3 flex items-center gap-2.5">
