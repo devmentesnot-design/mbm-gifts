@@ -2,28 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { X, Gift } from 'lucide-react';
 
 export const AdvanceNoticeModal: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  // Always open on initial mount / page refresh
+  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
-    const hasSeenNotice = localStorage.getItem('mbm_surprise_notice_seen');
-    if (!hasSeenNotice) {
-      setIsOpen(true);
-    }
+    // Clear any legacy one-time dismissal flag so it always shows on refresh
+    try {
+      localStorage.removeItem('mbm_surprise_notice_seen');
+    } catch {}
   }, []);
 
   const handleClose = () => {
-    localStorage.setItem('mbm_surprise_notice_seen', 'true');
     setIsOpen(false);
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
       <div className="bg-[#FBF8F2] border border-[#D8C6A8] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl relative">
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-[#756457] hover:text-[#241A15] transition-colors"
+          className="absolute top-4 right-4 text-[#756457] hover:text-[#241A15] transition-colors cursor-pointer"
+          aria-label="Close"
         >
           <X className="w-5 h-5" />
         </button>
@@ -43,8 +44,8 @@ export const AdvanceNoticeModal: React.FC = () => {
               <strong className="text-[#3A2A20]">at least 7 days in advance</strong>.
             </p>
             <p>
-              But don't worry — if you need it sooner,{' '}
-              <strong className="text-[#3A2A20]">3 days in advance is still possible. ❤️</strong>
+              Please note: orders require at least{' '}
+              <strong className="text-[#3A2A20]">2 days advance notice</strong> (today and tomorrow are not available). ❤️
             </p>
             <p className="italic text-xs mt-4 opacity-80">
               *Order early when you can, and we'll take care of the rest.
@@ -53,7 +54,7 @@ export const AdvanceNoticeModal: React.FC = () => {
 
           <button
             onClick={handleClose}
-            className="w-full bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] font-bold py-3.5 rounded-xl text-sm uppercase tracking-widest transition-all shadow-xl"
+            className="w-full bg-[#241A15] hover:bg-[#3A2A20] text-[#FBF8F2] font-bold py-3.5 rounded-xl text-sm uppercase tracking-widest transition-all shadow-xl cursor-pointer"
           >
             I Understand
           </button>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { CartItem, Order } from '../types/cart';
 import { Package, Truck, ArrowLeft, Image as ImageIcon, PhoneCall, UploadCloud, Check, Sparkles, Box, Headset, Clock, Calendar } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
@@ -39,6 +39,27 @@ const getSavedDraft = (): CartFormDraft => {
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
+  }
+};
+
+// Calculate minimum allowed delivery date: today + 2 days (cannot choose today or tomorrow)
+// e.g. if today is 9th, minimum selectable is 11th.
+export const getMinDeliveryDate = (): string => {
+  const d = new Date();
+  d.setDate(d.getDate() + 2);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+export const formatMinDeliveryDate = (dateStr: string): string => {
+  try {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  } catch {
+    return dateStr;
   }
 };
 
@@ -88,11 +109,19 @@ export const CartPage: React.FC<CartPageProps> = ({
   const wrapTier = hasCustomItems && selectedBox ? getBoxPrice(selectedBox) : 0;
   const [shipMode, setShipMode] = useState<'recipient' | 'me'>(draft.shipMode || 'recipient');
 
+  const minDeliveryDate = useMemo(() => getMinDeliveryDate(), []);
+
   const [phone, setPhone] = useState(draft.phone || '');
   const [recipientPhone, setRecipientPhone] = useState(draft.recipientPhone || '');
   const [address, setAddress] = useState(draft.address || '');
   const [city, setCity] = useState(draft.city || '');
-  const [deliveryDate, setDeliveryDate] = useState(draft.deliveryDate || '');
+  const [deliveryDate, setDeliveryDate] = useState(() => {
+    const min = getMinDeliveryDate();
+    if (draft.deliveryDate && draft.deliveryDate >= min) {
+      return draft.deliveryDate;
+    }
+    return '';
+  });
   const [deliveryTime, setDeliveryTime] = useState(draft.deliveryTime || '');
   const [recipientName, setRecipientName] = useState(draft.recipientName || '');
   const [senderName, setSenderName] = useState(draft.senderName || '');
@@ -212,6 +241,17 @@ export const CartPage: React.FC<CartPageProps> = ({
 
     if (!address.trim()) {
       setValidationError('Please provide your delivery address or location.');
+      return;
+    }
+
+    const minDate = getMinDeliveryDate();
+    if (!deliveryDate || !deliveryDate.trim()) {
+      setValidationError('Please choose a delivery date. Orders require at least 2 days advance notice (today and tomorrow are not available).');
+      return;
+    }
+
+    if (deliveryDate.trim() < minDate) {
+      setValidationError('Please select a delivery date at least 2 days in advance (today and tomorrow cannot be selected).');
       return;
     }
 
@@ -812,19 +852,25 @@ export const CartPage: React.FC<CartPageProps> = ({
                       <div>
                         <label className="block text-[10px] uppercase tracking-widest text-[#B8944A] font-bold mb-1.5 flex items-center gap-2">
                           <Calendar className="w-3.5 h-3.5 text-[#B8944A]" />
-                          <span>Preferred Delivery Date</span>
+                          <span>Preferred Delivery Date *</span>
                         </label>
                         <div className="relative">
                           <input
                             type="date"
                             value={deliveryDate}
-                            onChange={(e) => setDeliveryDate(e.target.value)}
-                            min={new Date().toISOString().split('T')[0]}
+                            onChange={(e) => {
+                              setDeliveryDate(e.target.value);
+                              if (validationError) setValidationError('');
+                            }}
+                            min={minDeliveryDate}
+                            required
                             className="w-full bg-[#F7F1E7] border border-[#D8C6A8] rounded-lg p-3 text-sm text-[#241A15] focus:outline-none focus:border-[#B8944A] cursor-pointer"
                           />
                           <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#B8944A]/50 pointer-events-none" />
                         </div>
-                        <p className="text-[10px] text-[#B8A898] mt-1.5">Leave blank for earliest available delivery</p>
+                        <p className="text-[10px] text-[#8E6E2F] mt-1.5 font-medium">
+                          * Minimum 2 days advance notice required (earliest available: {formatMinDeliveryDate(minDeliveryDate)})
+                        </p>
                       </div>
 
                       <div>
