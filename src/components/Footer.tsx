@@ -149,7 +149,7 @@ export const Footer: React.FC = () => {
           </div>
           <div className="text-[#F7F1E7]/70 space-y-2">
             <div>Email: <a href="mailto:info@mbmgifts.app" className="text-[#FBF8F2] hover:text-[#E6D5B8] transition-colors font-medium">info@mbmgifts.app</a></div>
-            <div>Phone: <a href="tel:+251919580425" className="text-[#FBF8F2] hover:text-[#E6D5B8] transition-colors font-medium">091 958 0425</a> / <a href="tel:+251935538009" className="text-[#FBF8F2] hover:text-[#E6D5B8] transition-colors font-medium">093 553 8009</a></div>
+            <div>Phone: <a href="tel:+251970026433" className="text-[#FBF8F2] hover:text-[#E6D5B8] transition-colors font-medium">0970026433</a> / <a href="tel:+251935538009" className="text-[#FBF8F2] hover:text-[#E6D5B8] transition-colors font-medium">093 553 8009</a></div>
             <div>Headquarters: <span className="text-[#FBF8F2]">Bole Luxury District, Addis Ababa, Ethiopia</span></div>
             <div className="text-[#E6D5B8] font-bold mt-2 flex items-center gap-1.5 bg-[#E6D5B8]/10 border border-[#D8C6A8]/30 px-2.5 py-1 rounded-lg w-fit">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
